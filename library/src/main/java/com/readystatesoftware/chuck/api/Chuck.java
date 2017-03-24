@@ -69,6 +69,15 @@ public class Chuck {
         new NotificationHelper(context).dismissErrorsNotification();
     }
 
+    /**
+     * Check if this instance is the operation one or no-op.
+     *
+     * @return {@code true} if this is the operation instance.
+     */
+    public static boolean isOp() {
+        return true;
+    }
+
     @IntDef(value = {SCREEN_HTTP, SCREEN_ERROR})
     public @interface Screen {}
 }
