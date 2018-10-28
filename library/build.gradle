@@ -10,9 +10,9 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    implementation 'nl.qbusict:cupboard:2.2.0'
+    implementation "nl.qbusict:cupboard:$cupboardVersion"
     implementation "com.android.support:design:$supportLibVersion"
 }
 

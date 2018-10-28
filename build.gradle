@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,9 +29,12 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 16
-    targetSdkVersion = 27
-    compileSdkVersion = 27
+    targetSdkVersion = 28
+    compileSdkVersion = 28
 
-    supportLibVersion = '27.1.1'
-    okhttp3Version = '3.6.0'
+    supportLibVersion = '28.0.0'
+    okhttp3Version = '3.11.0'
+    retrofitVersion = '2.3.0'
+    gsonVersion = '2.8.5'
+    cupboardVersion= '2.2.0'
 }
