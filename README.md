@@ -1,24 +1,26 @@
-Chuck
-=====
+Chucky
+======
 
-Chuck simplifies the gathering of HTTP requests/responses, and Throwables. Chuck intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
+_Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
-![Chuck](assets/chuck.gif)
+Chucky simplifies the gathering of HTTP requests/responses, and Throwables. Chucky intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
 
-Apps using Chuck will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chuck UI. Apps can optionally suppress the notification, and launch the Chuck UI directly from within their own interface.
+![Chucky](assets/chuck.gif)
 
-The main Chuck activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
+Apps using Chucky will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucky UI. Apps can optionally suppress the notification, and launch the Chucky UI directly from within their own interface.
+
+The main Chucky activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
 
 ![Multi-Window](assets/multiwindow.gif)
 
-Chuck requires Android 4.1+ and OkHttp 3.x.
+Chucky requires Android 4.1+ and OkHttp 3.x.
 
 **Warning**: The data generated and stored when using this interceptor may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. It is intended for use during development, and not in release builds or other production deployments.
 
 Setup
 -----
 
-Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chuck from release builds as follows:
+Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucky from release builds as follows:
 
 ```gradle
 dependencies {
@@ -44,7 +46,7 @@ OkHttpClient client = new OkHttpClient.Builder()
   .build();
 ```
 
-That's it! Chuck will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chuck UI directly within your app with the intent from `Chuck.getLaunchIntent()`.
+That's it! Chucky will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucky UI directly within your app with the intent from `Chuck.getLaunchIntent()`.
 
 For errors gathering you can directly use the same collector:
 
@@ -68,12 +70,12 @@ FAQ
 - Why are retries and redirects not being captured discretely?
 - Why are my encoded request/response bodies not appearing as plain text?
 
-Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chuck as either an application or network interceptor, depending on your requirements.
+Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucky as either an application or network interceptor, depending on your requirements.
 
 Acknowledgements
 ----------------
 
-Chuck uses the following open source libraries:
+Chucky uses the following open source libraries:
 
 - [OkHttp](https://github.com/square/okhttp) - Copyright Square, Inc.
 - [Gson](https://github.com/google/gson) - Copyright Google Inc.
