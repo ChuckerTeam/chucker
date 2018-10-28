@@ -22,5 +22,4 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".internal.ui.transaction.TransactionListFragment"
-    tools:listitem="@layout/chuck_list_item_transaction" />
+    tools:listitem="@layout/chuck_list_item_error" />

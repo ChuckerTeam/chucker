@@ -27,12 +27,23 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.readystatesoftware.chuck.api.Chuck;
+
 public class ChuckContentProvider extends ContentProvider {
 
     public static Uri TRANSACTION_URI;
+    public static Uri ERROR_URI;
 
     private static final int TRANSACTION = 0;
     private static final int TRANSACTIONS = 1;
+    private static final int ERROR = 2;
+    private static final int ERRORS = 3;
+
+    public static final int LOADER_TRANSACTION_DETAIL = 0;
+    public static final int LOADER_TRANSACTIONS = 1;
+    public static final int LOADER_ERROR_DETAIL = 2;
+    public static final int LOADER_ERRORS = 3;
+
     private static final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private ChuckDbOpenHelper databaseHelper;
@@ -40,9 +51,14 @@ public class ChuckContentProvider extends ContentProvider {
     @Override
     public void attachInfo(Context context, ProviderInfo info) {
         super.attachInfo(context, info);
+        Chuck.init(context);
+
         TRANSACTION_URI = Uri.parse("content://" + info.authority + "/transaction");
+        ERROR_URI = Uri.parse("content://" + info.authority + "/error");
         matcher.addURI(info.authority, "transaction/#", TRANSACTION);
         matcher.addURI(info.authority, "transaction", TRANSACTIONS);
+        matcher.addURI(info.authority, "error/#", ERROR);
+        matcher.addURI(info.authority, "error", ERRORS);
     }
 
     @Override
@@ -71,6 +87,18 @@ public class ChuckContentProvider extends ContentProvider {
                         byId(ContentUris.parseId(uri)).
                         getCursor();
                 break;
+            case ERRORS:
+                cursor = LocalCupboard.getInstance().withDatabase(db).query(RecordedThrowable.class)
+                        .withProjection(projection)
+                        .withSelection(selection, selectionArgs)
+                        .orderBy(sortOrder)
+                        .getCursor();
+                break;
+            case ERROR:
+                cursor = LocalCupboard.getInstance().withDatabase(db).query(RecordedThrowable.class).
+                        byId(ContentUris.parseId(uri)).
+                        getCursor();
+                break;
         }
         if (cursor != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -95,6 +123,14 @@ public class ChuckContentProvider extends ContentProvider {
                     getContext().getContentResolver().notifyChange(uri, null);
                     return ContentUris.withAppendedId(TRANSACTION_URI, id);
                 }
+                break;
+            case ERRORS:
+                long errorId = db.insert(LocalCupboard.getInstance().getTable(RecordedThrowable.class), null, contentValues);
+                if (errorId > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                    return ContentUris.withAppendedId(TRANSACTION_URI, errorId);
+                }
+                break;
         }
         return null;
     }
@@ -109,7 +145,14 @@ public class ChuckContentProvider extends ContentProvider {
                 break;
             case TRANSACTION:
                 result = db.delete(LocalCupboard.getInstance().getTable(HttpTransaction.class),
-                        "_id = ?", new String[]{ uri.getPathSegments().get(1) });
+                        "_id = ?", new String[]{uri.getPathSegments().get(1)});
+                break;
+            case ERRORS:
+                result = db.delete(LocalCupboard.getInstance().getTable(RecordedThrowable.class), selection, selectionArgs);
+                break;
+            case ERROR:
+                result = db.delete(LocalCupboard.getInstance().getTable(RecordedThrowable.class),
+                        "_id = ?", new String[]{uri.getPathSegments().get(1)});
                 break;
         }
         if (result > 0) {
@@ -129,7 +172,7 @@ public class ChuckContentProvider extends ContentProvider {
                 break;
             case TRANSACTION:
                 result = db.update(LocalCupboard.getInstance().getTable(HttpTransaction.class), contentValues,
-                        "_id = ?", new String[]{ uri.getPathSegments().get(1) });
+                        "_id = ?", new String[]{uri.getPathSegments().get(1)});
                 break;
         }
         if (result > 0) {

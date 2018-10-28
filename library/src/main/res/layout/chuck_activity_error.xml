@@ -20,7 +20,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".internal.ui.transaction.TransactionActivity">
+    tools:context=".internal.ui.error.ErrorActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -34,28 +34,39 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <TextView
                 android:id="@+id/toolbar_title"
+                style="@style/Chuck.TextAppearance.TransactionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Chuck.TextAppearance.TransactionTitle"
-                tools:text="Title"/>
+                tools:text="Title" />
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <include layout="@layout/chuck_list_item_error" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/stacktrace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            tools:text="java.lang.SecurityException: Package com.readystatesoftware.chuck.sample is currently frozen!
+        at com.android.server.pm.PackageManagerService.checkPackageStartable(PackageManagerService.java:3896)
+        at com.android.server.am.ActivityManagerService.startProcessLocked(ActivityManagerService.java:3801)
+        at com.android.server.am.ActivityManagerService.startProcessLocked(ActivityManagerService.java:3761)
+        at com.android.server.am.ActivityManagerService.startProcessLocked(ActivityManagerService.java:3650)" />
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

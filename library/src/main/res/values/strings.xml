@@ -16,7 +16,7 @@
  -->
 <resources>
     <string name="chuck_name">Chuck</string>
-    <string name="chuck_notification_title">Recording HTTP activity</string>
+    <string name="chuck_http_notification_title">Recording HTTP activity</string>
     <string name="chuck_clear">Clear</string>
     <string name="chuck_browse_sql_database">Browse SQLite database</string>
     <string name="chuck_overview">Overview</string>
@@ -42,5 +42,9 @@
     <string name="chuck_search">Search</string>
     <string name="chuck_body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
     <string name="chuck_body_content_truncated">\n\n--- Content truncated ---</string>
-    <string name="notification_category">Chuck HTTP notifications</string>
+    <string name="chuck_tab_network">Network</string>
+    <string name="chuck_tab_errors">Errors</string>
+    <string name="chuck_notification_category">Chuck notifications</string>
+    <string name="chuck_share_error_title">Error report</string>
+    <string name="chuck_share_error_content"><![CDATA[Date: %s\nException: %s\nTag: %s\nMessage: %s\n\n%s]]></string>
 </resources>

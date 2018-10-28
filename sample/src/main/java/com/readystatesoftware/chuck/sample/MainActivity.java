@@ -21,8 +21,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.readystatesoftware.chuck.Chuck;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.readystatesoftware.chuck.api.Chuck;
+import com.readystatesoftware.chuck.api.ChuckInterceptor;
+import com.readystatesoftware.chuck.api.ChuckCollector;
+import com.readystatesoftware.chuck.internal.support.RetentionManager;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,6 +33,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ChuckCollector collector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,26 +52,47 @@ public class MainActivity extends AppCompatActivity {
                 launchChuckDirectly();
             }
         });
+        findViewById(R.id.trigger_exception).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                triggerException();
+            }
+        });
+
+        collector = new ChuckCollector(this)
+                .showNotification(true)
+                .retentionManager(new RetentionManager(this, ChuckCollector.Period.ONE_HOUR));
+
+        Chuck.registerDefaultCrashHanlder(collector);
     }
 
     private OkHttpClient getClient(Context context) {
+        ChuckInterceptor chuckInterceptor = new ChuckInterceptor(context, collector)
+                .maxContentLength(250000L);
+
         return new OkHttpClient.Builder()
                 // Add a ChuckInterceptor instance to your OkHttp client
-                .addInterceptor(new ChuckInterceptor(context))
+                .addInterceptor(chuckInterceptor)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
     }
 
     private void launchChuckDirectly() {
         // Optionally launch Chuck directly from your own app UI
-        startActivity(Chuck.getLaunchIntent(this));
+        startActivity(Chuck.getLaunchIntent(this, Chuck.SCREEN_HTTP));
     }
 
     private void doHttpActivity() {
         SampleApiService.HttpbinApi api = SampleApiService.getInstance(getClient(this));
         Callback<Void> cb = new Callback<Void>() {
-            @Override public void onResponse(Call call, Response response) {}
-            @Override public void onFailure(Call call, Throwable t) { t.printStackTrace(); }
+            @Override
+            public void onResponse(Call call, Response response) {
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                t.printStackTrace();
+            }
         };
         api.get().enqueue(cb);
         api.post(new SampleApiService.Data("posted")).enqueue(cb);
@@ -96,5 +121,11 @@ public class MainActivity extends AppCompatActivity {
         api.deny().enqueue(cb);
         api.cache("Mon").enqueue(cb);
         api.cache(30).enqueue(cb);
+    }
+
+    private void triggerException() {
+        collector.onError("Example button pressed", new RuntimeException("User triggered the button"));
+        // You can also throw exception, it will be caught thanks to "Chuck.registerDefaultCrashHanlder"
+        // throw new RuntimeException("User triggered the button");
     }
 }

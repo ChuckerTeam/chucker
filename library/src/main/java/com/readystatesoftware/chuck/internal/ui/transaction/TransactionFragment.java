@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.readystatesoftware.chuck;
+package com.readystatesoftware.chuck.internal.ui.transaction;
 
-import android.content.Context;
-import android.content.Intent;
+import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 
-/**
- * No-op implementation.
- */
-public class Chuck {
-
-    public static Intent getLaunchIntent(Context context) {
-        return new Intent();
-    }
+interface TransactionFragment {
+    void transactionUpdated(HttpTransaction transaction);
 }

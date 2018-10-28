@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.readystatesoftware.chuck.internal.ui;
+package com.readystatesoftware.chuck.internal.ui.transaction;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -42,12 +42,14 @@ import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.internal.data.LocalCupboard;
 import com.readystatesoftware.chuck.internal.support.FormatUtils;
 import com.readystatesoftware.chuck.internal.support.SimpleOnPageChangedListener;
+import com.readystatesoftware.chuck.internal.ui.BaseChuckActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.readystatesoftware.chuck.internal.ui.TransactionPayloadFragment.TYPE_REQUEST;
-import static com.readystatesoftware.chuck.internal.ui.TransactionPayloadFragment.TYPE_RESPONSE;
+import static com.readystatesoftware.chuck.internal.data.ChuckContentProvider.LOADER_TRANSACTION_DETAIL;
+import static com.readystatesoftware.chuck.internal.ui.transaction.TransactionPayloadFragment.TYPE_REQUEST;
+import static com.readystatesoftware.chuck.internal.ui.transaction.TransactionPayloadFragment.TYPE_RESPONSE;
 
 public class TransactionActivity extends BaseChuckActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -88,13 +90,13 @@ public class TransactionActivity extends BaseChuckActivity implements LoaderMana
         tabLayout.setupWithViewPager(viewPager);
 
         transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(LOADER_TRANSACTION_DETAIL, null, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(LOADER_TRANSACTION_DETAIL, null, this);
     }
 
     @Override

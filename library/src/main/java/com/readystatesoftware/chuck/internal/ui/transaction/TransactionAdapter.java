@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.readystatesoftware.chuck.internal.ui;
+package com.readystatesoftware.chuck.internal.ui.transaction;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +29,9 @@ import android.widget.TextView;
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.internal.data.LocalCupboard;
-import com.readystatesoftware.chuck.internal.ui.TransactionListFragment.OnListFragmentInteractionListener;
+import com.readystatesoftware.chuck.internal.ui.transaction.TransactionListFragment.OnListFragmentInteractionListener;
+
+import java.text.DateFormat;
 
 class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
@@ -69,7 +71,7 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
                 final ViewHolder holder = (ViewHolder) view.getTag();
                 holder.path.setText(transaction.getMethod() + " " + transaction.getPath());
                 holder.host.setText(transaction.getHost());
-                holder.start.setText(transaction.getRequestStartTimeString());
+                holder.start.setText(DateFormat.getTimeInstance().format(transaction.getRequestDate()));
                 holder.ssl.setVisibility(transaction.isSsl() ? View.VISIBLE : View.GONE);
                 if (transaction.getStatus() == HttpTransaction.Status.Complete) {
                     holder.code.setText(String.valueOf(transaction.getResponseCode()));

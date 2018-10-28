@@ -14,13 +14,11 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
  -->
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".internal.ui.transaction.TransactionListFragment"
-    tools:listitem="@layout/chuck_list_item_transaction" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/share_text"
+        android:icon="@drawable/chuck_ic_share_white_24dp"
+        android:title="@string/chuck_share"
+        app:showAsAction="always" />
+</menu>
