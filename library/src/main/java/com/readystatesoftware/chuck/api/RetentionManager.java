@@ -1,4 +1,4 @@
-package com.readystatesoftware.chuck.internal.support;
+package com.readystatesoftware.chuck.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;

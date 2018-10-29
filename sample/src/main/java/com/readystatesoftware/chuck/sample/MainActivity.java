@@ -24,7 +24,7 @@ import android.view.View;
 import com.readystatesoftware.chuck.api.Chuck;
 import com.readystatesoftware.chuck.api.ChuckInterceptor;
 import com.readystatesoftware.chuck.api.ChuckCollector;
-import com.readystatesoftware.chuck.internal.support.RetentionManager;
+import com.readystatesoftware.chuck.api.RetentionManager;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

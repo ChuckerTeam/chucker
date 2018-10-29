@@ -9,7 +9,6 @@ import com.readystatesoftware.chuck.internal.data.HttpTransaction;
 import com.readystatesoftware.chuck.internal.data.LocalCupboard;
 import com.readystatesoftware.chuck.internal.data.RecordedThrowable;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
-import com.readystatesoftware.chuck.internal.support.RetentionManager;
 
 /**
  * @author Olivier Perez

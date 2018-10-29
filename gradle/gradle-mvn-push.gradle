@@ -1,109 +1,85 @@
-apply plugin: 'maven'
-apply plugin: 'signing'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: "com.jfrog.bintray"
 
-def isReleaseBuild() {
-    return VERSION_NAME.contains("SNAPSHOT") == false
-}
+def siteUrl = 'https://github.com/olivierperez/chucky' // Homepage URL of the library
+def gitUrl = 'https://github.com/olivierperez/chucky.git' // Git repository URL
+group = GROUP // Maven Group ID for the artifact
 
-def getReleaseRepositoryUrl() {
-  return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-      : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-}
+afterEvaluate { proj ->
 
-def getSnapshotRepositoryUrl() {
-  return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-      : "https://oss.sonatype.org/content/repositories/snapshots/"
-}
+    install {
+        repositories.mavenInstaller {
+            // This generates POM.xml with proper parameters
+            pom {
+                project {
+                    packaging 'aar'
 
-def getRepositoryUsername() {
-    return hasProperty('SONATYPE_NEXUS_USERNAME') ? SONATYPE_NEXUS_USERNAME : ""
-}
+                    // Add your description here
+                    name "$group:${proj.name}"
+                    description = POM_DESCRIPTION
+                    url siteUrl
 
-def getRepositoryPassword() {
-    return hasProperty('SONATYPE_NEXUS_PASSWORD') ? SONATYPE_NEXUS_PASSWORD : ""
-}
-
-afterEvaluate { project ->
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                pom.groupId = GROUP
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME
-
-                repository(url: getReleaseRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
-                snapshotRepository(url: getSnapshotRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
-
-                pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
-
-                    scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
-                    }
-
+                    // Set your license
                     licenses {
                         license {
                             name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
+                            url POM_SCM_CONNECTION
                         }
                     }
-
                     developers {
                         developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
+                            id 'olivierperez'
+                            name 'Olivier Perez'
+                            email 'olivier@olivierperez.fr'
                         }
                     }
+                    scm {
+                        connection gitUrl
+                        developerConnection gitUrl
+                        url siteUrl
+                    }
                 }
-
             }
         }
     }
 
-    signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
-
-    task androidJavadocs(type: Javadoc) {
-        failOnError = false
-        source = android.sourceSets.main.java.srcDirs
-        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        classpath += files(ext.androidJar)
-    }
-
-    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-        classifier = 'javadoc'
-        from androidJavadocs.destinationDir
-    }
-
-    task androidSourcesJar(type: Jar) {
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
         classifier = 'sources'
-        from android.sourceSets.main.java.sourceFiles
     }
 
-    if (JavaVersion.current().isJava8Compatible()) {
-        allprojects {
-            tasks.withType(Javadoc) {
-                options.addStringOption('Xdoclint:none', '-quiet')
-            }
-        }
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     }
 
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
     artifacts {
-        archives androidSourcesJar
-        archives androidJavadocsJar
+        archives javadocJar
+        archives sourcesJar
+    }
+
+// https://github.com/bintray/gradle-bintray-plugin
+    bintray {
+        user = System.getenv('BINTRAY_USER')
+        key = System.getenv('BINTRAY_API_KEY')
+
+        configurations = ['archives']
+        pkg {
+            repo = POM_REPO_NAME
+            // it is the name that appears in bintray when logged
+            name = "$POM_REPO_NAME:${proj.name}"
+            websiteUrl = POM_URL
+            vcsUrl = POM_SCM_CONNECTION
+            issueTrackerUrl = POM_ISSUE_TRACKER
+            licenses = [POM_LICENCE]
+            publish = true
+            publicDownloadNumbers = false
+            githubRepo = POM_GITHUB_REPO
+            githubReleaseNotesFile = "CHANGELOG.md"
+        }
     }
 }

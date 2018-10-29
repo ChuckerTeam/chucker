@@ -22,7 +22,7 @@ public class ChuckCollector {
         return 0;
     }
 
-    public void onError(Object object) {
+    public void onError(Object object, Object object2) {
     }
 
     public ChuckCollector showNotification(boolean showNotification) {
