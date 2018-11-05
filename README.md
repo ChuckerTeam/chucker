@@ -1,4 +1,4 @@
-Chucky
+Chucker
 ======
 
 _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
