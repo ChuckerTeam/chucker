@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Chucky Sample</string>
+    <string name="app_name">Chucker Sample</string>
     <string name="do_http_activity">Do HTTP activity</string>
-    <string name="launch_chuck_directly">Launch Chucky directly</string>
+    <string name="launch_chuck_directly">Launch Chucker directly</string>
     <string name="trigger_exception">Trigger an exception</string>
 </resources>

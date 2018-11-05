@@ -1,11 +1,11 @@
 Change Log
 ==========
 
-Version 2.0.0 *(2018-xx-xx)*
+Version 2.0.1 *(2018-11-05)*
 ----------------------------
 
  * New: Adds a class ChuckCollector that can be used out of ChuckInterceptor.
- * New: Chucky can now collect throwables.
+ * New: Chucker can now collect throwables.
  * New: Adds a notification for throwables.
  * New: Adds screens for throwables.
  * New: Transaction class offers a fluent writing.
