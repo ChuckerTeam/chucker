@@ -1,26 +1,27 @@
-Chucky
+Chucker
 ======
+[![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)
 
 _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
-Chucky simplifies the gathering of HTTP requests/responses, and Throwables. Chucky intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
+Chucker simplifies the gathering of HTTP requests/responses, and Throwables. Chucker intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
 
-![Chucky](assets/chuck.gif)
+![Chucker](assets/chuck.gif)
 
-Apps using Chucky will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucky UI. Apps can optionally suppress the notification, and launch the Chucky UI directly from within their own interface.
+Apps using Chucker will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
-The main Chucky activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
+The main Chucker activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
 
 ![Multi-Window](assets/multiwindow.gif)
 
-Chucky requires Android 4.1+ and OkHttp 3.x.
+Chucker requires Android 4.1+ and OkHttp 3.x.
 
 **Warning**: The data generated and stored when using this interceptor may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. It is intended for use during development, and not in release builds or other production deployments.
 
 Setup
 -----
 
-Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucky from release builds as follows:
+Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucker from release builds as follows:
 
 ```gradle
 dependencies {
@@ -46,7 +47,7 @@ OkHttpClient client = new OkHttpClient.Builder()
   .build();
 ```
 
-That's it! Chucky will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucky UI directly within your app with the intent from `Chuck.getLaunchIntent()`.
+That's it! Chucker will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucker UI directly within your app with the intent from `Chuck.getLaunchIntent()`.
 
 For errors gathering you can directly use the same collector:
 
@@ -70,12 +71,12 @@ FAQ
 - Why are retries and redirects not being captured discretely?
 - Why are my encoded request/response bodies not appearing as plain text?
 
-Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucky as either an application or network interceptor, depending on your requirements.
+Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
 
 Acknowledgements
 ----------------
 
-Chucky uses the following open source libraries:
+Chucker uses the following open source libraries:
 
 - [OkHttp](https://github.com/square/okhttp) - Copyright Square, Inc.
 - [Gson](https://github.com/google/gson) - Copyright Google Inc.
