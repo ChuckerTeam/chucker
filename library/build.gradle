@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -9,13 +11,23 @@ android {
         versionCode VERSION_CODE.toInteger()
         consumerProguardFiles 'proguard-rules.pro'
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
     implementation "nl.qbusict:cupboard:$cupboardVersion"
     implementation "com.android.support:design:$supportLibVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.1"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.1"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
