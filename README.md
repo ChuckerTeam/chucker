@@ -1,6 +1,5 @@
 Chucker
 ======
-[![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)
 
 _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -24,9 +23,15 @@ Setup
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucker from release builds as follows:
 
 ```gradle
+repositories {
+    jcenter()
+}
+```
+
+```gradle
 dependencies {
-  debugCompile 'fr.o80.chucky:library:2.0.1'
-  releaseCompile 'fr.o80.chucky:library-no-op:2.0.1'
+  debugImplementation 'fr.o80.chucker:library:2.0.1'
+  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.1'
 }
 ```
 
