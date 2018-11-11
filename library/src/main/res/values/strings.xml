@@ -18,6 +18,7 @@
     <string name="chuck_name">Chucky</string>
     <string name="chuck_http_notification_title">Recording HTTP activity</string>
     <string name="chuck_clear">Clear</string>
+    <string name="chuck_cancel">Cancel</string>
     <string name="chuck_browse_sql_database">Browse SQLite database</string>
     <string name="chuck_overview">Overview</string>
     <string name="chuck_request">Request</string>
@@ -47,4 +48,6 @@
     <string name="chuck_notification_category">Chucky notifications</string>
     <string name="chuck_share_error_title">Error report</string>
     <string name="chuck_share_error_content"><![CDATA[Date: %s\nException: %s\nTag: %s\nMessage: %s\n\n%s]]></string>
+    <string name="chuck_clear_http_confirmation">Do you want to clear complete network calls history?</string>
+    <string name="chuck_clear_error_confirmation">Do you want to clear complete errors history?</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.readystatesoftware.chuck.internal.ui.error;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -86,8 +88,7 @@ public class ErrorListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear) {
-            getContext().getContentResolver().delete(ChuckContentProvider.ERROR_URI, null, null);
-            NotificationHelper.clearBuffer();
+            askForConfirmation();
             return true;
         } else if (item.getItemId() == R.id.browse_sql) {
             SQLiteUtils.browseDatabase(getContext());
@@ -95,6 +96,20 @@ public class ErrorListFragment extends Fragment implements LoaderManager.LoaderC
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void askForConfirmation() {
+        new AlertDialog.Builder(getContext())
+            .setTitle(R.string.chuck_clear)
+            .setMessage(R.string.chuck_clear_error_confirmation)
+            .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getContext().getContentResolver().delete(ChuckContentProvider.ERROR_URI, null, null);
+                }
+            })
+            .setNegativeButton(R.string.chuck_cancel, null)
+            .show();
     }
 
     @NonNull
