@@ -25,6 +25,7 @@ import com.readystatesoftware.chuck.api.Chuck;
 import com.readystatesoftware.chuck.api.ChuckInterceptor;
 import com.readystatesoftware.chuck.api.ChuckCollector;
 import com.readystatesoftware.chuck.api.RetentionManager;
+import android.widget.Button;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -46,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
                 doHttpActivity();
             }
         });
-        findViewById(R.id.launch_chuck_directly).setOnClickListener(new View.OnClickListener() {
+
+        Button launchChuckButton = findViewById(R.id.launch_chuck_directly);
+        launchChuckButton.setVisibility(Chuck.isOp() ? View.VISIBLE : View.GONE);
+
+        launchChuckButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchChuckDirectly();

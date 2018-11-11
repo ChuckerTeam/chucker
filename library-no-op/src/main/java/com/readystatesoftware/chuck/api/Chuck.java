@@ -38,4 +38,9 @@ public class Chuck {
 
     public static void dismissErrorsNotification() {
     }
+
+    public static boolean isOp() {
+        return false;
+    }
+
 }
