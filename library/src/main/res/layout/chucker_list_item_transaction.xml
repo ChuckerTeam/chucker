@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:padding="16dp">
+    android:padding="@dimen/chucker_base_grid">
 
     <android.support.constraint.Guideline
         android:id="@+id/chucker_time_guideline"
@@ -16,7 +16,9 @@
 
     <TextView
         android:id="@+id/chucker_code"
-        android:layout_width="40dp"
+        android:layout_width="@dimen/chucker_item_size"
+        android:paddingEnd="@dimen/chucker_doub_grid"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Chuck.TextAppearance.ListItem"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,19 +39,19 @@
         android:id="@+id/chucker_host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="@dimen/chucker_half_grid"
         app:layout_constraintBottom_toTopOf="@+id/chucker_ssl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chucker_ssl"
         app:layout_constraintTop_toBottomOf="@+id/chucker_ssl"
         app:layout_goneMarginStart="0dp"
-        app:layout_goneMarginTop="16dp"
+        app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
 
     <ImageView
         android:id="@+id/chucker_ssl"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="@dimen/chucker_doub_grid"
+        android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chuck_ssl"
         android:src="@drawable/chuck_ic_https_grey_24dp"
         android:tint="@color/chuck_colorPrimary"
