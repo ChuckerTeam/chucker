@@ -17,6 +17,7 @@ package com.readystatesoftware.chuck.internal.ui.transaction;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +60,7 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
         cursorAdapter = new CursorAdapter(TransactionAdapter.this.context, null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chuck_list_item_transaction, parent, false);
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chucker_list_item_transaction, parent, false);
                 ViewHolder holder = new ViewHolder(itemView);
                 itemView.setTag(holder);
                 return itemView;
@@ -78,9 +79,9 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
                     holder.duration.setText(transaction.getDurationString());
                     holder.size.setText(transaction.getTotalSizeString());
                 } else {
-                    holder.code.setText(null);
-                    holder.duration.setText(null);
-                    holder.size.setText(null);
+                    holder.code.setText("");
+                    holder.duration.setText("");
+                    holder.size.setText("");
                 }
                 if (transaction.getStatus() == HttpTransaction.Status.Failed) {
                     holder.code.setText("!!!");
@@ -124,13 +125,14 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         cursorAdapter.getCursor().moveToPosition(position);
         cursorAdapter.bindView(holder.itemView, context, cursorAdapter.getCursor());
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = cursorAdapter.newView(context, cursorAdapter.getCursor(), parent);
         return new ViewHolder(v);
     }
@@ -154,13 +156,13 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
         ViewHolder(View view) {
             super(view);
             this.view = view;
-            code = (TextView) view.findViewById(R.id.code);
-            path = (TextView) view.findViewById(R.id.path);
-            host = (TextView) view.findViewById(R.id.host);
-            start = (TextView) view.findViewById(R.id.start);
-            duration = (TextView) view.findViewById(R.id.duration);
-            size = (TextView) view.findViewById(R.id.size);
-            ssl = (ImageView) view.findViewById(R.id.ssl);
+            code = view.findViewById(R.id.chucker_code);
+            path = view.findViewById(R.id.chucker_path);
+            host = view.findViewById(R.id.chucker_host);
+            start = view.findViewById(R.id.chucker_time_start);
+            duration = view.findViewById(R.id.chucker_duration);
+            size = view.findViewById(R.id.chucker_size);
+            ssl = view.findViewById(R.id.chucker_ssl);
         }
     }
 }

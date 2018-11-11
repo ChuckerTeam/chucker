@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="16dp">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/chucker_time_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/chucker_code"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Chuck.TextAppearance.ListItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="200" />
+
+    <TextView
+        android:id="@+id/chucker_path"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Chuck.TextAppearance.ListItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chucker_code"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="GET /path/to/some/resource?goes=here" />
+
+    <TextView
+        android:id="@+id/chucker_host"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/chucker_ssl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chucker_ssl"
+        app:layout_constraintTop_toBottomOf="@+id/chucker_ssl"
+        app:layout_goneMarginStart="0dp"
+        app:layout_goneMarginTop="16dp"
+        tools:text="example.com" />
+
+    <ImageView
+        android:id="@+id/chucker_ssl"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:contentDescription="@string/chuck_ssl"
+        android:src="@drawable/chuck_ic_https_grey_24dp"
+        android:tint="@color/chuck_colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/chucker_path"
+        app:layout_constraintTop_toBottomOf="@+id/chucker_path" />
+
+    <TextView
+        android:id="@+id/chucker_time_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/chucker_duration"
+        app:layout_constraintStart_toStartOf="@+id/chucker_path"
+        app:layout_constraintTop_toBottomOf="@+id/chucker_host"
+        tools:text="18:29:07 PM" />
+
+    <TextView
+        android:id="@+id/chucker_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        app:layout_constraintEnd_toStartOf="@+id/chucker_size"
+        app:layout_constraintStart_toEndOf="@+id/chucker_time_guideline"
+        app:layout_constraintTop_toTopOf="@+id/chucker_time_start"
+        tools:text="8023 ms" />
+
+    <TextView
+        android:id="@+id/chucker_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chucker_duration"
+        app:layout_constraintTop_toTopOf="@+id/chucker_duration"
+        tools:text="16.45 KB" />
+</android.support.constraint.ConstraintLayout>
