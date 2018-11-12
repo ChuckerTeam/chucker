@@ -1,5 +1,7 @@
 Chucker
 ======
+[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)
+
 
 _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
