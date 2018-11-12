@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 2.0.2 *(2018-11-14)*
+----------------------------
+
+ * Fix: #5 Empty Content-Encoding are allowed again
+
 Version 2.0.1 *(2018-11-05)*
 ----------------------------
 

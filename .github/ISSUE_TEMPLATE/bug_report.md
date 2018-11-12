@@ -23,7 +23,7 @@ If applicable, add screenshots to help explain your problem.
 **Smartphone**
  - Device: [e.g. Nexus 6P]
  - OS: [e.g. 7.1.1]
- - Lib version: [e.g. 2.0.1]
+ - Lib version: [e.g. 2.0.2]
 
 **Additional context**
 Add any other context about the problem here.
