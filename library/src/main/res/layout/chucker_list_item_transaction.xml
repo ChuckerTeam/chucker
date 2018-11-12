@@ -57,7 +57,8 @@
         android:tint="@color/chuck_colorPrimary"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/chucker_path"
-        app:layout_constraintTop_toBottomOf="@+id/chucker_path" />
+        app:layout_constraintTop_toBottomOf="@+id/chucker_path"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/chucker_time_start"
