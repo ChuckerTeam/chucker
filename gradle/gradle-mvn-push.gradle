@@ -1,8 +1,8 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: "com.jfrog.bintray"
 
-def siteUrl = 'https://github.com/olivierperez/chucky' // Homepage URL of the library
-def gitUrl = 'https://github.com/olivierperez/chucky.git' // Git repository URL
+def siteUrl = 'https://github.com/olivierperez/chucker' // Homepage URL of the library
+def gitUrl = 'https://github.com/olivierperez/chucker.git' // Git repository URL
 group = GROUP // Maven Group ID for the artifact
 
 afterEvaluate { proj ->

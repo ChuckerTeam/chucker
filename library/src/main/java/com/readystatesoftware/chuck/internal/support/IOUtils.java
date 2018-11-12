@@ -72,8 +72,9 @@ public class IOUtils {
     }
 
     public boolean bodyHasSupportedEncoding(String contentEncoding) {
-        return contentEncoding != null &&
-                (contentEncoding.equalsIgnoreCase("identity") ||
+        return contentEncoding == null ||
+                (contentEncoding.isEmpty() ||
+                        contentEncoding.equalsIgnoreCase("identity") ||
                         contentEncoding.equalsIgnoreCase("gzip"));
     }
 
