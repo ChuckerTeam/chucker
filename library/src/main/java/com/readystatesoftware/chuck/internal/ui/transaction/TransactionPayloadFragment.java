@@ -134,9 +134,8 @@ public class TransactionPayloadFragment extends Fragment implements TransactionF
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        String text = body.getText().toString();
-        if (newText.trim().length() > 0 && text.contains(newText.trim()))
-            body.setText(SearchHighlightUtil.format(body.getText().toString(), newText));
+        if (newText.trim().length() > 0)
+            body.setText(SearchHighlightUtil.format(originalBody, newText));
         else
             body.setText(originalBody);
         return true;
