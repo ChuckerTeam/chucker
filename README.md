@@ -13,7 +13,7 @@ Apps using Chucker will display a notifications showing a summary of ongoing HTT
 
 The main Chucker activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
 
-![Multi-Window](assets/multiwindow.gif)
+![Multi-Window](assets/chucker-multiwindow.gif)
 
 Chucker requires Android 4.1+ and OkHttp 3.x.
 
