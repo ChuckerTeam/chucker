@@ -7,7 +7,7 @@ _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
 Chucker simplifies the gathering of HTTP requests/responses, and Throwables. Chucker intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
 
-![Chucker](assets/chuck.gif)
+![Chucker HTTP transactions](assets/chucker-http.gif) ![Chucker errors](assets/chucker-error.gif)
 
 Apps using Chucker will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
