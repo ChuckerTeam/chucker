@@ -85,7 +85,7 @@ repositories {
 ```gradle
 dependencies {
   debugImplementation 'com.github.chuckerteam.chucker:library:develop-SNAPSHOT'
-    releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT'
+  releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT'
 }
 ```
 
