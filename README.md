@@ -71,6 +71,26 @@ try {
 }
 ```
 
+Snapshots
+---
+
+Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can switch to the development branch by using artifacts available on [jitpack.io](https://jitpack.io/#ChuckerTeam/chucker)
+
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+```
+
+```gradle
+dependencies {
+  debugImplementation 'com.github.chuckerteam.chucker:library:develop-SNAPSHOT'
+    releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT'
+}
+```
+
+⚠ Please note that the latest snapshot might be **unstable**. Use it at your own risk :)
+
 FAQ
 ---
 
