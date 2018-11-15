@@ -8,6 +8,15 @@ android {
     }
 }
 
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
 }

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.dokka-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -15,6 +16,37 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    includeNonPublic = false
+    reportUndocumented = true
+    skipEmptyPackages = true
+
+    packageOptions {
+        prefix = "com.readystatesoftware.chuck.internal"
+        suppress = true
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+def dokka = tasks['dokka']
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    classifier = 'javadoc'
+    from dokka.outputDirectory
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }
 
 dependencies {
