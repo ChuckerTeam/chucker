@@ -14,20 +14,16 @@ import android.text.style.UnderlineSpan
  */
 fun String.hightlight(search: String): CharSequence {
     val startIndexes = indexesOf(this, search)
-    return if (startIndexes[0] == -1) {
-        this
-    } else {
-        applySpannable(this, startIndexes, search.length)
-    }
+    return applySpannable(this, startIndexes, search.length)
 }
 
 private fun indexesOf(text: String, search: String): List<Int> {
     val startPositions = mutableListOf<Int>()
     var index = text.indexOf(search, 0, true)
-    do {
+    while (index >= 0) {
         startPositions.add(index)
         index = text.indexOf(search, index + 1, true)
-    } while (index >= 0)
+    }
     return startPositions
 }
 
