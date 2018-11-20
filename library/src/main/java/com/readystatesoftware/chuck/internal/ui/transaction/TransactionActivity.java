@@ -19,6 +19,8 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,7 +31,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,8 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.readystatesoftware.chuck.internal.data.ChuckContentProvider.LOADER_TRANSACTION_DETAIL;
-import static com.readystatesoftware.chuck.internal.ui.transaction.TransactionPayloadFragment.TYPE_REQUEST;
-import static com.readystatesoftware.chuck.internal.ui.transaction.TransactionPayloadFragment.TYPE_RESPONSE;
 
 public class TransactionActivity extends BaseChuckActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -119,6 +118,7 @@ public class TransactionActivity extends BaseChuckActivity implements LoaderMana
         }
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = new CursorLoader(this);
@@ -127,13 +127,13 @@ public class TransactionActivity extends BaseChuckActivity implements LoaderMana
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         transaction = LocalCupboard.getInstance().withCursor(data).get(HttpTransaction.class);
         populateUI();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
     private void populateUI() {
@@ -148,8 +148,8 @@ public class TransactionActivity extends BaseChuckActivity implements LoaderMana
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new TransactionOverviewFragment(), getString(R.string.chuck_overview));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TYPE_REQUEST), getString(R.string.chuck_request));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TYPE_RESPONSE), getString(R.string.chuck_response));
+        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.chuck_request));
+        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.chuck_response));
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override

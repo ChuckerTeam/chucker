@@ -15,6 +15,7 @@
  ~ limitations under the License.
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.readystatesoftware.chuck.sample">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,7 +25,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.readystatesoftware.chuck.sample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
