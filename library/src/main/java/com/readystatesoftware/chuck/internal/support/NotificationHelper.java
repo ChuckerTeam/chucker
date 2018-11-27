@@ -78,7 +78,7 @@ public class NotificationHelper {
                     .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chuck.getLaunchIntent(context, Chuck.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
-                    .setColor(ContextCompat.getColor(context, R.color.chuck_colorPrimary))
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
                     .setContentTitle(context.getString(R.string.chuck_http_notification_title))
                     .addAction(createClearAction(ClearTransactionsService.CLEAR_TRANSACTIONS));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -109,7 +109,7 @@ public class NotificationHelper {
                     .setContentIntent(PendingIntent.getActivity(context, ERROR_NOTIFICATION_ID, Chuck.getLaunchIntent(context, Chuck.SCREEN_ERROR), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chuck_ic_subject_white_24dp)
-                    .setColor(ContextCompat.getColor(context, R.color.chuck_status_error))
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
                     .setContentTitle(throwable.getClazz())
                     .setAutoCancel(true)
                     .setContentText(throwable.getMessage())

@@ -50,12 +50,12 @@ class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHol
     TransactionAdapter(Context context, OnListFragmentInteractionListener listener) {
         this.listener = listener;
         this.context = context;
-        colorDefault = ContextCompat.getColor(context, R.color.chuck_status_default);
-        colorRequested = ContextCompat.getColor(context, R.color.chuck_status_requested);
-        colorError = ContextCompat.getColor(context, R.color.chuck_status_error);
-        color500 = ContextCompat.getColor(context, R.color.chuck_status_500);
-        color400 = ContextCompat.getColor(context, R.color.chuck_status_400);
-        color300 = ContextCompat.getColor(context, R.color.chuck_status_300);
+        colorDefault = ContextCompat.getColor(context, R.color.chucker_status_default);
+        colorRequested = ContextCompat.getColor(context, R.color.chucker_status_requested);
+        colorError = ContextCompat.getColor(context, R.color.chucker_status_error);
+        color500 = ContextCompat.getColor(context, R.color.chucker_status_500);
+        color400 = ContextCompat.getColor(context, R.color.chucker_status_400);
+        color300 = ContextCompat.getColor(context, R.color.chucker_status_300);
 
         cursorAdapter = new CursorAdapter(TransactionAdapter.this.context, null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER) {
             @Override

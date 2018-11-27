@@ -54,7 +54,7 @@
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chuck_ssl"
         android:src="@drawable/chuck_ic_https_grey_24dp"
-        android:tint="@color/chuck_colorPrimary"
+        android:tint="@color/chucker_primary_color"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/chucker_path"
         app:layout_constraintTop_toBottomOf="@+id/chucker_path"
