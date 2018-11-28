@@ -77,7 +77,7 @@ public class NotificationHelper {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chuck.getLaunchIntent(context, Chuck.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
+                    .setSmallIcon(R.drawable.chucker_ic_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
                     .setContentTitle(context.getString(R.string.chuck_http_notification_title))
                     .addAction(createClearAction(ClearTransactionsService.CLEAR_TRANSACTIONS));
