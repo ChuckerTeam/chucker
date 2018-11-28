@@ -26,6 +26,7 @@ import com.readystatesoftware.chuck.internal.support.IOUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -56,7 +57,7 @@ public final class ChuckInterceptor implements Interceptor {
 
     private long maxContentLength = 250000L;
 
-    private volatile Set<String> headersToRedact = Collections.emptySet();
+    private Set<String> headersToRedact = new TreeSet<>();
 
     public ChuckInterceptor(Context context) {
         collector = new ChuckCollector(context);
@@ -81,10 +82,12 @@ public final class ChuckInterceptor implements Interceptor {
     }
 
     public ChuckInterceptor redactHeader(String name) {
-        Set<String> newHeadersToRedact = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-        newHeadersToRedact.addAll(headersToRedact);
-        newHeadersToRedact.add(name);
-        headersToRedact = newHeadersToRedact;
+        headersToRedact.add(name);
+        return this;
+    }
+
+    public ChuckInterceptor redactHeaders(String... names) {
+        headersToRedact.addAll(Arrays.asList(names));
         return this;
     }
 
