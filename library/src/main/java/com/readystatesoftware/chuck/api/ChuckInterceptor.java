@@ -17,6 +17,7 @@ package com.readystatesoftware.chuck.api;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.readystatesoftware.chuck.internal.data.HttpTransaction;
@@ -25,9 +26,13 @@ import com.readystatesoftware.chuck.internal.support.IOUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -51,6 +56,8 @@ public final class ChuckInterceptor implements Interceptor {
 
     private long maxContentLength = 250000L;
 
+    private volatile Set<String> headersToRedact = Collections.emptySet();
+
     public ChuckInterceptor(Context context) {
         collector = new ChuckCollector(context);
         io = new IOUtils(context);
@@ -70,6 +77,14 @@ public final class ChuckInterceptor implements Interceptor {
      */
     public ChuckInterceptor maxContentLength(long max) {
         this.maxContentLength = max;
+        return this;
+    }
+
+    public ChuckInterceptor redactHeader(String name) {
+        Set<String> newHeadersToRedact = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        newHeadersToRedact.addAll(headersToRedact);
+        newHeadersToRedact.add(name);
+        headersToRedact = newHeadersToRedact;
         return this;
     }
 
@@ -130,7 +145,7 @@ public final class ChuckInterceptor implements Interceptor {
 
         ResponseBody responseBody = response.body();
 
-        transaction.setRequestHeaders(response.request().headers()) // includes headers added later in the chain
+        transaction.setRequestHeaders(filterHeaders(response.request().headers())) // includes headers added later in the chain
                 .setResponseDate(new Date())
                 .setTookMs(tookMs)
                 .setProtocol(response.protocol().toString())
@@ -141,7 +156,7 @@ public final class ChuckInterceptor implements Interceptor {
         if (responseBody.contentType() != null) {
             transaction.setResponseContentType(responseBody.contentType().toString());
         }
-        transaction.setResponseHeaders(response.headers());
+        transaction.setResponseHeaders(filterHeaders(response.headers()));
 
         boolean responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"));
         transaction.setResponseBodyIsPlainText(responseEncodingIsSupported);
@@ -172,6 +187,17 @@ public final class ChuckInterceptor implements Interceptor {
         collector.onResponseReceived(transaction, transactionUri);
 
         return response;
+    }
+
+    @NonNull
+    private Headers filterHeaders(Headers headers) {
+        Headers.Builder builder = headers.newBuilder();
+        for (String name : headers.names()) {
+            if (headersToRedact.contains(name)) {
+                builder.set(name, "**");
+            }
+        }
+        return builder.build();
     }
 
     private BufferedSource getNativeSource(Response response) throws IOException {
