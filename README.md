@@ -19,6 +19,12 @@ Chucker requires Android 4.1+ and OkHttp 3.x.
 
 **Warning**: The data generated and stored when using this interceptor may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. It is intended for use during development, and not in release builds or other production deployments.
 
+You can redact headers that may contain sensitive information by calling `redactHeader()`.
+```java
+interceptor.redactHeader("Authorization");
+interceptor.redactHeader("Cookie");
+```
+
 Setup
 -----
 
