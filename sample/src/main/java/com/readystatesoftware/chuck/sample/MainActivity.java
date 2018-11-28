@@ -22,10 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.readystatesoftware.chuck.api.Chuck;
-import com.readystatesoftware.chuck.api.ChuckInterceptor;
 import com.readystatesoftware.chuck.api.ChuckCollector;
+import com.readystatesoftware.chuck.api.ChuckInterceptor;
 import com.readystatesoftware.chuck.api.RetentionManager;
 import android.widget.Button;
+
+import java.util.UUID;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -73,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
     private OkHttpClient getClient(Context context) {
         ChuckInterceptor chuckInterceptor = new ChuckInterceptor(context, collector)
-                .maxContentLength(250000L);
+                .maxContentLength(250000L)
+                .redactHeader("Authorization");
 
         return new OkHttpClient.Builder()
                 // Add a ChuckInterceptor instance to your OkHttp client
@@ -109,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         api.status(500).enqueue(cb);
         api.delay(9).enqueue(cb);
         api.delay(15).enqueue(cb);
+        api.bearer(UUID.randomUUID().toString()).enqueue(cb);
         api.redirectTo("https://http2.akamai.com").enqueue(cb);
         api.redirect(3).enqueue(cb);
         api.redirectRelative(2).enqueue(cb);

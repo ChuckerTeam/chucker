@@ -66,6 +66,8 @@ class SampleApiService {
         Call<Void> streamBytes(@Path("bytes") int bytes);
         @GET("/delay/{seconds}")
         Call<Void> delay(@Path("seconds") int seconds);
+        @GET("/bearer")
+        Call<Void> bearer(@Header("Authorization") String token);
         @GET("/redirect-to")
         Call<Void> redirectTo(@Query("url") String url);
         @GET("/redirect/{times}")
