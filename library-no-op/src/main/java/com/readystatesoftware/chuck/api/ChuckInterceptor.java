@@ -38,6 +38,8 @@ public final class ChuckInterceptor implements Interceptor {
         return this;
     }
 
+    public ChuckInterceptor redactHeader(String name) { return this; }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
