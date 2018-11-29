@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private var collector: ChuckCollector? = null
+    private lateinit var collector: ChuckCollector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun triggerException() {
-        collector!!.onError("Example button pressed", RuntimeException("User triggered the button"))
+        collector.onError("Example button pressed", RuntimeException("User triggered the button"))
         // You can also throw exception, it will be caught thanks to "Chuck.registerDefaultCrashHanlder"
         // throw new RuntimeException("User triggered the button");
     }
