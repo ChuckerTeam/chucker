@@ -35,8 +35,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation 'fr.o80.chucker:library:2.0.2'
-  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.2'
+  debugImplementation 'fr.o80.chucker:library:2.0.3'
+  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.3'
 }
 ```
 
