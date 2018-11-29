@@ -4,11 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Button
 import com.readystatesoftware.chuck.api.Chuck
 import com.readystatesoftware.chuck.api.ChuckCollector
 import com.readystatesoftware.chuck.api.ChuckInterceptor
 import com.readystatesoftware.chuck.api.RetentionManager
+import kotlinx.android.synthetic.main.activity_main.do_http
+import kotlinx.android.synthetic.main.activity_main.launch_chucker_directly
+import kotlinx.android.synthetic.main.activity_main.trigger_exception
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -23,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<View>(R.id.do_http).setOnClickListener { doHttpActivity() }
-        findViewById<View>(R.id.trigger_exception).setOnClickListener { triggerException() }
+        do_http.setOnClickListener { doHttpActivity() }
+        trigger_exception.setOnClickListener { triggerException() }
 
-        with(findViewById<Button>(R.id.launch_chucker_directly)) {
+        with(launch_chucker_directly) {
             visibility = if (Chuck.isOp()) View.VISIBLE else View.GONE
             setOnClickListener { launchChuckDirectly() }
         }
