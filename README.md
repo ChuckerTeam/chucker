@@ -1,7 +1,10 @@
-Chucker
-======
-[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)
+# Chucker
 
+<p align="center">
+  <img src="https://i.imgur.com/GXoIFZ6.png" alt="chucker icon" width="30%"/>
+</p>
+
+[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/crates/l/rustc-serialize.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 _Forked from [Chuck](https://github.com/jgilfelt/chuck)_
 
