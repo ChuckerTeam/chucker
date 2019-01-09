@@ -26,6 +26,9 @@ public class Chuck {
     public static final int SCREEN_HTTP = 1;
     public static final int SCREEN_ERROR = 2;
 
+    public static void init(Context context) {
+    }
+
     public static Intent getLaunchIntent(Context context, int screen) {
         return new Intent();
     }
