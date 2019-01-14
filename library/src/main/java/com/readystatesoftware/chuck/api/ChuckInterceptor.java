@@ -16,19 +16,16 @@
 package com.readystatesoftware.chuck.api;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.readystatesoftware.chuck.internal.data.HttpTransaction;
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
 import com.readystatesoftware.chuck.internal.support.IOUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -98,11 +95,11 @@ public final class ChuckInterceptor implements Interceptor {
         RequestBody requestBody = request.body();
         boolean hasRequestBody = requestBody != null;
 
-        HttpTransaction transaction = new HttpTransaction()
-                .setRequestDate(new Date())
-                .setMethod(request.method())
-                .setUrl(request.url().toString())
-                .setRequestHeaders(request.headers());
+        HttpTransaction transaction = new HttpTransaction();
+        transaction.setRequestDate(System.currentTimeMillis());
+        transaction.setMethod(request.method());
+        transaction.populateUrl(request.url().toString());
+        transaction.setRequestHeaders(request.headers());
 
         if (hasRequestBody) {
             if (requestBody.contentType() != null) {
@@ -114,7 +111,7 @@ public final class ChuckInterceptor implements Interceptor {
         }
 
         boolean encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"));
-        transaction.setRequestBodyIsPlainText(encodingIsSupported);
+        transaction.setRequestBodyPlainText(encodingIsSupported);
 
         if (hasRequestBody && encodingIsSupported) {
             BufferedSource source = io.getNativeSource(new Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")));
@@ -129,11 +126,11 @@ public final class ChuckInterceptor implements Interceptor {
                 String content = io.readFromBuffer(buffer, charset, maxContentLength);
                 transaction.setRequestBody(content);
             } else {
-                transaction.setResponseBodyIsPlainText(false);
+                transaction.setResponseBodyPlainText(false);
             }
         }
 
-        Uri transactionUri = collector.onRequestSent(transaction);
+        collector.onRequestSent(transaction);
 
         long startNs = System.nanoTime();
         Response response;
@@ -141,19 +138,20 @@ public final class ChuckInterceptor implements Interceptor {
             response = chain.proceed(request);
         } catch (Exception e) {
             transaction.setError(e.toString());
-            collector.onResponseReceived(transaction, transactionUri);
+            collector.onResponseReceived(transaction);
             throw e;
         }
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
         ResponseBody responseBody = response.body();
 
-        transaction.setRequestHeaders(filterHeaders(response.request().headers())) // includes headers added later in the chain
-                .setResponseDate(new Date())
-                .setTookMs(tookMs)
-                .setProtocol(response.protocol().toString())
-                .setResponseCode(response.code())
-                .setResponseMessage(response.message());
+        // includes headers added later in the chain
+        transaction.setRequestHeaders(filterHeaders(response.request().headers()));
+        transaction.setResponseDate(System.currentTimeMillis());
+        transaction.setTookMs(tookMs);
+        transaction.setProtocol(response.protocol().toString());
+        transaction.setResponseCode(response.code());
+        transaction.setResponseMessage(response.message());
 
         transaction.setResponseContentLength(responseBody.contentLength());
         if (responseBody.contentType() != null) {
@@ -162,7 +160,7 @@ public final class ChuckInterceptor implements Interceptor {
         transaction.setResponseHeaders(filterHeaders(response.headers()));
 
         boolean responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"));
-        transaction.setResponseBodyIsPlainText(responseEncodingIsSupported);
+        transaction.setResponseBodyPlainText(responseEncodingIsSupported);
 
         if (HttpHeaders.hasBody(response) && responseEncodingIsSupported) {
             BufferedSource source = getNativeSource(response);
@@ -174,7 +172,7 @@ public final class ChuckInterceptor implements Interceptor {
                 try {
                     charset = contentType.charset(UTF8);
                 } catch (UnsupportedCharsetException e) {
-                    collector.onResponseReceived(transaction, transactionUri);
+                    collector.onResponseReceived(transaction);
                     return response;
                 }
             }
@@ -182,12 +180,12 @@ public final class ChuckInterceptor implements Interceptor {
                 String content = io.readFromBuffer(buffer.clone(), charset, maxContentLength);
                 transaction.setResponseBody(content);
             } else {
-                transaction.setResponseBodyIsPlainText(false);
+                transaction.setResponseBodyPlainText(false);
             }
             transaction.setResponseContentLength(buffer.size());
         }
 
-        collector.onResponseReceived(transaction, transactionUri);
+        collector.onResponseReceived(transaction);
 
         return response;
     }

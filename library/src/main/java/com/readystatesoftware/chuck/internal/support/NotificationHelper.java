@@ -28,8 +28,8 @@ import android.util.LongSparseArray;
 
 import com.readystatesoftware.chuck.api.Chuck;
 import com.readystatesoftware.chuck.R;
-import com.readystatesoftware.chuck.internal.data.HttpTransaction;
-import com.readystatesoftware.chuck.internal.data.RecordedThrowable;
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
+import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowable;
 import com.readystatesoftware.chuck.internal.ui.BaseChuckActivity;
 
 public class NotificationHelper {

@@ -45,6 +45,7 @@ ext {
     supportLibVersion = '28.0.0'
     okhttp3Version = '3.12.1'
     retrofitVersion = '2.5.0'
+    roomVersion = '1.1.1'
     gsonVersion = '2.8.5'
     cupboardVersion= '2.2.0'
     junitVersion = '5.3.2'

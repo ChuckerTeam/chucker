@@ -15,16 +15,14 @@
  */
 package com.readystatesoftware.chuck.internal.ui.transaction;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,21 +37,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.readystatesoftware.chuck.R;
-import com.readystatesoftware.chuck.internal.data.ChuckContentProvider;
-import com.readystatesoftware.chuck.internal.data.HttpTransaction;
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransactionTuple;
+import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
 import com.readystatesoftware.chuck.internal.support.SQLiteUtils;
 
-import static com.readystatesoftware.chuck.internal.data.ChuckContentProvider.LOADER_TRANSACTIONS;
+import java.util.List;
 
-public class TransactionListFragment extends Fragment implements
-        SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class TransactionListFragment extends Fragment implements SearchView.OnQueryTextListener, TransactionAdapter.TransactionClickListListener, Observer<List<HttpTransactionTuple>> {
 
-    private String currentFilter;
-    private OnListFragmentInteractionListener listener;
+    private String currentFilter = "";
     private TransactionAdapter adapter;
-
-    public TransactionListFragment() {}
+    LiveData<List<HttpTransactionTuple>> dataSource;
 
     public static TransactionListFragment newInstance() {
         return new TransactionListFragment();
@@ -75,33 +70,17 @@ public class TransactionListFragment extends Fragment implements
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                     DividerItemDecoration.VERTICAL));
-            adapter = new TransactionAdapter(getContext(), listener);
+            adapter = new TransactionAdapter(getContext(), this);
             recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_TRANSACTIONS, null, this);
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            listener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
+        dataSource = getDataSource(currentFilter);
+        dataSource.observe(this, this);
     }
 
     @Override
@@ -128,47 +107,18 @@ public class TransactionListFragment extends Fragment implements
     }
 
     private void askForConfirmation() {
-        new AlertDialog.Builder(getContext())
-            .setTitle(R.string.chuck_clear)
-            .setMessage(R.string.chuck_clear_http_confirmation)
-            .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    getContext().getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI, null, null);
-                    NotificationHelper.clearBuffer();
-                }
-            })
-            .setNegativeButton(R.string.chuck_cancel, null)
-            .show();
-    }
-
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader loader = new CursorLoader(getContext());
-        loader.setUri(ChuckContentProvider.TRANSACTION_URI);
-        if (!TextUtils.isEmpty(currentFilter)) {
-            if (TextUtils.isDigitsOnly(currentFilter)) {
-                loader.setSelection("responseCode LIKE ?");
-                loader.setSelectionArgs(new String[]{ currentFilter + "%" });
-            } else {
-                loader.setSelection("path LIKE ?");
-                loader.setSelectionArgs(new String[]{ "%" + currentFilter + "%" });
-            }
-        }
-        loader.setProjection(HttpTransaction.PARTIAL_PROJECTION);
-        loader.setSortOrder("requestDate DESC");
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.chuck_clear)
+                .setMessage(R.string.chuck_clear_http_confirmation)
+                .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ChuckerRepositoryProvider.it().deleteAllTransactions();
+                        NotificationHelper.clearBuffer();
+                    }
+                })
+                .setNegativeButton(R.string.chuck_cancel, null)
+                .show();
     }
 
     @Override
@@ -179,11 +129,29 @@ public class TransactionListFragment extends Fragment implements
     @Override
     public boolean onQueryTextChange(String newText) {
         currentFilter = newText;
-        getLoaderManager().restartLoader(LOADER_TRANSACTIONS, null, this);
+        dataSource.removeObservers(this);
+        dataSource = getDataSource(currentFilter);
+        dataSource.observe(this, this);
         return true;
     }
 
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(HttpTransaction item);
+    private LiveData<List<HttpTransactionTuple>> getDataSource(String currentFilter) {
+        if (currentFilter.isEmpty()){
+            return ChuckerRepositoryProvider.it().getSortedTransactionTuples();
+        } else if (TextUtils.isDigitsOnly(currentFilter)){
+            return ChuckerRepositoryProvider.it().getFilteredTransactionTuples(currentFilter, "");
+        } else {
+            return ChuckerRepositoryProvider.it().getFilteredTransactionTuples("", currentFilter);
+        }
+    }
+
+    @Override
+    public void onChanged(@Nullable List<HttpTransactionTuple> tuples) {
+        adapter.setData(tuples);
+    }
+
+    @Override
+    public void onTransactionClick(long transactionId, int position) {
+        TransactionActivity.start(getActivity(), transactionId);
     }
 }

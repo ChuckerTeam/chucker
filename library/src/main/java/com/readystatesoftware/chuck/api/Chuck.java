@@ -31,13 +31,6 @@ public class Chuck {
     public static final int SCREEN_HTTP = 1;
     public static final int SCREEN_ERROR = 2;
 
-    private static Context context;
-
-    public static void init(Context context) {
-
-        Chuck.context = context;
-    }
-
     /**
      * Get an Intent to launch the Chuck UI directly.
      *
@@ -61,11 +54,11 @@ public class Chuck {
         Thread.setDefaultUncaughtExceptionHandler(new ChuckCrashHandler(collector));
     }
 
-    public static void dismissTransactionsNotification() {
+    public static void dismissTransactionsNotification(Context context) {
         new NotificationHelper(context).dismissTransactionsNotification();
     }
 
-    public static void dismissErrorsNotification() {
+    public static void dismissErrorsNotification(Context context) {
         new NotificationHelper(context).dismissErrorsNotification();
     }
 
