@@ -47,4 +47,5 @@ ext {
     retrofitVersion = '2.5.0'
     gsonVersion = '2.8.5'
     cupboardVersion= '2.2.0'
+    junitVersion = '5.3.2'
 }
