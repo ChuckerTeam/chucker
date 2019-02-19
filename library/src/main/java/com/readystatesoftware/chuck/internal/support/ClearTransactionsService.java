@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 
 public class ClearTransactionsService extends IntentService {
 
@@ -22,14 +22,14 @@ public class ClearTransactionsService extends IntentService {
         int itemToClear = intent.getIntExtra(EXTRA_ITEM_TO_CLEAR, -1);
         switch (itemToClear) {
             case CLEAR_TRANSACTIONS: {
-                ChuckerRepositoryProvider.it().deleteAllTransactions();
+                RepositoryProvider.transaction().deleteAllTransactions();
                 NotificationHelper.clearBuffer();
                 NotificationHelper notificationHelper = new NotificationHelper(this);
                 notificationHelper.dismissTransactionsNotification();
                 break;
             }
             case CLEAR_ERRORS: {
-                ChuckerRepositoryProvider.it().deleteAllThrowables();
+                RepositoryProvider.throwable().deleteAllThrowables();
                 NotificationHelper notificationHelper = new NotificationHelper(this);
                 notificationHelper.dismissErrorsNotification();
                 break;

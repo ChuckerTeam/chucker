@@ -7,19 +7,15 @@ import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowable
 import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowableTuple
 
 /**
- * Repository Interface reprensenting all the operations that are needed to let Chucker work
- * properly. Please use [ChuckerDatabaseRepository] that uses Room and SqLite to run those
- * operations.
+ * Repository Interface representing all the operations that are needed to let Chucker work
+ * with [HttpTransaction] and [HttpTransactionTuple]. Please use [ChuckerDatabaseRepository] that
+ * uses Room and SqLite to run those operations.
  */
-internal interface ChuckerRepository {
-
-    /*
-     * CRUD for HttpTransaction[Tuple]
-     ***************************************/
+internal interface HttpTransactionRepository {
 
     fun insertTransaction(transaction: HttpTransaction)
 
-    fun updateTransaction(transaction: HttpTransaction)
+    fun updateTransaction(transaction: HttpTransaction) : Int
 
 
     fun deleteOldTransactions(threshold: Long)
@@ -32,22 +28,5 @@ internal interface ChuckerRepository {
     fun getFilteredTransactionTuples(code : String, path : String) : LiveData<List<HttpTransactionTuple>>
 
     fun getTransaction(transactionId: Long) : LiveData<HttpTransaction>
-
-
-    /*
-     * CRUD for RecordedThrowable[Tuple]
-     ***************************************/
-
-    fun saveThrowable(throwable: RecordedThrowable)
-
-
-    fun deleteOldThrowables(threshold: Long)
-
-    fun deleteAllThrowables()
-
-
-    fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>>
-
-    fun getRecordedThrowable(id: Long) : LiveData<RecordedThrowable>
 
 }

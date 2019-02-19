@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 
 import java.util.concurrent.TimeUnit;
 
@@ -51,8 +51,8 @@ public class RetentionManager {
     }
 
     private void deleteSince(long threshold) {
-        ChuckerRepositoryProvider.it().deleteOldTransactions(threshold);
-        ChuckerRepositoryProvider.it().deleteOldThrowables(threshold);
+        RepositoryProvider.transaction().deleteOldTransactions(threshold);
+        RepositoryProvider.throwable().deleteOldThrowables(threshold);
     }
 
     private boolean isCleanupDue(long now) {

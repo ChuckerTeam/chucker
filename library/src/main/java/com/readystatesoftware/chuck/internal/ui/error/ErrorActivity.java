@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowable;
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 
 import java.text.DateFormat;
 
@@ -69,7 +69,7 @@ public class ErrorActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ChuckerRepositoryProvider.it().getRecordedThrowable(throwableId).observe(this, new Observer<RecordedThrowable>() {
+        RepositoryProvider.throwable().getRecordedThrowable(throwableId).observe(this, new Observer<RecordedThrowable>() {
             @Override
             public void onChanged(@Nullable RecordedThrowable recordedThrowable) {
                 if (recordedThrowable != null) {

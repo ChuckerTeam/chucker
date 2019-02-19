@@ -162,22 +162,19 @@ internal class HttpTransaction(
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
         val httpHeaders = ArrayList<HttpHeader>()
-        var i = 0
-        val count = headers.size()
-        while (i < count) {
+        for (i in 0 until headers.size()){
             httpHeaders.add(HttpHeader(headers.name(i), headers.value(i)))
-            i++
         }
         return httpHeaders
     }
 
     private fun formatBody(body: String, contentType: String?): String {
-        return if (contentType != null && contentType.toLowerCase().contains("json")) {
-            FormatUtils.formatJson(body)
-        } else if (contentType != null && contentType.toLowerCase().contains("xml")) {
-            FormatUtils.formatXml(body)
-        } else {
-            body
+        return when {
+            contentType != null && contentType.toLowerCase().contains("json") ->
+                FormatUtils.formatJson(body)
+            contentType != null && contentType.toLowerCase().contains("xml") ->
+                FormatUtils.formatXml(body)
+            else -> body
         }
     }
 

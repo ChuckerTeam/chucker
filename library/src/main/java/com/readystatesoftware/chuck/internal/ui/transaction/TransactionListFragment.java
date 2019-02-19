@@ -38,7 +38,7 @@ import android.view.ViewGroup;
 
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.entity.HttpTransactionTuple;
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
 import com.readystatesoftware.chuck.internal.support.SQLiteUtils;
 
@@ -107,13 +107,13 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     }
 
     private void askForConfirmation() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setTitle(R.string.chuck_clear)
                 .setMessage(R.string.chuck_clear_http_confirmation)
                 .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ChuckerRepositoryProvider.it().deleteAllTransactions();
+                        RepositoryProvider.transaction().deleteAllTransactions();
                         NotificationHelper.clearBuffer();
                     }
                 })
@@ -137,11 +137,11 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
 
     private LiveData<List<HttpTransactionTuple>> getDataSource(String currentFilter) {
         if (currentFilter.isEmpty()){
-            return ChuckerRepositoryProvider.it().getSortedTransactionTuples();
+            return RepositoryProvider.transaction().getSortedTransactionTuples();
         } else if (TextUtils.isDigitsOnly(currentFilter)){
-            return ChuckerRepositoryProvider.it().getFilteredTransactionTuples(currentFilter, "");
+            return RepositoryProvider.transaction().getFilteredTransactionTuples(currentFilter, "");
         } else {
-            return ChuckerRepositoryProvider.it().getFilteredTransactionTuples("", currentFilter);
+            return RepositoryProvider.transaction().getFilteredTransactionTuples("", currentFilter);
         }
     }
 

@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowableTuple;
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 import com.readystatesoftware.chuck.internal.support.SQLiteUtils;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class ErrorListFragment extends Fragment {
         } else {
             throw new IllegalArgumentException("Context must implement the listener.");
         }
-        ChuckerRepositoryProvider.it().getSortedThrowablesTuples().observe(this, new Observer<List<RecordedThrowableTuple>>() {
+        RepositoryProvider.throwable().getSortedThrowablesTuples().observe(this, new Observer<List<RecordedThrowableTuple>>() {
             @Override
             public void onChanged(@Nullable List<RecordedThrowableTuple> tuples) {
                 adapter.setData(tuples);
@@ -98,7 +98,7 @@ public class ErrorListFragment extends Fragment {
                 .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                    ChuckerRepositoryProvider.it().deleteAllThrowables();
+                    RepositoryProvider.throwable().deleteAllThrowables();
                     }
                 })
                 .setNegativeButton(R.string.chuck_cancel, null)

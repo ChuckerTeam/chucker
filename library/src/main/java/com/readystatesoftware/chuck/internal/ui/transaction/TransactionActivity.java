@@ -34,7 +34,7 @@ import android.widget.TextView;
 
 import com.readystatesoftware.chuck.R;
 import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 import com.readystatesoftware.chuck.internal.support.FormatUtils;
 import com.readystatesoftware.chuck.internal.support.SimpleOnPageChangedListener;
 import com.readystatesoftware.chuck.internal.ui.BaseChuckActivity;
@@ -85,7 +85,7 @@ public class TransactionActivity extends BaseChuckActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ChuckerRepositoryProvider.it().getTransaction(transactionId).observe(this, new Observer<HttpTransaction>() {
+        RepositoryProvider.transaction().getTransaction(transactionId).observe(this, new Observer<HttpTransaction>() {
             @Override
             public void onChanged(@Nullable HttpTransaction observed) {
                 transaction = observed;
@@ -114,11 +114,11 @@ public class TransactionActivity extends BaseChuckActivity {
         }
     }
 
-    private void populateUI(HttpTransaction observed) {
-        if (observed != null) {
-            title.setText(observed.getMethod() + " " + observed.getPath());
+    private void populateUI(HttpTransaction transaction) {
+        if (transaction != null) {
+            title.setText(transaction.getMethod() + " " + transaction.getPath());
             for (TransactionFragment fragment : adapter.fragments) {
-                fragment.transactionUpdated(observed);
+                fragment.transactionUpdated(transaction);
             }
         }
     }

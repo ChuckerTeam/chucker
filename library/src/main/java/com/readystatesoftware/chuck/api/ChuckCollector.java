@@ -2,8 +2,7 @@ package com.readystatesoftware.chuck.api;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepository;
-import com.readystatesoftware.chuck.internal.data.repository.ChuckerRepositoryProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
 import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowable;
 import com.readystatesoftware.chuck.internal.support.NotificationHelper;
@@ -14,14 +13,13 @@ public class ChuckCollector {
 
     private final NotificationHelper notificationHelper;
     private RetentionManager retentionManager;
-    private ChuckerRepository repository;
 
     private boolean showNotification;
 
     public ChuckCollector(Context context) {
         notificationHelper = new NotificationHelper(context);
         showNotification = true;
-        repository = ChuckerRepositoryProvider.initialize(context);
+        RepositoryProvider.initialize(context);
         retentionManager = new RetentionManager(context, DEFAULT_RETENTION);
     }
 
@@ -30,7 +28,7 @@ public class ChuckCollector {
      * @param transaction The HTTP transaction sent
      */
     public void onRequestSent(HttpTransaction transaction) {
-        repository.insertTransaction(transaction);
+        RepositoryProvider.transaction().insertTransaction(transaction);
         if (showNotification) {
             notificationHelper.show(transaction);
         }
@@ -43,8 +41,8 @@ public class ChuckCollector {
      * @param transaction The sent HTTP transaction completed with the response
      */
     public void onResponseReceived(HttpTransaction transaction) {
-        repository.updateTransaction(transaction);
-        if (showNotification) { // && updated > 0) {
+        int updated = RepositoryProvider.transaction().updateTransaction(transaction);
+        if (showNotification && updated > 0) {
             notificationHelper.show(transaction);
         }
     }
@@ -56,7 +54,7 @@ public class ChuckCollector {
      */
     public void onError(String tag, Throwable throwable) {
         RecordedThrowable recordedThrowable = new RecordedThrowable(tag, throwable);
-        repository.saveThrowable(recordedThrowable);
+        RepositoryProvider.throwable().saveThrowable(recordedThrowable);
         if (showNotification) {
             notificationHelper.show(recordedThrowable);
         }

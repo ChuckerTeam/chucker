@@ -13,24 +13,24 @@ import com.readystatesoftware.chuck.internal.data.entity.HttpTransactionTuple
 internal interface HttpTransactionDao {
 
     @Query("SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, requestContentLength, responseContentLength, error FROM transactions ORDER BY requestDate DESC")
-    fun getSortedTransactionsTuples(): LiveData<List<HttpTransactionTuple>>
+    fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
 
     @Query("SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, requestContentLength, responseContentLength, error FROM transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery ORDER BY requestDate DESC")
-    fun getFilteredTransactionsTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
+    fun getFilteredTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
 
     @Insert()
-    fun insertTransaction(transaction: HttpTransaction): Long?
+    fun insert(transaction: HttpTransaction): Long?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateTransaction(transaction: HttpTransaction): Int
+    fun update(transaction: HttpTransaction): Int
 
     @Query("DELETE FROM transactions")
-    fun deleteAllTransactions()
+    fun deleteAll()
 
     @Query("SELECT * FROM transactions WHERE id = :id")
-    fun getRecordedTransaction(id: Long): LiveData<HttpTransaction>
+    fun getById(id: Long): LiveData<HttpTransaction>
 
     @Query("DELETE FROM transactions WHERE requestDate <= :threshold")
-    fun deleteOldTransactions(threshold: Long)
+    fun deleteBefore(threshold: Long)
 
 }

@@ -11,18 +11,18 @@ import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowableTuple
 internal interface RecordedThrowableDao {
 
     @Query("SELECT id,tag,date,clazz,message FROM throwables ORDER BY date DESC")
-    fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>>
+    fun getTuples(): LiveData<List<RecordedThrowableTuple>>
 
     @Insert()
-    fun insertRecordedThrowables(throwable: RecordedThrowable): Long?
+    fun insert(throwable: RecordedThrowable): Long?
 
     @Query("DELETE FROM throwables")
-    fun deleteAllThrowables()
+    fun deleteAll()
 
     @Query("SELECT * FROM throwables WHERE id = :id")
-    fun getRecordedThrowable(id: Long): LiveData<RecordedThrowable>
+    fun getById(id: Long): LiveData<RecordedThrowable>
 
     @Query("DELETE FROM throwables WHERE date <= :threshold")
-    fun deleteOldThrowables(threshold: Long)
+    fun deleteBefore(threshold: Long)
 
 }
