@@ -19,8 +19,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.readystatesoftware.chuck.R;
-import com.readystatesoftware.chuck.internal.data.HttpHeader;
-import com.readystatesoftware.chuck.internal.data.HttpTransaction;
+import com.readystatesoftware.chuck.internal.data.entity.HttpHeader;
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -103,19 +103,19 @@ public class FormatUtils {
         text += context.getString(R.string.chuck_total_size) + ": " + v(transaction.getTotalSizeString()) + "\n";
         text += "\n";
         text += "---------- " + context.getString(R.string.chuck_request) + " ----------\n\n";
-        String headers = formatHeaders(transaction.getRequestHeaders(), false);
+        String headers = formatHeaders(transaction.getParsedRequestHeaders(), false);
         if (!TextUtils.isEmpty(headers)) {
             text += headers + "\n";
         }
-        text += (transaction.requestBodyIsPlainText()) ? v(transaction.getFormattedRequestBody()) :
+        text += (transaction.isRequestBodyPlainText()) ? v(transaction.getFormattedRequestBody()) :
                 context.getString(R.string.chuck_body_omitted);
         text += "\n\n";
         text += "---------- " + context.getString(R.string.chuck_response) + " ----------\n\n";
-        headers = formatHeaders(transaction.getResponseHeaders(), false);
+        headers = formatHeaders(transaction.getParsedResponseHeaders(), false);
         if (!TextUtils.isEmpty(headers)) {
             text += headers + "\n";
         }
-        text += (transaction.responseBodyIsPlainText()) ? v(transaction.getFormattedResponseBody()) :
+        text += (transaction.isResponseBodyPlainText()) ? v(transaction.getFormattedResponseBody()) :
                 context.getString(R.string.chuck_body_omitted);
         return text;
     }
@@ -124,7 +124,7 @@ public class FormatUtils {
         boolean compressed = false;
         String curlCmd = "curl";
         curlCmd += " -X " + transaction.getMethod();
-        List<HttpHeader> headers = transaction.getRequestHeaders();
+        List<HttpHeader> headers = transaction.getParsedRequestHeaders();
         for (int i = 0, count = headers.size(); i < count; i++) {
             String name = headers.get(i).getName();
             String value = headers.get(i).getValue();

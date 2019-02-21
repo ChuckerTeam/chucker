@@ -23,16 +23,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
-import com.readystatesoftware.chuck.api.Chuck;
 import com.readystatesoftware.chuck.R;
-import com.readystatesoftware.chuck.internal.data.HttpTransaction;
-import com.readystatesoftware.chuck.internal.data.RecordedThrowable;
+import com.readystatesoftware.chuck.api.Chuck;
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction;
 import com.readystatesoftware.chuck.internal.ui.error.ErrorActivity;
 import com.readystatesoftware.chuck.internal.ui.error.ErrorAdapter;
 import com.readystatesoftware.chuck.internal.ui.transaction.TransactionActivity;
-import com.readystatesoftware.chuck.internal.ui.transaction.TransactionListFragment;
+import com.readystatesoftware.chuck.internal.ui.transaction.TransactionAdapter;
 
-public class MainActivity extends BaseChuckActivity implements TransactionListFragment.OnListFragmentInteractionListener, ErrorAdapter.ErrorListListener {
+public class MainActivity extends BaseChuckActivity implements TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
 
     public static final String EXTRA_SCREEN = "EXTRA_SCREEN";
 
@@ -58,9 +57,9 @@ public class MainActivity extends BaseChuckActivity implements TransactionListFr
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 if (position == 0) {
-                    Chuck.dismissTransactionsNotification();
+                    Chuck.dismissTransactionsNotification(MainActivity.this);
                 } else {
-                    Chuck.dismissErrorsNotification();
+                    Chuck.dismissErrorsNotification(MainActivity.this);
                 }
             }
         });
@@ -86,20 +85,19 @@ public class MainActivity extends BaseChuckActivity implements TransactionListFr
         }
     }
 
-    @Override
-    public void onListFragmentInteraction(HttpTransaction transaction) {
-        TransactionActivity.start(this, transaction.getId());
-    }
-
-    @Override
-    public void onClick(RecordedThrowable throwable) {
-        ErrorActivity.start(this, throwable.getId());
-    }
-
     private String getApplicationName() {
         ApplicationInfo applicationInfo = getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : getString(stringId);
     }
 
+    @Override
+    public void onErrorClick(long throwableId, int position) {
+        ErrorActivity.start(this, throwableId);
+    }
+
+    @Override
+    public void onTransactionClick(long transactionId, int position) {
+        TransactionActivity.start(this, transactionId);
+    }
 }

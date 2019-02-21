@@ -33,10 +33,10 @@ public class Chuck {
     public static void registerDefaultCrashHanlder(ChuckCollector collector) {
     }
 
-    public static void dismissTransactionsNotification() {
+    public static void dismissTransactionsNotification(Context context) {
     }
 
-    public static void dismissErrorsNotification() {
+    public static void dismissErrorsNotification(Context context) {
     }
 
     public static boolean isOp() {

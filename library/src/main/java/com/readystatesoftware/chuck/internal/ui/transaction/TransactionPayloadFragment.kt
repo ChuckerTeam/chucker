@@ -27,12 +27,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.readystatesoftware.chuck.R
-import com.readystatesoftware.chuck.internal.data.HttpTransaction
+import com.readystatesoftware.chuck.internal.data.entity.HttpTransaction
 import com.readystatesoftware.chuck.internal.support.hightlight
 
 private const val ARG_TYPE = "type"
 
-class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
 
     internal lateinit var headers: TextView
     internal lateinit var body: TextView
@@ -82,9 +82,9 @@ class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.O
         if (isAdded && transaction != null) {
             when (type) {
                 TYPE_REQUEST -> setText(transaction!!.getRequestHeadersString(true),
-                                        transaction!!.formattedRequestBody, transaction!!.requestBodyIsPlainText())
+                                        transaction!!.getFormattedRequestBody(), transaction!!.isRequestBodyPlainText)
                 TYPE_RESPONSE -> setText(transaction!!.getResponseHeadersString(true),
-                                         transaction!!.formattedResponseBody, transaction!!.responseBodyIsPlainText())
+                                         transaction!!.getFormattedResponseBody(), transaction!!.isResponseBodyPlainText)
             }
         }
     }

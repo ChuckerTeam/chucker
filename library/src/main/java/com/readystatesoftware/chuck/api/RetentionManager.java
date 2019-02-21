@@ -4,27 +4,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.readystatesoftware.chuck.api.ChuckCollector;
-import com.readystatesoftware.chuck.internal.data.ChuckContentProvider;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class RetentionManager {
 
-    private static final String LOG_TAG = "Chuck";
-    private static final String PREFS_NAME = "chuck_preferences";
+    private static final String LOG_TAG = "Chucker";
+    private static final String PREFS_NAME = "chucker_preferences";
     private static final String KEY_LAST_CLEANUP = "last_cleanup";
 
     private static long lastCleanup;
 
-    private final Context context;
     private final long period;
     private final long cleanupFrequency;
     private final SharedPreferences prefs;
 
     public RetentionManager(Context context, ChuckCollector.Period retentionPeriod) {
-        this.context = context;
         period = toMillis(retentionPeriod);
         prefs = context.getSharedPreferences(PREFS_NAME, 0);
         cleanupFrequency = (retentionPeriod == ChuckCollector.Period.ONE_HOUR) ?
@@ -33,7 +29,7 @@ public class RetentionManager {
 
     public synchronized void doMaintenance() {
         if (period > 0) {
-            long now = new Date().getTime();
+            long now = System.currentTimeMillis();
             if (isCleanupDue(now)) {
                 Log.i(LOG_TAG, "Performing data retention maintenance...");
                 deleteSince(getThreshold(now));
@@ -55,9 +51,8 @@ public class RetentionManager {
     }
 
     private void deleteSince(long threshold) {
-        int rows = context.getContentResolver().delete(ChuckContentProvider.TRANSACTION_URI,
-                "requestDate <= ?", new String[] { String.valueOf(threshold) });
-        Log.i(LOG_TAG, rows + " transactions deleted");
+        RepositoryProvider.transaction().deleteOldTransactions(threshold);
+        RepositoryProvider.throwable().deleteOldThrowables(threshold);
     }
 
     private boolean isCleanupDue(long now) {
@@ -76,6 +71,7 @@ public class RetentionManager {
                 return TimeUnit.DAYS.toMillis(1);
             case ONE_WEEK:
                 return TimeUnit.DAYS.toMillis(7);
+            case FOREVER:
             default:
                 return 0;
         }

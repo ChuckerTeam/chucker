@@ -113,7 +113,7 @@ Chucker uses the following open source libraries:
 
 - [OkHttp](https://github.com/square/okhttp) - Copyright Square, Inc.
 - [Gson](https://github.com/google/gson) - Copyright Google Inc.
-- [Cupboard](https://bitbucket.org/littlerobots/cupboard) - Copyright Little Robots.
+- [Room](https://developer.android.com/topic/libraries/architecture/room) - Copyright Google Inc.
 
 License
 -------

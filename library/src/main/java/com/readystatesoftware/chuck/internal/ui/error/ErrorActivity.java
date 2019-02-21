@@ -1,16 +1,11 @@
 package com.readystatesoftware.chuck.internal.ui.error;
 
-import android.content.ContentUris;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.ShareCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,18 +16,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.readystatesoftware.chuck.R;
-import com.readystatesoftware.chuck.internal.data.ChuckContentProvider;
-import com.readystatesoftware.chuck.internal.data.LocalCupboard;
-import com.readystatesoftware.chuck.internal.data.RecordedThrowable;
+import com.readystatesoftware.chuck.internal.data.entity.RecordedThrowable;
+import com.readystatesoftware.chuck.internal.data.repository.RepositoryProvider;
 
 import java.text.DateFormat;
-
-import static com.readystatesoftware.chuck.internal.data.ChuckContentProvider.LOADER_ERROR_DETAIL;
 
 /**
  * @author Olivier Perez
  */
-public class ErrorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ErrorActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID = "EXTRA_ID";
     private long throwableId;
@@ -72,13 +64,20 @@ public class ErrorActivity extends AppCompatActivity implements LoaderManager.Lo
         date.setVisibility(View.GONE);
 
         throwableId = getIntent().getLongExtra(EXTRA_ID, 0);
-        getSupportLoaderManager().initLoader(LOADER_ERROR_DETAIL, null, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().restartLoader(LOADER_ERROR_DETAIL, null, this);
+        RepositoryProvider.throwable().getRecordedThrowable(throwableId).observe(this, new Observer<RecordedThrowable>() {
+            @Override
+            public void onChanged(@Nullable RecordedThrowable recordedThrowable) {
+                if (recordedThrowable != null) {
+                    populateUI(recordedThrowable);
+                    throwable = recordedThrowable;
+                }
+            }
+        });
     }
 
     @Override
@@ -113,32 +112,12 @@ public class ErrorActivity extends AppCompatActivity implements LoaderManager.Lo
                 .createChooserIntent());
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        CursorLoader loader = new CursorLoader(this);
-        loader.setUri(ContentUris.withAppendedId(ChuckContentProvider.ERROR_URI, throwableId));
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        throwable = LocalCupboard.getInstance().withCursor(data).get(RecordedThrowable.class);
-        populateUI();
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-    }
-
-    private void populateUI() {
-        if (throwable != null) {
-            String dateStr = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(throwable.getDate());
-            title.setText(dateStr);
-            tag.setText(throwable.getTag());
-            clazz.setText(throwable.getClazz());
-            message.setText(throwable.getMessage());
-            stacktrace.setText(throwable.getContent());
-        }
+    private void populateUI(RecordedThrowable throwable) {
+        String dateStr = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(throwable.getDate());
+        title.setText(dateStr);
+        tag.setText(throwable.getTag());
+        clazz.setText(throwable.getClazz());
+        message.setText(throwable.getMessage());
+        stacktrace.setText(throwable.getContent());
     }
 }
