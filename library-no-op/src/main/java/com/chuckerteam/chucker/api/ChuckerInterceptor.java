@@ -16,31 +16,35 @@
 package com.chuckerteam.chucker.api;
 
 import android.content.Context;
-import android.content.Intent;
+
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * No-op implementation.
  */
-public class Chuck {
+public final class ChuckerInterceptor implements Interceptor {
 
-    public static final int SCREEN_HTTP = 1;
-    public static final int SCREEN_ERROR = 2;
-
-    public static Intent getLaunchIntent(Context context, int screen) {
-        return new Intent();
+    public ChuckerInterceptor(Context context) {
     }
 
-    public static void registerDefaultCrashHanlder(ChuckCollector collector) {
+    public ChuckerInterceptor(Context context, ChuckerCollector collector) {
     }
 
-    public static void dismissTransactionsNotification(Context context) {
+    public ChuckerInterceptor maxContentLength(long max) {
+        return this;
     }
 
-    public static void dismissErrorsNotification(Context context) {
-    }
+    public ChuckerInterceptor redactHeader(String name) { return this; }
 
-    public static boolean isOp() {
-        return false;
-    }
+    public ChuckerInterceptor redactHeaders(String... names) { return this; }
 
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        return chain.proceed(request);
+    }
 }

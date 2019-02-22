@@ -6,11 +6,11 @@ import android.net.Uri;
 /**
  * @author Olivier Perez
  */
-public class ChuckCollector {
+public class ChuckerCollector {
 
     private final Context context;
 
-    public ChuckCollector(Context context) {
+    public ChuckerCollector(Context context) {
         this.context = context;
     }
 
@@ -25,11 +25,11 @@ public class ChuckCollector {
     public void onError(Object object, Object object2) {
     }
 
-    public ChuckCollector showNotification(boolean showNotification) {
+    public ChuckerCollector showNotification(boolean showNotification) {
         return this;
     }
 
-    public ChuckCollector retentionManager(Object object) {
+    public ChuckerCollector retentionManager(Object object) {
         return this;
     }
 

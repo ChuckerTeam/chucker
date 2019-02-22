@@ -50,7 +50,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.chuck_fragment_transaction_payload, container, false)
+        val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
         headers = view.findViewById<View>(R.id.headers) as TextView
         body = view.findViewById<View>(R.id.body) as TextView
         return view
@@ -93,7 +93,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
         if (!isPlainText) {
-            body.text = getString(R.string.chuck_body_omitted)
+            body.text = getString(R.string.chucker_body_omitted)
         } else {
             body.text = bodyString
         }

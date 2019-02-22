@@ -54,7 +54,7 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chuck_fragment_transaction_overview, container, false);
+        View view = inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false);
         url = (TextView) view.findViewById(R.id.url);
         method = (TextView) view.findViewById(R.id.method);
         protocol = (TextView) view.findViewById(R.id.protocol);
@@ -89,7 +89,7 @@ public class TransactionOverviewFragment extends Fragment implements Transaction
             protocol.setText(transaction.getProtocol());
             status.setText(transaction.getStatus().toString());
             response.setText(transaction.getResponseSummaryText());
-            ssl.setText((transaction.isSsl() ? R.string.chuck_yes : R.string.chuck_no));
+            ssl.setText((transaction.isSsl() ? R.string.chucker_yes : R.string.chucker_no));
             requestTime.setText(transaction.getRequestDateString());
             responseTime.setText(transaction.getResponseDateString());
             duration.setText(transaction.getDurationString());

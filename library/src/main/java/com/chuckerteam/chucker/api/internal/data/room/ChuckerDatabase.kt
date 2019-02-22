@@ -18,7 +18,7 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
         private val DB_NAME = "chucker.db"
 
         fun create(context: Context): ChuckerDatabase {
-            // We eventually delete the old DB if a previous version of Chuck/Chucker was used.
+            // We eventually delete the old DB if a previous version of Chucker/Chucker was used.
             context.getDatabasePath(OLD_DB_NAME).delete()
 
             return Room.databaseBuilder(context, ChuckerDatabase::class.java, DB_NAME)

@@ -41,9 +41,9 @@ class HomePageAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == SCREEN_HTTP_INDEX) {
-            return context.getString(R.string.chuck_tab_network);
+            return context.getString(R.string.chucker_tab_network);
         } else {
-            return context.getString(R.string.chuck_tab_errors);
+            return context.getString(R.string.chucker_tab_errors);
         }
     }
 }

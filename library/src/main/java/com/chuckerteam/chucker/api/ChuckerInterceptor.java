@@ -44,24 +44,24 @@ import okio.BufferedSource;
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity in your application for later inspection.
  */
-public final class ChuckInterceptor implements Interceptor {
+public final class ChuckerInterceptor implements Interceptor {
 
-    private static final String LOG_TAG = ChuckInterceptor.class.getSimpleName();
+    private static final String LOG_TAG = ChuckerInterceptor.class.getSimpleName();
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private final ChuckCollector collector;
+    private final ChuckerCollector collector;
     private final IOUtils io;
 
     private long maxContentLength = 250000L;
 
     private Set<String> headersToRedact = new TreeSet<>();
 
-    public ChuckInterceptor(Context context) {
-        collector = new ChuckCollector(context);
+    public ChuckerInterceptor(Context context) {
+        collector = new ChuckerCollector(context);
         io = new IOUtils(context);
     }
 
-    public ChuckInterceptor(Context context, ChuckCollector collector) {
+    public ChuckerInterceptor(Context context, ChuckerCollector collector) {
         this.collector = collector;
         io = new IOUtils(context);
     }
@@ -71,19 +71,19 @@ public final class ChuckInterceptor implements Interceptor {
      * Warning: setting this value too high may cause unexpected results.
      *
      * @param max the maximum length (in bytes) for request/response content.
-     * @return The {@link ChuckInterceptor} instance.
+     * @return The {@link ChuckerInterceptor} instance.
      */
-    public ChuckInterceptor maxContentLength(long max) {
+    public ChuckerInterceptor maxContentLength(long max) {
         this.maxContentLength = max;
         return this;
     }
 
-    public ChuckInterceptor redactHeader(String name) {
+    public ChuckerInterceptor redactHeader(String name) {
         headersToRedact.add(name);
         return this;
     }
 
-    public ChuckInterceptor redactHeaders(String... names) {
+    public ChuckerInterceptor redactHeaders(String... names) {
         headersToRedact.addAll(Arrays.asList(names));
         return this;
     }
