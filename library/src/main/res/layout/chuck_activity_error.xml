@@ -20,7 +20,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".internal.ui.error.ErrorActivity">
+    tools:context="com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -61,7 +61,7 @@
             android:padding="16dp"
             android:textSize="12sp"
             android:typeface="monospace"
-            tools:text="java.lang.SecurityException: Package com.readystatesoftware.chuck.sample is currently frozen!
+            tools:text="java.lang.SecurityException: Package com.chuckerteam.chucker.sample is currently frozen!
         at com.android.server.pm.PackageManagerService.checkPackageStartable(PackageManagerService.java:3896)
         at com.android.server.am.ActivityManagerService.startProcessLocked(ActivityManagerService.java:3801)
         at com.android.server.am.ActivityManagerService.startProcessLocked(ActivityManagerService.java:3761)
