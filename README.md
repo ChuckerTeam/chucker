@@ -1,9 +1,12 @@
-Chucker
-======
-[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)
+# Chucker
 
+[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 
-_Forked from [Chuck](https://github.com/jgilfelt/chuck)_
+<p align="center">
+  <img src="https://i.imgur.com/GXoIFZ6.png" alt="chucker icon" width="30%"/>
+</p>
+
+_A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
 Chucker simplifies the gathering of HTTP requests/responses, and Throwables. Chucker intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
 
@@ -25,8 +28,7 @@ interceptor.redactHeader("Authorization");
 interceptor.redactHeader("Cookie");
 ```
 
-Setup
------
+# Setup
 
 Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucker from release builds as follows:
 
@@ -38,8 +40,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation 'fr.o80.chucker:library:2.0.2'
-  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.2'
+  debugImplementation 'fr.o80.chucker:library:2.0.4'
+  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.4'
 }
 ```
 
@@ -77,8 +79,7 @@ try {
 }
 ```
 
-Snapshots
----
+# Snapshots
 
 Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can switch to the development branch by using artifacts available on [jitpack.io](https://jitpack.io/#ChuckerTeam/chucker)
 
@@ -97,17 +98,17 @@ dependencies {
 
 ⚠ Please note that the latest snapshot might be **unstable**. Use it at your own risk :)
 
-FAQ
----
+If you're looking for the latest version source code, you can always find it on the top of the `master` branch.
 
-- Why are some of my request headers missing?
-- Why are retries and redirects not being captured discretely?
-- Why are my encoded request/response bodies not appearing as plain text?
+# FAQ
+
+* Why are some of my request headers missing?
+* Why are retries and redirects not being captured discretely?
+* Why are my encoded request/response bodies not appearing as plain text?
 
 Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
 
-Acknowledgements
-----------------
+# Acknowledgements
 
 Chucker uses the following open source libraries:
 
@@ -118,6 +119,7 @@ Chucker uses the following open source libraries:
 License
 -------
 
+    Copyright (C) 2018 Nicola Corti & Olivier Perez.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");
