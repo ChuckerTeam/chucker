@@ -63,7 +63,7 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chuck_fragment_transaction_list, container, false);
+        View view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false);
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -85,7 +85,7 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.chuck_transactions_list, menu);
+        inflater.inflate(R.menu.chucker_transactions_list, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(this);
@@ -108,16 +108,16 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
 
     private void askForConfirmation() {
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.chuck_clear)
-                .setMessage(R.string.chuck_clear_http_confirmation)
-                .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.chucker_clear)
+                .setMessage(R.string.chucker_clear_http_confirmation)
+                .setPositiveButton(R.string.chucker_clear, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         RepositoryProvider.transaction().deleteAllTransactions();
                         NotificationHelper.clearBuffer();
                     }
                 })
-                .setNegativeButton(R.string.chuck_cancel, null)
+                .setNegativeButton(R.string.chucker_cancel, null)
                 .show();
     }
 

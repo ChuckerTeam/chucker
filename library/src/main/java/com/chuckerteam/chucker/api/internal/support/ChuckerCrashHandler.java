@@ -1,16 +1,16 @@
 package com.chuckerteam.chucker.api.internal.support;
 
-import com.chuckerteam.chucker.api.ChuckCollector;
+import com.chuckerteam.chucker.api.ChuckerCollector;
 
 /**
  * @author Olivier Perez
  */
-public class ChuckCrashHandler implements Thread.UncaughtExceptionHandler {
+public class ChuckerCrashHandler implements Thread.UncaughtExceptionHandler {
 
-    private final ChuckCollector collector;
+    private final ChuckerCollector collector;
     private final Thread.UncaughtExceptionHandler defaultHandler;
 
-    public ChuckCrashHandler(ChuckCollector collector) {
+    public ChuckerCrashHandler(ChuckerCollector collector) {
         this.collector = collector;
         this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
     }

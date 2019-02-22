@@ -17,7 +17,7 @@ package com.chuckerteam.chucker.api.internal.ui;
 
 import android.support.v7.app.AppCompatActivity;
 
-public abstract class BaseChuckActivity extends AppCompatActivity {
+public abstract class BaseChuckerActivity extends AppCompatActivity {
 
     private static boolean inForeground;
 

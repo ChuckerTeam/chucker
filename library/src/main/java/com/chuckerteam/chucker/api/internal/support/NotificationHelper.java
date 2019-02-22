@@ -27,14 +27,14 @@ import android.support.v4.content.ContextCompat;
 import android.util.LongSparseArray;
 
 import com.chuckerteam.chucker.R;
-import com.chuckerteam.chucker.api.Chuck;
+import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowable;
-import com.chuckerteam.chucker.api.internal.ui.BaseChuckActivity;
+import com.chuckerteam.chucker.api.internal.ui.BaseChuckerActivity;
 
 public class NotificationHelper {
 
-    private static final String CHANNEL_ID = "chuck";
+    private static final String CHANNEL_ID = "chucker";
     private static final int TRANSACTION_NOTIFICATION_ID = 1138;
     private static final int ERROR_NOTIFICATION_ID = 3546;
     private static final int BUFFER_SIZE = 10;
@@ -66,20 +66,20 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(
                     new NotificationChannel(CHANNEL_ID,
-                            context.getString(R.string.chuck_notification_category),
+                            context.getString(R.string.chucker_notification_category),
                             NotificationManager.IMPORTANCE_LOW));
         }
     }
 
     public synchronized void show(HttpTransaction transaction) {
         addToBuffer(transaction);
-        if (!BaseChuckActivity.isInForeground()) {
+        if (!BaseChuckerActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chuck.getLaunchIntent(context, Chuck.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
-                    .setContentTitle(context.getString(R.string.chuck_http_notification_title))
+                    .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .addAction(createClearAction(ClearTransactionsService.CLEAR_TRANSACTIONS));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             int count = 0;
@@ -104,11 +104,11 @@ public class NotificationHelper {
     }
 
     public void show(RecordedThrowable throwable) {
-        if (!BaseChuckActivity.isInForeground()) {
+        if (!BaseChuckerActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(context, ERROR_NOTIFICATION_ID, Chuck.getLaunchIntent(context, Chuck.SCREEN_ERROR), PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setContentIntent(PendingIntent.getActivity(context, ERROR_NOTIFICATION_ID, Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chuck_ic_subject_white_24dp)
+                    .setSmallIcon(R.drawable.chucker_ic_subject_white_24dp)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
                     .setContentTitle(throwable.getClazz())
                     .setAutoCancel(true)
@@ -120,11 +120,11 @@ public class NotificationHelper {
 
     @NonNull
     private NotificationCompat.Action createClearAction(@ClearTransactionsService.Clear int itemsToClear) {
-        CharSequence clearTitle = context.getString(R.string.chuck_clear);
+        CharSequence clearTitle = context.getString(R.string.chucker_clear);
         Intent deleteIntent = new Intent(context, ClearTransactionsService.class);
         deleteIntent.putExtra(ClearTransactionsService.EXTRA_ITEM_TO_CLEAR, itemsToClear);
         PendingIntent intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
-        return new NotificationCompat.Action(R.drawable.chuck_ic_delete_white_24dp, clearTitle, intent);
+        return new NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent);
     }
 
     public void dismissTransactionsNotification() {

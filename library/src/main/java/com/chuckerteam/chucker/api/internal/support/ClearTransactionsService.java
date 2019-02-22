@@ -14,7 +14,7 @@ public class ClearTransactionsService extends IntentService {
     public static final String EXTRA_ITEM_TO_CLEAR = "EXTRA_ITEM_TO_CLEAR";
 
     public ClearTransactionsService() {
-        super("Chuck-ClearTransactionsService");
+        super("Chucker-ClearTransactionsService");
     }
 
     @Override

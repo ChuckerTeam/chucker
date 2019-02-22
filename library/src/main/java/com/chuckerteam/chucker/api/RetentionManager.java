@@ -20,10 +20,10 @@ public class RetentionManager {
     private final long cleanupFrequency;
     private final SharedPreferences prefs;
 
-    public RetentionManager(Context context, ChuckCollector.Period retentionPeriod) {
+    public RetentionManager(Context context, ChuckerCollector.Period retentionPeriod) {
         period = toMillis(retentionPeriod);
         prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        cleanupFrequency = (retentionPeriod == ChuckCollector.Period.ONE_HOUR) ?
+        cleanupFrequency = (retentionPeriod == ChuckerCollector.Period.ONE_HOUR) ?
                 TimeUnit.MINUTES.toMillis(30) : TimeUnit.HOURS.toMillis(2);
     }
 
@@ -63,7 +63,7 @@ public class RetentionManager {
         return (period == 0) ? now : now - period;
     }
 
-    private long toMillis(ChuckCollector.Period period) {
+    private long toMillis(ChuckerCollector.Period period) {
         switch (period) {
             case ONE_HOUR:
                 return TimeUnit.HOURS.toMillis(1);

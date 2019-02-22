@@ -45,32 +45,32 @@ dependencies {
 }
 ```
 
-In your application code, create an instance of `ChuckInterceptor` and its `ChuckCollector` (you'll need to provide it with a `Context`, because Android) and add it as an interceptor when building your OkHttp client:
+In your application code, create an instance of `ChuckerInterceptor` and its `ChuckerCollector` (you'll need to provide it with a `Context`, because Android) and add it as an interceptor when building your OkHttp client:
 
 ```java
 // Collector
-ChuckCollector collector = new ChuckCollector(this)
+ChuckerCollector collector = new ChuckerCollector(this)
     .showNotification(true)
-    .retentionManager(new RetentionManager(this, ChuckCollector.Period.ONE_HOUR));
+    .retentionManager(new RetentionManager(this, ChuckerCollector.Period.ONE_HOUR));
 
 // Interceptor
-ChuckInterceptor chuckInterceptor = new ChuckInterceptor(context, collector)
+ChuckerInterceptor chuckerInterceptor = new ChuckerInterceptor(context, collector)
     .maxContentLength(250000L);
 
 OkHttpClient client = new OkHttpClient.Builder()
-  .addInterceptor(chuckInterceptor)
+  .addInterceptor(chuckerInterceptor)
   .build();
 ```
 
-That's it! Chucker will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucker UI directly within your app with the intent from `Chuck.getLaunchIntent()`.
+That's it! Chucker will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucker UI directly within your app with the intent from `Chucker.getLaunchIntent()`.
 
 For errors gathering you can directly use the same collector:
 
 ```java
 // Collector
-ChuckCollector collector = new ChuckCollector(this)
+ChuckerCollector collector = new ChuckerCollector(this)
     .showNotification(true)
-    .retentionManager(new RetentionManager(this, ChuckCollector.Period.ONE_HOUR));
+    .retentionManager(new RetentionManager(this, ChuckerCollector.Period.ONE_HOUR));
 
 try {
     // Do something risky

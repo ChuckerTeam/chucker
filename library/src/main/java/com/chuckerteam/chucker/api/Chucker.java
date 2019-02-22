@@ -19,24 +19,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IntDef;
 
-import com.chuckerteam.chucker.api.internal.support.ChuckCrashHandler;
+import com.chuckerteam.chucker.api.internal.support.ChuckerCrashHandler;
 import com.chuckerteam.chucker.api.internal.support.NotificationHelper;
 import com.chuckerteam.chucker.api.internal.ui.MainActivity;
 
 /**
- * Chuck utilities.
+ * Chucker utilities.
  */
-public class Chuck {
+public class Chucker {
 
     public static final int SCREEN_HTTP = 1;
     public static final int SCREEN_ERROR = 2;
 
     /**
-     * Get an Intent to launch the Chuck UI directly.
+     * Get an Intent to launch the Chucker UI directly.
      *
      * @param context A Context.
      * @param screen The screen to display: SCREEN_HTTP or SCREEN_ERROR.
-     * @return An Intent for the main Chuck Activity that can be started with {@link Context#startActivity(Intent)}.
+     * @return An Intent for the main Chucker Activity that can be started with {@link Context#startActivity(Intent)}.
      */
     public static Intent getLaunchIntent(Context context, @Screen int screen) {
         return new Intent(context, MainActivity.class)
@@ -45,13 +45,13 @@ public class Chuck {
     }
 
     /**
-     * Configure the default crash handler of the JVM to report all uncaught Throwable to Chuck.
+     * Configure the default crash handler of the JVM to report all uncaught Throwable to Chucker.
      * You may only use it for debugging purpose.
      *
-     * @param collector the ChuckCollector
+     * @param collector the ChuckerCollector
      */
-    public static void registerDefaultCrashHanlder(final ChuckCollector collector) {
-        Thread.setDefaultUncaughtExceptionHandler(new ChuckCrashHandler(collector));
+    public static void registerDefaultCrashHanlder(final ChuckerCollector collector) {
+        Thread.setDefaultUncaughtExceptionHandler(new ChuckerCrashHandler(collector));
     }
 
     public static void dismissTransactionsNotification(Context context) {

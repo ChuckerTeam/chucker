@@ -29,7 +29,7 @@ public class ErrorAdapter extends RecyclerView.Adapter<ErrorAdapter.ErrorViewHol
     @NonNull
     @Override
     public ErrorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.chuck_list_item_error, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.chucker_list_item_error, parent, false);
         return new ErrorViewHolder(view);
     }
 

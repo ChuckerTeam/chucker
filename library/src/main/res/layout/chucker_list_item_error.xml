@@ -27,14 +27,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
-        android:textAppearance="@style/Chuck.TextAppearance.ListItem"
+        android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         tools:text="java.lang.RuntimeException" />
 
     <TextView
         android:id="@+id/tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Chuck.TextAppearance.Label"
+        android:textAppearance="@style/Chucker.TextAppearance.Label"
         tools:text="A given tag" />
 
     <TextView

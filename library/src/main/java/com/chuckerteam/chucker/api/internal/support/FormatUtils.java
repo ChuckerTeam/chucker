@@ -87,36 +87,36 @@ public class FormatUtils {
 
     public static String getShareText(Context context, HttpTransaction transaction) {
         String text = "";
-        text += context.getString(R.string.chuck_url) + ": " + v(transaction.getUrl()) + "\n";
-        text += context.getString(R.string.chuck_method) + ": " + v(transaction.getMethod()) + "\n";
-        text += context.getString(R.string.chuck_protocol) + ": " + v(transaction.getProtocol()) + "\n";
-        text += context.getString(R.string.chuck_status) + ": " + v(transaction.getStatus().toString()) + "\n";
-        text += context.getString(R.string.chuck_response) + ": " + v(transaction.getResponseSummaryText()) + "\n";
-        text += context.getString(R.string.chuck_ssl) + ": " + v(context.getString(transaction.isSsl() ? R.string.chuck_yes : R.string.chuck_no)) + "\n";
+        text += context.getString(R.string.chucker_url) + ": " + v(transaction.getUrl()) + "\n";
+        text += context.getString(R.string.chucker_method) + ": " + v(transaction.getMethod()) + "\n";
+        text += context.getString(R.string.chucker_protocol) + ": " + v(transaction.getProtocol()) + "\n";
+        text += context.getString(R.string.chucker_status) + ": " + v(transaction.getStatus().toString()) + "\n";
+        text += context.getString(R.string.chucker_response) + ": " + v(transaction.getResponseSummaryText()) + "\n";
+        text += context.getString(R.string.chucker_ssl) + ": " + v(context.getString(transaction.isSsl() ? R.string.chucker_yes : R.string.chucker_no)) + "\n";
         text += "\n";
-        text += context.getString(R.string.chuck_request_time) + ": " + v(transaction.getRequestDateString()) + "\n";
-        text += context.getString(R.string.chuck_response_time) + ": " + v(transaction.getResponseDateString()) + "\n";
-        text += context.getString(R.string.chuck_duration) + ": " + v(transaction.getDurationString()) + "\n";
+        text += context.getString(R.string.chucker_request_time) + ": " + v(transaction.getRequestDateString()) + "\n";
+        text += context.getString(R.string.chucker_response_time) + ": " + v(transaction.getResponseDateString()) + "\n";
+        text += context.getString(R.string.chucker_duration) + ": " + v(transaction.getDurationString()) + "\n";
         text += "\n";
-        text += context.getString(R.string.chuck_request_size) + ": " + v(transaction.getRequestSizeString()) + "\n";
-        text += context.getString(R.string.chuck_response_size) + ": " + v(transaction.getResponseSizeString()) + "\n";
-        text += context.getString(R.string.chuck_total_size) + ": " + v(transaction.getTotalSizeString()) + "\n";
+        text += context.getString(R.string.chucker_request_size) + ": " + v(transaction.getRequestSizeString()) + "\n";
+        text += context.getString(R.string.chucker_response_size) + ": " + v(transaction.getResponseSizeString()) + "\n";
+        text += context.getString(R.string.chucker_total_size) + ": " + v(transaction.getTotalSizeString()) + "\n";
         text += "\n";
-        text += "---------- " + context.getString(R.string.chuck_request) + " ----------\n\n";
+        text += "---------- " + context.getString(R.string.chucker_request) + " ----------\n\n";
         String headers = formatHeaders(transaction.getParsedRequestHeaders(), false);
         if (!TextUtils.isEmpty(headers)) {
             text += headers + "\n";
         }
         text += (transaction.isRequestBodyPlainText()) ? v(transaction.getFormattedRequestBody()) :
-                context.getString(R.string.chuck_body_omitted);
+                context.getString(R.string.chucker_body_omitted);
         text += "\n\n";
-        text += "---------- " + context.getString(R.string.chuck_response) + " ----------\n\n";
+        text += "---------- " + context.getString(R.string.chucker_response) + " ----------\n\n";
         headers = formatHeaders(transaction.getParsedResponseHeaders(), false);
         if (!TextUtils.isEmpty(headers)) {
             text += headers + "\n";
         }
         text += (transaction.isResponseBodyPlainText()) ? v(transaction.getFormattedResponseBody()) :
-                context.getString(R.string.chuck_body_omitted);
+                context.getString(R.string.chucker_body_omitted);
         return text;
     }
 

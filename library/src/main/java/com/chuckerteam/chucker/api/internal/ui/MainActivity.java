@@ -24,13 +24,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
 import com.chuckerteam.chucker.R;
-import com.chuckerteam.chucker.api.Chuck;
+import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorAdapter;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionActivity;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionAdapter;
 
-public class MainActivity extends BaseChuckActivity implements TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
+public class MainActivity extends BaseChuckerActivity implements TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
 
     public static final String EXTRA_SCREEN = "EXTRA_SCREEN";
 
@@ -39,7 +39,7 @@ public class MainActivity extends BaseChuckActivity implements TransactionAdapte
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chuck_activity_main);
+        setContentView(R.layout.chucker_activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,9 +56,9 @@ public class MainActivity extends BaseChuckActivity implements TransactionAdapte
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 if (position == 0) {
-                    Chuck.dismissTransactionsNotification(MainActivity.this);
+                    Chucker.dismissTransactionsNotification(MainActivity.this);
                 } else {
-                    Chuck.dismissErrorsNotification(MainActivity.this);
+                    Chucker.dismissErrorsNotification(MainActivity.this);
                 }
             }
         });
@@ -76,8 +76,8 @@ public class MainActivity extends BaseChuckActivity implements TransactionAdapte
      */
     private void consumeIntent(Intent intent) {
         // Get the screen to show, by default => HTTP
-        int screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chuck.SCREEN_HTTP);
-        if (screenToShow == Chuck.SCREEN_HTTP) {
+        int screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP);
+        if (screenToShow == Chucker.SCREEN_HTTP) {
             viewPager.setCurrentItem(HomePageAdapter.SCREEN_HTTP_INDEX);
         } else {
             viewPager.setCurrentItem(HomePageAdapter.SCREEN_ERROR_INDEX);

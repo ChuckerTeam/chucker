@@ -59,7 +59,7 @@ public class ErrorListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chuck_fragment_error_list, container, false);
+        View view = inflater.inflate(R.layout.chucker_fragment_error_list, container, false);
 
         if (view instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) view;
@@ -74,7 +74,7 @@ public class ErrorListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.chuck_errors_list, menu);
+        inflater.inflate(R.menu.chucker_errors_list, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -93,15 +93,15 @@ public class ErrorListFragment extends Fragment {
 
     private void askForConfirmation() {
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.chuck_clear)
-                .setMessage(R.string.chuck_clear_error_confirmation)
-                .setPositiveButton(R.string.chuck_clear, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.chucker_clear)
+                .setMessage(R.string.chucker_clear_error_confirmation)
+                .setPositiveButton(R.string.chucker_clear, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     RepositoryProvider.throwable().deleteAllThrowables();
                     }
                 })
-                .setNegativeButton(R.string.chuck_cancel, null)
+                .setNegativeButton(R.string.chucker_cancel, null)
                 .show();
     }
 }

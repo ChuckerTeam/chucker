@@ -46,7 +46,7 @@ public class ErrorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chuck_activity_error);
+        setContentView(R.layout.chucker_activity_error);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,7 +83,7 @@ public class ErrorActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chuck_error, menu);
+        inflater.inflate(R.menu.chucker_error, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -98,7 +98,7 @@ public class ErrorActivity extends AppCompatActivity {
     }
 
     private void share(RecordedThrowable throwable) {
-        String text = getString(R.string.chuck_share_error_content,
+        String text = getString(R.string.chucker_share_error_content,
                 DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(throwable.getDate()),
                 throwable.getClazz(),
                 throwable.getTag(),
@@ -107,7 +107,7 @@ public class ErrorActivity extends AppCompatActivity {
 
         startActivity(ShareCompat.IntentBuilder.from(this)
                 .setType("text/plain")
-                .setSubject(getString(R.string.chuck_share_error_title))
+                .setSubject(getString(R.string.chucker_share_error_title))
                 .setText(text)
                 .createChooserIntent());
     }

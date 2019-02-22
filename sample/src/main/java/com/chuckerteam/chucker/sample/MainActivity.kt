@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.chuckerteam.chucker.api.Chuck
-import com.chuckerteam.chucker.api.ChuckCollector
-import com.chuckerteam.chucker.api.ChuckInterceptor
+import com.chuckerteam.chucker.api.Chucker
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import kotlinx.android.synthetic.main.activity_main.do_http
 import kotlinx.android.synthetic.main.activity_main.launch_chucker_directly
@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var collector: ChuckCollector
+    private lateinit var collector: ChuckerCollector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,31 +29,31 @@ class MainActivity : AppCompatActivity() {
         trigger_exception.setOnClickListener { triggerException() }
 
         with(launch_chucker_directly) {
-            visibility = if (Chuck.isOp()) View.VISIBLE else View.GONE
-            setOnClickListener { launchChuckDirectly() }
+            visibility = if (Chucker.isOp()) View.VISIBLE else View.GONE
+            setOnClickListener { launchChuckerDirectly() }
         }
 
-        collector = ChuckCollector(this)
+        collector = ChuckerCollector(this)
                 .showNotification(true)
-                .retentionManager(RetentionManager(this, ChuckCollector.Period.ONE_HOUR))
+                .retentionManager(RetentionManager(this, ChuckerCollector.Period.ONE_HOUR))
 
-        Chuck.registerDefaultCrashHanlder(collector)
+        Chucker.registerDefaultCrashHanlder(collector)
     }
 
     private fun getClient(context: Context): OkHttpClient {
-        val chuckInterceptor = ChuckInterceptor(context, collector)
+        val chuckerInterceptor = ChuckerInterceptor(context, collector)
                 .maxContentLength(250000L)
 
         return OkHttpClient.Builder()
-                // Add a ChuckInterceptor instance to your OkHttp client
-                .addInterceptor(chuckInterceptor)
+                // Add a ChuckerInterceptor instance to your OkHttp client
+                .addInterceptor(chuckerInterceptor)
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
     }
 
-    private fun launchChuckDirectly() {
-        // Optionally launch Chuck directly from your own app UI
-        startActivity(Chuck.getLaunchIntent(this, Chuck.SCREEN_HTTP))
+    private fun launchChuckerDirectly() {
+        // Optionally launch Chucker directly from your own app UI
+        startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP))
     }
 
     private fun doHttpActivity() {
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun triggerException() {
         collector.onError("Example button pressed", RuntimeException("User triggered the button"))
-        // You can also throw exception, it will be caught thanks to "Chuck.registerDefaultCrashHanlder"
+        // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHanlder"
         // throw new RuntimeException("User triggered the button");
     }
 }

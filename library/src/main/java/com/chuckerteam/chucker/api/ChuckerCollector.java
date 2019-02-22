@@ -7,7 +7,7 @@ import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowable;
 import com.chuckerteam.chucker.api.internal.support.NotificationHelper;
 
-public class ChuckCollector {
+public class ChuckerCollector {
 
     private static final Period DEFAULT_RETENTION = Period.ONE_WEEK;
 
@@ -16,7 +16,7 @@ public class ChuckCollector {
 
     private boolean showNotification;
 
-    public ChuckCollector(Context context) {
+    public ChuckerCollector(Context context) {
         notificationHelper = new NotificationHelper(context);
         showNotification = true;
         RepositoryProvider.initialize(context);
@@ -37,7 +37,7 @@ public class ChuckCollector {
 
     /**
      * Call this method when you received the response of an HTTP request.
-     * It must be called after {@link ChuckCollector#onRequestSent}.
+     * It must be called after {@link ChuckerCollector#onRequestSent}.
      * @param transaction The sent HTTP transaction completed with the response
      */
     public void onResponseReceived(HttpTransaction transaction) {
@@ -65,9 +65,9 @@ public class ChuckCollector {
      * Control whether a notification is shown while HTTP activity is recorded.
      *
      * @param showNotification true to show a notification, false to suppress it.
-     * @return The {@link ChuckInterceptor} instance.
+     * @return The {@link ChuckerInterceptor} instance.
      */
-    public ChuckCollector showNotification(boolean showNotification) {
+    public ChuckerCollector showNotification(boolean showNotification) {
         this.showNotification = showNotification;
         return this;
     }
@@ -77,9 +77,9 @@ public class ChuckCollector {
      * The default is one week.
      *
      * @param retentionManager the manager of retention of stored transactions and errors.
-     * @return The {@link ChuckInterceptor} instance.
+     * @return The {@link ChuckerInterceptor} instance.
      */
-    public ChuckCollector retentionManager(RetentionManager retentionManager) {
+    public ChuckerCollector retentionManager(RetentionManager retentionManager) {
         this.retentionManager = retentionManager;
         return this;
     }

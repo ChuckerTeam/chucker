@@ -19,15 +19,15 @@
     <application>
         <activity
             android:name="com.chuckerteam.chucker.api.internal.ui.MainActivity"
-            android:label="@string/chuck_name"
+            android:label="@string/chucker_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.chuckerteam.chucker.task"
-            android:theme="@style/Chuck.Theme" />
+            android:theme="@style/Chucker.Theme" />
         <activity android:name="com.chuckerteam.chucker.api.internal.ui.transaction.TransactionActivity"
-            android:theme="@style/Chuck.Theme"
+            android:theme="@style/Chucker.Theme"
             android:parentActivityName="com.chuckerteam.chucker.api.internal.ui.MainActivity"/>
         <activity android:name="com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity"
-            android:theme="@style/Chuck.Theme"
+            android:theme="@style/Chucker.Theme"
             android:parentActivityName="com.chuckerteam.chucker.api.internal.ui.MainActivity" />
 
         <service

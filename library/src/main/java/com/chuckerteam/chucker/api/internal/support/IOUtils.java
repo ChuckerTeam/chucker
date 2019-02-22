@@ -54,10 +54,10 @@ public class IOUtils {
         try {
             body = buffer.readString(maxBytes, charset);
         } catch (EOFException e) {
-            body += context.getString(R.string.chuck_body_unexpected_eof);
+            body += context.getString(R.string.chucker_body_unexpected_eof);
         }
         if (bufferSize > maxContentLength) {
-            body += context.getString(R.string.chuck_body_content_truncated);
+            body += context.getString(R.string.chucker_body_content_truncated);
         }
         return body;
     }

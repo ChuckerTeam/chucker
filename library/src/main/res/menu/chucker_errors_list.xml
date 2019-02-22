@@ -15,10 +15,13 @@
  ~ limitations under the License.
  -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/share_text"
-        android:icon="@drawable/chuck_ic_share_white_24dp"
-        android:title="@string/chuck_share"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <item android:title="@string/chucker_clear"
+        android:id="@+id/clear"
+        android:icon="@drawable/chucker_ic_delete_white_24dp"
         app:showAsAction="always" />
+    <item android:title="@string/chucker_browse_sql_database"
+        android:id="@+id/browse_sql"
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

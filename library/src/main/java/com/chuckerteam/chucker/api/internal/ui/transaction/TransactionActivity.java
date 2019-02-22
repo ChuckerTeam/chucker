@@ -37,12 +37,12 @@ import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.api.internal.support.FormatUtils;
 import com.chuckerteam.chucker.api.internal.support.SimpleOnPageChangedListener;
-import com.chuckerteam.chucker.api.internal.ui.BaseChuckActivity;
+import com.chuckerteam.chucker.api.internal.ui.BaseChuckerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionActivity extends BaseChuckActivity {
+public class TransactionActivity extends BaseChuckerActivity {
 
     private static final String ARG_TRANSACTION_ID = "transaction_id";
     private static int selectedTabPosition = 0;
@@ -62,7 +62,7 @@ public class TransactionActivity extends BaseChuckActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chuck_activity_transaction);
+        setContentView(R.layout.chucker_activity_transaction);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,7 +97,7 @@ public class TransactionActivity extends BaseChuckActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chuck_transaction, menu);
+        inflater.inflate(R.menu.chucker_transaction, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -125,9 +125,9 @@ public class TransactionActivity extends BaseChuckActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new TransactionOverviewFragment(), getString(R.string.chuck_overview));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.chuck_request));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.chuck_response));
+        adapter.addFragment(new TransactionOverviewFragment(), getString(R.string.chucker_overview));
+        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.chucker_request));
+        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.chucker_response));
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override

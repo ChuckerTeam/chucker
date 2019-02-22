@@ -15,12 +15,12 @@
  ~ limitations under the License.
  -->
 <resources>
-    <style name="Chuck.TextAppearance.ListItem" parent="android:TextAppearance">
+    <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="Chuck.TextAppearance.Label" parent="android:TextAppearance.Small">
+    <style name="Chucker.TextAppearance.Label" parent="android:TextAppearance.Small">
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
