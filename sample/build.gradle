@@ -8,7 +8,7 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        applicationId "com.readystatesoftware.chuck.sample"
+        applicationId "com.chuckerteam.chucker.sample"
         versionCode 1
         versionName "1.0"
     }

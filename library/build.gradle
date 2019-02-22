@@ -28,7 +28,7 @@ dokka {
     skipEmptyPackages = true
 
     packageOptions {
-        prefix = "com.readystatesoftware.chuck.internal"
+        prefix = "com.chuckerteam.chucker.internal"
         suppress = true
     }
 }

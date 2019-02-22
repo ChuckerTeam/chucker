@@ -15,23 +15,23 @@
  ~ limitations under the License.
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.readystatesoftware.chuck">
+    package="com.chuckerteam.chucker">
     <application>
         <activity
-            android:name=".internal.ui.MainActivity"
+            android:name="com.chuckerteam.chucker.api.internal.ui.MainActivity"
             android:label="@string/chuck_name"
             android:launchMode="singleTask"
-            android:taskAffinity="com.readystatesoftware.chuck.task"
+            android:taskAffinity="com.chuckerteam.chucker.task"
             android:theme="@style/Chuck.Theme" />
-        <activity android:name=".internal.ui.transaction.TransactionActivity"
+        <activity android:name="com.chuckerteam.chucker.api.internal.ui.transaction.TransactionActivity"
             android:theme="@style/Chuck.Theme"
-            android:parentActivityName=".internal.ui.MainActivity"/>
-        <activity android:name=".internal.ui.error.ErrorActivity"
+            android:parentActivityName="com.chuckerteam.chucker.api.internal.ui.MainActivity"/>
+        <activity android:name="com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity"
             android:theme="@style/Chuck.Theme"
-            android:parentActivityName=".internal.ui.MainActivity" />
+            android:parentActivityName="com.chuckerteam.chucker.api.internal.ui.MainActivity" />
 
         <service
-            android:name=".internal.support.ClearTransactionsService"
+            android:name="com.chuckerteam.chucker.api.internal.support.ClearTransactionsService"
             android:exported="false" />
     </application>
 </manifest>

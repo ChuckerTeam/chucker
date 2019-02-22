@@ -20,7 +20,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/doub_grid_size"
-    tools:context="com.readystatesoftware.chuck.sample.MainActivity">
+    tools:context="com.chuckerteam.chucker.sample.MainActivity">
 
     <TextView
         android:layout_width="match_parent"
