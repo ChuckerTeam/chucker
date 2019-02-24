@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowableTuple;
 import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
-import com.chuckerteam.chucker.api.internal.support.SQLiteUtils;
 
 import java.util.List;
 
@@ -82,9 +81,6 @@ public class ErrorListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear) {
             askForConfirmation();
-            return true;
-        } else if (item.getItemId() == R.id.browse_sql) {
-            SQLiteUtils.browseDatabase(getContext());
             return true;
         } else {
             return super.onOptionsItemSelected(item);

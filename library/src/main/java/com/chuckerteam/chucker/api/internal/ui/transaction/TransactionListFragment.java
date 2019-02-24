@@ -40,7 +40,6 @@ import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransactionTuple;
 import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.api.internal.support.NotificationHelper;
-import com.chuckerteam.chucker.api.internal.support.SQLiteUtils;
 
 import java.util.List;
 
@@ -97,9 +96,6 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear) {
             askForConfirmation();
-            return true;
-        } else if (item.getItemId() == R.id.browse_sql) {
-            SQLiteUtils.browseDatabase(getContext());
             return true;
         } else {
             return super.onOptionsItemSelected(item);

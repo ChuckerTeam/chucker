@@ -19,7 +19,6 @@
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
     <string name="chucker_clear">Clear</string>
     <string name="chucker_cancel">Cancel</string>
-    <string name="chucker_browse_sql_database">Browse SQLite database</string>
     <string name="chucker_overview">Overview</string>
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
