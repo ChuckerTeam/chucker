@@ -194,7 +194,7 @@ internal class HttpTransaction(
         this.url = url
         val uri = Uri.parse(url)
         host = uri.host
-        path = ("${uri.path}${if (uri.query != null) "?" else ""}${uri.query}").toString()
+        path = ("${uri.path}${uri.query?.let { "?$it" } ?: ""}")
         scheme = uri.scheme
         return this
     }
