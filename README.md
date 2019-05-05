@@ -1,6 +1,6 @@
 # Chucker
 
-[![Download](https://api.bintray.com/packages/olivierperez/Chucker/Chucker%3Alibrary/images/download.svg) ](https://bintray.com/olivierperez/Chucker/Chucker%3Alibrary/_latestVersion) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
+[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 
 <p align="center">
   <img src="https://i.imgur.com/GXoIFZ6.png" alt="chucker icon" width="30%"/>
@@ -34,14 +34,14 @@ Add the dependency in your `build.gradle` file. Add it alongside the `no-op` var
 
 ```gradle
 repositories {
-    jcenter()
+    maven { url 'https://jitpack.io' }
 }
 ```
 
 ```gradle
 dependencies {
-  debugImplementation 'fr.o80.chucker:library:2.0.4'
-  releaseImplementation 'fr.o80.chucker:library-no-op:2.0.4'
+  debugImplementation 'com.github.chuckerteam.chucker:library:2.0.4'
+  releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:2.0.4'
 }
 ```
 
@@ -81,7 +81,7 @@ try {
 
 # Snapshots
 
-Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can switch to the development branch by using artifacts available on [jitpack.io](https://jitpack.io/#ChuckerTeam/chucker)
+Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You get get `SNAPSHOT` versions directly from Jitpack if needed.
 
 ```gradle
 repositories {
@@ -98,7 +98,7 @@ dependencies {
 
 ⚠ Please note that the latest snapshot might be **unstable**. Use it at your own risk :)
 
-If you're looking for the latest version source code, you can always find it on the top of the `master` branch.
+If you're looking for the **latest version source code**, you can always find it on the top of the `master` branch.
 
 # FAQ
 
