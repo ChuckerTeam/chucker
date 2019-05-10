@@ -3,7 +3,6 @@ buildscript {
         androidGradleVersion = '3.4.0'
         androidMavenGradleVersion = '2.1'
         constraintLayoutVersion = '1.1.3'
-        cupboardVersion= '2.2.0'
         dokkaVersion = '0.9.17'
         gradleBintrayVersion = '1.8.4'
         gsonVersion = '2.8.5'
