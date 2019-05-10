@@ -81,7 +81,7 @@ try {
 
 # Snapshots
 
-Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You get get `SNAPSHOT` versions directly from Jitpack if needed.
+Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can get `SNAPSHOT` versions directly from Jitpack if needed.
 
 ```gradle
 repositories {
