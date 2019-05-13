@@ -45,24 +45,48 @@ dependencies {
 }
 ```
 
-In your application code, create an instance of `ChuckerInterceptor` and its `ChuckerCollector` (you'll need to provide it with a `Context`, because Android) and add it as an interceptor when building your OkHttp client:
+To start using Chucker, just plug it a new `ChuckerInterceptor` to your OkHttp Client Builder:
 
-```java
-// Collector
-ChuckerCollector collector = new ChuckerCollector(this)
-    .showNotification(true)
-    .retentionManager(new RetentionManager(this, ChuckerCollector.Period.ONE_HOUR));
-
-// Interceptor
-ChuckerInterceptor chuckerInterceptor = new ChuckerInterceptor(context, collector)
-    .maxContentLength(250000L);
-
-OkHttpClient client = new OkHttpClient.Builder()
-  .addInterceptor(chuckerInterceptor)
-  .build();
+```kotlin
+val client = OkHttpClient.Builder()
+                .addInterceptor(ChuckerInterceptor(context))
+                .build()
 ```
 
-That's it! Chucker will now record all HTTP interactions made by your OkHttp client. You can optionally disable the notification by calling `showNotification(false)` on the collector object, and launch the Chucker UI directly within your app with the intent from `Chucker.getLaunchIntent()`.
+That's it! 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
+
+# Customize
+
+You can customize chucker providing an instance of a `ChuckerCollector`:
+
+```kotlin
+// Create the Collector
+val chuckerCollector = ChuckerCollector(
+        context = this,
+        // Toggles visibility of the push notification
+        showNotification = true,
+        // Allows to customize the retention period of collected data
+        retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
+)
+
+// Create the Interceptor
+val chuckerInterceptor = ChuckerInterceptor(
+        context = this,
+        // The previously created Collector
+        collector = chuckerCollector,
+        // The max body content length, after this responses will be truncated.
+        maxContentLength = 250000L,
+        // List of headers to obfuscate in the Chucker UI
+        headersToRedact = listOf("Auth-Token"))
+
+// You can use `onError` on the collector to report Throwables.
+chuckerCollector.onError("Sample", RuntimeException("Just a triggered exception"))
+
+// Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
+val client = OkHttpClient.Builder()
+        .addInterceptor(chuckerInterceptor)
+        .build()
+```
 
 For errors gathering you can directly use the same collector:
 
