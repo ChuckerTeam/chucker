@@ -29,20 +29,25 @@ class MainActivity : AppCompatActivity() {
         trigger_exception.setOnClickListener { triggerException() }
 
         with(launch_chucker_directly) {
-            visibility = if (Chucker.isOp()) View.VISIBLE else View.GONE
+            visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             setOnClickListener { launchChuckerDirectly() }
         }
 
-        collector = ChuckerCollector(this)
-                .showNotification(true)
-                .retentionManager(RetentionManager(this, ChuckerCollector.Period.ONE_HOUR))
+        ChuckerCollector(this).showNotification = true
+
+        collector = ChuckerCollector(
+                context = this,
+                showNotification = true,
+                retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR))
 
         Chucker.registerDefaultCrashHanlder(collector)
     }
 
     private fun getClient(context: Context): OkHttpClient {
-        val chuckerInterceptor = ChuckerInterceptor(context, collector)
-                .maxContentLength(250000L)
+        val chuckerInterceptor = ChuckerInterceptor(
+                context = context,
+                collector = collector,
+                maxContentLength = 250000L)
 
         return OkHttpClient.Builder()
                 // Add a ChuckerInterceptor instance to your OkHttp client
