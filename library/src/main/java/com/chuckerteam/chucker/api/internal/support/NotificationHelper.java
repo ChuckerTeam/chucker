@@ -51,6 +51,12 @@ public class NotificationHelper {
     }
 
     private static synchronized void addToBuffer(HttpTransaction transaction) {
+        if (transaction.getId() == 0) {
+            // Don't store Transactions with an invalid ID (0).
+            // Transaction with an Invalid ID will be shown twice in the notification
+            // with both the invalid and the valid ID and we want to avoid this.
+            return;
+        }
         if (transaction.getStatus() == HttpTransaction.Status.Requested) {
             transactionCount++;
         }
