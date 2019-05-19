@@ -9,7 +9,7 @@ import java.io.IOException
  * No-op implementation.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
-        context: Context?,
+        context: Context,
         collector: Any? = null,
         maxContentLength: Any? = null,
         headersToRedact: Any? = null

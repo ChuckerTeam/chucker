@@ -13,7 +13,7 @@ object Chucker {
 
     val isOp = false
 
-    @JvmStatic fun getLaunchIntent(context: Context?, screen: Int): Intent {
+    @JvmStatic fun getLaunchIntent(context: Context, screen: Int): Intent {
         return Intent()
     }
 
