@@ -6,7 +6,7 @@ import android.content.Context
  * No-op implementation.
  */
 class RetentionManager @JvmOverloads constructor(
-        context: Context?,
+        context: Context,
         retentionPeriod: Any? = null
 ) {
 
