@@ -20,16 +20,13 @@ class RetentionManager @JvmOverloads constructor(
         retentionPeriod: Period = Period.ONE_WEEK
 ) {
 
-    // The actual retention period in milliseconds (default to
-    private val period: Long
+    // The actual retention period in milliseconds (default to ONE_WEEK)
+    private val period: Long = toMillis(retentionPeriod)
     // How often the cleanup should happen
     private val cleanupFrequency: Long
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
 
     init {
-        period = toMillis(retentionPeriod)
-        prefs = context.getSharedPreferences(PREFS_NAME, 0)
-
         cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR)
             TimeUnit.MINUTES.toMillis(30)
         else
