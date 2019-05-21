@@ -37,7 +37,7 @@ import com.chuckerteam.chucker.api.Chucker.LOG_TAG
  * results.
  * @param headersToRedact
  */
-class ChuckerInterceptor constructor(
+class ChuckerInterceptor @JvmOverloads constructor(
         private val context: Context,
         private val collector: ChuckerCollector = ChuckerCollector(context),
         private val maxContentLength : Long = 250000L,
