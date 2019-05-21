@@ -2,29 +2,19 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.util.Log
-
+import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.api.internal.support.IOUtils
-
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.Arrays
-import java.util.TreeSet
-import java.util.concurrent.TimeUnit
-
 import okhttp3.Headers
 import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.Response
-import okhttp3.ResponseBody
 import okhttp3.internal.http.HttpHeaders
 import okio.Buffer
 import okio.BufferedSource
-
-import com.chuckerteam.chucker.api.Chucker.LOG_TAG
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
