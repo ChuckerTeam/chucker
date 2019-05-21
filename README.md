@@ -40,8 +40,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation 'com.github.chuckerteam.chucker:library:2.0.4'
-  releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:2.0.4'
+  debugImplementation 'com.github.ChuckerTeam.Chucker:library:2.0.4'
+  releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:2.0.4'
 }
 ```
 
@@ -115,8 +115,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation 'com.github.chuckerteam.chucker:library:develop-SNAPSHOT'
-  releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT'
+  debugImplementation 'com.github.ChuckerTeam.Chucker:library:develop-SNAPSHOT'
+  releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:develop-SNAPSHOT'
 }
 ```
 
