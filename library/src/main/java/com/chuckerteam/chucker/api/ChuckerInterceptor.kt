@@ -35,7 +35,8 @@ import com.chuckerteam.chucker.api.Chucker.LOG_TAG
  * @param maxContentLength The maximum length for request and response content
  * before they are truncated. Warning: setting this value too high may cause unexpected
  * results.
- * @param headersToRedact
+ * @param headersToRedact List of headers that you want to redact. They will be not be shown in
+ * the ChuckerUI but will be replaced with a `**`.
  */
 class ChuckerInterceptor constructor(
         private val context: Context,
