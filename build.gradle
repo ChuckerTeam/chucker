@@ -18,6 +18,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+        gradlePluginPortal()
     }
 
     dependencies {
@@ -27,6 +28,8 @@ buildscript {
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0-RC14"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:8.0.0"
     }
 }
 
