@@ -48,8 +48,11 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
         headers = view.findViewById<View>(R.id.headers) as TextView
         body = view.findViewById<View>(R.id.body) as TextView
@@ -81,10 +84,16 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private fun populateUI() {
         if (isAdded && transaction != null) {
             when (type) {
-                TYPE_REQUEST -> setText(transaction!!.getRequestHeadersString(true),
-                                        transaction!!.getFormattedRequestBody(), transaction!!.isRequestBodyPlainText)
-                TYPE_RESPONSE -> setText(transaction!!.getResponseHeadersString(true),
-                                         transaction!!.getFormattedResponseBody(), transaction!!.isResponseBodyPlainText)
+                TYPE_REQUEST -> setText(
+                    transaction!!.getRequestHeadersString(true),
+                    transaction!!.getFormattedRequestBody(),
+                    transaction!!.isRequestBodyPlainText
+                )
+                TYPE_RESPONSE -> setText(
+                    transaction!!.getResponseHeadersString(true),
+                    transaction!!.getFormattedResponseBody(),
+                    transaction!!.isResponseBodyPlainText
+                )
             }
         }
     }
@@ -98,7 +107,6 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             body.text = bodyString
         }
         originalBody = body.text.toString()
-
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {

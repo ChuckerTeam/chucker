@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.chuckerteam.chucker.api.internal.data.entity
 
 import android.arch.persistence.room.ColumnInfo
@@ -5,11 +7,11 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.net.Uri
-import com.google.gson.reflect.TypeToken
 import com.chuckerteam.chucker.api.internal.support.FormatUtils
 import com.chuckerteam.chucker.api.internal.support.JsonConvertor
-import okhttp3.Headers
+import com.google.gson.reflect.TypeToken
 import java.util.ArrayList
+import okhttp3.Headers
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -17,54 +19,55 @@ import java.util.ArrayList
  */
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
-        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
-        @ColumnInfo(name = "requestDate") var requestDate: Long?,
-        @ColumnInfo(name = "responseDate") var responseDate: Long?,
-        @ColumnInfo(name = "tookMs") var tookMs: Long?,
-        @ColumnInfo(name = "protocol") var protocol: String?,
-        @ColumnInfo(name = "method") var method: String?,
-        @ColumnInfo(name = "url") var url: String?,
-        @ColumnInfo(name = "host") var host: String?,
-        @ColumnInfo(name = "path") var path: String?,
-        @ColumnInfo(name = "scheme") var scheme: String?,
-        @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
-        @ColumnInfo(name = "requestContentType") var requestContentType: String?,
-        @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
-        @ColumnInfo(name = "requestBody") var requestBody: String?,
-        @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = true,
-        @ColumnInfo(name = "responseCode") var responseCode: Int?,
-        @ColumnInfo(name = "responseMessage") var responseMessage: String?,
-        @ColumnInfo(name = "error") var error: String?,
-        @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
-        @ColumnInfo(name = "responseContentType") var responseContentType: String?,
-        @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
-        @ColumnInfo(name = "responseBody") var responseBody: String?,
-        @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
+    @ColumnInfo(name = "requestDate") var requestDate: Long?,
+    @ColumnInfo(name = "responseDate") var responseDate: Long?,
+    @ColumnInfo(name = "tookMs") var tookMs: Long?,
+    @ColumnInfo(name = "protocol") var protocol: String?,
+    @ColumnInfo(name = "method") var method: String?,
+    @ColumnInfo(name = "url") var url: String?,
+    @ColumnInfo(name = "host") var host: String?,
+    @ColumnInfo(name = "path") var path: String?,
+    @ColumnInfo(name = "scheme") var scheme: String?,
+    @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
+    @ColumnInfo(name = "requestContentType") var requestContentType: String?,
+    @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
+    @ColumnInfo(name = "requestBody") var requestBody: String?,
+    @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = true,
+    @ColumnInfo(name = "responseCode") var responseCode: Int?,
+    @ColumnInfo(name = "responseMessage") var responseMessage: String?,
+    @ColumnInfo(name = "error") var error: String?,
+    @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
+    @ColumnInfo(name = "responseContentType") var responseContentType: String?,
+    @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
+    @ColumnInfo(name = "responseBody") var responseBody: String?,
+    @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true
 
 ) {
 
     @Ignore
     constructor() : this(
-            requestDate = null,
-            responseDate = null,
-            tookMs = null,
-            protocol = null,
-            method = null,
-            url = null,
-            host = null,
-            path = null,
-            scheme = null,
-            requestContentLength = null,
-            requestContentType = null,
-            requestHeaders = null,
-            requestBody = null,
-            responseCode = null,
-            responseMessage = null,
-            error = null,
-            responseContentLength = null,
-            responseContentType = null,
-            responseHeaders = null,
-            responseBody = null)
+        requestDate = null,
+        responseDate = null,
+        tookMs = null,
+        protocol = null,
+        method = null,
+        url = null,
+        host = null,
+        path = null,
+        scheme = null,
+        requestContentLength = null,
+        requestContentType = null,
+        requestHeaders = null,
+        requestBody = null,
+        responseCode = null,
+        responseMessage = null,
+        error = null,
+        responseContentLength = null,
+        responseContentType = null,
+        responseHeaders = null,
+        responseBody = null
+    )
 
     enum class Status {
         Requested,
@@ -122,7 +125,6 @@ internal class HttpTransaction(
     val isSsl: Boolean
         get() = scheme?.toLowerCase() == "https"
 
-
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))
     }
@@ -132,16 +134,19 @@ internal class HttpTransaction(
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(requestHeaders,
-                object : TypeToken<List<HttpHeader>>() {
-
-                }.type)
+        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(
+            requestHeaders,
+            object : TypeToken<List<HttpHeader>>() {
+            }.type
+        )
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
-        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(responseHeaders,
-                object : TypeToken<List<HttpHeader>>() {
-                }.type)
+        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(
+            responseHeaders,
+            object : TypeToken<List<HttpHeader>>() {
+            }.type
+        )
     }
 
     fun getRequestHeadersString(withMarkup: Boolean): String {
@@ -162,7 +167,7 @@ internal class HttpTransaction(
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
         val httpHeaders = ArrayList<HttpHeader>()
-        for (i in 0 until headers.size()){
+        for (i in 0 until headers.size()) {
             httpHeaders.add(HttpHeader(headers.name(i), headers.value(i)))
         }
         return httpHeaders
@@ -198,5 +203,4 @@ internal class HttpTransaction(
         scheme = uri.scheme
         return this
     }
-
 }

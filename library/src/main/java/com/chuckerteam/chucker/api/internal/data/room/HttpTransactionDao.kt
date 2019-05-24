@@ -12,13 +12,22 @@ import com.chuckerteam.chucker.api.internal.data.entity.HttpTransactionTuple
 @Dao
 internal interface HttpTransactionDao {
 
-    @Query("SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, requestContentLength, responseContentLength, error FROM transactions ORDER BY requestDate DESC")
+    @Query(
+        "SELECT id, requestDate, tookMs, protocol, method, host, " +
+            "path, scheme, responseCode, requestContentLength, responseContentLength, error FROM " +
+            "transactions ORDER BY requestDate DESC"
+    )
     fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
 
-    @Query("SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, requestContentLength, responseContentLength, error FROM transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery ORDER BY requestDate DESC")
+    @Query(
+        "SELECT id, requestDate, tookMs, protocol, method, host, " +
+            "path, scheme, responseCode, requestContentLength, responseContentLength, error FROM " +
+            "transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
+            "ORDER BY requestDate DESC"
+    )
     fun getFilteredTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
 
-    @Insert()
+    @Insert
     fun insert(transaction: HttpTransaction): Long?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -32,5 +41,4 @@ internal interface HttpTransactionDao {
 
     @Query("DELETE FROM transactions WHERE requestDate <= :threshold")
     fun deleteBefore(threshold: Long)
-
 }

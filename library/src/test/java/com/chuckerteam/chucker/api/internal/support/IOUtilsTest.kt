@@ -1,11 +1,11 @@
 package com.chuckerteam.chucker.api.internal.support
 
+import java.util.stream.Stream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
 
 /**
  * @author Olivier Perez
@@ -29,11 +29,12 @@ internal class IOUtilsTest {
         @JvmStatic
         fun supportedEncodingSource(): Stream<Arguments> {
             return Stream.of(
-                    Arguments.of(null, true),
-                    Arguments.of("", true),
-                    Arguments.of("identity", true),
-                    Arguments.of("gzip", true),
-                    Arguments.of("other", false))
+                Arguments.of(null, true),
+                Arguments.of("", true),
+                Arguments.of("identity", true),
+                Arguments.of("gzip", true),
+                Arguments.of("other", false)
+            )
         }
     }
 }

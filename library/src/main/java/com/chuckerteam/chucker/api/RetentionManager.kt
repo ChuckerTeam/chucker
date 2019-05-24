@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
-
 import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider
-
 import java.util.concurrent.TimeUnit
 
 /**
@@ -15,9 +13,10 @@ import java.util.concurrent.TimeUnit
  * @param context An Android Context
  * @param retentionPeriod A [Period] to specify the retention of data. Default 1 week.
  */
+@Suppress("MagicNumber")
 class RetentionManager @JvmOverloads constructor(
-        context: Context,
-        retentionPeriod: Period = Period.ONE_WEEK
+    context: Context,
+    retentionPeriod: Period = Period.ONE_WEEK
 ) {
 
     // The actual retention period in milliseconds (default to ONE_WEEK)

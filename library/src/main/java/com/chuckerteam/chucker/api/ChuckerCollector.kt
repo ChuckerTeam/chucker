@@ -18,9 +18,9 @@ import com.chuckerteam.chucker.api.internal.support.NotificationHelper
  * by this collector. The default is one week.
  */
 class ChuckerCollector @JvmOverloads constructor(
-        context: Context,
-        var showNotification: Boolean = true,
-        var retentionManager: RetentionManager = RetentionManager(context)
+    context: Context,
+    var showNotification: Boolean = true,
+    var retentionManager: RetentionManager = RetentionManager(context)
 ) {
 
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
@@ -31,7 +31,7 @@ class ChuckerCollector @JvmOverloads constructor(
 
     /**
      * Call this method when a throwable is triggered and you want to record it.
-     * @param tag       A tag you choose
+     * @param tag A tag you choose
      * @param throwable The triggered [Throwable]
      */
     fun onError(tag: String, throwable: Throwable) {
