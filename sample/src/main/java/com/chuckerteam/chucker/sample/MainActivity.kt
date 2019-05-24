@@ -17,6 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@Suppress("MagicNumber")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var collector: ChuckerCollector
@@ -36,24 +37,26 @@ class MainActivity : AppCompatActivity() {
         ChuckerCollector(this).showNotification = true
 
         collector = ChuckerCollector(
-                context = this,
-                showNotification = true,
-                retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR))
+            context = this,
+            showNotification = true,
+            retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
+        )
 
         Chucker.registerDefaultCrashHanlder(collector)
     }
 
     private fun getClient(context: Context): OkHttpClient {
         val chuckerInterceptor = ChuckerInterceptor(
-                context = context,
-                collector = collector,
-                maxContentLength = 250000L)
+            context = context,
+            collector = collector,
+            maxContentLength = 250000L
+        )
 
         return OkHttpClient.Builder()
-                // Add a ChuckerInterceptor instance to your OkHttp client
-                .addInterceptor(chuckerInterceptor)
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build()
+            // Add a ChuckerInterceptor instance to your OkHttp client
+            .addInterceptor(chuckerInterceptor)
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
     }
 
     private fun launchChuckerDirectly() {

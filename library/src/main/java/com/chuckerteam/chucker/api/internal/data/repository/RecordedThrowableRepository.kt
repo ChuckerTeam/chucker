@@ -13,14 +13,11 @@ internal interface RecordedThrowableRepository {
 
     fun saveThrowable(throwable: RecordedThrowable)
 
-
     fun deleteOldThrowables(threshold: Long)
 
     fun deleteAllThrowables()
 
-
     fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>>
 
-    fun getRecordedThrowable(id: Long) : LiveData<RecordedThrowable>
-
+    fun getRecordedThrowable(id: Long): LiveData<RecordedThrowable>
 }

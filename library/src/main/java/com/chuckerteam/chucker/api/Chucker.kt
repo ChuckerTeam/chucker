@@ -3,7 +3,6 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import android.content.Intent
 import android.support.annotation.IntDef
-
 import com.chuckerteam.chucker.api.internal.support.ChuckerCrashHandler
 import com.chuckerteam.chucker.api.internal.support.NotificationHelper
 import com.chuckerteam.chucker.api.internal.ui.MainActivity
@@ -28,8 +27,8 @@ object Chucker {
     @JvmStatic
     fun getLaunchIntent(context: Context, @Screen screen: Int): Intent {
         return Intent(context, MainActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(MainActivity.EXTRA_SCREEN, screen)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .putExtra(MainActivity.EXTRA_SCREEN, screen)
     }
 
     /**

@@ -7,7 +7,9 @@ import com.chuckerteam.chucker.api.internal.data.room.ChuckerDatabase
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-internal class RecordedThrowableDatabaseRepository(private val database: ChuckerDatabase) : RecordedThrowableRepository {
+internal class RecordedThrowableDatabaseRepository(
+    private val database: ChuckerDatabase
+) : RecordedThrowableRepository {
 
     private val executor: Executor = Executors.newSingleThreadExecutor()
 

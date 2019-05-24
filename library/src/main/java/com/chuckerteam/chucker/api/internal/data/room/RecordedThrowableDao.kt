@@ -24,5 +24,4 @@ internal interface RecordedThrowableDao {
 
     @Query("DELETE FROM throwables WHERE date <= :threshold")
     fun deleteBefore(threshold: Long)
-
 }

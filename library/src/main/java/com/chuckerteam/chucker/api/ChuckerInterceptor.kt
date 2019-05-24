@@ -5,16 +5,16 @@ import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.api.internal.support.IOUtils
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.internal.http.HttpHeaders
 import okio.Buffer
 import okio.BufferedSource
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit
  * the ChuckerUI but will be replaced with a `**`.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
-        private val context: Context,
-        private val collector: ChuckerCollector = ChuckerCollector(context),
-        private val maxContentLength : Long = 250000L,
-        private val headersToRedact : MutableList<String> = mutableListOf()
+    private val context: Context,
+    private val collector: ChuckerCollector = ChuckerCollector(context),
+    private val maxContentLength: Long = 250000L,
+    private val headersToRedact: MutableList<String> = mutableListOf()
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
@@ -42,6 +42,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     @Throws(IOException::class)
+    @Suppress("LongMethod", "ComplexMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val requestBody = request.body()
@@ -80,7 +81,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val response: Response
         try {
             response = chain.proceed(request)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
             throw e

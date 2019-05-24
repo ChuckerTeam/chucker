@@ -6,8 +6,8 @@ import android.content.Context
  * No-op implementation.
  */
 class RetentionManager @JvmOverloads constructor(
-        context: Context,
-        retentionPeriod: Any? = null
+    context: Context,
+    retentionPeriod: Any? = null
 ) {
 
     @Synchronized

@@ -29,10 +29,25 @@ private fun indexesOf(text: String, search: String): List<Int> {
 
 private fun applySpannable(text: String, indexes: List<Int>, length: Int): SpannableStringBuilder {
     return indexes
-            .fold(SpannableStringBuilder(text)) { builder, position ->
-                builder.setSpan(UnderlineSpan(), position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                builder.setSpan(ForegroundColorSpan(Color.RED), position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                builder.setSpan(BackgroundColorSpan(Color.YELLOW), position, position + length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                builder
-            }
+        .fold(SpannableStringBuilder(text)) { builder, position ->
+            builder.setSpan(
+                UnderlineSpan(),
+                position,
+                position + length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            builder.setSpan(
+                ForegroundColorSpan(Color.RED),
+                position,
+                position + length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            builder.setSpan(
+                BackgroundColorSpan(Color.YELLOW),
+                position,
+                position + length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            builder
+        }
 }

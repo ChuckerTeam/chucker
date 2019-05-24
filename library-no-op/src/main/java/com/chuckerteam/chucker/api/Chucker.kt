@@ -22,5 +22,4 @@ object Chucker {
     @JvmStatic fun dismissTransactionsNotification(context: Context) {}
 
     @JvmStatic fun dismissErrorsNotification(context: Context) {}
-
 }
