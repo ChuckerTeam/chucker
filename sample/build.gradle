@@ -48,3 +48,5 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }
+
+apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
