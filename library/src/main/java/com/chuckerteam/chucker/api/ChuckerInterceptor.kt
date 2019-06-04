@@ -5,6 +5,7 @@ import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.api.internal.support.IOUtils
+import com.chuckerteam.chucker.api.internal.support.hasBody
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
@@ -12,7 +13,6 @@ import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
-import okhttp3.internal.http.HttpHeaders
 import okio.Buffer
 import okio.BufferedSource
 
@@ -106,7 +106,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
-        if (HttpHeaders.hasBody(response) && responseEncodingIsSupported) {
+        if (response.hasBody() && responseEncodingIsSupported) {
             val source = getNativeSource(response)
             source.request(java.lang.Long.MAX_VALUE)
             val buffer = source.buffer()
