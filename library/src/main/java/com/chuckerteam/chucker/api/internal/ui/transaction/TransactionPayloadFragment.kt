@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.api.internal.support.hightlight
+import com.chuckerteam.chucker.api.internal.support.highlight
 
 private const val ARG_TYPE = "type"
 
@@ -115,7 +115,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank())
-            body.text = originalBody?.hightlight(newText)
+            body.text = originalBody?.highlight(newText)
         else
             body.text = originalBody
         return true

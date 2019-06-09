@@ -104,7 +104,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         void bind(final HttpTransactionTuple transaction) {
-            path.setText(transaction.getMethod() + " " + transaction.getPath());
+            path.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
             host.setText(transaction.getHost());
             start.setText(DateFormat.getTimeInstance().format(transaction.getRequestDate()));
             ssl.setVisibility(transaction.isSsl() ? View.VISIBLE : View.GONE);

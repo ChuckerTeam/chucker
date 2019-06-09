@@ -32,7 +32,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    private val headersToRedact: MutableList<String> = mutableListOf()
+    private val headersToRedact: MutableSet<String> = mutableSetOf()
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)

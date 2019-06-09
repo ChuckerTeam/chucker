@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
             setOnClickListener { launchChuckerDirectly() }
         }
 
-        ChuckerCollector(this).showNotification = true
-
         collector = ChuckerCollector(
             context = this,
             showNotification = true,

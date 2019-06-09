@@ -43,7 +43,7 @@ public class FormatUtils {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
         return String.format(Locale.US, "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
@@ -69,7 +69,7 @@ public class FormatUtils {
             Source xmlSource = new SAXSource(new InputSource(new ByteArrayInputStream(xml.getBytes())));
             StreamResult res = new StreamResult(new ByteArrayOutputStream());
             serializer.transform(xmlSource, res);
-            return new String(((ByteArrayOutputStream)res.getOutputStream()).toByteArray());
+            return new String(((ByteArrayOutputStream) res.getOutputStream()).toByteArray());
         } catch (Exception e) {
             return xml;
         }
@@ -115,13 +115,15 @@ public class FormatUtils {
         String curlCmd = "curl";
         curlCmd += " -X " + transaction.getMethod();
         List<HttpHeader> headers = transaction.getParsedRequestHeaders();
-        for (int i = 0, count = headers.size(); i < count; i++) {
-            String name = headers.get(i).getName();
-            String value = headers.get(i).getValue();
-            if ("Accept-Encoding".equalsIgnoreCase(name) && "gzip".equalsIgnoreCase(value)) {
-                compressed = true;
+        if (headers != null) {
+            for (int i = 0, count = headers.size(); i < count; i++) {
+                String name = headers.get(i).getName();
+                String value = headers.get(i).getValue();
+                if ("Accept-Encoding".equalsIgnoreCase(name) && "gzip".equalsIgnoreCase(value)) {
+                    compressed = true;
+                }
+                curlCmd += " -H " + "\"" + name + ": " + value + "\"";
             }
-            curlCmd += " -H " + "\"" + name + ": " + value + "\"";
         }
         String requestBody = transaction.getRequestBody();
         if (requestBody != null && requestBody.length() > 0) {

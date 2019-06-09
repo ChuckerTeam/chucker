@@ -12,7 +12,7 @@ import android.text.style.UnderlineSpan
  *
  * @param search the text to highlight
  */
-fun String.hightlight(search: String): CharSequence {
+fun String.highlight(search: String): CharSequence {
     val startIndexes = indexesOf(this, search)
     return applySpannable(this, startIndexes, search.length)
 }

@@ -53,7 +53,9 @@ public class ErrorActivity extends AppCompatActivity {
         title = findViewById(R.id.toolbar_title);
 
         final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         tag = findViewById(R.id.tag);
         clazz = findViewById(R.id.clazz);
