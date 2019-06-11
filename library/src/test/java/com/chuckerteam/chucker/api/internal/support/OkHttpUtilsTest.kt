@@ -1,114 +1,121 @@
 package com.chuckerteam.chucker.api.internal.support
 
+import io.mockk.every
+import io.mockk.mockk
 import okhttp3.Request
 import okhttp3.Response
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when` as whenever
-import org.mockito.Mockito.mock
 
 class OkHttpUtilsTest {
 
     @Test
     fun contentLength_withNoHeader_returnsInvalidValue() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Content-Length")).thenReturn(null)
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Content-Length") } returns null
 
         assertEquals(-1, mockResponse.contentLenght)
     }
 
     @Test
     fun contentLength_withZeroLenght_returnsZero() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Content-Length")).thenReturn("0")
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Content-Length") } returns "0"
 
         assertEquals(0L, mockResponse.contentLenght)
     }
 
     @Test
     fun contentLength_withRealLenght_returnsValue() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Content-Length")).thenReturn("42")
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Content-Length") } returns "42"
 
         assertEquals(42L, mockResponse.contentLenght)
     }
 
     @Test
     fun isChunked_withNotChunked() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Transfer-Encoding")).thenReturn("gzip")
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Transfer-Encoding") } returns "gzip"
 
-        assertEquals(false, mockResponse.isChunked)
+        assertFalse(mockResponse.isChunked)
     }
 
     @Test
     fun isChunked_withNoTransferEncoding() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Content-Length")).thenReturn(null)
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Content-Length") } returns null
+        every { mockResponse.header("Transfer-Encoding") } returns null
 
-        assertEquals(false, mockResponse.isChunked)
+        assertFalse(mockResponse.isChunked)
     }
 
     @Test
     fun isChunked_withChunked() {
-        val mockResponse = mock(Response::class.java)
-        whenever(mockResponse.header("Transfer-Encoding")).thenReturn("chunked")
+        val mockResponse = mockk<Response>()
+        every { mockResponse.header("Transfer-Encoding") } returns "chunked"
 
-        assertEquals(true, mockResponse.isChunked)
+        assertTrue(mockResponse.isChunked)
     }
 
     @Test
     fun hasBody_withHeadMethod() {
-        val mockResponse = mock(Response::class.java)
-        val mockRequest = mock(Request::class.java)
-        whenever(mockRequest.method()).thenReturn("HEAD")
-        whenever(mockResponse.request()).thenReturn(mockRequest)
+        val mockResponse = mockk<Response>()
+        val mockRequest = mockk<Request>()
+        every { mockRequest.method() } returns "HEAD"
+        every { mockResponse.request() } returns mockRequest
 
-        assertEquals(false, mockResponse.hasBody())
+        assertFalse(mockResponse.hasBody())
     }
 
     @Test
     fun hasBody_with404_hasBody() {
-        val mockResponse = mock(Response::class.java)
-        val mockRequest = mock(Request::class.java)
-        whenever(mockRequest.method()).thenReturn("")
-        whenever(mockResponse.request()).thenReturn(mockRequest)
-        whenever(mockResponse.code()).thenReturn(404)
+        val mockResponse = mockk<Response>()
+        val mockRequest = mockk<Request>()
+        every { mockRequest.method() } returns ""
+        every { mockResponse.request() } returns mockRequest
+        every { mockResponse.code() } returns 404
 
-        assertEquals(true, mockResponse.hasBody())
+        assertTrue(mockResponse.hasBody())
     }
 
     @Test
     fun hasBody_with204NoContent_doesNotHaveBody() {
-        val mockResponse = mock(Response::class.java)
-        val mockRequest = mock(Request::class.java)
-        whenever(mockRequest.method()).thenReturn("")
-        whenever(mockResponse.request()).thenReturn(mockRequest)
-        whenever(mockResponse.code()).thenReturn(204)
+        val mockResponse = mockk<Response>()
+        val mockRequest = mockk<Request>()
+        every { mockRequest.method() } returns ""
+        every { mockResponse.request() } returns mockRequest
+        every { mockResponse.code() } returns 204
+        every { mockResponse.header("Content-Length") } returns null
+        every { mockResponse.header("Transfer-Encoding") } returns null
 
-        assertEquals(false, mockResponse.hasBody())
+        assertFalse(mockResponse.hasBody())
     }
 
     @Test
     fun hasBody_with304NotModified_doesNotHaveBody() {
-        val mockResponse = mock(Response::class.java)
-        val mockRequest = mock(Request::class.java)
-        whenever(mockRequest.method()).thenReturn("")
-        whenever(mockResponse.request()).thenReturn(mockRequest)
-        whenever(mockResponse.code()).thenReturn(304)
+        val mockResponse = mockk<Response>()
+        val mockRequest = mockk<Request>()
+        every { mockRequest.method() } returns ""
+        every { mockResponse.request() } returns mockRequest
+        every { mockResponse.code() } returns 304
+        every { mockResponse.header("Content-Length") } returns null
+        every { mockResponse.header("Transfer-Encoding") } returns null
 
-        assertEquals(false, mockResponse.hasBody())
+        assertFalse(mockResponse.hasBody())
     }
 
     @Test
     fun hasBody_withMalformedRequest_doesHaveBody() {
-        val mockResponse = mock(Response::class.java)
-        val mockRequest = mock(Request::class.java)
-        whenever(mockRequest.method()).thenReturn("")
-        whenever(mockResponse.request()).thenReturn(mockRequest)
-        whenever(mockResponse.code()).thenReturn(304)
-        whenever(mockResponse.header("Content-Length")).thenReturn("42")
+        val mockResponse = mockk<Response>()
+        val mockRequest = mockk<Request>()
+        every { mockRequest.method() } returns ""
+        every { mockResponse.request() } returns mockRequest
+        every { mockResponse.code() } returns 304
+        every { mockResponse.header("Content-Length") } returns "42"
 
-        assertEquals(true, mockResponse.hasBody())
+        assertTrue(mockResponse.hasBody())
     }
 }
