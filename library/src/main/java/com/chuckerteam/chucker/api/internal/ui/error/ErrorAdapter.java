@@ -17,8 +17,11 @@ import java.util.List;
 
 public class ErrorAdapter extends RecyclerView.Adapter<ErrorAdapter.ErrorViewHolder> {
 
+    @NonNull
     private final ErrorClickListListener listener;
+    @NonNull
     private final Context context;
+    @NonNull
     private List<RecordedThrowableTuple> recordedThrowables = new ArrayList<>();
 
     ErrorAdapter(@NonNull Context context, @NonNull ErrorClickListListener listener) {
@@ -76,7 +79,7 @@ public class ErrorAdapter extends RecyclerView.Adapter<ErrorAdapter.ErrorViewHol
 
         @Override
         public void onClick(View v) {
-            if (listener != null) listener.onErrorClick(throwable.getId(), getAdapterPosition());
+            if (throwable != null) listener.onErrorClick(throwable.getId(), getAdapterPosition());
         }
     }
 

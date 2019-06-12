@@ -64,19 +64,21 @@ public class TransactionActivity extends BaseChuckerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chucker_activity_transaction);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        title = (TextView) findViewById(R.id.toolbar_title);
+        title = findViewById(R.id.toolbar_title);
 
         final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
@@ -116,7 +118,7 @@ public class TransactionActivity extends BaseChuckerActivity {
 
     private void populateUI(HttpTransaction transaction) {
         if (transaction != null) {
-            title.setText(transaction.getMethod() + " " + transaction.getPath());
+            title.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
             for (TransactionFragment fragment : adapter.fragments) {
                 fragment.transactionUpdated(transaction);
             }

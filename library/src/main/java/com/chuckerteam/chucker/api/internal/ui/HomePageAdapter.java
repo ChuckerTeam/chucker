@@ -14,12 +14,12 @@ import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionListFragme
  */
 class HomePageAdapter extends FragmentPagerAdapter {
 
-    public static final int SCREEN_HTTP_INDEX = 0;
-    public static final int SCREEN_ERROR_INDEX = 1;
+    static final int SCREEN_HTTP_INDEX = 0;
+    static final int SCREEN_ERROR_INDEX = 1;
 
     private final Context context;
 
-    public HomePageAdapter(Context context, FragmentManager fragmentManager) {
+     HomePageAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
         this.context = context;
     }
