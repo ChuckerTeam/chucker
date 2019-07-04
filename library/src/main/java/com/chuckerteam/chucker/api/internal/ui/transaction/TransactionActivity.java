@@ -23,7 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -39,8 +39,7 @@ import com.chuckerteam.chucker.api.internal.support.FormatUtils;
 import com.chuckerteam.chucker.api.internal.support.SimpleOnPageChangedListener;
 import com.chuckerteam.chucker.api.internal.ui.BaseChuckerActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.ref.WeakReference;
 
 public class TransactionActivity extends BaseChuckerActivity {
 
@@ -119,22 +118,22 @@ public class TransactionActivity extends BaseChuckerActivity {
     private void populateUI(HttpTransaction transaction) {
         if (transaction != null) {
             title.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
-            for (TransactionFragment fragment : adapter.fragments) {
-                fragment.transactionUpdated(transaction);
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                if (fragment instanceof TransactionFragment) {
+                    ((TransactionFragment) fragment).transactionUpdated(transaction);
+                }
             }
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new TransactionOverviewFragment(), getString(R.string.chucker_overview));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST), getString(R.string.chucker_request));
-        adapter.addFragment(TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE), getString(R.string.chucker_response));
+        adapter = new Adapter(getApplicationContext(), getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override
             public void onPageSelected(int position) {
                 selectedTabPosition = position;
+                populateUI(transaction);
             }
         });
         viewPager.setCurrentItem(selectedTabPosition);
@@ -148,32 +147,46 @@ public class TransactionActivity extends BaseChuckerActivity {
         startActivity(Intent.createChooser(sendIntent, null));
     }
 
-    static class Adapter extends FragmentPagerAdapter {
-        final List<TransactionFragment> fragments = new ArrayList<>();
-        private final List<String> fragmentTitles = new ArrayList<>();
+    static class Adapter extends FragmentStatePagerAdapter {
+        private final WeakReference<Context> context;
+        private static final int[] TITLE_RES_IDS = {
+                R.string.chucker_overview,
+                R.string.chucker_request,
+                R.string.chucker_response
+        };
 
-        Adapter(FragmentManager fm) {
+        Adapter(Context context, FragmentManager fm) {
             super(fm);
-        }
-
-        void addFragment(TransactionFragment fragment, String title) {
-            fragments.add(fragment);
-            fragmentTitles.add(title);
+            this.context = new WeakReference<>(context);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return (Fragment) fragments.get(position);
+            switch (position) {
+                case 0:
+                    return new TransactionOverviewFragment();
+                case 1:
+                    return TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST);
+                case 2:
+                    return TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE);
+                default:
+                    throw new IllegalArgumentException("no item");
+            }
         }
 
         @Override
         public int getCount() {
-            return fragments.size();
+            return TITLE_RES_IDS.length;
         }
 
+        @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            return fragmentTitles.get(position);
+            Context context = this.context.get();
+            if (context == null) {
+                return null;
+            }
+            return context.getString(TITLE_RES_IDS[position]);
         }
     }
 }
