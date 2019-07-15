@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
         )
 
-        Chucker.registerDefaultCrashHanlder(collector)
+        Chucker.registerDefaultCrashHandler(collector)
     }
 
     private fun getClient(context: Context): OkHttpClient {
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun triggerException() {
         collector.onError("Example button pressed", RuntimeException("User triggered the button"))
-        // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHanlder"
+        // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHandler"
         // throw new RuntimeException("User triggered the button");
     }
 }

@@ -17,7 +17,7 @@ object Chucker {
         return Intent()
     }
 
-    @JvmStatic fun registerDefaultCrashHanlder(collector: ChuckerCollector) {}
+    @JvmStatic fun registerDefaultCrashHandler(collector: ChuckerCollector) {}
 
     @JvmStatic fun dismissTransactionsNotification(context: Context) {}
 
