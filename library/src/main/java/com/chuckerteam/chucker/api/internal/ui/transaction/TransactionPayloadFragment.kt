@@ -15,6 +15,8 @@
  */
 package com.chuckerteam.chucker.api.internal.ui.transaction
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
@@ -25,6 +27,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
@@ -36,6 +39,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     internal lateinit var headers: TextView
     internal lateinit var body: TextView
+    internal lateinit var binaryData: ImageView
 
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
@@ -54,8 +58,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
-        headers = view.findViewById<View>(R.id.headers) as TextView
-        body = view.findViewById<View>(R.id.body) as TextView
+        headers = view.findViewById<TextView>(R.id.headers)
+        body = view.findViewById<TextView>(R.id.body)
+        binaryData = view.findViewById<ImageView>(R.id.image)
         return view
     }
 
@@ -84,21 +89,23 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private fun populateUI() {
         if (isAdded && transaction != null) {
             when (type) {
-                TYPE_REQUEST -> setText(
+                TYPE_REQUEST  -> setText(
                     transaction!!.getRequestHeadersString(true),
                     transaction!!.getFormattedRequestBody(),
-                    transaction!!.isRequestBodyPlainText
+                    transaction!!.isRequestBodyPlainText,
+                    getImageData(transaction!!)
                 )
                 TYPE_RESPONSE -> setText(
                     transaction!!.getResponseHeadersString(true),
                     transaction!!.getFormattedResponseBody(),
-                    transaction!!.isResponseBodyPlainText
+                    transaction!!.isResponseBodyPlainText,
+                    getImageData(transaction!!)
                 )
             }
         }
     }
 
-    private fun setText(headersString: String, bodyString: String?, isPlainText: Boolean) {
+    private fun setText(headersString: String, bodyString: String?, isPlainText: Boolean, byteData: ByteArray?) {
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
         if (!isPlainText) {
@@ -106,6 +113,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         } else {
             body.text = bodyString
         }
+        udpateBinaryDataView(byteData)
         originalBody = body.text.toString()
     }
 
@@ -119,6 +127,33 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         else
             body.text = originalBody
         return true
+    }
+
+    private fun getImageData(transaction: HttpTransaction): ByteArray? {
+        return if (transaction.responseContentType?.contains("image") == true) {
+            transaction.byteData
+        } else {
+            null
+        }
+    }
+
+    private fun udpateBinaryDataView(byteData: ByteArray?) {
+        val bitmap: Bitmap? = try {
+            if (byteData != null) {
+                BitmapFactory.decodeByteArray(byteData, 0, byteData.size)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+        if (bitmap != null) {
+            binaryData.visibility = View.VISIBLE
+            binaryData.setImageBitmap(bitmap)
+        } else {
+            binaryData.visibility = View.GONE
+        }
     }
 
     companion object {

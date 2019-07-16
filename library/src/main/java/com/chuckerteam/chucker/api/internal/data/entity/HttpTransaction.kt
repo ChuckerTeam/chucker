@@ -41,7 +41,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseContentType") var responseContentType: String?,
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
-    @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true
+    @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
+    @ColumnInfo(name = "byteData") var byteData: ByteArray?
 
 ) {
 
@@ -66,7 +67,8 @@ internal class HttpTransaction(
         responseContentLength = null,
         responseContentType = null,
         responseHeaders = null,
-        responseBody = null
+        responseBody = null,
+        byteData = null
     )
 
     enum class Status {
