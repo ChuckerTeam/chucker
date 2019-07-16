@@ -15,7 +15,6 @@
  */
 package com.chuckerteam.chucker.api.internal.ui.transaction
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -88,24 +87,25 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
+            val imageData = if (transaction!!.responseContentType?.contains("image") == true) transaction!!.byteData else null
             when (type) {
                 TYPE_REQUEST  -> setText(
                     transaction!!.getRequestHeadersString(true),
                     transaction!!.getFormattedRequestBody(),
                     transaction!!.isRequestBodyPlainText,
-                    getImageData(transaction!!)
+                    imageData
                 )
                 TYPE_RESPONSE -> setText(
                     transaction!!.getResponseHeadersString(true),
                     transaction!!.getFormattedResponseBody(),
                     transaction!!.isResponseBodyPlainText,
-                    getImageData(transaction!!)
+                    imageData
                 )
             }
         }
     }
 
-    private fun setText(headersString: String, bodyString: String?, isPlainText: Boolean, byteData: ByteArray?) {
+    private fun setText(headersString: String, bodyString: String?, isPlainText: Boolean, imageData: ByteArray?) {
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
         if (!isPlainText) {
@@ -113,7 +113,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         } else {
             body.text = bodyString
         }
-        udpateBinaryDataView(byteData)
+        udpateImageDataView(imageData)
         originalBody = body.text.toString()
     }
 
@@ -129,22 +129,10 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         return true
     }
 
-    private fun getImageData(transaction: HttpTransaction): ByteArray? {
-        return if (transaction.responseContentType?.contains("image") == true) {
-            transaction.byteData
+    private fun udpateImageDataView(imageData: ByteArray?) {
+        val bitmap = if (imageData != null) {
+            BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
         } else {
-            null
-        }
-    }
-
-    private fun udpateBinaryDataView(byteData: ByteArray?) {
-        val bitmap: Bitmap? = try {
-            if (byteData != null) {
-                BitmapFactory.decodeByteArray(byteData, 0, byteData.size)
-            } else {
-                null
-            }
-        } catch (e: Exception) {
             null
         }
 
