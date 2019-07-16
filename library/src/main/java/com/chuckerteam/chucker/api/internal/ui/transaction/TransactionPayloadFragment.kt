@@ -90,7 +90,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             val isImage = transaction!!.responseContentType?.contains("image") ?: true
             val imageData = if (isImage) transaction!!.byteData else null
             when (type) {
-                TYPE_REQUEST  -> setText(
+                TYPE_REQUEST -> setText(
                     transaction!!.getRequestHeadersString(true),
                     transaction!!.getFormattedRequestBody(),
                     transaction!!.isRequestBodyPlainText,
