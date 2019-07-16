@@ -87,7 +87,8 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
-            val imageData = if (transaction!!.responseContentType?.contains("image") == true) transaction!!.byteData else null
+            val isImage = transaction!!.responseContentType?.contains("image") ?: true
+            val imageData = if (isImage) transaction!!.byteData else null
             when (type) {
                 TYPE_REQUEST  -> setText(
                     transaction!!.getRequestHeadersString(true),
