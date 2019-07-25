@@ -19,11 +19,12 @@ internal class HttpTransactionTuple(
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
     @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
-    @ColumnInfo(name = "error") var error: String?
+    @ColumnInfo(name = "error") var error: String?,
+    @ColumnInfo(name = "operationName") var operationName: String?
 ) {
     val isSsl: Boolean get() = scheme?.toLowerCase() == "https"
 
-    val isGraphQL: Boolean get() = true
+    val isGraphQL: Boolean get() = operationName != null
 
     val status: HttpTransaction.Status
         get() = when {

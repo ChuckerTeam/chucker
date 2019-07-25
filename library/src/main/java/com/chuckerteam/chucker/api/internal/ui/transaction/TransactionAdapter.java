@@ -109,7 +109,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         void bind(final HttpTransactionTuple transaction) {
             path.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
-            operationName.setText("ExampleQuery");
+            operationName.setText(transaction.getOperationName());
             operationName.setVisibility(transaction.isGraphQL() ? View.VISIBLE : View.GONE);
             graphql.setVisibility(transaction.isGraphQL() ? View.VISIBLE : View.GONE);
             host.setText(transaction.getHost());
