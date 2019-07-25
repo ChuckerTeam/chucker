@@ -85,10 +85,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         final View view;
         final TextView code;
         final TextView path;
+        final TextView operationName;
         final TextView host;
         final TextView start;
         final TextView duration;
         final TextView size;
+        final ImageView graphql;
         final ImageView ssl;
 
         ViewHolder(View view) {
@@ -96,15 +98,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             this.view = view;
             code = view.findViewById(R.id.chucker_code);
             path = view.findViewById(R.id.chucker_path);
+            operationName = view.findViewById(R.id.chucker_operation_name);
             host = view.findViewById(R.id.chucker_host);
             start = view.findViewById(R.id.chucker_time_start);
             duration = view.findViewById(R.id.chucker_duration);
             size = view.findViewById(R.id.chucker_size);
+            graphql = view.findViewById(R.id.chucker_graphql);
             ssl = view.findViewById(R.id.chucker_ssl);
         }
 
         void bind(final HttpTransactionTuple transaction) {
             path.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
+            operationName.setText("ExampleQuery");
+            operationName.setVisibility(transaction.isGraphQL() ? View.VISIBLE : View.GONE);
+            graphql.setVisibility(transaction.isGraphQL() ? View.VISIBLE : View.GONE);
             host.setText(transaction.getHost());
             start.setText(DateFormat.getTimeInstance().format(transaction.getRequestDate()));
             ssl.setVisibility(transaction.isSsl() ? View.VISIBLE : View.GONE);

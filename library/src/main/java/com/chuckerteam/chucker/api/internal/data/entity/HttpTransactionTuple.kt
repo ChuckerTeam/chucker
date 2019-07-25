@@ -23,6 +23,8 @@ internal class HttpTransactionTuple(
 ) {
     val isSsl: Boolean get() = scheme?.toLowerCase() == "https"
 
+    val isGraphQL: Boolean get() = true
+
     val status: HttpTransaction.Status
         get() = when {
             error != null -> HttpTransaction.Status.Failed
