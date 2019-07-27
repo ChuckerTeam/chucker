@@ -11,7 +11,6 @@ import com.chuckerteam.chucker.api.internal.support.FormatUtils
 import com.chuckerteam.chucker.api.internal.support.JsonConvertor
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
-import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -120,7 +119,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path
+                else -> responseCode.toString() + " " + method + " " + path + if (isGraphql) operationName else ""
             }
         }
 
