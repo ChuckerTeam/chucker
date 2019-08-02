@@ -15,7 +15,11 @@
  */
 package com.chuckerteam.chucker.api.internal.ui;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
 
 public abstract class BaseChuckerActivity extends AppCompatActivity {
 
@@ -23,6 +27,12 @@ public abstract class BaseChuckerActivity extends AppCompatActivity {
 
     public static boolean isInForeground() {
         return inForeground;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RepositoryProvider.initialize(this);
     }
 
     @Override
@@ -36,5 +46,4 @@ public abstract class BaseChuckerActivity extends AppCompatActivity {
         super.onPause();
         inForeground = false;
     }
-
 }
