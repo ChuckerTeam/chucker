@@ -16,6 +16,7 @@
 package com.chuckerteam.chucker.api.internal.ui.transaction
 
 import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
@@ -27,6 +28,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.view.*
 import android.widget.TextView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
@@ -43,6 +45,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
     private var originalBody: String? = null
+    private var uiLoaderTask: UiLoaderTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,9 +55,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
         headers = view.findViewById<TextView>(R.id.headers)
@@ -66,6 +69,11 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        uiLoaderTask?.cancel(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -101,6 +109,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
                     transaction!!.responseImageData
                 )
             }
+            UiLoaderTask(this).execute(Pair(type, transaction!!))
         }
     }
 
@@ -140,6 +149,32 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         } else {
             binaryData.visibility = View.GONE
         }
+    }
+
+    private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
+            AsyncTask<Pair<Int, HttpTransaction>, Unit, Triple<String, String, Boolean>>() {
+
+        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
+                Triple<String, String, Boolean> {
+            val (type, transaction) = params[0]
+            return when (type) {
+                TYPE_REQUEST -> Triple(
+                        transaction.getRequestHeadersString(true),
+                        transaction.getFormattedRequestBody(),
+                        transaction.isRequestBodyPlainText
+                )
+                else -> Triple(
+                        transaction.getResponseHeadersString(true),
+                        transaction.getFormattedResponseBody(),
+                        transaction.isResponseBodyPlainText
+                )
+            }
+        }
+
+        override fun onPostExecute(result: Triple<String, String, Boolean>) {
+            fragment.setText(result.first, result.second, result.third)
+        }
+
     }
 
     companion object {
