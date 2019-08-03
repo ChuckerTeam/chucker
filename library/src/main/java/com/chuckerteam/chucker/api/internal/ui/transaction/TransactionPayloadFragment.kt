@@ -90,13 +90,13 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             val isImage = transaction!!.responseContentType?.contains("image") ?: true
             val imageData = if (isImage) transaction!!.byteData else null
             when (type) {
-                TYPE_REQUEST -> setText(
+                TYPE_REQUEST  -> setBody(
                     transaction!!.getRequestHeadersString(true),
                     transaction!!.getFormattedRequestBody(),
                     transaction!!.isRequestBodyPlainText,
                     imageData
                 )
-                TYPE_RESPONSE -> setText(
+                TYPE_RESPONSE -> setBody(
                     transaction!!.getResponseHeadersString(true),
                     transaction!!.getFormattedResponseBody(),
                     transaction!!.isResponseBodyPlainText,
@@ -106,7 +106,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         }
     }
 
-    private fun setText(headersString: String, bodyString: String?, isPlainText: Boolean, imageData: ByteArray?) {
+    private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, imageData: ByteArray?) {
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
         if (!isPlainText) {
@@ -114,7 +114,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         } else {
             body.text = bodyString
         }
-        udpateImageDataView(imageData)
+        updateImageDataView(imageData)
         originalBody = body.text.toString()
     }
 
@@ -130,11 +130,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         return true
     }
 
-    private fun udpateImageDataView(imageData: ByteArray?) {
-        val bitmap = if (imageData != null) {
+    private fun updateImageDataView(imageData: ByteArray?) {
+        val bitmap = imageData?.let {
             BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-        } else {
-            null
         }
 
         if (bitmap != null) {
