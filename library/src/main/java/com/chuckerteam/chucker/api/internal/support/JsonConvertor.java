@@ -18,6 +18,7 @@ package com.chuckerteam.chucker.api.internal.support;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.bind.DateTypeAdapter;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ import java.util.Date;
 public class JsonConvertor {
 
     private static Gson gson = null;
+    private static JsonParser parser = null;
 
     private JsonConvertor() {
     }
@@ -38,5 +40,12 @@ public class JsonConvertor {
                     .create();
         }
         return gson;
+    }
+
+    public static JsonParser getParser() {
+        if (parser == null) {
+            parser = new JsonParser();
+        }
+        return parser;
     }
 }
