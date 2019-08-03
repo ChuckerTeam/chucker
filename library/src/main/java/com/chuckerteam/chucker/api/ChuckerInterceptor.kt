@@ -76,7 +76,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
                 transaction.operationName =
-                    Gson().fromJson(content, HttpRequestBody::class.java).operationName
+                    Gson().fromJson(content, GraphQLRequestBody::class.java).operationName
             } else {
                 transaction.isResponseBodyPlainText = false
             }
@@ -173,7 +173,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         private val UTF8 = Charset.forName("UTF-8")
     }
 
-    data class HttpRequestBody(
+    data class GraphQLRequestBody(
         val operationName: String?
     )
 }
