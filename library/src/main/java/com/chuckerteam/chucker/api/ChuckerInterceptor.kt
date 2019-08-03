@@ -5,8 +5,8 @@ import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.api.internal.support.IOUtils
+import com.chuckerteam.chucker.api.internal.support.JsonConvertor
 import com.chuckerteam.chucker.api.internal.support.hasBody
-import com.google.gson.Gson
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
@@ -76,7 +76,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
                 transaction.operationName =
-                    Gson().fromJson(content, GraphQLRequestBody::class.java).operationName
+                    JsonConvertor.getInstance().fromJson(content, GraphQLRequestBody::class.java)
+                        .operationName
             } else {
                 transaction.isResponseBodyPlainText = false
             }
