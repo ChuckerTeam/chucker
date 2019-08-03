@@ -125,7 +125,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 transaction.responseBody = content
             } else {
                 transaction.isResponseBodyPlainText = false
-                transaction.byteData = buffer.readByteArray()
+
+                if (transaction.responseContentType?.contains("image") == true) {
+                    transaction.responseImageData = buffer.clone().readByteArray()
+                }
             }
             transaction.responseContentLength = buffer.size()
         }

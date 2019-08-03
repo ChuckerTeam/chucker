@@ -87,20 +87,18 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
-            val isImage = transaction!!.responseContentType?.contains("image") ?: true
-            val imageData = if (isImage) transaction!!.byteData else null
             when (type) {
-                TYPE_REQUEST  -> setBody(
+                TYPE_REQUEST -> setBody(
                     transaction!!.getRequestHeadersString(true),
                     transaction!!.getFormattedRequestBody(),
                     transaction!!.isRequestBodyPlainText,
-                    imageData
+                    null
                 )
                 TYPE_RESPONSE -> setBody(
                     transaction!!.getResponseHeadersString(true),
                     transaction!!.getFormattedResponseBody(),
                     transaction!!.isResponseBodyPlainText,
-                    imageData
+                    transaction!!.responseImageData
                 )
             }
         }
@@ -109,9 +107,10 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, imageData: ByteArray?) {
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
-        if (!isPlainText) {
+        val isImageData = imageData != null && imageData.isNotEmpty()
+        if (!isPlainText && !isImageData) {
             body.text = getString(R.string.chucker_body_omitted)
-        } else {
+        } else if (!isImageData) {
             body.text = bodyString
         }
         updateImageDataView(imageData)
