@@ -1,0 +1,18 @@
+query vehicles($first: Int, $last: Int) {
+    allVehicles(first: $first, last: $last) {
+        totalCount
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        vehicles {
+            id
+            created
+            vehicleClass
+            passengers
+            name
+        }
+    }
+}

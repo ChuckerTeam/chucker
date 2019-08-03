@@ -1,0 +1,17 @@
+query planets($first: Int, $last: Int) {
+    allPlanets(first: $first, last: $last) {
+        totalCount
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        planets {
+            id
+            gravity
+            created
+            name
+        }
+    }
+}

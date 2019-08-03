@@ -1,0 +1,17 @@
+query AllFilms($first: Int, $last: Int) {
+    allFilms(first: $first, last: $last) {
+        totalCount
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        films {
+            id
+            title
+            created
+            releaseDate
+        }
+    }
+}

@@ -1,0 +1,18 @@
+query starships($first: Int, $last: Int) {
+    allStarships(first: $first, last: $last) {
+        totalCount
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        starships {
+            id
+            created
+            starshipClass
+            passengers
+            name
+        }
+    }
+}
