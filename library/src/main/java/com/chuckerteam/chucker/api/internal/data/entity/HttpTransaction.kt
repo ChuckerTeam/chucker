@@ -119,7 +119,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path + if (isGraphql) operationName else ""
+                else -> responseCode.toString() + " " + method + " " + path + if (isGraphql) " $operationName" else ""
             }
         }
 
