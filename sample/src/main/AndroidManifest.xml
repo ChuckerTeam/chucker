@@ -20,6 +20,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-sdk tools:overrideLibrary="io.github.wax911.library" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
