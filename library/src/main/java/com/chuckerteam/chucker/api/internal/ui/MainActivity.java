@@ -84,10 +84,9 @@ public class MainActivity extends BaseChuckerActivity implements TransactionAdap
         }
     }
 
-    private String getApplicationName() {
+    private CharSequence getApplicationName() {
         ApplicationInfo applicationInfo = getApplicationInfo();
-        int stringId = applicationInfo.labelRes;
-        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : getString(stringId);
+        return applicationInfo.loadLabel(getPackageManager());
     }
 
     @Override
