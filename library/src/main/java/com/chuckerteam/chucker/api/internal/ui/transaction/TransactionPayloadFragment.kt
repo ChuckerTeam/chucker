@@ -55,9 +55,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
         headers = view.findViewById<TextView>(R.id.headers)
@@ -152,21 +152,21 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
-            AsyncTask<Pair<Int, HttpTransaction>, Unit, Triple<String, String, Boolean>>() {
+        AsyncTask<Pair<Int, HttpTransaction>, Unit, Triple<String, String, Boolean>>() {
 
         override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
-                Triple<String, String, Boolean> {
+        Triple<String, String, Boolean> {
             val (type, transaction) = params[0]
             return when (type) {
                 TYPE_REQUEST -> Triple(
-                        transaction.getRequestHeadersString(true),
-                        transaction.getFormattedRequestBody(),
-                        transaction.isRequestBodyPlainText
+                    transaction.getRequestHeadersString(true),
+                    transaction.getFormattedRequestBody(),
+                    transaction.isRequestBodyPlainText
                 )
                 else -> Triple(
-                        transaction.getResponseHeadersString(true),
-                        transaction.getFormattedResponseBody(),
-                        transaction.isResponseBodyPlainText
+                    transaction.getResponseHeadersString(true),
+                    transaction.getFormattedResponseBody(),
+                    transaction.isResponseBodyPlainText
                 )
             }
         }
@@ -174,7 +174,6 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         override fun onPostExecute(result: Triple<String, String, Boolean>) {
             fragment.setText(result.first, result.second, result.third)
         }
-
     }
 
     companion object {
