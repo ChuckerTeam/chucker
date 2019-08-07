@@ -155,11 +155,18 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         }
 
         override fun onPostExecute(result: UiPayload) {
-            fragment.setBody(result.headersString, result.bodyString, result.isPlainText, result.image)
+            with(result) {
+                fragment.setBody(headersString, bodyString, isPlainText, image)
+            }
         }
     }
 
-    private data class UiPayload(val headersString: String, val bodyString: String?, val isPlainText: Boolean, val image: Bitmap?)
+    private data class UiPayload(
+        val headersString: String,
+        val bodyString: String?,
+        val isPlainText: Boolean,
+        val image: Bitmap?
+    )
 
     companion object {
 
