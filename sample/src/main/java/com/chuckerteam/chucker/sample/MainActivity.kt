@@ -8,9 +8,7 @@ import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import kotlinx.android.synthetic.main.activity_main.do_http
-import kotlinx.android.synthetic.main.activity_main.launch_chucker_directly
-import kotlinx.android.synthetic.main.activity_main.trigger_exception
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         collector = ChuckerCollector(
             context = this,
             showNotification = true,
-            retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
+            retentionPeriod = RetentionManager.Period.ONE_HOUR
         )
 
         Chucker.registerDefaultCrashHandler(collector)
