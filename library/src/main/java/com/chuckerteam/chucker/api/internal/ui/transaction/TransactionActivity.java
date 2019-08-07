@@ -53,7 +53,7 @@ public class TransactionActivity extends BaseChuckerActivity {
     }
 
     TextView title;
-    Adapter adapter;
+    PagerAdapter adapter;
 
     private long transactionId;
     private HttpTransaction transaction;
@@ -127,7 +127,7 @@ public class TransactionActivity extends BaseChuckerActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new Adapter(getApplicationContext(), getSupportFragmentManager());
+        adapter = new PagerAdapter(getApplicationContext(), getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
             @Override
@@ -147,15 +147,15 @@ public class TransactionActivity extends BaseChuckerActivity {
         startActivity(Intent.createChooser(sendIntent, null));
     }
 
-    static class Adapter extends FragmentStatePagerAdapter {
+    class PagerAdapter extends FragmentStatePagerAdapter {
         private final WeakReference<Context> context;
-        private static final int[] TITLE_RES_IDS = {
+        private final int[] TITLE_RES_IDS = {
                 R.string.chucker_overview,
                 R.string.chucker_request,
                 R.string.chucker_response
         };
 
-        Adapter(Context context, FragmentManager fm) {
+        PagerAdapter(Context context, FragmentManager fm) {
             super(fm);
             this.context = new WeakReference<>(context);
         }
