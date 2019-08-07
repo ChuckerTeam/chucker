@@ -15,7 +15,9 @@
  */
 package com.chuckerteam.chucker.api.internal.ui.transaction
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
@@ -43,6 +45,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
     private var originalBody: String? = null
+    private var uiLoaderTask: UiLoaderTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +71,11 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         populateUI()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        uiLoaderTask?.cancel(true)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         if (type == TYPE_RESPONSE) {
             val searchMenuItem = menu!!.findItem(R.id.search)
@@ -87,33 +95,25 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
-            when (type) {
-                TYPE_REQUEST -> setBody(
-                    transaction!!.getRequestHeadersString(true),
-                    transaction!!.getFormattedRequestBody(),
-                    transaction!!.isRequestBodyPlainText,
-                    null
-                )
-                TYPE_RESPONSE -> setBody(
-                    transaction!!.getResponseHeadersString(true),
-                    transaction!!.getFormattedResponseBody(),
-                    transaction!!.isResponseBodyPlainText,
-                    transaction!!.responseImageData
-                )
-            }
+            UiLoaderTask(this).execute(Pair(type, transaction!!))
         }
     }
 
-    private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, imageData: ByteArray?) {
+    private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {
         headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
-        val isImageData = imageData != null && imageData.isNotEmpty()
+        val isImageData = image != null
         if (!isPlainText && !isImageData) {
             body.text = getString(R.string.chucker_body_omitted)
         } else if (!isImageData) {
             body.text = bodyString
         }
-        updateImageDataView(imageData)
+        if (image != null) {
+            binaryData.visibility = View.VISIBLE
+            binaryData.setImageBitmap(image)
+        } else {
+            binaryData.visibility = View.GONE
+        }
         originalBody = body.text.toString()
     }
 
@@ -129,18 +129,46 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         return true
     }
 
-    private fun updateImageDataView(imageData: ByteArray?) {
-        val bitmap = imageData?.let {
-            BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+    private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
+        AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
+
+        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
+        UiPayload {
+            val (type, transaction) = params[0]
+
+            val bitmap = transaction.responseImageData?.let { imageData ->
+                BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+            }
+
+            return when (type) {
+                TYPE_REQUEST -> UiPayload(
+                    transaction.getRequestHeadersString(true),
+                    transaction.getFormattedRequestBody(),
+                    transaction.isRequestBodyPlainText,
+                    bitmap
+                )
+                else -> UiPayload(
+                    transaction.getResponseHeadersString(true),
+                    transaction.getFormattedResponseBody(),
+                    transaction.isResponseBodyPlainText,
+                    bitmap
+                )
+            }
         }
 
-        if (bitmap != null) {
-            binaryData.visibility = View.VISIBLE
-            binaryData.setImageBitmap(bitmap)
-        } else {
-            binaryData.visibility = View.GONE
+        override fun onPostExecute(result: UiPayload) {
+            with(result) {
+                fragment.setBody(headersString, bodyString, isPlainText, image)
+            }
         }
     }
+
+    private data class UiPayload(
+        val headersString: String,
+        val bodyString: String?,
+        val isPlainText: Boolean,
+        val image: Bitmap?
+    )
 
     companion object {
 
