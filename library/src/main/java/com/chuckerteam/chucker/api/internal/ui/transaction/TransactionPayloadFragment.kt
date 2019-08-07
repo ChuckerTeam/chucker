@@ -144,12 +144,14 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
                 TYPE_REQUEST -> UiPayload(
                     transaction.getRequestHeadersString(true),
                     transaction.getFormattedRequestBody(),
-                    transaction.isRequestBodyPlainText, bitmap
+                    transaction.isRequestBodyPlainText,
+                    bitmap
                 )
                 else -> UiPayload(
                     transaction.getResponseHeadersString(true),
                     transaction.getFormattedResponseBody(),
-                    transaction.isResponseBodyPlainText, bitmap
+                    transaction.isResponseBodyPlainText,
+                    bitmap
                 )
             }
         }
