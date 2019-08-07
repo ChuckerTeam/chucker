@@ -18,9 +18,9 @@ import com.chuckerteam.chucker.api.internal.support.NotificationHelper
  * by this collector. The default is one week.
  */
 class ChuckerCollector @JvmOverloads constructor(
-        context: Context,
-        var showNotification: Boolean = true,
-        retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+    context: Context,
+    var showNotification: Boolean = true,
+    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
