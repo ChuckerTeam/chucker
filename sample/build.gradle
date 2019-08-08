@@ -46,7 +46,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }
