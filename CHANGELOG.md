@@ -19,45 +19,45 @@ This is a new major release of Chucker. Please note that this major release cont
 
 **Wall of PRs**
 
-New: [#67] Add support for images
-New: [#53] Remove usage of methods from okhttp3.internal
-New: [#49] Add missing @JvmOverload on the ChuckerInterceptor
-New: [#29] Replacing Cupboard with Room
-New: [#24] Redact header (from okhttp logging)
-New: [#23] Polishing the Color palette
-New: [#22] Modernize the project icon
-New: [#21] Polish the MainActivity
-New: [#17] Highlight search result in response tab
-New: [#10] Updating the ListItem layout to use CL
-New: [#6] Issue #43 Ask for confirmation when delete history
-Breaking: [#66] Renamed registerDefaultCrashHanlder to registerDefaultCrashHandler
-Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
-Breaking: [#42] Kotlinize the Public API of Chucker
-Breaking: [#35] Cleanup form the old Chuck names
-Fix: [#75] Fix application name retrieval.
-Fix: [#72] Fetch payload in AsyncTask
-Fix: [#71] Fix crash when clicking notification
-Fix: [#77] Fix image being loaded twice for request and response.
-Fix: [#62] LeakCanary memory leak report
-Fix: [#44] Fix for 'Push Notification is wrongly reporting the first HTTP request
-Fix: [#39] Prevent potential XXE attacks from XML formatting
-Fix: [#38] Do not display URL Query if the query is null
-Fix: [#54] clean up
-Fix: [#50] ChuckerInterceptor Cleanup
-Fix: [#4] Add no-op check to Chuck utility class
-Infra: [#65] Kotlin to 1.3.41
-Infra: [#63] Prepare 3.0.0-alpha2
-Infra: [#59] Gradle to 5.5
-Infra: [#51] Setup KtLint and Detekt
-Infra: [#48] Make sure dependency examples have the proper case
-Infra: [#47] Prepare 3.0.0-alpha1
-Infra: [#41] Switch Release Artifact to JitPack
-Infra: [#40] Reorganize dependency versions
-Infra: [#34] Gradle to 5.2
-Infra: [#33] Updating the develop-branch README as was out of date
-Infra: [#28] Updating Dependencies
-Infra: [#25] Added Project Icon to Readme
-Infra: [#16] [TECH] Configure a debug keystore
+* New: [#67] Add support for images
+* New: [#53] Remove usage of methods from okhttp3.internal
+* New: [#49] Add missing @JvmOverload on the ChuckerInterceptor
+* New: [#29] Replacing Cupboard with Room
+* New: [#24] Redact header (from okhttp logging)
+* New: [#23] Polishing the Color palette
+* New: [#22] Modernize the project icon
+* New: [#21] Polish the MainActivity
+* New: [#17] Highlight search result in response tab
+* New: [#10] Updating the ListItem layout to use CL
+* New: [#6] Issue #43 Ask for confirmation when delete history
+* Breaking: [#66] Renamed registerDefaultCrashHanlder to registerDefaultCrashHandler
+* Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
+* Breaking: [#42] Kotlinize the Public API of Chucker
+* Breaking: [#35] Cleanup form the old Chuck names
+* Fix: [#75] Fix application name retrieval.
+* Fix: [#72] Fetch payload in AsyncTask
+* Fix: [#71] Fix crash when clicking notification
+* Fix: [#77] Fix image being loaded twice for request and response.
+* Fix: [#62] LeakCanary memory leak report
+* Fix: [#44] Fix for 'Push Notification is wrongly reporting the first HTTP request
+* Fix: [#39] Prevent potential XXE attacks from XML formatting
+* Fix: [#38] Do not display URL Query if the query is null
+* Fix: [#54] clean up
+* Fix: [#50] ChuckerInterceptor Cleanup
+* Fix: [#4] Add no-op check to Chuck utility class
+* Infra: [#65] Kotlin to 1.3.41
+* Infra: [#63] Prepare 3.0.0-alpha2
+* Infra: [#59] Gradle to 5.5
+* Infra: [#51] Setup KtLint and Detekt
+* Infra: [#48] Make sure dependency examples have the proper case
+* Infra: [#47] Prepare 3.0.0-alpha1
+* Infra: [#41] Switch Release Artifact to JitPack
+* Infra: [#40] Reorganize dependency versions
+* Infra: [#34] Gradle to 5.2
+* Infra: [#33] Updating the develop-branch README as was out of date
+* Infra: [#28] Updating Dependencies
+* Infra: [#25] Added Project Icon to Readme
+* Infra: [#16] [TECH] Configure a debug keystore
 
 **Contributors**
 
