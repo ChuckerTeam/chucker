@@ -47,6 +47,8 @@ val client = OkHttpClient.Builder()
 
 ## Features 🧰
 
+Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the changes in the latest version of Chucker.
+
 * Compatible with **OkHTTP 4**
 * **API >= 16** compatible
 * Easy to integrate (just a 2 gradle implementation line).
