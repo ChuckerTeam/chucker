@@ -16,7 +16,6 @@
 package com.chuckerteam.chucker.api.internal.ui.transaction
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -135,23 +134,17 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
         UiPayload {
             val (type, transaction) = params[0]
-
-            val bitmap = transaction.responseImageData?.let { imageData ->
-                BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-            }
-
             return when (type) {
                 TYPE_REQUEST -> UiPayload(
                     transaction.getRequestHeadersString(true),
                     transaction.getFormattedRequestBody(),
-                    transaction.isRequestBodyPlainText,
-                    bitmap
+                    transaction.isRequestBodyPlainText
                 )
                 else -> UiPayload(
                     transaction.getResponseHeadersString(true),
                     transaction.getFormattedResponseBody(),
                     transaction.isResponseBodyPlainText,
-                    bitmap
+                    transaction.responseImageBitmap
                 )
             }
         }
@@ -167,7 +160,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         val headersString: String,
         val bodyString: String?,
         val isPlainText: Boolean,
-        val image: Bitmap?
+        val image: Bitmap? = null
     )
 
     companion object {
