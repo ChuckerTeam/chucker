@@ -6,6 +6,8 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import com.chuckerteam.chucker.api.internal.support.FormatUtils
 import com.chuckerteam.chucker.api.internal.support.JsonConvertor
@@ -126,6 +128,13 @@ internal class HttpTransaction(
 
     val isSsl: Boolean
         get() = scheme?.toLowerCase() == "https"
+
+    val responseImageBitmap: Bitmap?
+        get() {
+            return responseImageData?.let {
+                BitmapFactory.decodeByteArray(it, 0, it.size)
+            }
+        }
 
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))
