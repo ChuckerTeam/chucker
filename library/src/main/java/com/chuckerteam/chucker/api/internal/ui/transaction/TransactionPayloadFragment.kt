@@ -136,7 +136,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         UiPayload {
             val (type, transaction) = params[0]
 
-            val bitmap = transaction.responseImageData?.let { imageData ->
+            val responseImageBitmap = transaction.responseImageData?.let { imageData ->
                 BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
             }
 
@@ -144,14 +144,13 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
                 TYPE_REQUEST -> UiPayload(
                     transaction.getRequestHeadersString(true),
                     transaction.getFormattedRequestBody(),
-                    transaction.isRequestBodyPlainText,
-                    bitmap
+                    transaction.isRequestBodyPlainText
                 )
                 else -> UiPayload(
                     transaction.getResponseHeadersString(true),
                     transaction.getFormattedResponseBody(),
                     transaction.isResponseBodyPlainText,
-                    bitmap
+                    responseImageBitmap
                 )
             }
         }
@@ -167,7 +166,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         val headersString: String,
         val bodyString: String?,
         val isPlainText: Boolean,
-        val image: Bitmap?
+        val image: Bitmap? = null
     )
 
     companion object {
