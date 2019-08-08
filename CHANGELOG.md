@@ -15,6 +15,7 @@ This is a new major release of Chucker. Please note that this major release cont
 * General UI update of the library (new using ConstraintLayout)
 * Added support to render images in Response page.
 * Added support to search and highlight text in the Http Response body.
+* We moved the artifact from JCenter to JitPack
 
 **Wall of PRs**
 
