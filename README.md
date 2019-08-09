@@ -14,6 +14,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Configure](#configure-)
   * [Throwables](#throwables-️)
   * [Redact-Header️](#redact-header-️)
+* [Migrating](#migrating-)
 * [Snapshots](#snapshots-)
 * [FAQ](#faq-)
 * [Contributing](#contributing-)
@@ -129,6 +130,13 @@ You can redact headers that contain sensitive information by calling `redactHead
 interceptor.redactHeader("Auth-Token");
 interceptor.redactHeader("User-Session");
 ```
+
+## Migrating 🚗
+
+If you're migrating **from [Chuck](https://github.com/jgilfelt/chuck) to Chucker**, please refer to this [migration guide](/docs/migrating-from-chuck.md).
+
+If you're migrating **from Chucker v2.0 to v3.0**, please expect multiple breaking changes. You can find documentation on how to update your code on this other [migration guide](/docs/migrating-from-2.0.md).
+
 
 ## Snapshots 📦
 
