@@ -34,6 +34,7 @@ This is a new major release of Chucker. Please note that this major release cont
 * Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
 * Breaking: [#42] Kotlinize the Public API of Chucker
 * Breaking: [#35] Cleanup form the old Chuck names
+* Fix: [#81] Fix for null values being omitted in the parsed body
 * Fix: [#75] Fix application name retrieval.
 * Fix: [#72] Fetch payload in AsyncTask
 * Fix: [#71] Fix crash when clicking notification
@@ -183,3 +184,4 @@ Initial release.
 [#72]: https://github.com/ChuckerTeam/chucker/pull/72
 [#75]: https://github.com/ChuckerTeam/chucker/pull/75
 [#77]: https://github.com/ChuckerTeam/chucker/pull/77
+[#81]: https://github.com/ChuckerTeam/chucker/pull/81
