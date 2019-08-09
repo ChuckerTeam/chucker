@@ -15,8 +15,6 @@
  */
 package com.chuckerteam.chucker.sample;
 
-import io.github.wax911.library.annotation.GraphQuery;
-import io.github.wax911.library.model.request.QueryContainerBuilder;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -25,7 +23,6 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -138,34 +135,5 @@ class SampleApiService {
     }
 
     interface GraphQLSWApi {
-        @POST("/swapi-graphql")
-        @GraphQuery("AllFilms")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllFilms(@Body QueryContainerBuilder request);
-
-        @POST("/swapi-graphql")
-        @GraphQuery("AllVehicles")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllVehicles(@Body QueryContainerBuilder request);
-
-        @POST("/swapi-graphql")
-        @GraphQuery("AllPeople")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllPeople(@Body QueryContainerBuilder request);
-
-        @POST("/swapi-graphql")
-        @GraphQuery("AllPlanets")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllPlanets(@Body QueryContainerBuilder request);
-
-        @POST("/swapi-graphql")
-        @GraphQuery("AllSpacies")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllSpacies(@Body QueryContainerBuilder request);
-
-        @POST("/swapi-graphql")
-        @GraphQuery("AllStarships")
-        @Headers("Content-Type: application/json")
-        Call<Void> getAllStarships(@Body QueryContainerBuilder request);
     }
 }

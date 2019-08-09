@@ -8,7 +8,6 @@ import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import io.github.wax911.library.model.request.QueryContainerBuilder
 import kotlinx.android.synthetic.main.activity_main.do_http
 import kotlinx.android.synthetic.main.activity_main.launch_chucker_directly
 import kotlinx.android.synthetic.main.activity_main.trigger_exception
@@ -101,14 +100,7 @@ class MainActivity : AppCompatActivity() {
             cache(30).enqueue(cb)
         }
 
-        val request = QueryContainerBuilder().putVariable("first", 10)
         with(SampleApiService.getGraphQLInstance(getClient(this))) {
-            getAllFilms(request.apply { setOperationName("AllFilms") }).enqueue(cb)
-            getAllPeople(request.apply { setOperationName("AllPeople") }).enqueue(cb)
-            getAllPlanets(request.apply { setOperationName("AllPlanets") }).enqueue(cb)
-            getAllSpacies(request.apply { setOperationName("AllSpacies") }).enqueue(cb)
-            getAllStarships(request.apply { setOperationName("AllStarships") }).enqueue(cb)
-            getAllVehicles(request.apply { setOperationName("AllVehicles") }).enqueue(cb)
         }
     }
 
