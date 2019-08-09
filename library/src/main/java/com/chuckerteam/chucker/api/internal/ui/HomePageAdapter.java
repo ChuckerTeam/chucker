@@ -9,6 +9,8 @@ import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorListFragment;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionListFragment;
 
+import java.lang.ref.WeakReference;
+
 /**
  * @author Olivier Perez
  */
@@ -17,11 +19,11 @@ class HomePageAdapter extends FragmentPagerAdapter {
     static final int SCREEN_HTTP_INDEX = 0;
     static final int SCREEN_ERROR_INDEX = 1;
 
-    private final Context context;
+    private final WeakReference<Context> context;
 
      HomePageAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
-        this.context = context;
+        this.context = new WeakReference<>(context);
     }
 
     @Override
@@ -40,6 +42,10 @@ class HomePageAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        Context context = this.context.get();
+        if (context == null) {
+            return null;
+        }
         if (position == SCREEN_HTTP_INDEX) {
             return context.getString(R.string.chucker_tab_network);
         } else {

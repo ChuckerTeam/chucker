@@ -8,7 +8,7 @@ import android.content.Context
 class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     var showNotification: Boolean = true,
-    var retentionManager: Any? = null
+    var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
 
     fun onError(obj: Any?, obj2: Any?) {}

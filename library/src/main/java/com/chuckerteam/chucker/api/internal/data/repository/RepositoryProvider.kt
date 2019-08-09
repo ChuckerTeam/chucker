@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api.internal.data.repository
 
 import android.content.Context
+import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider.initialize
 import com.chuckerteam.chucker.api.internal.data.room.ChuckerDatabase
 
 /**
@@ -24,9 +25,15 @@ internal object RepositoryProvider {
         }
     }
 
-    @JvmStatic fun initialize(context: Context) {
-        val db = ChuckerDatabase.create(context)
-        transactionRepository = HttpTransactionDatabaseRepository(db)
-        throwableRepository = RecordedThrowableDatabaseRepository(db)
+    /**
+     * Idempotent method. Must be called before accessing the repositories.
+     */
+    @JvmStatic
+    fun initialize(context: Context) {
+        if (transactionRepository == null || throwableRepository == null) {
+            val db = ChuckerDatabase.create(context)
+            transactionRepository = HttpTransactionDatabaseRepository(db)
+            throwableRepository = RecordedThrowableDatabaseRepository(db)
+        }
     }
 }

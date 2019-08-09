@@ -20,9 +20,9 @@ import com.chuckerteam.chucker.api.internal.support.NotificationHelper
 class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     var showNotification: Boolean = true,
-    var retentionManager: RetentionManager = RetentionManager(context)
+    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
-
+    private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
 
     init {

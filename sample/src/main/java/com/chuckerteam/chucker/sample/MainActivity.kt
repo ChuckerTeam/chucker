@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         collector = ChuckerCollector(
             context = this,
             showNotification = true,
-            retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
+            retentionPeriod = RetentionManager.Period.ONE_HOUR
         )
 
         Chucker.registerDefaultCrashHandler(collector)

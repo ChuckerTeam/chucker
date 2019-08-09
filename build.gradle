@@ -8,7 +8,8 @@ buildscript {
         gsonVersion = '2.8.5'
         junitGradlePluignVersion = '1.3.1.1'
         junitVersion = '5.4.2'
-        kotlinVersion = '1.3.31'
+        leakcanary = "1.6.3"
+        kotlinVersion = '1.3.41'
         mockkVersion = '1.9.3'
         okhttp3Version = '3.12.2'
         retrofitVersion = '2.5.0'
