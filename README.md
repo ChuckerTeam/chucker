@@ -8,6 +8,18 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
   <img src="assets/ic_launcher-web.png" alt="chucker icon" width="30%"/>
 </p>
 
+* [Getting Started](#getting-started-)
+* [Features](#features-)
+  * [Multi-Window](#multi-window-)
+* [Configure](#configure-)
+  * [Throwables](#throwables-️)
+  * [Redact-Header️](#redact-header-️)
+* [Snapshots](#snapshots-)
+* [FAQ](#faq-)
+* [Contributing](#contributing-)
+* [Acknowledgments](#acknowledgments-)
+* [License](#license-)
+
 Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as a **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
 Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
