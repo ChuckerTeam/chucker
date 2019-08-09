@@ -58,7 +58,7 @@ We suggest to use Kotlin to configure your interceptor as it makes the code more
 The following code:
 
 ```kotlin
-val retentionManager = RetentionManager(androidApplication, ChuckCollector.Period.ONE_WEEK)
+val retentionManager = RetentionManager(androidApplication, ChuckCollector.Period.ONE_HOUR)
 
 val collector = ChuckCollector(androidApplication)
             .retentionManager(retentionManager)
