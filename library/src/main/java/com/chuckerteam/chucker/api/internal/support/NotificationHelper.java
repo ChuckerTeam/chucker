@@ -32,6 +32,8 @@ import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowable;
 import com.chuckerteam.chucker.api.internal.ui.BaseChuckerActivity;
 
+import java.util.HashSet;
+
 public class NotificationHelper {
 
     private static final String CHANNEL_ID = "chucker";
@@ -40,14 +42,15 @@ public class NotificationHelper {
     private static final int BUFFER_SIZE = 10;
 
     private static final LongSparseArray<HttpTransaction> transactionBuffer = new LongSparseArray<>();
-    private static int transactionCount;
+    // Set of all the seen transaction IDs. Used to update the notification count.
+    private static final HashSet<Long> transactionIdsSet = new HashSet<>();
 
     private final Context context;
     private final NotificationManager notificationManager;
 
     public static synchronized void clearBuffer() {
         transactionBuffer.clear();
-        transactionCount = 0;
+        transactionIdsSet.clear();
     }
 
     private static synchronized void addToBuffer(HttpTransaction transaction) {
@@ -57,9 +60,7 @@ public class NotificationHelper {
             // with both the invalid and the valid ID and we want to avoid this.
             return;
         }
-        if (transaction.getStatus() == HttpTransaction.Status.Requested) {
-            transactionCount++;
-        }
+        transactionIdsSet.add(transaction.getId());
         transactionBuffer.put(transaction.getId(), transaction);
         if (transactionBuffer.size() > BUFFER_SIZE) {
             transactionBuffer.removeAt(0);
@@ -101,9 +102,9 @@ public class NotificationHelper {
             builder.setAutoCancel(true);
             builder.setStyle(inboxStyle);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                builder.setSubText(String.valueOf(transactionCount));
+                builder.setSubText(String.valueOf(transactionIdsSet.size()));
             } else {
-                builder.setNumber(transactionCount);
+                builder.setNumber(transactionIdsSet.size());
             }
             notificationManager.notify(TRANSACTION_NOTIFICATION_ID, builder.build());
         }
