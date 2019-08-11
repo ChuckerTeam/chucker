@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.api.internal.data.repository
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.api.internal.data.room.ChuckerDatabase

@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.api.internal.data.entity
 
-import android.arch.persistence.room.ColumnInfo
+import androidx.room.ColumnInfo
 
 /**
  * A subset of [RecordedThrowable] to perform faster Read operations on the Repository.

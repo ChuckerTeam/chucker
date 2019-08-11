@@ -2,7 +2,7 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 import com.chuckerteam.chucker.api.internal.support.ChuckerCrashHandler
 import com.chuckerteam.chucker.api.internal.support.NotificationHelper
 import com.chuckerteam.chucker.api.internal.ui.MainActivity

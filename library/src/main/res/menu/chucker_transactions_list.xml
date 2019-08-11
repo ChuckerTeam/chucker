@@ -20,7 +20,7 @@
         android:title="@string/chucker_search"
         android:icon="@drawable/chucker_ic_search_white_24dp"
         app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item android:title="@string/chucker_clear"
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white_24dp"

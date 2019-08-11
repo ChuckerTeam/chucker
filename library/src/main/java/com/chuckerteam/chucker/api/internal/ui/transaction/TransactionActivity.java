@@ -15,22 +15,22 @@
  */
 package com.chuckerteam.chucker.api.internal.ui.transaction;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Observer;
+import androidx.viewpager.widget.ViewPager;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction;
@@ -38,6 +38,9 @@ import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.api.internal.support.FormatUtils;
 import com.chuckerteam.chucker.api.internal.support.SimpleOnPageChangedListener;
 import com.chuckerteam.chucker.api.internal.ui.BaseChuckerActivity;
+import com.google.android.material.tabs.TabLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 
@@ -160,6 +163,7 @@ public class TransactionActivity extends BaseChuckerActivity {
             this.context = new WeakReference<>(context);
         }
 
+        @NotNull
         @Override
         public Fragment getItem(int position) {
             switch (position) {

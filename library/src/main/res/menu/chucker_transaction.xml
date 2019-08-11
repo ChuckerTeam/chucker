@@ -21,7 +21,7 @@
         android:icon="@drawable/chucker_ic_search_white_24dp"
         android:title="@string/chucker_search"
         android:visible="false"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
     <item
         android:icon="@drawable/chucker_ic_share_white_24dp"

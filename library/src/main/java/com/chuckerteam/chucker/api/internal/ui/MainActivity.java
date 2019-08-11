@@ -18,10 +18,10 @@ package com.chuckerteam.chucker.api.internal.ui;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.Chucker;
@@ -29,6 +29,7 @@ import com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorAdapter;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionActivity;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends BaseChuckerActivity implements TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
 

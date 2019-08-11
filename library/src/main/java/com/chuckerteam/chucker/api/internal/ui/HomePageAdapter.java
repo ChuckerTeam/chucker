@@ -1,9 +1,11 @@
 package com.chuckerteam.chucker.api.internal.ui;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorListFragment;
@@ -14,18 +16,19 @@ import java.lang.ref.WeakReference;
 /**
  * @author Olivier Perez
  */
-class HomePageAdapter extends FragmentPagerAdapter {
+class HomePageAdapter extends FragmentStatePagerAdapter {
 
     static final int SCREEN_HTTP_INDEX = 0;
     static final int SCREEN_ERROR_INDEX = 1;
 
     private final WeakReference<Context> context;
 
-     HomePageAdapter(Context context, FragmentManager fragmentManager) {
+    HomePageAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
         this.context = new WeakReference<>(context);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         if (position == SCREEN_HTTP_INDEX) {
