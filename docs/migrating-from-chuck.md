@@ -10,8 +10,8 @@ If you're using Chuck you need to update your gradle `dependencies` block from t
 
 ```groovy
 dependencies {
-    debugCompile 'com.readystatesoftware.chuck:library:1.1.0'
-    releaseCompile 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+    debugCompile "com.readystatesoftware.chuck:library:1.1.0"
+    releaseCompile "com.readystatesoftware.chuck:library-no-op:1.1.0"
 }
 ```
 
@@ -20,12 +20,12 @@ to this:
 ```groovy
 repositories {
     // Other repositories here.
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    debugImplementation 'com.github.ChuckerTeam.Chucker:library:3.0.0'
-    releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:3.0.0'
+    debugImplementation "com.github.ChuckerTeam.Chucker:library:3.0.0"
+    releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.0.0"
 }
 ```
 

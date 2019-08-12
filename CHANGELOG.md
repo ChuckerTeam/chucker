@@ -4,11 +4,11 @@ Change Log
 Version 3.0.0 *(2019-08-12)*
 ----------------------------
 
-This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](TODO) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
+This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
 **Summary of Changes**
 
-* Chucker DB is now using Room instead of Cupboard as ORM.
+* Chucker DB is now using [Room](https://developer.android.com/topic/libraries/architecture/room) instead of [Cupboard](https://bitbucket.org/littlerobots/cupboard/wiki/Home) as ORM.
 * The public api of Chucker (classes in `com.chuckerteam.chucker.api`) is now rewritten in Kotlin.
 * Classes inside the `.internal` package should now not be considered part of the public api and expect them to change without major version bump.
 * Removed usage of `okhttp3.internal` methods.
@@ -21,7 +21,7 @@ This is a new major release of Chucker. Please note that this major release cont
 
 * New: [#67] Add support for images
 * New: [#53] Remove usage of methods from okhttp3.internal
-* New: [#49] Add missing @JvmOverload on the ChuckerInterceptor
+* New: [#49] Add missing `@JvmOverload` on the ChuckerInterceptor
 * New: [#29] Replacing Cupboard with Room
 * New: [#24] Redact header (from okhttp logging)
 * New: [#23] Polishing the Color palette
@@ -34,6 +34,8 @@ This is a new major release of Chucker. Please note that this major release cont
 * Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
 * Breaking: [#42] Kotlinize the Public API of Chucker
 * Breaking: [#35] Cleanup form the old Chuck names
+* Fix: [#87] Improving counting of seen transactions in notification message
+* Fix: [#86] Add positions to string formatting placeholders
 * Fix: [#81] Fix for null values being omitted in the parsed body
 * Fix: [#75] Fix application name retrieval.
 * Fix: [#72] Fetch payload in AsyncTask
@@ -47,17 +49,11 @@ This is a new major release of Chucker. Please note that this major release cont
 * Fix: [#50] ChuckerInterceptor Cleanup
 * Fix: [#4] Add no-op check to Chuck utility class
 * Infra: [#65] Kotlin to 1.3.41
-* Infra: [#63] Prepare 3.0.0-alpha2
 * Infra: [#59] Gradle to 5.5
 * Infra: [#51] Setup KtLint and Detekt
-* Infra: [#48] Make sure dependency examples have the proper case
-* Infra: [#47] Prepare 3.0.0-alpha1
 * Infra: [#41] Switch Release Artifact to JitPack
 * Infra: [#40] Reorganize dependency versions
-* Infra: [#34] Gradle to 5.2
-* Infra: [#33] Updating the develop-branch README as was out of date
 * Infra: [#28] Updating Dependencies
-* Infra: [#25] Added Project Icon to Readme
 * Infra: [#16] [TECH] Configure a debug keystore
 
 **Contributors**

@@ -114,7 +114,7 @@ Chucker supports also collecting and displaying **Throwables** of your applicati
 try {
     // Do something risky
 } catch (IOException exception) {
-    collector.onError("TAG", exception)
+    chuckerCollector.onError("TAG", exception)
 }
 ```
 
