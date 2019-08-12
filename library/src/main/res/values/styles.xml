@@ -15,27 +15,27 @@
  ~ limitations under the License.
  -->
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Chuck.Theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/chuck_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/chuck_colorPrimaryDark</item>
-        <item name="colorAccent">@color/chuck_colorAccent</item>
+    <style name="Chucker.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/chucker_primary_color</item>
+        <item name="colorPrimaryDark">@color/chucker_primary_dark_color</item>
+        <item name="colorAccent">@color/chucker_secondary_color</item>
     </style>
 
-    <style name="Chuck.TextAppearance.ListItem" parent="android:TextAppearance">
+    <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Chuck.TextAppearance.Label" parent="android:TextAppearance.Small">
+    <style name="Chucker.TextAppearance.Label" parent="android:TextAppearance.Small">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Chuck.TextAppearance.Value" parent="android:TextAppearance.Small">
+    <style name="Chucker.TextAppearance.Value" parent="android:TextAppearance.Small">
         <item name="android:paddingLeft">16dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:textIsSelectable">true</item>
     </style>
 
-    <style name="Chuck.TextAppearance.TransactionTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="Chucker.TextAppearance.TransactionTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:gravity">top</item>
         <item name="android:textSize" tools:ignore="SpUsage">16dp</item>
         <item name="android:maxLines">2</item>

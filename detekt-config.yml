@@ -1,0 +1,21 @@
+build:
+  maxIssues: 1
+  weights:
+    # complexity: 2
+    # LongParameterList: 1
+    # style: 1
+    # comments: 1
+
+complexity:
+  active: true
+  ComplexCondition:
+    active: true
+    threshold: 5
+
+style:
+  ReturnCount:
+    active: true
+    max: 5
+    excludedFunctions: "equals"
+    excludeLabeled: false
+    excludeReturnFromLambda: true
