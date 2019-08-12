@@ -2,46 +2,49 @@
 
 [![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 
-<p align="center">
-  <img src="https://i.imgur.com/GXoIFZ6.png" alt="chucker icon" width="30%"/>
-</p>
-
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
-Chucker simplifies the gathering of HTTP requests/responses, and Throwables. Chucker intercepts and persists all this events inside your application, and provides an UI for inspecting and sharing their content.
+<p align="center">
+  <img src="assets/ic_launcher-web.png" alt="chucker icon" width="30%"/>
+</p>
 
-![Chucker HTTP transactions](assets/chucker-http.gif) ![Chucker errors](assets/chucker-error.gif)
+* [Getting Started](#getting-started-)
+* [Features](#features-)
+  * [Multi-Window](#multi-window-)
+* [Configure](#configure-)
+  * [Throwables](#throwables-️)
+  * [Redact-Header️](#redact-header-️)
+* [Migrating](#migrating-)
+* [Snapshots](#snapshots-)
+* [FAQ](#faq-)
+* [Contributing](#contributing-)
+* [Acknowledgments](#acknowledgments-)
+* [License](#license-)
 
-Apps using Chucker will display a notifications showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
+Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as a **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
-The main Chucker activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
+Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
-![Multi-Window](assets/chucker-multiwindow.gif)
+| HTTP Calls | Throwables |
+| --- | --- |
+| ![Chucker HTTP transactions](assets/chucker-http.gif) | ![Chucker errors](assets/chucker-error.gif) |
 
-Chucker requires Android 4.1+ and OkHttp 3.x.
+## Getting Started 👣
 
-**Warning**: The data generated and stored when using this interceptor may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. It is intended for use during development, and not in release builds or other production deployments.
+Chucker is distributed through [JitPack](https://jitpack.io/#ChuckerTeam/chucker). To use it you need to add the following **Gradle dependency** to your `build.gradle` file of you android app module (NOT the root file).
 
-You can redact headers that may contain sensitive information by calling `redactHeader()`.
-```java
-interceptor.redactHeader("Authorization");
-interceptor.redactHeader("Cookie");
-```
+Please note that you should add both the `library` and the the `library-no-op` variant to isolate Chucker from release builds as follows:
 
-# Setup
-
-Add the dependency in your `build.gradle` file. Add it alongside the `no-op` variant to isolate Chucker from release builds as follows:
-
-```gradle
+```groovy
 repositories {
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
 }
 ```
 
-```gradle
+```groovy
 dependencies {
-  debugImplementation 'com.github.ChuckerTeam.Chucker:library:2.0.4'
-  releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:2.0.4'
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.0.0"
+  releaseImplementation "com.github.ChuckerTeam.chucker:library-no-op:3.0.0"
 }
 ```
 
@@ -53,9 +56,27 @@ val client = OkHttpClient.Builder()
                 .build()
 ```
 
-That's it! 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
+**That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
 
-# Customize
+## Features 🧰
+
+Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the changes in the latest version of Chucker.
+
+* Compatible with **OkHTTP 4**
+* **API >= 16** compatible
+* Easy to integrate (just a 2 gradle implementation line).
+* Works **out of the box**, no customization needed.
+* **Empty release artifact** 🧼 (no traces of Chucker in your final APK).
+* Support for body text search with **highlighting** 🕵️‍♂️
+* Support for showing **images** in HTTP Responses 🖼
+
+### Multi-Window 🚪
+
+The main Chucker activity is launched in its own task, allowing it to be displayed alongside the host app UI using Android 7.x multi-window support.
+
+![Multi-Window](assets/chucker-multiwindow.gif)
+
+## Configure 🎨
 
 You can customize chucker providing an instance of a `ChuckerCollector`:
 
@@ -66,7 +87,7 @@ val chuckerCollector = ChuckerCollector(
         // Toggles visibility of the push notification
         showNotification = true,
         // Allows to customize the retention period of collected data
-        retentionManager = RetentionManager(this, RetentionManager.Period.ONE_HOUR)
+        retentionPeriod = RetentionManager.Period.ONE_HOUR
 )
 
 // Create the Interceptor
@@ -79,52 +100,66 @@ val chuckerInterceptor = ChuckerInterceptor(
         // List of headers to obfuscate in the Chucker UI
         headersToRedact = listOf("Auth-Token"))
 
-// You can use `onError` on the collector to report Throwables.
-chuckerCollector.onError("Sample", RuntimeException("Just a triggered exception"))
-
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
         .addInterceptor(chuckerInterceptor)
         .build()
 ```
 
-For errors gathering you can directly use the same collector:
+### Throwables ☄️
 
-```java
-// Collector
-ChuckerCollector collector = new ChuckerCollector(this)
-    .showNotification(true)
-    .retentionManager(new RetentionManager(this, ChuckerCollector.Period.ONE_HOUR));
+Chucker supports also collecting and displaying **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
 
+```kotlin
 try {
     // Do something risky
-} catch (IOException e) {
-    collector.onError("Failed to do something risky", e);
+} catch (IOException exception) {
+    chuckerCollector.onError("TAG", exception)
 }
 ```
 
-# Snapshots
+### Redact-Header 👮‍♂️
 
-Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can get `SNAPSHOT` versions directly from Jitpack if needed.
+**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. 
+
+It is intended for **use during development**, and not in release builds or other production deployments.
+
+You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
+
+```kotlin
+interceptor.redactHeader("Auth-Token");
+interceptor.redactHeader("User-Session");
+```
+
+## Migrating 🚗
+
+If you're migrating **from [Chuck](https://github.com/jgilfelt/chuck) to Chucker**, please refer to this [migration guide](/docs/migrating-from-chuck.md).
+
+If you're migrating **from Chucker v2.0 to v3.0**, please expect multiple breaking changes. You can find documentation on how to update your code on this other [migration guide](/docs/migrating-from-2.0.md).
+
+
+## Snapshots 📦
+
+Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can get `SNAPSHOT` versions directly from JitPack if needed.
 
 ```gradle
 repositories {
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
 }
 ```
 
 ```gradle
 dependencies {
-  debugImplementation 'com.github.ChuckerTeam.Chucker:library:develop-SNAPSHOT'
-  releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:develop-SNAPSHOT'
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:develop-SNAPSHOT"
+  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:develop-SNAPSHOT"
 }
 ```
 
-⚠ Please note that the latest snapshot might be **unstable**. Use it at your own risk :)
+⚠️ Please note that the latest snapshot might be **unstable**. Use it at your own risk ⚠️
 
-If you're looking for the **latest version source code**, you can always find it on the top of the `master` branch.
+If you're looking for the **latest stable version**, you can always find it on the top of the `release` branch.
 
-# FAQ
+## FAQ ❓
 
 * Why are some of my request headers missing?
 * Why are retries and redirects not being captured discretely?
@@ -132,7 +167,20 @@ If you're looking for the **latest version source code**, you can always find it
 
 Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
 
-# Acknowledgements
+## Contributing 🤝
+
+**We're looking for contributors! Don't be shy.** 😁 Feel free to open issues/pull requests to help me improve this project.
+
+* When reporting a new Issue, make sure to attach **Screenshots**, **Videos** or **GIFs** of the problem you are reporting.
+* When submitting a new PR, make sure tests are all green. Write new tests if necessary.
+
+Short `TODO` List for new contributors:
+
+- [ ] Kotlinize classes inside the `.internal` package.
+- [ ] Have a empty state graphics/message for requests with no headers.
+- [ ] Increment the test coverage.
+
+## Acknowledgments 🌸
 
 Chucker uses the following open source libraries:
 
@@ -140,9 +188,9 @@ Chucker uses the following open source libraries:
 - [Gson](https://github.com/google/gson) - Copyright Google Inc.
 - [Room](https://developer.android.com/topic/libraries/architecture/room) - Copyright Google Inc.
 
-License
--------
+## License 📄
 
+```
     Copyright (C) 2018 Nicola Corti & Olivier Perez.
     Copyright (C) 2017 Jeff Gilfelt.
 
@@ -157,3 +205,4 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+```
