@@ -2,8 +2,9 @@ package com.chuckerteam.chucker.api.internal.support;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 
 import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider;
 

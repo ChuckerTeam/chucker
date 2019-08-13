@@ -18,8 +18,6 @@ package com.chuckerteam.chucker.api.internal.ui.transaction
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.SearchView
 import android.text.Html
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -29,6 +27,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.api.internal.support.highlight
@@ -75,9 +75,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         uiLoaderTask?.cancel(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (type == TYPE_RESPONSE) {
-            val searchMenuItem = menu!!.findItem(R.id.search)
+            val searchMenuItem = menu.findItem(R.id.search)
             searchMenuItem.isVisible = true
             val searchView = searchMenuItem.actionView as SearchView
             searchView.setOnQueryTextListener(this)
@@ -103,7 +103,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         headers.text = Html.fromHtml(headersString)
         val isImageData = image != null
         if (!isPlainText && !isImageData) {
-            body.text = getString(R.string.chucker_body_omitted)
+            body.text = context?.getString(R.string.chucker_body_omitted)
         } else if (!isImageData) {
             body.text = bodyString
         }

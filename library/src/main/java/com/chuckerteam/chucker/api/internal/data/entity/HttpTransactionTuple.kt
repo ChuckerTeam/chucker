@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.api.internal.data.entity
 
-import android.arch.persistence.room.ColumnInfo
+import androidx.room.ColumnInfo
 import com.chuckerteam.chucker.api.internal.support.FormatUtils
 
 /**
