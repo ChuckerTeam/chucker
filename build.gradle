@@ -15,7 +15,7 @@ buildscript {
         okhttp3Version = '3.12.2'
         retrofitVersion = '2.5.0'
         roomVersion = '2.1.0'
-        supportLibVersion = '1.1.0-beta01'
+        supportLibVersion = '1.1.0-rc01'
     }
 
     repositories {
