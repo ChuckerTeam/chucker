@@ -49,22 +49,26 @@ public class NotificationHelper {
     private final Context context;
     private final NotificationManager notificationManager;
 
-    public static synchronized void clearBuffer() {
-        transactionBuffer.clear();
-        transactionIdsSet.clear();
+    public static void clearBuffer() {
+        synchronized (transactionBuffer) {
+            transactionBuffer.clear();
+            transactionIdsSet.clear();
+        }
     }
 
-    private static synchronized void addToBuffer(HttpTransaction transaction) {
+    private static void addToBuffer(HttpTransaction transaction) {
         if (transaction.getId() == 0) {
             // Don't store Transactions with an invalid ID (0).
             // Transaction with an Invalid ID will be shown twice in the notification
             // with both the invalid and the valid ID and we want to avoid this.
             return;
         }
-        transactionIdsSet.add(transaction.getId());
-        transactionBuffer.put(transaction.getId(), transaction);
-        if (transactionBuffer.size() > BUFFER_SIZE) {
-            transactionBuffer.removeAt(0);
+        synchronized (transactionBuffer) {
+            transactionIdsSet.add(transaction.getId());
+            transactionBuffer.put(transaction.getId(), transaction);
+            if (transactionBuffer.size() > BUFFER_SIZE) {
+                transactionBuffer.removeAt(0);
+            }
         }
     }
 
@@ -79,7 +83,7 @@ public class NotificationHelper {
         }
     }
 
-    public synchronized void show(HttpTransaction transaction) {
+    public void show(HttpTransaction transaction) {
         addToBuffer(transaction);
         if (!BaseChuckerActivity.isInForeground()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -90,22 +94,24 @@ public class NotificationHelper {
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .addAction(createClearAction(ClearTransactionsService.CLEAR_TRANSACTIONS));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-            int count = 0;
-            for (int i = transactionBuffer.size() - 1; i >= 0; i--) {
-                if (count < BUFFER_SIZE) {
-                    if (count == 0) {
-                        builder.setContentText(transactionBuffer.valueAt(i).getNotificationText());
+            synchronized (transactionBuffer) {
+                int count = 0;
+                for (int i = transactionBuffer.size() - 1; i >= 0; i--) {
+                    if (count < BUFFER_SIZE) {
+                        if (count == 0) {
+                            builder.setContentText(transactionBuffer.valueAt(i).getNotificationText());
+                        }
+                        inboxStyle.addLine(transactionBuffer.valueAt(i).getNotificationText());
                     }
-                    inboxStyle.addLine(transactionBuffer.valueAt(i).getNotificationText());
+                    count++;
                 }
-                count++;
-            }
-            builder.setAutoCancel(true);
-            builder.setStyle(inboxStyle);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                builder.setSubText(String.valueOf(transactionIdsSet.size()));
-            } else {
-                builder.setNumber(transactionIdsSet.size());
+                builder.setAutoCancel(true);
+                builder.setStyle(inboxStyle);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    builder.setSubText(String.valueOf(transactionIdsSet.size()));
+                } else {
+                    builder.setNumber(transactionIdsSet.size());
+                }
             }
             notificationManager.notify(TRANSACTION_NOTIFICATION_ID, builder.build());
         }
