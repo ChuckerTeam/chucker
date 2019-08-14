@@ -181,3 +181,5 @@ Initial release.
 [#75]: https://github.com/ChuckerTeam/chucker/pull/75
 [#77]: https://github.com/ChuckerTeam/chucker/pull/77
 [#81]: https://github.com/ChuckerTeam/chucker/pull/81
+[#86]: https://github.com/ChuckerTeam/chucker/pull/86
+[#87]: https://github.com/ChuckerTeam/chucker/pull/87
