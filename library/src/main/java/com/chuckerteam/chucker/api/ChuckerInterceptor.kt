@@ -16,6 +16,8 @@ import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
 
+private const val MAX_BLOB_SIZE = 1000_000L
+
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
@@ -126,7 +128,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
             } else {
                 transaction.isResponseBodyPlainText = false
 
-                if (transaction.responseContentType?.contains("image") == true) {
+                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
                     transaction.responseImageData = buffer.clone().readByteArray()
                 }
             }
