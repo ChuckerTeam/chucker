@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+Version 3.0.1 *(2019-08-16)*
+----------------------------
+
+This is a hotfix release for Chucker `3.0.0`.
+
+**Summary of Changes**
+
+* Fix: [#96] Limit size of binary image to 1 million bytes.
+
+
 Version 3.0.0 *(2019-08-12)*
 ----------------------------
 
@@ -183,3 +193,4 @@ Initial release.
 [#81]: https://github.com/ChuckerTeam/chucker/pull/81
 [#86]: https://github.com/ChuckerTeam/chucker/pull/86
 [#87]: https://github.com/ChuckerTeam/chucker/pull/87
+[#96]: https://github.com/ChuckerTeam/chucker/pull/96
