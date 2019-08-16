@@ -10,6 +10,10 @@ This is a hotfix release for Chucker `3.0.0`.
 
 * Fix: [#96] Limit size of binary image to 1 million bytes.
 
+**Contributors**
+
+This release was possible thanks to the contribution of: @redwarp
+
 
 Version 3.0.0 *(2019-08-12)*
 ----------------------------
