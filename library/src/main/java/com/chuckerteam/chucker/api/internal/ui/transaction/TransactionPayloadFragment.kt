@@ -76,7 +76,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (type == TYPE_RESPONSE) {
+        if ((type == TYPE_RESPONSE || type == TYPE_REQUEST) && !TextUtils.isEmpty(body.text)) {
             val searchMenuItem = menu.findItem(R.id.search)
             searchMenuItem.isVisible = true
             val searchView = searchMenuItem.actionView as SearchView
@@ -114,6 +114,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             binaryData.visibility = View.GONE
         }
         originalBody = body.text.toString()
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
