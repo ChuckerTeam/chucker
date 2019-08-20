@@ -18,6 +18,8 @@ package com.chuckerteam.chucker.api.internal.ui;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -25,16 +27,19 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.Chucker;
+import com.chuckerteam.chucker.api.FeatureManager;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity;
 import com.chuckerteam.chucker.api.internal.ui.error.ErrorAdapter;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionActivity;
 import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionAdapter;
+import com.chuckerteam.chucker.api.internal.ui.transaction.TransactionListFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends BaseChuckerActivity implements TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
 
     public static final String EXTRA_SCREEN = "EXTRA_SCREEN";
 
+    @Nullable
     private ViewPager viewPager;
 
     @Override
@@ -46,10 +51,30 @@ public class MainActivity extends BaseChuckerActivity implements TransactionAdap
         setSupportActionBar(toolbar);
         toolbar.setSubtitle(getApplicationName());
 
+        FeatureManager featureManager = new FeatureManager(getApplicationContext());
+        if (featureManager.getFeature() == FeatureManager.Feature.HTTP_AND_ERROR) {
+            setViewPagerLayout();
+            consumeIntent(getIntent());
+        } else {
+            setSinglePageLayout();
+        }
+    }
+
+    private void setSinglePageLayout() {
+        FrameLayout container = findViewById(R.id.singleContainer);
+        container.setVisibility(View.VISIBLE);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.singleContainer, TransactionListFragment.newInstance())
+                .commit();
+    }
+
+    private void setViewPagerLayout() {
         viewPager = findViewById(R.id.viewPager);
+        viewPager.setVisibility(View.VISIBLE);
         viewPager.setAdapter(new HomePageAdapter(this, getSupportFragmentManager()));
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(viewPager);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
@@ -63,7 +88,6 @@ public class MainActivity extends BaseChuckerActivity implements TransactionAdap
                 }
             }
         });
-        consumeIntent(getIntent());
     }
 
     @Override
@@ -76,6 +100,9 @@ public class MainActivity extends BaseChuckerActivity implements TransactionAdap
      * Scroll to the right tab.
      */
     private void consumeIntent(Intent intent) {
+        if (viewPager != null && viewPager.getVisibility() != View.VISIBLE) {
+            return;
+        }
         // Get the screen to show, by default => HTTP
         int screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP);
         if (screenToShow == Chucker.SCREEN_HTTP) {

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.FeatureManager
 import com.chuckerteam.chucker.api.RetentionManager
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         Chucker.registerDefaultCrashHandler(collector)
+        Chucker.setFeature(applicationContext, FeatureManager.Feature.HTTP_AND_ERROR)
     }
 
     private fun getClient(context: Context): OkHttpClient {

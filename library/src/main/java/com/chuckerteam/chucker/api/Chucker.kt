@@ -58,6 +58,14 @@ object Chucker {
         NotificationHelper(context).dismissErrorsNotification()
     }
 
+    /**
+     * Method to set feature [FeatureManager.Feature]
+     */
+    @JvmStatic
+    fun setFeature(context: Context, feature: FeatureManager.Feature) {
+        FeatureManager(context).setFeature(feature)
+    }
+
     const val SCREEN_HTTP = 1
     const val SCREEN_ERROR = 2
 

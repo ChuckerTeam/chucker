@@ -24,6 +24,7 @@ class ChuckerCollector @JvmOverloads constructor(
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
+    private val featureManager: FeatureManager = FeatureManager(context)
 
     init {
         RepositoryProvider.initialize(context)
@@ -35,6 +36,9 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param throwable The triggered [Throwable]
      */
     fun onError(tag: String, throwable: Throwable) {
+        if (featureManager.getFeature() != FeatureManager.Feature.HTTP_AND_ERROR) {
+            return
+        }
         val recordedThrowable = RecordedThrowable(tag, throwable)
         RepositoryProvider.throwable().saveThrowable(recordedThrowable)
         if (showNotification) {

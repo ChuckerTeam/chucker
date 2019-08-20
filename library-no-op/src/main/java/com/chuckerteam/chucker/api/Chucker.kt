@@ -22,4 +22,6 @@ object Chucker {
     @JvmStatic fun dismissTransactionsNotification(context: Context) {}
 
     @JvmStatic fun dismissErrorsNotification(context: Context) {}
+
+    @JvmStatic fun setFeature(context: Context, feature: FeatureManager.Feature) {}
 }
