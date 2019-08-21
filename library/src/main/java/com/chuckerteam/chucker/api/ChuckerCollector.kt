@@ -1,10 +1,10 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
-import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.api.internal.data.entity.RecordedThrowable
-import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.api.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.NotificationHelper
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and

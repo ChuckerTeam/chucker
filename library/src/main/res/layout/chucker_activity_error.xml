@@ -20,7 +20,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chuckerteam.chucker.api.internal.ui.error.ErrorActivity">
+    tools:context="com.chuckerteam.chucker.internal.ui.error.ErrorActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
