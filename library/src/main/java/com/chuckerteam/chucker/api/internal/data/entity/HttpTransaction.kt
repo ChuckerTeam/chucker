@@ -203,7 +203,7 @@ internal class HttpTransaction(
     }
 
     fun getFormattedResponseBody(): String {
-        return responseBody?.let { formatBody(it, requestContentType) } ?: ""
+        return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }
 
     fun populateUrl(url: String): HttpTransaction {
