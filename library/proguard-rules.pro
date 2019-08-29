@@ -1,2 +1,2 @@
--keep class com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction { *; }
+-keep class com.chuckerteam.chucker.internal.data.entity.HttpTransaction { *; }
 -keep class android.support.v7.widget.SearchView { *; }

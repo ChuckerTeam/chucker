@@ -23,7 +23,6 @@
     <uses-sdk tools:overrideLibrary="io.github.wax911.library" />
 
     <application
-        android:name=".SampleApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

@@ -2,8 +2,8 @@ package com.chuckerteam.chucker.sample
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         collector = ChuckerCollector(
-            context = this,
+            context = applicationContext,
             showNotification = true,
             retentionPeriod = RetentionManager.Period.ONE_HOUR
         )
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        with(SampleApiService.getInstance(getClient(this))) {
+        with(SampleApiService.getInstance(getClient(applicationContext))) {
             get().enqueue(cb)
             post(SampleApiService.Data("posted")).enqueue(cb)
             patch(SampleApiService.Data("patched")).enqueue(cb)

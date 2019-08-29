@@ -2,10 +2,10 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
-import android.support.annotation.IntDef
-import com.chuckerteam.chucker.api.internal.support.ChuckerCrashHandler
-import com.chuckerteam.chucker.api.internal.support.NotificationHelper
-import com.chuckerteam.chucker.api.internal.ui.MainActivity
+import androidx.annotation.IntDef
+import com.chuckerteam.chucker.internal.support.ChuckerCrashHandler
+import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.ui.MainActivity
 
 /**
  * Chucker methods and utilities to interact with the library.
