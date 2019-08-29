@@ -101,6 +101,115 @@ class MainActivity : AppCompatActivity() {
         }
 
         with(SampleApiService.getGraphQLInstance(getClient(this))) {
+            val filmsQuery = "query AllFilms {\n" +
+                    "  allFilms(first: 10) {\n" +
+                    "    totalCount\n" +
+                    "    films {\n" +
+                    "      id\n" +
+                    "      title\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}\n"
+            getAllFilms(GraphQLResponseBody(filmsQuery, "AllFilms")).enqueue(cb)
+
+            val vehiclesQuery = "query AllVehicles {\n" +
+                    "    allVehicles(first: 10) {\n" +
+                    "        totalCount\n" +
+                    "        pageInfo {\n" +
+                    "            startCursor\n" +
+                    "            endCursor\n" +
+                    "            hasNextPage\n" +
+                    "            hasPreviousPage\n" +
+                    "        }\n" +
+                    "        vehicles {\n" +
+                    "            id\n" +
+                    "            created\n" +
+                    "            vehicleClass\n" +
+                    "            passengers\n" +
+                    "            name\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "} "
+            getAllVehicles(GraphQLResponseBody(vehiclesQuery, "AllVehicles")).enqueue(cb)
+
+            val peopleQuery = "query AllPeople {\n" +
+                    "    allPeople(first: 10) {\n" +
+                    "        totalCount\n" +
+                    "        pageInfo {\n" +
+                    "            startCursor\n" +
+                    "            endCursor\n" +
+                    "            hasNextPage\n" +
+                    "            hasPreviousPage\n" +
+                    "        }\n" +
+                    "        people {\n" +
+                    "            id\n" +
+                    "            birthYear\n" +
+                    "            created\n" +
+                    "            name\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "} "
+            getAllPeople(GraphQLResponseBody(peopleQuery, "AllPeople")).enqueue(cb)
+
+            val planetsQuery = "query AllPlanets {\n" +
+                    "    allPlanets(first: 10) {\n" +
+                    "        totalCount\n" +
+                    "        pageInfo {\n" +
+                    "            startCursor\n" +
+                    "            endCursor\n" +
+                    "            hasNextPage\n" +
+                    "            hasPreviousPage\n" +
+                    "        }\n" +
+                    "        planets {\n" +
+                    "            id\n" +
+                    "            gravity\n" +
+                    "            created\n" +
+                    "            name\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}"
+            getAllPlanets(GraphQLResponseBody(planetsQuery, "AllPlanets")).enqueue(cb)
+
+            val spaciesQuery = "query AllSpacies {\n" +
+                    "    allSpecies(first: 10) {\n" +
+                    "        totalCount\n" +
+                    "        pageInfo {\n" +
+                    "            startCursor\n" +
+                    "            endCursor\n" +
+                    "            hasNextPage\n" +
+                    "            hasPreviousPage\n" +
+                    "        }\n" +
+                    "        species {\n" +
+                    "            id\n" +
+                    "            created\n" +
+                    "            eyeColors\n" +
+                    "            hairColors\n" +
+                    "            skinColors\n" +
+                    "            name\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "} \n"
+            getAllSpacies(GraphQLResponseBody(spaciesQuery, "AllSpacies")).enqueue(cb)
+
+            val starshipsQuery = "query AllStarships {\n" +
+                    "    allStarships(first: 10) {\n" +
+                    "        totalCount\n" +
+                    "        pageInfo {\n" +
+                    "            startCursor\n" +
+                    "            endCursor\n" +
+                    "            hasNextPage\n" +
+                    "            hasPreviousPage\n" +
+                    "        }\n" +
+                    "        starships {\n" +
+                    "            id\n" +
+                    "            created\n" +
+                    "            starshipClass\n" +
+                    "            passengers\n" +
+                    "            name\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "} "
+            getAllStarships(GraphQLResponseBody(starshipsQuery, "AllStarships")).enqueue(cb)
         }
     }
 

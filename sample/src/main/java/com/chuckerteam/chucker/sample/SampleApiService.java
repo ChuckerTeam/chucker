@@ -23,6 +23,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -42,7 +43,7 @@ class SampleApiService {
 
     static GraphQLSWApi getGraphQLInstance(OkHttpClient client) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://graphql.org")
+                .baseUrl("https://swapi.apis.guru")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -135,5 +136,28 @@ class SampleApiService {
     }
 
     interface GraphQLSWApi {
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllFilms(@Body GraphQLResponseBody body);
+
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllVehicles(@Body GraphQLResponseBody body);
+
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllPeople(@Body GraphQLResponseBody body);
+
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllPlanets(@Body GraphQLResponseBody body);
+
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllSpacies(@Body GraphQLResponseBody body);
+
+        @POST("/")
+        @Headers("Content-Type: application/json")
+        Call<Void> getAllStarships(@Body GraphQLResponseBody body);
     }
 }
