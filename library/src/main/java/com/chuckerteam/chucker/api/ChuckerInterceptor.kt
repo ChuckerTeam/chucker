@@ -3,9 +3,9 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
-import com.chuckerteam.chucker.api.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.api.internal.support.IOUtils
-import com.chuckerteam.chucker.api.internal.support.hasBody
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.hasBody
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
