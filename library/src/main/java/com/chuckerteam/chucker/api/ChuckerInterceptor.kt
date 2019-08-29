@@ -8,15 +8,15 @@ import com.chuckerteam.chucker.api.internal.support.IOUtils
 import com.chuckerteam.chucker.api.internal.support.JsonConvertor
 import com.chuckerteam.chucker.api.internal.support.hasBody
 import com.google.gson.JsonObject
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -176,13 +176,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     private fun findOperationName(content: JsonObject): String? {
         val key = "operationName"
-        if (content.has(key)) return content.get(key).asString
-
-        return if (content.has("queryContainer")) {
-            content["queryContainer"].asJsonObject[key].asString
-        } else {
-            null
-        }
+        return if (content.has(key)) content.get(key).asString else null
     }
 
     companion object {
