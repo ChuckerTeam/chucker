@@ -12,6 +12,7 @@ class RetentionManager @JvmOverloads constructor(
 
     @Synchronized
     fun doMaintenance() {
+        // Empty method for the library-no-op artifact
     }
 
     enum class Period {

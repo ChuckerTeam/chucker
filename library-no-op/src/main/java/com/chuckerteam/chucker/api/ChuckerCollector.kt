@@ -11,5 +11,7 @@ class ChuckerCollector @JvmOverloads constructor(
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
 
-    fun onError(obj: Any?, obj2: Any?) {}
+    fun onError(obj: Any?, obj2: Any?) {
+        // Empty method for the library-no-op artifact
+    }
 }
