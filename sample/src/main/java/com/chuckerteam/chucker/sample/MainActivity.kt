@@ -62,7 +62,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun doHttpActivity() {
         val cb = object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {}
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                // no-op
+            }
             override fun onFailure(call: Call<Void>, t: Throwable) { t.printStackTrace() }
         }
 
