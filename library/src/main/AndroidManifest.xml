@@ -31,7 +31,7 @@
             android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity" />
 
         <service
-            android:name="com.chuckerteam.chucker.internal.support.ClearTransactionsService"
+            android:name="com.chuckerteam.chucker.internal.support.ClearDatabaseService"
             android:exported="false" />
     </application>
 </manifest>

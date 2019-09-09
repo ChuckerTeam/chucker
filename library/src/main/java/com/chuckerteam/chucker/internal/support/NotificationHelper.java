@@ -92,7 +92,7 @@ public class NotificationHelper {
                     .setSmallIcon(R.drawable.chucker_ic_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
-                    .addAction(createClearAction(ClearTransactionsService.CLEAR_TRANSACTIONS));
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction.INSTANCE));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             synchronized (transactionBuffer) {
                 int count = 0;
@@ -127,16 +127,16 @@ public class NotificationHelper {
                     .setContentTitle(throwable.getClazz())
                     .setAutoCancel(true)
                     .setContentText(throwable.getMessage())
-                    .addAction(createClearAction(ClearTransactionsService.CLEAR_ERRORS));
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.Error.INSTANCE));
             notificationManager.notify(ERROR_NOTIFICATION_ID, builder.build());
         }
     }
 
     @NonNull
-    private NotificationCompat.Action createClearAction(@ClearTransactionsService.Clear int itemsToClear) {
+    private NotificationCompat.Action createClearAction(ClearDatabaseService.ClearAction clearAction) {
         CharSequence clearTitle = context.getString(R.string.chucker_clear);
-        Intent deleteIntent = new Intent(context, ClearTransactionsService.class);
-        deleteIntent.putExtra(ClearTransactionsService.EXTRA_ITEM_TO_CLEAR, itemsToClear);
+        Intent deleteIntent = new Intent(context, ClearDatabaseService.class);
+        deleteIntent.putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction);
         PendingIntent intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent);
     }
