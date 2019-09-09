@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.internal.support
 
 import android.app.IntentService
 import android.content.Intent
-
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.io.Serializable
 
