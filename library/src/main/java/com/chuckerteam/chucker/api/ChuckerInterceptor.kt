@@ -64,10 +64,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
-            var charset: Charset? = UTF8
+            var charset: Charset = UTF8
             val contentType = requestBody.contentType()
             if (contentType != null) {
-                charset = contentType.charset(UTF8)
+                charset = contentType.charset(UTF8) ?: UTF8
             }
             if (io.isPlaintext(buffer)) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
@@ -112,11 +112,11 @@ class ChuckerInterceptor @JvmOverloads constructor(
             val source = getNativeSource(response)
             source.request(java.lang.Long.MAX_VALUE)
             val buffer = source.buffer()
-            var charset: Charset? = UTF8
+            var charset: Charset = UTF8
             val contentType = responseBody?.contentType()
             if (contentType != null) {
                 try {
-                    charset = contentType.charset(UTF8)
+                    charset = contentType.charset(UTF8) ?: UTF8
                 } catch (e: UnsupportedCharsetException) {
                     collector.onResponseReceived(transaction)
                     return response
