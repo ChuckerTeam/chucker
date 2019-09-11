@@ -36,7 +36,6 @@ import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.internal.support.FormatUtils;
-import com.chuckerteam.chucker.internal.support.SimpleOnPageChangedListener;
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -132,12 +131,20 @@ public class TransactionActivity extends BaseChuckerActivity {
     private void setupViewPager(ViewPager viewPager) {
         adapter = new PagerAdapter(getApplicationContext(), getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new SimpleOnPageChangedListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageSelected(int position) {
                 selectedTabPosition = position;
                 populateUI(transaction);
             }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+
         });
         viewPager.setCurrentItem(selectedTabPosition);
     }

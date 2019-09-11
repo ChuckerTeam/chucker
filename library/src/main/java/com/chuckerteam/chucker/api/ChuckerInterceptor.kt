@@ -5,9 +5,9 @@ import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.JsonConvertor
+import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.hasBody
-import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
@@ -77,9 +77,13 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
             if (io.isPlaintext(buffer)) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
-                val jsonObject = JsonConvertor.getParser().parse(content).asJsonObject
+                val graphQLRequestBody = JsonConverter.instance.fromJson<GraphQLRequestBody>(
+                    content,
+                    object : TypeToken<GraphQLRequestBody>() {
+                    }.type
+                )
                 transaction.requestBody = content
-                transaction.operationName = findOperationName(jsonObject)
+                transaction.operationName = graphQLRequestBody.operationName
             } else {
                 transaction.isResponseBodyPlainText = false
             }
@@ -176,12 +180,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
         return response.body()!!.source()
     }
 
-    private fun findOperationName(content: JsonObject): String? {
-        val key = "operationName"
-        return if (content.has(key)) content.get(key).asString else null
-    }
-
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
     }
+
+    data class GraphQLRequestBody(val operationName: String?, val query: String?)
 }

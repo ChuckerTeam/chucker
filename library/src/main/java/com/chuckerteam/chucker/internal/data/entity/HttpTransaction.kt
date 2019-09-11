@@ -10,7 +10,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
-import com.chuckerteam.chucker.internal.support.JsonConvertor
+import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 
@@ -145,11 +145,11 @@ internal class HttpTransaction(
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
-        requestHeaders = JsonConvertor.getInstance().toJson(headers)
+        requestHeaders = JsonConverter.instance.toJson(headers)
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(
+        return JsonConverter.instance.fromJson<List<HttpHeader>>(
             requestHeaders,
             object : TypeToken<List<HttpHeader>>() {
             }.type
@@ -157,7 +157,7 @@ internal class HttpTransaction(
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
-        return JsonConvertor.getInstance().fromJson<List<HttpHeader>>(
+        return JsonConverter.instance.fromJson<List<HttpHeader>>(
             responseHeaders,
             object : TypeToken<List<HttpHeader>>() {
             }.type
@@ -173,7 +173,7 @@ internal class HttpTransaction(
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {
-        responseHeaders = JsonConvertor.getInstance().toJson(headers)
+        responseHeaders = JsonConverter.instance.toJson(headers)
     }
 
     fun getResponseHeadersString(withMarkup: Boolean): String {
