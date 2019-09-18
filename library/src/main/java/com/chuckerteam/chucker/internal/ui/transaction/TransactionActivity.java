@@ -107,10 +107,10 @@ public class TransactionActivity extends BaseChuckerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_text) {
-            share(FormatUtils.getShareText(this, transaction));
+            share(FormatUtils.INSTANCE.getShareText(this, transaction));
             return true;
         } else if (item.getItemId() == R.id.share_curl) {
-            share(FormatUtils.getShareCurlCommand(transaction));
+            share(FormatUtils.INSTANCE.getShareCurlCommand(transaction));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
