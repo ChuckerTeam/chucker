@@ -3,12 +3,14 @@ package com.chuckerteam.chucker.internal.ui.error;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,12 +25,15 @@ import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple;
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class ErrorListFragment extends Fragment {
 
     private ErrorAdapter adapter;
     private ErrorAdapter.ErrorClickListListener listener;
+    private View tutorialView;
 
     public static Fragment newInstance() {
         return new ErrorListFragment();
@@ -41,7 +46,7 @@ public class ErrorListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         if (context instanceof ErrorAdapter.ErrorClickListListener) {
             listener = (ErrorAdapter.ErrorClickListListener) context;
@@ -52,6 +57,11 @@ public class ErrorListFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<RecordedThrowableTuple> tuples) {
                 adapter.setData(tuples);
+                if (tuples == null || tuples.size() == 0) {
+                    tutorialView.setVisibility(View.VISIBLE);
+                } else {
+                    tutorialView.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -60,14 +70,14 @@ public class ErrorListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chucker_fragment_error_list, container, false);
+        tutorialView = view.findViewById(R.id.tutorial);
+        view.<TextView>findViewById(R.id.link).setMovementMethod(LinkMovementMethod.getInstance());
 
-        if (view instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-            adapter = new ErrorAdapter(getContext(), listener);
-            recyclerView.setAdapter(adapter);
-        }
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        adapter = new ErrorAdapter(getContext(), listener);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
