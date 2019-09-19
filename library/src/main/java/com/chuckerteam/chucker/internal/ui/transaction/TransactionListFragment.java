@@ -19,12 +19,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,11 +46,15 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper;
 
 import java.util.List;
 
-public class TransactionListFragment extends Fragment implements SearchView.OnQueryTextListener, TransactionAdapter.TransactionClickListListener, Observer<List<HttpTransactionTuple>> {
+public class TransactionListFragment extends Fragment
+        implements SearchView.OnQueryTextListener,
+                TransactionAdapter.TransactionClickListListener,
+                Observer<List<HttpTransactionTuple>> {
 
     private String currentFilter = "";
     private TransactionAdapter adapter;
-    LiveData<List<HttpTransactionTuple>> dataSource;
+    private LiveData<List<HttpTransactionTuple>> dataSource;
+    private View tutorialView;
 
     public static TransactionListFragment newInstance() {
         return new TransactionListFragment();
@@ -61,18 +67,20 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false);
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
-                    DividerItemDecoration.VERTICAL));
-            adapter = new TransactionAdapter(getContext(), this);
-            recyclerView.setAdapter(adapter);
-        }
+        tutorialView = view.findViewById(R.id.tutorial);
+        view.<TextView>findViewById(R.id.link).setMovementMethod(LinkMovementMethod.getInstance());
+
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        Context context = view.getContext();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        adapter = new TransactionAdapter(context, this);
+        recyclerView.setAdapter(adapter);
+
         return view;
     }
 
@@ -107,13 +115,15 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.chucker_clear)
                 .setMessage(R.string.chucker_clear_http_confirmation)
-                .setPositiveButton(R.string.chucker_clear, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RepositoryProvider.transaction().deleteAllTransactions();
-                        NotificationHelper.clearBuffer();
-                    }
-                })
+                .setPositiveButton(
+                        R.string.chucker_clear,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                RepositoryProvider.transaction().deleteAllTransactions();
+                                NotificationHelper.clearBuffer();
+                            }
+                        })
                 .setNegativeButton(R.string.chucker_cancel, null)
                 .show();
     }
@@ -133,9 +143,9 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     }
 
     private LiveData<List<HttpTransactionTuple>> getDataSource(String currentFilter) {
-        if (currentFilter.isEmpty()){
+        if (currentFilter.isEmpty()) {
             return RepositoryProvider.transaction().getSortedTransactionTuples();
-        } else if (TextUtils.isDigitsOnly(currentFilter)){
+        } else if (TextUtils.isDigitsOnly(currentFilter)) {
             return RepositoryProvider.transaction().getFilteredTransactionTuples(currentFilter, "");
         } else {
             return RepositoryProvider.transaction().getFilteredTransactionTuples("", currentFilter);
@@ -145,6 +155,11 @@ public class TransactionListFragment extends Fragment implements SearchView.OnQu
     @Override
     public void onChanged(@Nullable List<HttpTransactionTuple> tuples) {
         adapter.setData(tuples);
+        if (tuples == null || tuples.size() == 0) {
+            tutorialView.setVisibility(View.VISIBLE);
+        } else {
+            tutorialView.setVisibility(View.GONE);
+        }
     }
 
     @Override
