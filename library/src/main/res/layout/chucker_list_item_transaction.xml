@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
+    android:layoutDirection="ltr"
     android:padding="@dimen/chucker_base_grid">
 
     <androidx.constraintlayout.widget.Guideline
