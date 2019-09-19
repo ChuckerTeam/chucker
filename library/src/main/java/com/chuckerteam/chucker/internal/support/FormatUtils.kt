@@ -124,27 +124,22 @@ internal object FormatUtils {
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
         var curlCmd = "curl"
-        curlCmd += " -X " + transaction.method!!
+        curlCmd += " -X " + transaction.method
         val headers = transaction.getParsedRequestHeaders()
-        if (headers != null) {
-            var i = 0
-            val count = headers.size
-            while (i < count) {
-                val name = headers[i].name
-                val value = headers[i].value
-                if ("Accept-Encoding".equals(name, ignoreCase = true) && "gzip".equals(value, ignoreCase = true)) {
-                    compressed = true
-                }
-                curlCmd += " -H \"$name: $value\""
-                i++
+
+        headers?.forEach { header ->
+            if ("Accept-Encoding".equals(header.name, ignoreCase = true) && "gzip".equals(header.value, ignoreCase = true)) {
+                compressed = true
             }
+            curlCmd += " -H \"$header.name: $header.value\""
         }
+
         val requestBody = transaction.requestBody
-        if (requestBody != null && requestBody.length > 0) {
+        if (requestBody != null && requestBody.isNotEmpty()) {
             // try to keep to a single line and use a subshell to preserve any line breaks
             curlCmd += " --data $'" + requestBody.replace("\n", "\\n") + "'"
         }
-        curlCmd += (if (compressed) " --compressed " else " ") + transaction.url!!
+        curlCmd += (if (compressed) " --compressed " else " ") + transaction.url
         return curlCmd
     }
 
