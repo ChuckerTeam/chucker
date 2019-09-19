@@ -72,6 +72,7 @@ internal object FormatUtils {
         }
     }
 
+    @JvmStatic
     fun getShareText(context: Context, transaction: HttpTransaction): String {
         var text = ""
         text += context.getString(R.string.chucker_url) + ": " + transaction.url + "\n"
@@ -121,6 +122,7 @@ internal object FormatUtils {
         return text
     }
 
+    @JvmStatic
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
         var curlCmd = "curl"
