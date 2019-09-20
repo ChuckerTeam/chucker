@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import org.xml.sax.InputSource
 import java.io.ByteArrayInputStream
@@ -14,6 +15,7 @@ import java.io.StringWriter
 import java.util.Locale
 import javax.xml.XMLConstants
 import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerException
 import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
@@ -22,14 +24,19 @@ import kotlin.math.pow
 
 internal object FormatUtils {
 
+    private const val SI_MULTIPLE = 1000
+    private const val BASE_TWO_MULTIPLE = 1024
+
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
         return httpHeaders?.joinToString(separator = "") { header ->
-            (if (withMarkup) "<b>" else "") + header.name + ": " + (if (withMarkup) "</b>" else "") + header.value + if (withMarkup) "<br />" else "\n"
+            (if (withMarkup) "<b>" else "") + header.name + ": " +
+                    (if (withMarkup) "</b>" else "") + header.value +
+                    if (withMarkup) "<br />" else "\n"
         } ?: ""
     }
 
     fun formatByteCount(bytes: Long, si: Boolean): String {
-        val unit = if (si) 1000 else 1024
+        val unit = if (si) SI_MULTIPLE else BASE_TWO_MULTIPLE
 
         if (bytes < unit) {
             return "$bytes B"
@@ -45,7 +52,7 @@ internal object FormatUtils {
         return try {
             val je = JsonParser().parse(json)
             JsonConverter.instance.toJson(je)
-        } catch (e: Exception) {
+        } catch (e: JsonParseException) {
             json
         }
     }
@@ -67,7 +74,7 @@ internal object FormatUtils {
             val res = StreamResult(ByteArrayOutputStream())
             serializer.transform(xmlSource, res)
             ((res.outputStream as ByteArrayOutputStream).toByteArray()).toString()
-        } catch (e: Exception) {
+        } catch (e: TransformerException) {
             xml
         }
     }
@@ -78,17 +85,26 @@ internal object FormatUtils {
         text += context.getString(R.string.chucker_url) + ": " + transaction.url + "\n"
         text += context.getString(R.string.chucker_method) + ": " + transaction.method + "\n"
         text += context.getString(R.string.chucker_protocol) + ": " + transaction.protocol + "\n"
-        text += context.getString(R.string.chucker_status) + ": " + transaction.status.toString() + "\n"
-        text += context.getString(R.string.chucker_response) + ": " + transaction.responseSummaryText + "\n"
-        text += context.getString(R.string.chucker_ssl) + ": " + context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no) + "\n"
+        text += context.getString(R.string.chucker_status) + ": " +
+                transaction.status.toString() + "\n"
+        text += context.getString(R.string.chucker_response) + ": " +
+                transaction.responseSummaryText + "\n"
+        text += context.getString(R.string.chucker_ssl) + ": " +
+                context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no) + "\n"
         text += "\n"
-        text += context.getString(R.string.chucker_request_time) + ": " + transaction.requestDateString + "\n"
-        text += context.getString(R.string.chucker_response_time) + ": " + transaction.responseDateString + "\n"
-        text += context.getString(R.string.chucker_duration) + ": " + transaction.durationString + "\n"
+        text += context.getString(R.string.chucker_request_time) + ": " +
+                transaction.requestDateString + "\n"
+        text += context.getString(R.string.chucker_response_time) + ": " +
+                transaction.responseDateString + "\n"
+        text += context.getString(R.string.chucker_duration) + ": " +
+                transaction.durationString + "\n"
         text += "\n"
-        text += context.getString(R.string.chucker_request_size) + ": " + transaction.requestSizeString + "\n"
-        text += context.getString(R.string.chucker_response_size) + ": " + transaction.responseSizeString + "\n"
-        text += context.getString(R.string.chucker_total_size) + ": " + transaction.totalSizeString + "\n"
+        text += context.getString(R.string.chucker_request_size) + ": " +
+                transaction.requestSizeString + "\n"
+        text += context.getString(R.string.chucker_response_size) + ": " +
+                transaction.responseSizeString + "\n"
+        text += context.getString(R.string.chucker_total_size) + ": " +
+                transaction.totalSizeString + "\n"
         text += "\n"
         text += "---------- " + context.getString(R.string.chucker_request) + " ----------\n\n"
 
@@ -130,7 +146,8 @@ internal object FormatUtils {
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
-            if ("Accept-Encoding".equals(header.name, ignoreCase = true) && "gzip".equals(header.value, ignoreCase = true)) {
+            if ("Accept-Encoding".equals(header.name, ignoreCase = true) &&
+                    "gzip".equals(header.value, ignoreCase = true)) {
                 compressed = true
             }
             curlCmd += " -H \"$header.name: $header.value\""
