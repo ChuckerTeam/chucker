@@ -17,3 +17,6 @@
 #}
 -dontwarn okio.**
 -dontwarn retrofit2.**
+
+# retrofit-graphql
+-keep class io.github.wax911.library.model.** { *; }

@@ -12,7 +12,6 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.ArrayList
 import okhttp3.Headers
 
 /**
@@ -35,6 +34,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
+    @ColumnInfo(name = "operationName") var operationName: String?,
     @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = true,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "responseMessage") var responseMessage: String?,
@@ -63,6 +63,7 @@ internal class HttpTransaction(
         requestContentType = null,
         requestHeaders = null,
         requestBody = null,
+        operationName = null,
         responseCode = null,
         responseMessage = null,
         error = null,
@@ -122,12 +123,15 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path
+                else -> responseCode.toString() + " " + method + " " + path + if (isGraphql) " $operationName" else ""
             }
         }
 
     val isSsl: Boolean
         get() = scheme?.toLowerCase() == "https"
+
+    val isGraphql: Boolean
+        get() = operationName != null
 
     val responseImageBitmap: Bitmap?
         get() {

@@ -8,7 +8,9 @@ import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.do_http
+import kotlinx.android.synthetic.main.activity_main.launch_chucker_directly
+import kotlinx.android.synthetic.main.activity_main.trigger_exception
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -96,6 +98,19 @@ class MainActivity : AppCompatActivity() {
             deny().enqueue(cb)
             cache("Mon").enqueue(cb)
             cache(30).enqueue(cb)
+        }
+
+        with(SampleApiService.getGraphQLInstance(getClient(this))) {
+            val filmsQuery = "query AllFilms {\n" +
+                    "  allFilms(first: 10) {\n" +
+                    "    totalCount\n" +
+                    "    films {\n" +
+                    "      id\n" +
+                    "      title\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}\n"
+            getAllFilms(GraphQLResponseBody(filmsQuery, "AllFilms")).enqueue(cb)
         }
     }
 

@@ -36,6 +36,10 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')

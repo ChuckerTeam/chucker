@@ -5,7 +5,9 @@ import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.hasBody
+import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
@@ -57,11 +59,15 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.requestContentType = requestBody?.contentType()?.toString()
         transaction.requestContentLength = requestBody?.contentLength() ?: 0L
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
+        val encodingIsSupported =
+            io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
         transaction.isRequestBodyPlainText = encodingIsSupported
 
         if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
+            val source = io.getNativeSource(
+                Buffer(),
+                io.bodyIsGzipped(request.headers().get("Content-Encoding"))
+            )
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
@@ -71,7 +77,13 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
             if (io.isPlaintext(buffer)) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
+                val graphQLRequestBody = JsonConverter.instance.fromJson<GraphQLRequestBody>(
+                    content,
+                    object : TypeToken<GraphQLRequestBody>() {
+                    }.type
+                )
                 transaction.requestBody = content
+                transaction.operationName = graphQLRequestBody.operationName
             } else {
                 transaction.isResponseBodyPlainText = false
             }
@@ -105,7 +117,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.responseContentLength = responseBody?.contentLength() ?: 0L
         transaction.setResponseHeaders(filterHeaders(response.headers()))
 
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
+        val responseEncodingIsSupported =
+            io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
@@ -170,4 +183,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
     }
+
+    data class GraphQLRequestBody(val operationName: String?, val query: String?)
 }
