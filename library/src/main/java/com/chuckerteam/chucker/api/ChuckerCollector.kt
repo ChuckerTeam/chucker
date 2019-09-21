@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
@@ -65,5 +66,13 @@ class ChuckerCollector @JvmOverloads constructor(
         if (showNotification && updated > 0) {
             notificationHelper.show(transaction)
         }
+    }
+
+    internal fun onWebsocketTraffic(traffic: WebsocketTraffic) {
+        RepositoryProvider.websocket().insertTraffic(traffic)
+        if (showNotification) {
+            notificationHelper.showWebsocket(traffic)
+        }
+        retentionManager.doMaintenance()
     }
 }

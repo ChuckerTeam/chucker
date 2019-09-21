@@ -1,19 +1,17 @@
 package com.chuckerteam.chucker.internal.support
 
-import android.content.Context
-import com.chuckerteam.chucker.R
-import java.io.EOFException
-import java.nio.charset.Charset
-import kotlin.math.min
 import okio.Buffer
 import okio.BufferedSource
 import okio.GzipSource
 import okio.Okio
+import java.io.EOFException
+import java.nio.charset.Charset
+import kotlin.math.min
 
 private const val PREFIX_SIZE = 64L
 private const val CODE_POINT_SIZE = 16
 
-class IOUtils(private val context: Context) {
+class IOUtils(private val unexpectedEof: String, private val bodyTruncated: String) {
 
     /**
      * Returns true if the body in question probably contains human readable text. Uses a small sample
@@ -33,6 +31,7 @@ class IOUtils(private val context: Context) {
                     return false
                 }
             }
+
             return true
         } catch (e: EOFException) {
             return false // Truncated UTF-8 sequence.
@@ -46,11 +45,11 @@ class IOUtils(private val context: Context) {
         try {
             body = buffer.readString(maxBytes, charset)
         } catch (e: EOFException) {
-            body += context.getString(R.string.chucker_body_unexpected_eof)
+            body += unexpectedEof
         }
 
         if (bufferSize > maxContentLength) {
-            body += context.getString(R.string.chucker_body_content_truncated)
+            body += bodyTruncated
         }
         return body
     }

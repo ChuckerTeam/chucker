@@ -4,7 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
+import com.chuckerteam.chucker.api.newLoggedWebSocket
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,8 +27,23 @@ class MainActivity : AppCompatActivity() {
             visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             setOnClickListener { launchChuckerDirectly() }
         }
+        with(createEchoSocket(okHttpClient)) {
+            send("")
+            send("{}")
+            send(com.google.gson.Gson().toJson(SampleApiService.Data("message")))
+            close(4321, "Because I said so")
+        }
 
         client.initializeCrashHandler()
+    }
+
+    private fun createEchoSocket(okHttpClient: OkHttpClient): WebSocket {
+        val listener = object : WebSocketListener() {}
+
+        return okHttpClient.newLoggedWebSocket(
+            Request.Builder().url("ws://echo.websocket.org").build(),
+            listener
+        )
     }
 
     private fun launchChuckerDirectly() {
@@ -31,3 +51,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP))
     }
 }
+
+
+

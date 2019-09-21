@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.util.LongSparseArray;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import androidx.core.content.ContextCompat;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.Chucker;
+import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic;
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction;
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable;
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity;
@@ -81,6 +83,10 @@ public class NotificationHelper {
                             context.getString(R.string.chucker_notification_category),
                             NotificationManager.IMPORTANCE_LOW));
         }
+    }
+
+    public void showWebsocket(WebsocketTraffic traffic) {
+        Log.d("@@WS@@", ""+traffic);
     }
 
     public void show(HttpTransaction transaction) {

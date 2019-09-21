@@ -41,18 +41,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple;
+import com.chuckerteam.chucker.internal.data.entity.TrafficType;
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.internal.support.NotificationHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionListFragment extends Fragment
         implements SearchView.OnQueryTextListener,
-                TransactionAdapter.TransactionClickListListener,
+                TrafficClickListListener,
                 Observer<List<HttpTransactionTuple>> {
 
     private String currentFilter = "";
-    private TransactionAdapter adapter;
+    private TrafficAdapter adapter;
     private LiveData<List<HttpTransactionTuple>> dataSource;
     private View tutorialView;
 
@@ -78,7 +80,7 @@ public class TransactionListFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        adapter = new TransactionAdapter(context, this);
+        adapter = new TrafficAdapter(this);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -154,7 +156,13 @@ public class TransactionListFragment extends Fragment
 
     @Override
     public void onChanged(@Nullable List<HttpTransactionTuple> tuples) {
-        adapter.setData(tuples);
+        List<TrafficRow> rows = new ArrayList<>();
+        if (tuples != null) {
+            for (HttpTransactionTuple tuple : tuples) {
+                rows.add(new HttpTrafficRow(tuple));
+            }
+        }
+        adapter.submitList(rows);
         if (tuples == null || tuples.size() == 0) {
             tutorialView.setVisibility(View.VISIBLE);
         } else {
@@ -163,7 +171,7 @@ public class TransactionListFragment extends Fragment
     }
 
     @Override
-    public void onTransactionClick(long transactionId, int position) {
-        TransactionActivity.start(getActivity(), transactionId);
+    public void onTrafficClick(long id, int position, TrafficType type) {
+        TransactionActivity.start(getActivity(), id);
     }
 }

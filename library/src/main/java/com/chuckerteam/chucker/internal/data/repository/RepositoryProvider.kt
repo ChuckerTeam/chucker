@@ -11,11 +11,18 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 internal object RepositoryProvider {
 
     private var transactionRepository: HttpTransactionRepository? = null
+    private var websocketRepository: WebsocketRepository? = null
     private var throwableRepository: RecordedThrowableRepository? = null
 
     @JvmStatic fun transaction(): HttpTransactionRepository {
         return checkNotNull(transactionRepository) {
             "You can't access the transaction repository if you don't initialize it!"
+        }
+    }
+
+    @JvmStatic fun websocket(): WebsocketRepository {
+        return checkNotNull(websocketRepository) {
+            "You can't access the websocket repository if you don't initialize it!"
         }
     }
 
@@ -30,8 +37,9 @@ internal object RepositoryProvider {
      */
     @JvmStatic
     fun initialize(context: Context) {
-        if (transactionRepository == null || throwableRepository == null) {
+        if (transactionRepository == null || throwableRepository == null || websocketRepository == null) {
             val db = ChuckerDatabase.create(context)
+            websocketRepository = WebsocketDatabaseRepository(db)
             transactionRepository = HttpTransactionDatabaseRepository(db)
             throwableRepository = RecordedThrowableDatabaseRepository(db)
         }

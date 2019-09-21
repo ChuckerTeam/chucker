@@ -2,19 +2,18 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.util.Log
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
+import okhttp3.*
+import okio.Buffer
+import okio.BufferedSource
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
 import java.util.concurrent.TimeUnit
-import okhttp3.Headers
-import okhttp3.Interceptor
-import okhttp3.Response
-import okio.Buffer
-import okio.BufferedSource
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -32,12 +31,15 @@ private const val MAX_BLOB_SIZE = 1000_000L
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
-    private val collector: ChuckerCollector = ChuckerCollector(context),
+    internal val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
     private val headersToRedact: MutableSet<String> = mutableSetOf()
 ) : Interceptor {
 
-    private val io: IOUtils = IOUtils(context)
+    private val io: IOUtils = IOUtils(
+        context.getString(R.string.chucker_body_unexpected_eof),
+        context.getString(R.string.chucker_body_content_truncated)
+    )
 
     fun redactHeader(name: String) = apply {
         headersToRedact.add(name)
@@ -77,7 +79,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
         }
 
-        collector.onRequestSent(transaction)
+        val websocketNegotiation = request.isWebsocketNegotiation()
+        if (!websocketNegotiation) {
+            collector.onRequestSent(transaction)
+        }
 
         val startNs = System.nanoTime()
         val response: Response
@@ -135,7 +140,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
             transaction.responseContentLength = buffer.size()
         }
 
-        collector.onResponseReceived(transaction)
+        if (!websocketNegotiation) {
+            collector.onResponseReceived(transaction)
+        }
 
         return response
     }
@@ -166,6 +173,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
         return response.body()!!.source()
     }
+
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
