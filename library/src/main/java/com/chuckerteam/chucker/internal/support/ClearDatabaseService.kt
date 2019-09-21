@@ -11,6 +11,7 @@ internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME)
         System.err.println("onHandleIntent")
         when (val a = intent?.getSerializableExtra(EXTRA_ITEM_TO_CLEAR)) {
             is ClearAction.Transaction -> {
+                RepositoryProvider.websocket().deleteAllTraffic()
                 RepositoryProvider.transaction().deleteAllTransactions()
                 NotificationHelper.clearBuffer()
                 NotificationHelper(this).dismissTransactionsNotification()

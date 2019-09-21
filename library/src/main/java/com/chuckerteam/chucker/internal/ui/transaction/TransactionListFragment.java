@@ -122,10 +122,11 @@ public class TransactionListFragment extends Fragment
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                RepositoryProvider.transaction().deleteAllTransactions();
-                                NotificationHelper.clearBuffer();
-                            }
-                        })
+                                RepositoryProvider.websocket().deleteAllTraffic();
+                        RepositoryProvider.transaction().deleteAllTransactions();
+                        NotificationHelper.clearBuffer();
+                    }
+                })
                 .setNegativeButton(R.string.chucker_cancel, null)
                 .show();
     }

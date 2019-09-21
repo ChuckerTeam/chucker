@@ -61,6 +61,7 @@ class RetentionManager @JvmOverloads constructor(
     }
 
     private fun deleteSince(threshold: Long) {
+        RepositoryProvider.websocket().deleteOldTraffic(threshold)
         RepositoryProvider.transaction().deleteOldTransactions(threshold)
         RepositoryProvider.throwable().deleteOldThrowables(threshold)
     }

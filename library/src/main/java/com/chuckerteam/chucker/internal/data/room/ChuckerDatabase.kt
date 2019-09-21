@@ -14,6 +14,7 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun throwableDao(): RecordedThrowableDao
     abstract fun transactionDao(): HttpTransactionDao
+    abstract fun websocketTrafficDao(): WebsocketTrafficDao
 
     companion object {
         private val OLD_DB_NAME = "chuck.db"

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
-import com.chuckerteam.chucker.internal.data.entity.TrafficType.HTTP
+import com.chuckerteam.chucker.internal.data.entity.TrafficType.*
 
 class TrafficAdapter(private val listener: TrafficClickListListener) :
     ListAdapter<TrafficRow, TrafficViewHolder>(TrafficDiffUtil()) {
@@ -21,7 +21,8 @@ class TrafficAdapter(private val listener: TrafficClickListListener) :
         val view = LayoutInflater.from(parent.context).inflate(getLayout(viewType), parent, false)
         return when (viewType) {
             HTTP.ordinal -> HttpTransactionViewHolder(view, listener)
-            // WEBSOCKET.ordinal -> WebsocketTrafficViewHolder(view, listener)
+            WEBSOCKET_LIFECYCLE.ordinal -> WebsocketLifecycleViewHolder(view, listener)
+            WEBSOCKET_TRAFFIC.ordinal -> WebsocketTrafficViewHolder(view, listener)
             else -> throw IllegalArgumentException("Unsupported row type: $viewType")
         }
     }
@@ -32,7 +33,8 @@ class TrafficAdapter(private val listener: TrafficClickListListener) :
 
     private fun getLayout(viewType: Int): Int = when (viewType) {
         HTTP.ordinal -> R.layout.chucker_list_item_transaction
-        // WEBSOCKET.ordinal -> R.layout.chucker_list_item_transaction
+        WEBSOCKET_LIFECYCLE.ordinal -> R.layout.chucker_list_item_websocket_lifecycle
+        WEBSOCKET_TRAFFIC.ordinal -> R.layout.chucker_list_item_transaction
         else -> throw IllegalArgumentException("Unsupported row type: $viewType")
     }
 
