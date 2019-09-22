@@ -1,11 +1,11 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.view.View
+import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.entity.TrafficType.WEBSOCKET_LIFECYCLE
-import com.chuckerteam.chucker.internal.data.entity.TrafficType.WEBSOCKET_TRAFFIC
 import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 
-class WebsocketLifecycleViewHolder(view: View, listener: TrafficClickListListener) :
+class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType) -> Unit) :
     TrafficViewHolder(view, listener) {
     override fun bind(trafficRow: TrafficRow) {
         val websocketTraffic = (trafficRow as WebsocketTrafficRow).traffic

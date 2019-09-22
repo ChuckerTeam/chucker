@@ -9,10 +9,11 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction.Status.Failed
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction.Status.Requested
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.entity.TrafficType.HTTP
 import java.text.DateFormat
 
-class HttpTransactionViewHolder(view: View, listener: TrafficClickListListener) :
+class HttpTransactionViewHolder(view: View, listener: (Long, Int, TrafficType) -> Unit) :
     TrafficViewHolder(view, listener) {
     private val code = view.findViewById<TextView>(R.id.chucker_code)
     private val path = view.findViewById<TextView>(R.id.chucker_path)
@@ -45,7 +46,7 @@ class HttpTransactionViewHolder(view: View, listener: TrafficClickListListener) 
             path.setTextColor(this)
         }
         itemView.setOnClickListener {
-            listener.onTrafficClick(transaction.id, adapterPosition, HTTP)
+            listener(transaction.id, adapterPosition, HTTP)
         }
     }
 }

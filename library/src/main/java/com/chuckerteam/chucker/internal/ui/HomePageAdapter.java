@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment;
-import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment;
+import com.chuckerteam.chucker.internal.ui.transaction.TrafficFragment;
 
 import java.lang.ref.WeakReference;
 
@@ -32,7 +32,7 @@ class HomePageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == SCREEN_HTTP_INDEX) {
-            return TransactionListFragment.newInstance();
+            return new TrafficFragment();
         } else {
             return ErrorListFragment.newInstance();
         }
