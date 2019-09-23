@@ -29,9 +29,11 @@ internal object FormatUtils {
 
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
         return httpHeaders?.joinToString(separator = "") { header ->
-            (if (withMarkup) "<b>" else "") + header.name + ": " +
-                (if (withMarkup) "</b>" else "") + header.value +
-                if (withMarkup) "<br />" else "\n"
+            if (withMarkup) {
+                "<b>" + header.name + ": " + "</b>" + header.value + "<br />"
+            } else {
+                header.name + ": " + header.value + "\n"
+            }
         } ?: ""
     }
 
@@ -81,8 +83,7 @@ internal object FormatUtils {
 
     @JvmStatic
     fun getShareText(context: Context, transaction: HttpTransaction): String {
-        var text = ""
-        text += context.getString(R.string.chucker_url) + ": " + transaction.url + "\n"
+        var text = context.getString(R.string.chucker_url) + ": " + transaction.url + "\n"
         text += context.getString(R.string.chucker_method) + ": " + transaction.method + "\n"
         text += context.getString(R.string.chucker_protocol) + ": " + transaction.protocol + "\n"
         text += context.getString(R.string.chucker_status) + ": " +
@@ -141,8 +142,7 @@ internal object FormatUtils {
     @JvmStatic
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
-        var curlCmd = "curl"
-        curlCmd += " -X " + transaction.method
+        var curlCmd = "curl -X " + transaction.method
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
