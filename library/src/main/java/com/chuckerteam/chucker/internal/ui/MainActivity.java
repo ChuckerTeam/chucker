@@ -92,7 +92,7 @@ public class MainActivity extends BaseChuckerActivity implements TransactionAdap
 
     @Override
     public void onErrorClick(long throwableId, int position) {
-        ErrorActivity.start(this, throwableId);
+        startActivity(ErrorActivity.newInstance(this, throwableId));
     }
 
     @Override
