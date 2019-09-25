@@ -12,12 +12,12 @@ internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME)
         when (val a = intent?.getSerializableExtra(EXTRA_ITEM_TO_CLEAR)) {
             is ClearAction.Transaction -> {
                 RepositoryProvider.transaction().deleteAllTransactions()
-                NotificationsHelper.clearBuffer()
-                NotificationsHelper(this).dismissTransactionsNotification()
+                NotificationHelper.clearBuffer()
+                NotificationHelper(this).dismissTransactionsNotification()
             }
             is ClearAction.Error -> {
                 RepositoryProvider.throwable().deleteAllThrowables()
-                NotificationsHelper(this).dismissErrorsNotification()
+                NotificationHelper(this).dismissErrorsNotification()
             }
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.NotificationsHelper
+import com.chuckerteam.chucker.internal.support.NotificationHelper
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and
@@ -23,7 +23,7 @@ class ChuckerCollector @JvmOverloads constructor(
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
-    private val notificationHelper: NotificationsHelper = NotificationsHelper(context)
+    private val notificationHelper: NotificationHelper = NotificationHelper(context)
 
     init {
         RepositoryProvider.initialize(context)

@@ -17,7 +17,7 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
-class NotificationsHelper(val context: Context) {
+class NotificationHelper(val context: Context) {
     companion object {
         private const val CHANNEL_ID = "chucker"
         private const val TRANSACTION_NOTIFICATION_ID = 1138
