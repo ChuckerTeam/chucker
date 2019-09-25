@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.IntDef
 import com.chuckerteam.chucker.internal.support.ChuckerCrashHandler
-import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.NotificationsHelper
 import com.chuckerteam.chucker.internal.ui.MainActivity
 
 /**
@@ -47,7 +47,7 @@ object Chucker {
      */
     @JvmStatic
     fun dismissTransactionsNotification(context: Context) {
-        NotificationHelper(context).dismissTransactionsNotification()
+        NotificationsHelper(context).dismissTransactionsNotification()
     }
 
     /**
@@ -55,7 +55,7 @@ object Chucker {
      */
     @JvmStatic
     fun dismissErrorsNotification(context: Context) {
-        NotificationHelper(context).dismissErrorsNotification()
+        NotificationsHelper(context).dismissErrorsNotification()
     }
 
     const val SCREEN_HTTP = 1
