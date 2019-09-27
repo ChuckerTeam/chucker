@@ -25,14 +25,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.api.Chucker;
-import com.chuckerteam.chucker.internal.data.entity.TrafficType;
 import com.chuckerteam.chucker.internal.ui.error.ErrorActivity;
 import com.chuckerteam.chucker.internal.ui.error.ErrorAdapter;
-import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity;
-import com.chuckerteam.chucker.internal.ui.transaction.TrafficClickListListener;
 import com.google.android.material.tabs.TabLayout;
 
-public class MainActivity extends BaseChuckerActivity implements TrafficClickListListener, ErrorAdapter.ErrorClickListListener {
+public class MainActivity extends BaseChuckerActivity implements ErrorAdapter.ErrorClickListListener {
 
     public static final String EXTRA_SCREEN = "EXTRA_SCREEN";
 
@@ -94,10 +91,5 @@ public class MainActivity extends BaseChuckerActivity implements TrafficClickLis
     @Override
     public void onErrorClick(long throwableId, int position) {
         startActivity(ErrorActivity.newInstance(this, throwableId));
-    }
-
-    @Override
-    public void onTrafficClick(long id, int position, TrafficType type) {
-        TransactionActivity.start(this, id);
     }
 }

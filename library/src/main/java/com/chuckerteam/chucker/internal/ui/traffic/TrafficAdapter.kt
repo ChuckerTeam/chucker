@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.entity.TrafficType.*
+import com.chuckerteam.chucker.internal.ui.traffic.http.HttpTransactionViewHolder
+import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketLifecycleViewHolder
+import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketTrafficViewHolder
 
 class TrafficAdapter(private val listener: (Long, Int, TrafficType) -> Unit) :
     RecyclerView.Adapter<TrafficViewHolder>() {
@@ -20,9 +23,10 @@ class TrafficAdapter(private val listener: (Long, Int, TrafficType) -> Unit) :
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int): Int {
-        return items[position].type.ordinal
-    }
+    override fun getItemViewType(position: Int) = items[position].type.ordinal
+
+    override fun onBindViewHolder(holder: TrafficViewHolder, position: Int) =
+        holder.bind(items[position])
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrafficViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(getLayout(viewType), parent, false)
@@ -32,10 +36,6 @@ class TrafficAdapter(private val listener: (Long, Int, TrafficType) -> Unit) :
             WEBSOCKET_TRAFFIC.ordinal -> WebsocketTrafficViewHolder(view, listener)
             else -> throw IllegalArgumentException("Unsupported row type: $viewType")
         }
-    }
-
-    override fun onBindViewHolder(holder: TrafficViewHolder, position: Int) {
-        holder.bind(items[position])
     }
 
     private fun getLayout(viewType: Int): Int = when (viewType) {
@@ -56,8 +56,4 @@ interface TrafficRow {
     val timestamp: Long
     val type: TrafficType
     override fun equals(other: Any?): Boolean
-}
-
-interface TrafficClickListListener {
-    fun onTrafficClick(id: Long, position: Int, type: TrafficType)
 }

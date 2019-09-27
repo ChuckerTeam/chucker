@@ -20,6 +20,9 @@ internal class WebsocketTraffic(
     @ColumnInfo(name = "code") var code: Int? = null,
     @ColumnInfo(name = "reason") var reason: String? = null
 ) {
+    val isData: Boolean
+        get() = operation == "onMessage" || operation == "send"
+
     override fun toString(): String {
         return "WebsocketTraffic(operation='$operation', id=$id, timestamp=$timestamp, " +
                 "url=$url, host=$host, path=$path, scheme=$scheme, contentText=$contentText, " +

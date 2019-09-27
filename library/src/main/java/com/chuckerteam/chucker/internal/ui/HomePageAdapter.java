@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.chuckerteam.chucker.R;
 import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment;
-import com.chuckerteam.chucker.internal.ui.transaction.TrafficFragment;
+import com.chuckerteam.chucker.internal.ui.traffic.TrafficFragment;
 
 import java.lang.ref.WeakReference;
 

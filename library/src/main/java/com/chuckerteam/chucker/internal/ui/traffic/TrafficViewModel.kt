@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.ui.traffic.http.HttpTrafficRow
+import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketLifecycleRow
+import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketTrafficRow
 
 class TrafficViewModel : ViewModel() {
 
@@ -65,9 +68,8 @@ class TrafficViewModel : ViewModel() {
     private fun HttpTransactionTuple.toTrafficRow(): TrafficRow =
         HttpTrafficRow(this)
 
-    private fun WebsocketTraffic.toTrafficRow(): TrafficRow =
-        if (operation == "onMessage" || operation == "send")
-            WebsocketTrafficRow(this)
-        else
-            WebsocketLifecycleRow(this)
+    private fun WebsocketTraffic.toTrafficRow(): TrafficRow = when {
+        isData -> WebsocketTrafficRow(this)
+        else -> WebsocketLifecycleRow(this)
+    }
 }

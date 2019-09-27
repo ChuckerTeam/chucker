@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic.websocket
 
 import android.view.View
 import android.widget.TextView
@@ -6,6 +6,8 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.entity.TrafficType.WEBSOCKET_LIFECYCLE
 import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
+import com.chuckerteam.chucker.internal.ui.traffic.TrafficRow
+import com.chuckerteam.chucker.internal.ui.traffic.TrafficViewHolder
 import java.text.DateFormat
 
 class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType) -> Unit) :
@@ -25,7 +27,8 @@ class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType
 }
 
 @Suppress("EqualsOrHashCode")
-internal class WebsocketLifecycleRow(val traffic: WebsocketTraffic) : TrafficRow {
+internal class WebsocketLifecycleRow(val traffic: WebsocketTraffic) :
+    TrafficRow {
     override val id: Long = traffic.id
     override val timestamp: Long = traffic.timestamp ?: 0L
     override val type = WEBSOCKET_LIFECYCLE

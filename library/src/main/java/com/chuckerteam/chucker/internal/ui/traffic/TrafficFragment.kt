@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic
 
 import android.content.Context
 import android.os.Bundle
@@ -18,10 +18,11 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.ui.traffic.http.TransactionActivity
 
 class TrafficFragment : Fragment() {
-    private lateinit var trafficVM: TrafficViewModel
     private lateinit var tutorialView : View
+    private lateinit var trafficVM: TrafficViewModel
     private lateinit var trafficAdapter: TrafficAdapter
 
     override fun onAttach(context: Context) {
@@ -40,11 +41,6 @@ class TrafficFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false).apply {
-        with(findViewById<RecyclerView>(R.id.list)) {
-            layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(DividerItemDecoration(context, VERTICAL))
-            adapter = trafficAdapter
-        }
         tutorialView = findViewById(R.id.tutorial)
         findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
         trafficAdapter = TrafficAdapter { id, _, type ->
@@ -58,6 +54,11 @@ class TrafficFragment : Fragment() {
             tutorialView.visibility = if (list.isNullOrEmpty()) View.VISIBLE else View.GONE
             trafficAdapter.submitList(list)
         })
+        with(findViewById<RecyclerView>(R.id.list)) {
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            adapter = trafficAdapter
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

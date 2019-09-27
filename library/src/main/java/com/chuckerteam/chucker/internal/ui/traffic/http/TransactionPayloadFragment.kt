@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic.http
 
 import android.graphics.Bitmap
 import android.os.AsyncTask
@@ -35,7 +35,8 @@ import com.chuckerteam.chucker.internal.support.highlight
 
 private const val ARG_TYPE = "type"
 
-internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment : Fragment(),
+    TransactionFragment, SearchView.OnQueryTextListener {
 
     internal lateinit var headers: TextView
     internal lateinit var body: TextView
@@ -94,7 +95,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
-            UiLoaderTask(this).execute(Pair(type, transaction!!))
+            UiLoaderTask(
+                this
+            ).execute(Pair(type, transaction!!))
         }
     }
 
@@ -133,7 +136,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
 
         override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
-        UiPayload {
+                UiPayload {
             val (type, transaction) = params[0]
             return if (type == TYPE_REQUEST) {
                 UiPayload(

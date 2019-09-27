@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.traffic.http
 
 import android.view.View
 import android.widget.ImageView
@@ -11,6 +11,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction.Status.Reque
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.entity.TrafficType.HTTP
+import com.chuckerteam.chucker.internal.ui.traffic.TrafficRow
+import com.chuckerteam.chucker.internal.ui.traffic.TrafficViewHolder
 import java.text.DateFormat
 
 class HttpTransactionViewHolder(view: View, listener: (Long, Int, TrafficType) -> Unit) :

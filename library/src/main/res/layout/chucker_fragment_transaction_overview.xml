@@ -20,7 +20,7 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     android:layoutDirection="ltr"
-    tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionOverviewFragment">
+    tools:context="com.chuckerteam.chucker.internal.ui.traffic.http.TransactionOverviewFragment">
 
     <TableLayout
         android:layout_width="match_parent"

@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.chuckerteam.chucker.internal.ui.transaction.TrafficFragment"
+        tools:context="com.chuckerteam.chucker.internal.ui.traffic.TrafficFragment"
         tools:listitem="@layout/chucker_list_item_transaction" />
 
     <LinearLayout
