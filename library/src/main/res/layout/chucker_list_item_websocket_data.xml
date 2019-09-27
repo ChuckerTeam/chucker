@@ -61,4 +61,14 @@
         app:layout_constraintTop_toBottomOf="@+id/chuckerHost"
         tools:text="18:29:07 PM" />
 
+    <TextView
+        android:id="@+id/chuckerSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chuckerTimestamp"
+        app:layout_constraintTop_toTopOf="@+id/chuckerTimestamp"
+        tools:text="16.45 KB" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

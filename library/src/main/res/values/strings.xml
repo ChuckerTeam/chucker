@@ -27,6 +27,7 @@
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>
     <string name="chucker_ssl">SSL</string>
+    <string name="chucker_websocket">Websocket</string>
     <string name="chucker_request_time">Request time</string>
     <string name="chucker_response_time">Response time</string>
     <string name="chucker_duration">Duration</string>

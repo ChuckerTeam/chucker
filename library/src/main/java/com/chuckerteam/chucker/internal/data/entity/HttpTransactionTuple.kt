@@ -1,7 +1,7 @@
 package com.chuckerteam.chucker.internal.data.entity
 
 import androidx.room.ColumnInfo
-import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.formatBytes
 
 /**
  * A subset of [HttpTransaction] to perform faster Read operations on the Repository.
@@ -36,10 +36,7 @@ internal class HttpTransactionTuple(
         get() {
             val reqBytes = requestContentLength ?: 0
             val resBytes = responseContentLength ?: 0
-            return formatBytes(reqBytes + resBytes)
+            return (reqBytes + resBytes).formatBytes()
         }
-
-    private fun formatBytes(bytes: Long): String {
-        return FormatUtils.formatByteCount(bytes, true)
-    }
 }
+

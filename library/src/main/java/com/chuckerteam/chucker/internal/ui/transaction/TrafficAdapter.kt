@@ -41,7 +41,7 @@ class TrafficAdapter(private val listener: (Long, Int, TrafficType) -> Unit) :
     private fun getLayout(viewType: Int): Int = when (viewType) {
         HTTP.ordinal -> R.layout.chucker_list_item_transaction
         WEBSOCKET_LIFECYCLE.ordinal -> R.layout.chucker_list_item_websocket_lifecycle
-        WEBSOCKET_TRAFFIC.ordinal -> R.layout.chucker_list_item_transaction
+        WEBSOCKET_TRAFFIC.ordinal -> R.layout.chucker_list_item_websocket_data
         else -> throw IllegalArgumentException("Unsupported row type: $viewType")
     }
 }
@@ -53,6 +53,7 @@ abstract class TrafficViewHolder(view: View, val listener: (Long, Int, TrafficTy
 
 interface TrafficRow {
     val id: Long
+    val timestamp: Long
     val type: TrafficType
     override fun equals(other: Any?): Boolean
 }

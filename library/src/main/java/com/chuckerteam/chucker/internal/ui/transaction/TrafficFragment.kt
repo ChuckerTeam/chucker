@@ -15,15 +15,14 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 
 class TrafficFragment : Fragment() {
     private lateinit var trafficVM: TrafficViewModel
     private lateinit var tutorialView : View
-    private val trafficAdapter = TrafficAdapter { id, _, _ ->
-        TransactionActivity.start(activity, id)
-    }
+    private lateinit var trafficAdapter: TrafficAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,6 +47,13 @@ class TrafficFragment : Fragment() {
         }
         tutorialView = findViewById(R.id.tutorial)
         findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
+        trafficAdapter = TrafficAdapter { id, _, type ->
+            when (type) {
+                TrafficType.HTTP -> TransactionActivity.start(activity, id)
+                TrafficType.WEBSOCKET_TRAFFIC -> Unit
+                TrafficType.WEBSOCKET_LIFECYCLE -> Unit
+            }
+        }
         trafficVM.networkTraffic.observe(this@TrafficFragment, Observer { list ->
             tutorialView.visibility = if (list.isNullOrEmpty()) View.VISIBLE else View.GONE
             trafficAdapter.submitList(list)

@@ -5,34 +5,42 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 
 class TrafficViewModel : ViewModel() {
 
     internal val networkTraffic: MediatorLiveData<List<TrafficRow>> = MediatorLiveData()
-    private lateinit var dataSource: LiveData<List<HttpTransactionTuple>>
+    private lateinit var httpData: LiveData<List<HttpTransactionTuple>>
+    private lateinit var websocketData: LiveData<List<WebsocketTraffic>>
     private var currentFilter: String? = ""
 
-    fun executeCurrentQuery() {
-        dataSource = getDataSource(currentFilter).also {
-            networkTraffic.addSource(it) { data ->
-                networkTraffic.value = data.map { t -> HttpTrafficRow(t) }
-            }
-        }
-    }
-
-    internal fun executeQuery(newText: String?): Boolean {
+    fun executeQuery(newText: String?): Boolean {
+        networkTraffic.removeSource(httpData)
+        networkTraffic.removeSource(websocketData)
         currentFilter = newText
-        networkTraffic.removeSource(dataSource)
-        dataSource = getDataSource(currentFilter).also {
-            networkTraffic.addSource(it) { data ->
-                networkTraffic.value = data.map { t -> HttpTrafficRow(t) }
-            }
-        }
+        executeCurrentQuery()
         return true
     }
 
-    private fun getDataSource(currentFilter: String?): LiveData<List<HttpTransactionTuple>> {
+    fun executeCurrentQuery() {
+        httpData = httpDataSource(currentFilter).also {
+            networkTraffic.addSource(it) { combineTraffic() }
+        }
+        websocketData = websocketDataSource(currentFilter).also {
+            networkTraffic.addSource(it) { combineTraffic() }
+        }
+    }
+
+    private fun combineTraffic() {
+        networkTraffic.value = mutableListOf<TrafficRow>().apply {
+            addAll(httpData.value?.map { it.toTrafficRow() } ?: emptyList())
+            addAll(websocketData.value?.map { it.toTrafficRow() } ?: emptyList())
+            sortByDescending { it.timestamp }
+        }
+    }
+
+    private fun httpDataSource(currentFilter: String?): LiveData<List<HttpTransactionTuple>> {
         val repository = RepositoryProvider.transaction()
         return when {
             currentFilter.isNullOrEmpty() -> repository.getSortedTransactionTuples()
@@ -44,5 +52,22 @@ class TrafficViewModel : ViewModel() {
         }
     }
 
+    private fun websocketDataSource(currentFilter: String?): LiveData<List<WebsocketTraffic>> {
+        val repository = RepositoryProvider.websocket()
+        return when {
+            currentFilter.isNullOrEmpty() -> repository.getSortedTraffic()
+            else -> repository.getFilteredTraffic(currentFilter)
+        }
+    }
+
     private fun String.isDigitsOnly(): Boolean = TextUtils.isDigitsOnly(this)
+
+    private fun HttpTransactionTuple.toTrafficRow(): TrafficRow =
+        HttpTrafficRow(this)
+
+    private fun WebsocketTraffic.toTrafficRow(): TrafficRow =
+        if (operation == "onMessage" || operation == "send")
+            WebsocketTrafficRow(this)
+        else
+            WebsocketLifecycleRow(this)
 }

@@ -55,6 +55,7 @@ class HttpTransactionViewHolder(view: View, listener: (Long, Int, TrafficType) -
 internal class HttpTrafficRow(val transaction: HttpTransactionTuple) :
     TrafficRow {
     override val id: Long = transaction.id
+    override val timestamp = transaction.requestDate ?: 0L
     override val type = HTTP
 
     val statusColor: Int = when {
