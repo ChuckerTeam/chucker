@@ -36,7 +36,8 @@ class NotificationHelper(val context: Context) {
     }
 
 
-    private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -68,7 +69,10 @@ class NotificationHelper(val context: Context) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground()) {
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setContentIntent(PendingIntent.getActivity(context,
+                            TRANSACTION_NOTIFICATION_ID,
+                            Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
+                            PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
@@ -103,7 +107,9 @@ class NotificationHelper(val context: Context) {
     internal fun show(throwable: RecordedThrowable) {
         if (!BaseChuckerActivity.isInForeground()) {
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(PendingIntent.getActivity(context, ERROR_NOTIFICATION_ID, Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR), PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setContentIntent(PendingIntent.getActivity(context, ERROR_NOTIFICATION_ID,
+                            Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
+                            PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_subject_white_24dp)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
@@ -115,7 +121,6 @@ class NotificationHelper(val context: Context) {
         }
     }
 
-    @NonNull
     private fun createClearAction(clearAction: ClearDatabaseService.ClearAction): NotificationCompat.Action {
         val clearTitle = context.getString(R.string.chucker_clear)
         val deleteIntent = Intent(context, ClearDatabaseService::class.java).apply {
