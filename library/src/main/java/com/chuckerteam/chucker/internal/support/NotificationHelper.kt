@@ -23,6 +23,7 @@ class NotificationHelper(val context: Context) {
         private const val TRANSACTION_NOTIFICATION_ID = 1138
         private const val ERROR_NOTIFICATION_ID = 3546
         private const val BUFFER_SIZE = 10
+        private const val INTENT_REQUEST_CODE = 11
         private val transactionBuffer = LongSparseArray<HttpTransaction>()
         private val transactionIdsSet = HashSet<Long>()
 
@@ -121,12 +122,14 @@ class NotificationHelper(val context: Context) {
         }
     }
 
-    private fun createClearAction(clearAction: ClearDatabaseService.ClearAction): NotificationCompat.Action {
+    private fun createClearAction(clearAction: ClearDatabaseService.ClearAction):
+            NotificationCompat.Action {
         val clearTitle = context.getString(R.string.chucker_clear)
         val deleteIntent = Intent(context, ClearDatabaseService::class.java).apply {
             putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
         }
-        val intent = PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT)
+        val intent = PendingIntent.getService(context, INTENT_REQUEST_CODE,
+                deleteIntent, PendingIntent.FLAG_ONE_SHOT)
         return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
     }
 
