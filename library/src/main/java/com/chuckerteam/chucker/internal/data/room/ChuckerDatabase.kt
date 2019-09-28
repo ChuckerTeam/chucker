@@ -4,12 +4,22 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
+import com.chuckerteam.chucker.internal.data.entity.WebsocketTrafficConverter
 
-@Database(entities = [RecordedThrowable::class, HttpTransaction::class, WebsocketTraffic::class],
-    version = 3, exportSchema = false)
+@Database(
+    entities = [
+        RecordedThrowable::class,
+        HttpTransaction::class,
+        WebsocketTraffic::class
+    ],
+    version = 3,
+    exportSchema = false
+)
+@TypeConverters(WebsocketTrafficConverter::class)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun throwableDao(): RecordedThrowableDao

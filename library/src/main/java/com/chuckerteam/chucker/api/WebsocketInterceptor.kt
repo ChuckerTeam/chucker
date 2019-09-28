@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.api
 
+import com.chuckerteam.chucker.internal.data.entity.WebsocketOperation.*
 import com.chuckerteam.chucker.internal.data.entity.asWebsocketTraffic
 import okhttp3.*
 import okio.ByteString
@@ -25,7 +26,7 @@ private class LoggedWebsocket(val wrapped: WebSocket, val collector: ChuckerColl
 
     override fun send(text: String): Boolean {
         collector.onWebsocketTraffic(
-            wrapped.request().asWebsocketTraffic("send").apply {
+            wrapped.request().asWebsocketTraffic(SEND).apply {
                 contentText = text
             })
         return wrapped.send(text)
@@ -55,14 +56,14 @@ private class LoggedWebSocketListener(
     override fun onOpen(webSocket: WebSocket, response: Response) {
         wrapped.onOpen(webSocket, response)
         collector.onWebsocketTraffic(
-            webSocket.request().asWebsocketTraffic("onOpen")
+            webSocket.request().asWebsocketTraffic(OPEN)
         )
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         wrapped.onFailure(webSocket, t, response)
         collector.onWebsocketTraffic(
-            webSocket.request().asWebsocketTraffic("onFailure").apply {
+            webSocket.request().asWebsocketTraffic(FAILURE).apply {
                 error = t.toString()
             })
     }
@@ -70,7 +71,7 @@ private class LoggedWebSocketListener(
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         wrapped.onClosing(webSocket, code, reason)
         collector.onWebsocketTraffic(
-            webSocket.request().asWebsocketTraffic("onClosing").apply {
+            webSocket.request().asWebsocketTraffic(CLOSING).apply {
                 this.code = code
                 this.reason = reason
             })
@@ -79,7 +80,7 @@ private class LoggedWebSocketListener(
     override fun onMessage(webSocket: WebSocket, text: String) {
         wrapped.onMessage(webSocket, text)
         collector.onWebsocketTraffic(
-            webSocket.request().asWebsocketTraffic("onMessage").apply {
+            webSocket.request().asWebsocketTraffic(MESSAGE).apply {
                 this.contentText = text
             })
     }
@@ -91,7 +92,7 @@ private class LoggedWebSocketListener(
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         wrapped.onClosed(webSocket, code, reason)
         collector.onWebsocketTraffic(
-            webSocket.request().asWebsocketTraffic("onClosed").apply {
+            webSocket.request().asWebsocketTraffic(CLOSED).apply {
                 this.code = code
                 this.reason = reason
             })

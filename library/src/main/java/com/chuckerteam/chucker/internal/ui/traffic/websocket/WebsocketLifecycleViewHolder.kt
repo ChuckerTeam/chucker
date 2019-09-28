@@ -20,15 +20,14 @@ class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType
     override fun bind(trafficRow: TrafficRow) {
         val lifecycle = (trafficRow as WebsocketLifecycleRow).traffic
         timestamp.text = DateFormat.getTimeInstance().format(lifecycle.timestamp)
-        operation.text = lifecycle.operation
+        operation.setText(lifecycle.operation.descriptionId)
         path.text = lifecycle.path
         host.text = lifecycle.host
     }
 }
 
 @Suppress("EqualsOrHashCode")
-internal class WebsocketLifecycleRow(val traffic: WebsocketTraffic) :
-    TrafficRow {
+internal class WebsocketLifecycleRow(val traffic: WebsocketTraffic) : TrafficRow {
     override val id: Long = traffic.id
     override val timestamp: Long = traffic.timestamp ?: 0L
     override val type = WEBSOCKET_LIFECYCLE

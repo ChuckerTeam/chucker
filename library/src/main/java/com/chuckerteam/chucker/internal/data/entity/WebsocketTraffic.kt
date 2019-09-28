@@ -4,11 +4,13 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.chuckerteam.chucker.R
 import okhttp3.Request
 
 @Entity(tableName = "websocket_traffic")
 internal class WebsocketTraffic(
-    @ColumnInfo(name = "operation") val operation: String,
+    @ColumnInfo(name = "operation") val operation: WebsocketOperation,
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
     @ColumnInfo(name = "timestamp") var timestamp: Long? = null,
     @ColumnInfo(name = "url") var url: String? = null,
@@ -21,16 +23,30 @@ internal class WebsocketTraffic(
     @ColumnInfo(name = "reason") var reason: String? = null
 ) {
     val isData: Boolean
-        get() = operation == "onMessage" || operation == "send"
-
-    override fun toString(): String {
-        return "WebsocketTraffic(operation='$operation', id=$id, timestamp=$timestamp, " +
-                "url=$url, host=$host, path=$path, scheme=$scheme, contentText=$contentText, " +
-                "error=$error, code=$code, reason=$reason)"
-    }
+        get() = operation == WebsocketOperation.MESSAGE ||
+                operation == WebsocketOperation.SEND
 }
 
-internal fun Request.asWebsocketTraffic(operation: String) =
+class WebsocketTrafficConverter {
+    @TypeConverter
+    fun operationFromString(db: String?): WebsocketOperation? =
+        db?.let { WebsocketOperation.valueOf(it) }
+
+    @TypeConverter
+    fun stringFromOperation(operation: WebsocketOperation?): String? =
+        operation?.toString()
+}
+
+enum class WebsocketOperation(val descriptionId: Int) {
+    OPEN(R.string.chucker_ws_open),
+    MESSAGE(R.string.chucker_ws_message),
+    SEND(R.string.chucker_ws_send),
+    FAILURE(R.string.chucker_ws_failure),
+    CLOSING(R.string.chucker_ws_closing),
+    CLOSED(R.string.chucker_ws_closed)
+}
+
+internal fun Request.asWebsocketTraffic(operation: WebsocketOperation) =
     WebsocketTraffic(
         operation = operation,
         timestamp = System.currentTimeMillis()

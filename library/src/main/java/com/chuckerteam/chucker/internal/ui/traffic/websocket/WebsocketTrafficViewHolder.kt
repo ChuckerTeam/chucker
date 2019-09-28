@@ -22,7 +22,7 @@ class WebsocketTrafficViewHolder(view: View, listener: (Long, Int, TrafficType) 
     override fun bind(trafficRow: TrafficRow) {
         val websocketTraffic = (trafficRow as WebsocketTrafficRow).traffic
         timestamp.text = DateFormat.getTimeInstance().format(websocketTraffic.timestamp)
-        operation.text = websocketTraffic.operation
+        operation.setText(websocketTraffic.operation.descriptionId)
         path.text = websocketTraffic.path
         host.text = websocketTraffic.host
         size.text = (websocketTraffic.contentText?.length ?: 0).formatBytes()
@@ -33,8 +33,7 @@ class WebsocketTrafficViewHolder(view: View, listener: (Long, Int, TrafficType) 
 }
 
 @Suppress("EqualsOrHashCode")
-internal class WebsocketTrafficRow(val traffic: WebsocketTraffic) :
-    TrafficRow {
+internal class WebsocketTrafficRow(val traffic: WebsocketTraffic) : TrafficRow {
     override val id: Long = traffic.id
     override val timestamp: Long = traffic.timestamp ?: 0L
     override val type = WEBSOCKET_TRAFFIC
