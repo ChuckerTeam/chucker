@@ -6,6 +6,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.data.entity.WebsocketOperation.MESSAGE
+import com.chuckerteam.chucker.internal.data.entity.WebsocketOperation.SEND
 import okhttp3.Request
 
 @Entity(tableName = "websocket_traffic")
@@ -17,14 +19,14 @@ internal class WebsocketTraffic(
     @ColumnInfo(name = "host") var host: String? = null,
     @ColumnInfo(name = "path") var path: String? = null,
     @ColumnInfo(name = "scheme") var scheme: String? = null,
+    @ColumnInfo(name = "ssl") var ssl: Boolean? = null,
     @ColumnInfo(name = "contentText") var contentText: String? = null,
     @ColumnInfo(name = "error") var error: String? = null,
     @ColumnInfo(name = "code") var code: Int? = null,
     @ColumnInfo(name = "reason") var reason: String? = null
 ) {
     val isData: Boolean
-        get() = operation == WebsocketOperation.MESSAGE ||
-                operation == WebsocketOperation.SEND
+        get() = operation == MESSAGE || operation == SEND
 }
 
 class WebsocketTrafficConverter {
@@ -57,4 +59,5 @@ internal fun Request.asWebsocketTraffic(operation: WebsocketOperation) =
         traffic.host = uri.host
         traffic.path = "${uri.path}${uri.query?.let { "?$it" } ?: ""}"
         traffic.scheme = uri.scheme
+        traffic.ssl = uri.scheme?.toLowerCase() == "https"
     }

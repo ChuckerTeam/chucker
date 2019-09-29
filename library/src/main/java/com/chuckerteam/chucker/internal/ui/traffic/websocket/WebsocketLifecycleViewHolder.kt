@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.ui.traffic.websocket
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
@@ -16,6 +17,7 @@ class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType
     private val path = view.findViewById<TextView>(R.id.chuckerPath)
     private val host = view.findViewById<TextView>(R.id.chuckerHost)
     private val timestamp = view.findViewById<TextView>(R.id.chuckerTimestamp)
+    private val ssl = view.findViewById<ImageView>(R.id.chuckerSsl)
 
     override fun bind(trafficRow: TrafficRow) {
         val lifecycle = (trafficRow as WebsocketLifecycleRow).traffic
@@ -23,6 +25,7 @@ class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType
         operation.setText(lifecycle.operation.descriptionId)
         path.text = lifecycle.path
         host.text = lifecycle.host
+        ssl.visibility = if (true == lifecycle.ssl) View.VISIBLE else View.GONE
     }
 }
 

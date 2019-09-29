@@ -27,7 +27,14 @@ class MainActivity : AppCompatActivity() {
             visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             setOnClickListener { launchChuckerDirectly() }
         }
-        with(createEchoSocket(okHttpClient)) {
+        with(createEchoSocket(okHttpClient, true)) {
+            send("")
+            send("{}")
+            send(Gson().toJson(SampleApiService.Data("message")))
+            close(4321, "Because I said so")
+        }
+
+        with(createEchoSocket(okHttpClient, false)) {
             send("")
             send("{}")
             send(com.google.gson.Gson().toJson(SampleApiService.Data("message")))
@@ -37,11 +44,13 @@ class MainActivity : AppCompatActivity() {
         client.initializeCrashHandler()
     }
 
-    private fun createEchoSocket(okHttpClient: OkHttpClient): WebSocket {
+    private fun createEchoSocket(okHttpClient: OkHttpClient, secure: Boolean): WebSocket {
         val listener = object : WebSocketListener() {}
 
         return okHttpClient.newLoggedWebSocket(
-            Request.Builder().url("ws://echo.websocket.org").build(),
+            Request.Builder().url(
+                (if (secure) "wss:" else "ws:") + "//echo.websocket.org"
+            ).build(),
             listener
         )
     }
