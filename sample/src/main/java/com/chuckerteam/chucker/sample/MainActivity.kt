@@ -45,13 +45,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createEchoSocket(okHttpClient: OkHttpClient, secure: Boolean): WebSocket {
-        val listener = object : WebSocketListener() {}
-
+        val scheme = if (secure) "wss:" else "ws:"
         return okHttpClient.newLoggedWebSocket(
-            Request.Builder().url(
-                (if (secure) "wss:" else "ws:") + "//echo.websocket.org"
-            ).build(),
-            listener
+            Request.Builder().url("$scheme//echo.websocket.org").build(),
+            object : WebSocketListener() {}
         )
     }
 
