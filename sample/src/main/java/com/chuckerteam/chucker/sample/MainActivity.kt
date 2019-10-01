@@ -14,6 +14,7 @@ import okhttp3.WebSocketListener
 class MainActivity : AppCompatActivity() {
 
     private lateinit var client: HttpBinClient
+    private var coinbaseSocket: WebSocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,12 @@ class MainActivity : AppCompatActivity() {
             visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             setOnClickListener { launchChuckerDirectly() }
         }
+
+        coinbaseSocket = coinbaseSocket(okHttpClient).apply {
+            // Subscribe to get Bitcoin ticker updates
+            send("{ \"type\": \"subscribe\", \"product_ids\": [\"BTC-USD\"], \"channels\": [\"ticker\"] }")
+        }
+
         with(createEchoSocket(okHttpClient, true)) {
             send("")
             send("{}")
@@ -44,6 +51,20 @@ class MainActivity : AppCompatActivity() {
         client.initializeCrashHandler()
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (coinbaseSocket != null) {
+            coinbaseSocket?.close(1000, "Thanks!")
+            coinbaseSocket = null
+        }
+    }
+
+    private fun coinbaseSocket(okHttpClient: OkHttpClient): WebSocket {
+        return okHttpClient.newLoggedWebSocket(
+            Request.Builder().url("wss://ws-feed.pro.coinbase.com").build(),
+            object : WebSocketListener() {}
+        )
+    }
     private fun createEchoSocket(okHttpClient: OkHttpClient, secure: Boolean): WebSocket {
         val scheme = if (secure) "wss:" else "ws:"
         return okHttpClient.newLoggedWebSocket(

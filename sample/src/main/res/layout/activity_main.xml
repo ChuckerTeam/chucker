@@ -13,14 +13,18 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
  -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/doub_grid_size"
-    tools:context="com.chuckerteam.chucker.sample.MainActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/doub_grid_size"
+        tools:context="com.chuckerteam.chucker.sample.MainActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -56,3 +60,4 @@
         android:layout_height="wrap_content"
         android:text="@string/launch_chucker_directly" />
 </LinearLayout>
+</ScrollView>
