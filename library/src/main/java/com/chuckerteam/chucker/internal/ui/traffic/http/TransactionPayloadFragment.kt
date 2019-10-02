@@ -20,15 +20,13 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Html
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlight
@@ -36,21 +34,21 @@ import com.chuckerteam.chucker.internal.support.highlight
 private const val ARG_TYPE = "type"
 
 internal class TransactionPayloadFragment : Fragment(),
-    TransactionFragment, SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener {
 
     internal lateinit var headers: TextView
     internal lateinit var body: TextView
     internal lateinit var binaryData: ImageView
 
     private var type: Int = 0
-    private var transaction: HttpTransaction? = null
     private var originalBody: String? = null
     private var uiLoaderTask: UiLoaderTask? = null
+    private lateinit var viewModel: TransactionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments!!.getInt(ARG_TYPE)
-        retainInstance = true
+        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
@@ -60,15 +58,17 @@ internal class TransactionPayloadFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
-        headers = view.findViewById<TextView>(R.id.headers)
-        body = view.findViewById<TextView>(R.id.body)
-        binaryData = view.findViewById<ImageView>(R.id.image)
+        headers = view.findViewById(R.id.headers)
+        body = view.findViewById(R.id.body)
+        binaryData = view.findViewById(R.id.image)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        populateUI()
+        viewModel.transaction.observe(this, Observer { transaction ->
+            UiLoaderTask(this).execute(Pair(type, transaction))
+        })
     }
 
     override fun onDestroyView() {
@@ -86,19 +86,6 @@ internal class TransactionPayloadFragment : Fragment(),
         }
 
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun transactionUpdated(transaction: HttpTransaction) {
-        this.transaction = transaction
-        populateUI()
-    }
-
-    private fun populateUI() {
-        if (isAdded && transaction != null) {
-            UiLoaderTask(
-                this
-            ).execute(Pair(type, transaction!!))
-        }
     }
 
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {

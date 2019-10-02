@@ -29,12 +29,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chuckerteam.chucker.R;
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction;
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider;
 import com.chuckerteam.chucker.internal.support.FormatUtils;
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity;
 import com.google.android.material.tabs.TabLayout;
@@ -42,6 +40,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 public class TransactionActivity extends BaseChuckerActivity {
 
@@ -57,13 +56,20 @@ public class TransactionActivity extends BaseChuckerActivity {
     TextView title;
     PagerAdapter adapter;
 
-    private long transactionId;
-    private HttpTransaction transaction;
+    private TransactionViewModel viewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chucker_activity_transaction);
+
+        // Create the instance now, so it can be shared by the
+        // various fragments in the view pager later.
+        long transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
+        viewModel = ViewModelProviders
+                .of(this, new TransactionViewModelFactory(transactionId))
+                .get(TransactionViewModel.class);
+        viewModel.loadTransaction();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,20 +87,12 @@ public class TransactionActivity extends BaseChuckerActivity {
 
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        transactionId = getIntent().getLongExtra(ARG_TRANSACTION_ID, 0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        RepositoryProvider.transaction().getTransaction(transactionId).observe(this, new Observer<HttpTransaction>() {
-            @Override
-            public void onChanged(@Nullable HttpTransaction observed) {
-                transaction = observed;
-                populateUI(observed);
-            }
-        });
+        viewModel.getTransactionTitle().observe(this, s -> title.setText(s));
     }
 
     @Override
@@ -107,24 +105,15 @@ public class TransactionActivity extends BaseChuckerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_text) {
-            share(FormatUtils.getShareText(this, transaction));
+            share(FormatUtils.getShareText(this, Objects.requireNonNull(
+                    viewModel.getTransaction$library_debug().getValue())));
             return true;
         } else if (item.getItemId() == R.id.share_curl) {
-            share(FormatUtils.getShareCurlCommand(transaction));
+            share(FormatUtils.getShareCurlCommand(Objects.requireNonNull(
+                    viewModel.getTransaction$library_debug().getValue())));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void populateUI(HttpTransaction transaction) {
-        if (transaction != null) {
-            title.setText(String.format("%s %s", transaction.getMethod(), transaction.getPath()));
-            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                if (fragment instanceof TransactionFragment) {
-                    ((TransactionFragment) fragment).transactionUpdated(transaction);
-                }
-            }
         }
     }
 
@@ -136,7 +125,6 @@ public class TransactionActivity extends BaseChuckerActivity {
             @Override
             public void onPageSelected(int position) {
                 selectedTabPosition = position;
-                populateUI(transaction);
             }
 
             @Override
