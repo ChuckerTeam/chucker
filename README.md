@@ -191,7 +191,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018 Nicola Corti & Olivier Perez.
+    Copyright (C) 2018 Nicola Corti & Olivier Perez & Benoit Vermont.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");
