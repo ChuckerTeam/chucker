@@ -1,13 +1,9 @@
 package com.chuckerteam.chucker.sample
 
-import android.content.Context
 import com.chuckerteam.chucker.api.Chucker
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.chuckerteam.chucker.api.RetentionManager
+import com.chuckerteam.chucker.sample.ChuckerInterceptorFactory.Companion.collector
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.chuckerteam.chucker.sample.OkHttpClientFactory.httpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,29 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 private const val BASE_URL = "https://httpbin.org"
 
-class HttpBinClient(
-    context: Context
-) {
-
-    private val collector = ChuckerCollector(
-        context = context,
-        showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
-    )
-
-    private val chuckerInterceptor = ChuckerInterceptor(
-        context = context,
-        collector = collector,
-        maxContentLength = 250000L
-    )
-
-    private val httpClient =
-        OkHttpClient.Builder()
-            // Add a ChuckerInterceptor instance to your OkHttp client
-            .addInterceptor(chuckerInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
-
+class HttpBinClient {
     private val api: HttpBinApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
