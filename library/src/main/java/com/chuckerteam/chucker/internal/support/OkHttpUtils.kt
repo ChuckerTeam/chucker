@@ -26,10 +26,10 @@ fun Response.hasBody(): Boolean {
 
     // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
     // response is malformed. For best compatibility, we honor the headers.
-    return this.contentLenght != -1L || this.isChunked
+    return this.contentLength != -1L || this.isChunked
 }
 
-val Response.contentLenght: Long
+val Response.contentLength: Long
     get() {
         return this.header("Content-Length")?.toLongOrNull() ?: -1
     }

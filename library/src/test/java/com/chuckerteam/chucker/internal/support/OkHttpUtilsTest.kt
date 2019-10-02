@@ -16,7 +16,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns null
 
-        assertEquals(-1, mockResponse.contentLenght)
+        assertEquals(-1, mockResponse.contentLength)
     }
 
     @Test
@@ -24,7 +24,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns "0"
 
-        assertEquals(0L, mockResponse.contentLenght)
+        assertEquals(0L, mockResponse.contentLength)
     }
 
     @Test
@@ -32,7 +32,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns "42"
 
-        assertEquals(42L, mockResponse.contentLenght)
+        assertEquals(42L, mockResponse.contentLength)
     }
 
     @Test
