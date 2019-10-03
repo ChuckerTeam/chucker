@@ -30,9 +30,9 @@ internal object FormatUtils {
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
         return httpHeaders?.joinToString(separator = "") { header ->
             if (withMarkup) {
-                "<b>" + header.name + ": " + "</b>" + header.value + "<br />"
+                "<b> ${header.name}: </b>${header.value} <br />"
             } else {
-                header.name + ": " + header.value + "\n"
+                "${header.name}: ${header.value}\n"
             }
         } ?: ""
     }
@@ -83,31 +83,23 @@ internal object FormatUtils {
 
     @JvmStatic
     fun getShareText(context: Context, transaction: HttpTransaction): String {
-        var text = context.getString(R.string.chucker_url) + ": " + transaction.url + "\n"
-        text += context.getString(R.string.chucker_method) + ": " + transaction.method + "\n"
-        text += context.getString(R.string.chucker_protocol) + ": " + transaction.protocol + "\n"
-        text += context.getString(R.string.chucker_status) + ": " +
-            transaction.status.toString() + "\n"
-        text += context.getString(R.string.chucker_response) + ": " +
-            transaction.responseSummaryText + "\n"
-        text += context.getString(R.string.chucker_ssl) + ": " +
-            context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no) + "\n"
+        var text = "${context.getString(R.string.chucker_url)}: ${transaction.url}\n"
+        text += "${context.getString(R.string.chucker_method)}: ${transaction.method}\n"
+        text += "${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n"
+        text += "${context.getString(R.string.chucker_status)}: ${transaction.status}\n"
+        text += "${context.getString(R.string.chucker_response)}: ${transaction.responseSummaryText}\n"
+        text += "${context.getString(R.string.chucker_ssl)}: " +
+            "${context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)}\n"
         text += "\n"
-        text += context.getString(R.string.chucker_request_time) + ": " +
-            transaction.requestDateString + "\n"
-        text += context.getString(R.string.chucker_response_time) + ": " +
-            transaction.responseDateString + "\n"
-        text += context.getString(R.string.chucker_duration) + ": " +
-            transaction.durationString + "\n"
+        text += "${context.getString(R.string.chucker_request_time)}: ${transaction.requestDateString}\n"
+        text += "${context.getString(R.string.chucker_response_time)}: ${transaction.responseDateString}\n"
+        text += "${context.getString(R.string.chucker_duration)}: ${transaction.durationString}\n"
         text += "\n"
-        text += context.getString(R.string.chucker_request_size) + ": " +
-            transaction.requestSizeString + "\n"
-        text += context.getString(R.string.chucker_response_size) + ": " +
-            transaction.responseSizeString + "\n"
-        text += context.getString(R.string.chucker_total_size) + ": " +
-            transaction.totalSizeString + "\n"
+        text += "${context.getString(R.string.chucker_request_size)}: ${transaction.requestSizeString}\n"
+        text += "${context.getString(R.string.chucker_response_size)}: ${transaction.responseSizeString}\n"
+        text += "${context.getString(R.string.chucker_total_size)}: ${transaction.totalSizeString}\n"
         text += "\n"
-        text += "---------- " + context.getString(R.string.chucker_request) + " ----------\n\n"
+        text += "---------- ${context.getString(R.string.chucker_request)} ----------\n\n"
 
         var headers = formatHeaders(transaction.getParsedRequestHeaders(), false)
 
