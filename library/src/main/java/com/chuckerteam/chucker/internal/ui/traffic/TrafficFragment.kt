@@ -45,7 +45,7 @@ class TrafficFragment : Fragment() {
         findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
         trafficAdapter = TrafficAdapter { id, _, type ->
             when (type) {
-                TrafficType.HTTP -> TransactionActivity.start(activity, id)
+                TrafficType.HTTP -> TransactionActivity.start(requireContext(), id)
                 TrafficType.WEBSOCKET_TRAFFIC -> Unit
                 TrafficType.WEBSOCKET_LIFECYCLE -> Unit
             }

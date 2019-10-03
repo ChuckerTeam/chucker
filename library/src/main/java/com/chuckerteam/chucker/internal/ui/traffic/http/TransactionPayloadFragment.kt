@@ -33,16 +33,15 @@ import com.chuckerteam.chucker.internal.support.highlight
 
 private const val ARG_TYPE = "type"
 
-internal class TransactionPayloadFragment : Fragment(),
-    SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment : Fragment(), SearchView.OnQueryTextListener {
 
-    internal lateinit var headers: TextView
     internal lateinit var body: TextView
-    internal lateinit var binaryData: ImageView
 
     private var type: Int = 0
     private var originalBody: String? = null
     private var uiLoaderTask: UiLoaderTask? = null
+    private lateinit var headers: TextView
+    private lateinit var binaryData: ImageView
     private lateinit var viewModel: TransactionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,18 +155,14 @@ internal class TransactionPayloadFragment : Fragment(),
     )
 
     companion object {
-
         const val TYPE_REQUEST = 0
-
         const val TYPE_RESPONSE = 1
 
-        @JvmStatic
-        fun newInstance(type: Int): TransactionPayloadFragment {
-            return TransactionPayloadFragment().apply {
+        fun newInstance(type: Int): TransactionPayloadFragment =
+            TransactionPayloadFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_TYPE, type)
                 }
             }
-        }
     }
 }
