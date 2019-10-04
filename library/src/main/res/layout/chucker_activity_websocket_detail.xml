@@ -99,14 +99,14 @@
                         style="@style/Chucker.TextAppearance.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/chucker_method" />
+                        android:text="@string/chucker_ws_operation" />
 
                     <TextView
-                        android:id="@+id/method"
+                        android:id="@+id/operation"
                         style="@style/Chucker.TextAppearance.Value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="GET" />
+                        tools:text="Send" />
 
                 </TableRow>
 
@@ -125,7 +125,7 @@
                         style="@style/Chucker.TextAppearance.Value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="HTTP/1.1" />
+                        android:text="@string/chucker_ws_protocol" />
 
                 </TableRow>
 
@@ -137,45 +137,7 @@
                         style="@style/Chucker.TextAppearance.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/chucker_status" />
-
-                    <TextView
-                        android:id="@+id/status"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Complete" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_response" />
-
-                    <TextView
-                        android:id="@+id/response"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="200 OK" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_ssl" />
+                        android:text="@string/chucker_ws_secure" />
 
                     <TextView
                         android:id="@+id/ssl"
@@ -188,17 +150,16 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="8dp">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         style="@style/Chucker.TextAppearance.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/chucker_request_time" />
+                        android:text="@string/chucker_ws_timestamp" />
 
                     <TextView
-                        android:id="@+id/request_time"
+                        android:id="@+id/timestamp"
                         style="@style/Chucker.TextAppearance.Value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -214,91 +175,14 @@
                         style="@style/Chucker.TextAppearance.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/chucker_response_time" />
+                        android:text="@string/chucker_ws_size" />
 
                     <TextView
-                        android:id="@+id/response_time"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="05/02/17 11:52:49" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_duration" />
-
-                    <TextView
-                        android:id="@+id/duration"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="405 ms" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="8dp">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_request_size" />
-
-                    <TextView
-                        android:id="@+id/request_size"
+                        android:id="@+id/size"
                         style="@style/Chucker.TextAppearance.Value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="53 KB" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_response_size" />
-
-                    <TextView
-                        android:id="@+id/response_size"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="148 KB" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/Chucker.TextAppearance.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/chucker_total_size" />
-
-                    <TextView
-                        android:id="@+id/total_size"
-                        style="@style/Chucker.TextAppearance.Value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="201 KB" />
 
                 </TableRow>
 
