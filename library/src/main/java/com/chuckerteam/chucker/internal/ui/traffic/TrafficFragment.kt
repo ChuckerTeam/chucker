@@ -19,6 +19,7 @@ import com.chuckerteam.chucker.internal.data.entity.TrafficType
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import com.chuckerteam.chucker.internal.ui.traffic.http.TransactionActivity
+import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketDetailActivity
 
 class TrafficFragment : Fragment() {
     private lateinit var tutorialView : View
@@ -46,7 +47,7 @@ class TrafficFragment : Fragment() {
         trafficAdapter = TrafficAdapter { id, _, type ->
             when (type) {
                 TrafficType.HTTP -> TransactionActivity.start(requireContext(), id)
-                TrafficType.WEBSOCKET_TRAFFIC -> Unit
+                TrafficType.WEBSOCKET_TRAFFIC -> WebsocketDetailActivity.start(requireContext(), id)
                 TrafficType.WEBSOCKET_LIFECYCLE -> Unit
             }
         }

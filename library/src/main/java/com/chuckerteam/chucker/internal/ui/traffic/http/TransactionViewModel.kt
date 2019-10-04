@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.ui.traffic.http
 import androidx.lifecycle.*
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.observeOnce
 
 class TransactionViewModel(private val transactionId: Long) : ViewModel() {
     val transactionTitle: MutableLiveData<String> = MutableLiveData()
@@ -12,15 +13,6 @@ class TransactionViewModel(private val transactionId: Long) : ViewModel() {
         RepositoryProvider.transaction().getTransaction(transactionId).observeOnce(Observer {
             transactionTitle.value = if (it != null) "${it.method} ${it.path}" else ""
             transaction.value = it
-        })
-    }
-
-    private fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
-        observeForever(object : Observer<T> {
-            override fun onChanged(t: T?) {
-                observer.onChanged(t)
-                removeObserver(this)
-            }
         })
     }
 }
