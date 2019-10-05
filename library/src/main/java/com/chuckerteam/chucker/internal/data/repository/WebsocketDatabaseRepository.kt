@@ -31,10 +31,11 @@ internal class WebsocketDatabaseRepository(private val database: ChuckerDatabase
         executor.execute { database.websocketTrafficDao().deleteBefore(threshold) }
     }
 
-    override fun insertTraffic(traffic: WebsocketTraffic) {
+    override fun insertTraffic(traffic: WebsocketTraffic, after: () -> Unit) {
         executor.execute {
             val id = database.websocketTrafficDao().insert(traffic)
             traffic.id = id ?: 0
+            after()
         }
     }
 }

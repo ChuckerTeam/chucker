@@ -5,7 +5,7 @@ import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 
 internal interface WebsocketRepository {
 
-    fun insertTraffic(traffic: WebsocketTraffic)
+    fun insertTraffic(traffic: WebsocketTraffic, after: () -> Unit)
 
     fun deleteOldTraffic(threshold: Long)
 

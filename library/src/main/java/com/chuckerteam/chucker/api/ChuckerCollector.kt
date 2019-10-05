@@ -69,10 +69,15 @@ class ChuckerCollector @JvmOverloads constructor(
     }
 
     internal fun onWebsocketTraffic(traffic: WebsocketTraffic) {
-        RepositoryProvider.websocket().insertTraffic(traffic)
-        if (showNotification) {
-            notificationHelper.showWebsocket(traffic)
+        // Avoid a race condition where we try to notify the logged traffic before the
+        // database has finished writing and assigning a unique ID to the record.  The
+        // "after" lambda will be called once the insert has finished on the background
+        // thread.
+        RepositoryProvider.websocket().insertTraffic(traffic) {
+            if (showNotification) {
+                notificationHelper.show(traffic)
+            }
+            retentionManager.doMaintenance()
         }
-        retentionManager.doMaintenance()
     }
 }

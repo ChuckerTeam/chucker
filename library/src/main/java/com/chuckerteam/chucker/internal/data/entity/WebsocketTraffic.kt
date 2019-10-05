@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.data.entity
 
+import android.content.Context
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -24,9 +25,14 @@ internal class WebsocketTraffic(
     @ColumnInfo(name = "error") var error: String? = null,
     @ColumnInfo(name = "code") var code: Int? = null,
     @ColumnInfo(name = "reason") var reason: String? = null
-) {
+) : NotificationTextProducer {
     val isData: Boolean
         get() = operation == MESSAGE || operation == SEND
+
+    override fun notificationId(): Long = id
+
+    override fun notificationText(context: Context): String =
+        "${context.getString(operation.descriptionId)} $url"
 }
 
 class WebsocketTrafficConverter {

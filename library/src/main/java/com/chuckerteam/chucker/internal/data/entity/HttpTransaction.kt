@@ -2,6 +2,7 @@
 
 package com.chuckerteam.chucker.internal.data.entity
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,8 +13,8 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.ArrayList
 import okhttp3.Headers
+import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -46,7 +47,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
 
-) {
+) : NotificationTextProducer {
 
     @Ignore
     constructor() : this(
@@ -117,15 +118,6 @@ internal class HttpTransaction(
             }
         }
 
-    val notificationText: String
-        get() {
-            return when (status) {
-                Status.Failed -> " ! ! !  $method $path"
-                Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path
-            }
-        }
-
     val isSsl: Boolean
         get() = scheme?.toLowerCase() == "https"
 
@@ -135,6 +127,14 @@ internal class HttpTransaction(
                 BitmapFactory.decodeByteArray(it, 0, it.size)
             }
         }
+
+    override fun notificationId() = id
+
+    override fun notificationText(context: Context) = when (status) {
+        Status.Failed -> " ! ! !  $method $path"
+        Status.Requested -> " . . .  $method $path"
+        else -> responseCode.toString() + " " + method + " " + path
+    }
 
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))
