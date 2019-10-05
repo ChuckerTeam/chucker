@@ -39,7 +39,11 @@ class TrafficViewModel : ViewModel() {
         networkTraffic.value = mutableListOf<TrafficRow>().apply {
             addAll(httpData.value?.map { it.toTrafficRow() } ?: emptyList())
             addAll(websocketData.value?.map { it.toTrafficRow() } ?: emptyList())
-            sortByDescending { it.timestamp }
+
+            // Sometimes "closing" and "closed" happen in the same millisecond, so
+            // break the tie by putting the newest item first, so that "closed"
+            // follows "closing" as you would expect.
+            sortedWith(compareByDescending<TrafficRow> { it.timestamp }.thenByDescending { it.id })
         }
     }
 
