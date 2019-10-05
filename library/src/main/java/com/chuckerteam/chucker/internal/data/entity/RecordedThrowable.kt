@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.formatThrowable
 
 /**
  * Represent a Throwable that was fired from an App.
@@ -24,6 +24,6 @@ internal data class RecordedThrowable(
         this.date = System.currentTimeMillis()
         this.clazz = throwable.javaClass.name
         this.message = throwable.message
-        this.content = FormatUtils.formatThrowable(throwable)
+        this.content = formatThrowable(throwable)
     }
 }

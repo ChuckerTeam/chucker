@@ -8,13 +8,11 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.chuckerteam.chucker.internal.support.FormatUtils
-import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.chuckerteam.chucker.internal.support.*
+import com.chuckerteam.chucker.internal.support.formatHeaders
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
-import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -23,56 +21,30 @@ import java.util.*
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
-    @ColumnInfo(name = "requestDate") var requestDate: Long?,
-    @ColumnInfo(name = "responseDate") var responseDate: Long?,
-    @ColumnInfo(name = "tookMs") var tookMs: Long?,
-    @ColumnInfo(name = "protocol") var protocol: String?,
-    @ColumnInfo(name = "method") var method: String?,
-    @ColumnInfo(name = "url") var url: String?,
-    @ColumnInfo(name = "host") var host: String?,
-    @ColumnInfo(name = "path") var path: String?,
-    @ColumnInfo(name = "scheme") var scheme: String?,
-    @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
-    @ColumnInfo(name = "requestContentType") var requestContentType: String?,
-    @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
-    @ColumnInfo(name = "requestBody") var requestBody: String?,
+    @ColumnInfo(name = "requestDate") var requestDate: Long? = null,
+    @ColumnInfo(name = "responseDate") var responseDate: Long? = null,
+    @ColumnInfo(name = "tookMs") var tookMs: Long? = null,
+    @ColumnInfo(name = "protocol") var protocol: String? = null,
+    @ColumnInfo(name = "method") var method: String? = null,
+    @ColumnInfo(name = "url") var url: String? = null,
+    @ColumnInfo(name = "host") var host: String? = null,
+    @ColumnInfo(name = "path") var path: String? = null,
+    @ColumnInfo(name = "scheme") var scheme: String? = null,
+    @ColumnInfo(name = "requestContentLength") var requestContentLength: Long? = null,
+    @ColumnInfo(name = "requestContentType") var requestContentType: String? = null,
+    @ColumnInfo(name = "requestHeaders") var requestHeaders: String? = null,
+    @ColumnInfo(name = "requestBody") var requestBody: String? = null,
     @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = true,
-    @ColumnInfo(name = "responseCode") var responseCode: Int?,
-    @ColumnInfo(name = "responseMessage") var responseMessage: String?,
-    @ColumnInfo(name = "error") var error: String?,
-    @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
-    @ColumnInfo(name = "responseContentType") var responseContentType: String?,
-    @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
-    @ColumnInfo(name = "responseBody") var responseBody: String?,
+    @ColumnInfo(name = "responseCode") var responseCode: Int? = null,
+    @ColumnInfo(name = "responseMessage") var responseMessage: String? = null,
+    @ColumnInfo(name = "error") var error: String? = null,
+    @ColumnInfo(name = "responseContentLength") var responseContentLength: Long? = null,
+    @ColumnInfo(name = "responseContentType") var responseContentType: String? = null,
+    @ColumnInfo(name = "responseHeaders") var responseHeaders: String? = null,
+    @ColumnInfo(name = "responseBody") var responseBody: String? = null,
     @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
-    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
-
+    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray? = null
 ) : NotificationTextProducer {
-
-    @Ignore
-    constructor() : this(
-        requestDate = null,
-        responseDate = null,
-        tookMs = null,
-        protocol = null,
-        method = null,
-        url = null,
-        host = null,
-        path = null,
-        scheme = null,
-        requestContentLength = null,
-        requestContentType = null,
-        requestHeaders = null,
-        requestBody = null,
-        responseCode = null,
-        responseMessage = null,
-        error = null,
-        responseContentLength = null,
-        responseContentType = null,
-        responseHeaders = null,
-        responseBody = null,
-        responseImageData = null
-    )
 
     enum class Status {
         Requested,
@@ -97,16 +69,16 @@ internal class HttpTransaction(
         get() = tookMs?.let { "$it ms" }
 
     val requestSizeString: String
-        get() = formatBytes(requestContentLength ?: 0)
+        get() = (requestContentLength ?: 0).formatBytes()
 
     val responseSizeString: String?
-        get() = responseContentLength?.let { formatBytes(it) }
+        get() = responseContentLength?.formatBytes()
 
     val totalSizeString: String
         get() {
             val reqBytes = requestContentLength ?: 0
             val resBytes = responseContentLength ?: 0
-            return formatBytes(reqBytes + resBytes)
+            return (reqBytes + resBytes).formatBytes()
         }
 
     val responseSummaryText: String?
@@ -114,7 +86,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> error
                 Status.Requested -> null
-                else -> responseCode.toString() + " " + responseMessage
+                else -> "${responseCode.toString()} $responseMessage"
             }
         }
 
@@ -133,7 +105,7 @@ internal class HttpTransaction(
     override fun notificationText(context: Context) = when (status) {
         Status.Failed -> " ! ! !  $method $path"
         Status.Requested -> " . . .  $method $path"
-        else -> responseCode.toString() + " " + method + " " + path
+        else -> "${responseCode.toString()} $method $path"
     }
 
     fun setRequestHeaders(headers: Headers) {
@@ -161,7 +133,7 @@ internal class HttpTransaction(
     }
 
     fun getRequestHeadersString(withMarkup: Boolean): String {
-        return FormatUtils.formatHeaders(getParsedRequestHeaders(), withMarkup)
+        return formatHeaders(getParsedRequestHeaders(), withMarkup)
     }
 
     fun setResponseHeaders(headers: Headers) {
@@ -173,29 +145,22 @@ internal class HttpTransaction(
     }
 
     fun getResponseHeadersString(withMarkup: Boolean): String {
-        return FormatUtils.formatHeaders(getParsedResponseHeaders(), withMarkup)
+        return formatHeaders(getParsedResponseHeaders(), withMarkup)
     }
 
-    private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
-        val httpHeaders = ArrayList<HttpHeader>()
-        for (i in 0 until headers.size()) {
-            httpHeaders.add(HttpHeader(headers.name(i), headers.value(i)))
+    private fun toHttpHeaderList(headers: Headers): List<HttpHeader> =
+        mutableListOf<HttpHeader>().apply {
+            for (i in 0 until headers.size()) {
+                add(HttpHeader(headers.name(i), headers.value(i)))
+            }
         }
-        return httpHeaders
-    }
 
-    private fun formatBody(body: String, contentType: String?): String {
-        return when {
-            contentType != null && contentType.toLowerCase().contains("json") ->
-                FormatUtils.formatJson(body)
-            contentType != null && contentType.toLowerCase().contains("xml") ->
-                FormatUtils.formatXml(body)
-            else -> body
-        }
-    }
-
-    private fun formatBytes(bytes: Long): String {
-        return FormatUtils.formatByteCount(bytes, true)
+    private fun formatBody(body: String, contentType: String?): String = when {
+        contentType != null && contentType.toLowerCase().contains("json") ->
+            formatJson(body)
+        contentType != null && contentType.toLowerCase().contains("xml") ->
+            formatXml(body)
+        else -> body
     }
 
     fun getFormattedRequestBody(): String {

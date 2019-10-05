@@ -28,7 +28,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.getShareCurlCommand
+import com.chuckerteam.chucker.internal.support.getShareText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
 
@@ -81,11 +82,11 @@ class TransactionActivity : BaseChuckerActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.share_text -> {
-                share(FormatUtils.getShareText(this, viewModel.transaction.value))
+                share(getShareText(this, viewModel.transaction.value!!))
                 true
             }
             R.id.share_curl -> {
-                share(FormatUtils.getShareCurlCommand(viewModel.transaction.value))
+                share(getShareCurlCommand(viewModel.transaction.value!!))
                 true
             }
             else -> super.onOptionsItemSelected(item)

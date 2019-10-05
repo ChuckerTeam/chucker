@@ -1,28 +1,25 @@
 package com.chuckerteam.chucker.internal.support
 
-import android.content.Context
-import com.chuckerteam.chucker.R
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.io.EOFException
-import java.nio.charset.Charset
-import java.util.stream.Stream
 import okio.Buffer
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.EOFException
+import java.nio.charset.Charset
+import java.util.stream.Stream
 
 class IOUtilsTest {
 
-    private val mockContext = mockk<Context>()
-    private val ioUtils = IOUtils(mockContext)
+    private val ioUtils = IOUtils(
+        unexpectedEof = "\\n\\n--- Unexpected end of content ---",
+        bodyTruncated = "\\n\\n--- Content truncated ---"
+    )
 
     @Test
     fun isPlaintext_withEmptyBuffer_returnsTrue() {
@@ -80,7 +77,6 @@ class IOUtilsTest {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size() } returns 100L
         every { mockBuffer.readString(any(), any()) } returns "{ \"message\": \"just a mock body\"}"
-        every { mockContext.getString(R.string.chucker_body_content_truncated) } returns "\\n\\n--- Content truncated ---"
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 50L)
 
@@ -93,7 +89,6 @@ class IOUtilsTest {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size() } returns 100L
         every { mockBuffer.readString(any(), any()) } throws EOFException()
-        every { mockContext.getString(R.string.chucker_body_unexpected_eof) } returns "\\n\\n--- Unexpected end of content ---"
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 200L)
 
