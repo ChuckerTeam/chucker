@@ -18,14 +18,20 @@ class WebsocketTrafficViewModel(
     internal var traffic: MutableLiveData<WebsocketTraffic> = MutableLiveData()
 
     fun loadWebsocketTraffic() {
-        RepositoryProvider.websocket().getTraffic(transactionId).observeOnce(Observer {
-            trafficTitle.value =
-                if (it != null) {
-                    val operationName = if (it.operation == MESSAGE) message else send
-                    "$operationName ${it.path}"
-                } else ""
-            traffic.value = it
-        })
+        RepositoryProvider.websocket()
+            .getTraffic(transactionId)
+            .observeOnce(
+                Observer {
+                    trafficTitle.value =
+                        if (it != null) {
+                            val operationName = if (it.operation == MESSAGE) message else send
+                            "$operationName ${it.path}"
+                        } else {
+                            ""
+                        }
+                    traffic.value = it
+                }
+            )
     }
 }
 

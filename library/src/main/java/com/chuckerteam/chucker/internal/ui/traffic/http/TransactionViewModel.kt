@@ -1,6 +1,9 @@
 package com.chuckerteam.chucker.internal.ui.traffic.http
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.observeOnce
@@ -10,10 +13,14 @@ class TransactionViewModel(private val transactionId: Long) : ViewModel() {
     internal var transaction: MutableLiveData<HttpTransaction> = MutableLiveData()
 
     fun loadTransaction() {
-        RepositoryProvider.transaction().getTransaction(transactionId).observeOnce(Observer {
-            transactionTitle.value = if (it != null) "${it.method} ${it.path}" else ""
-            transaction.value = it
-        })
+        RepositoryProvider.transaction()
+            .getTransaction(transactionId)
+            .observeOnce(
+                Observer {
+                    transactionTitle.value = if (it != null) "${it.method} ${it.path}" else ""
+                    transaction.value = it
+                }
+            )
     }
 }
 

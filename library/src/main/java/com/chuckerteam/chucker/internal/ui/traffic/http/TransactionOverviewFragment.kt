@@ -44,46 +44,48 @@ class TransactionOverviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity()).get(TransactionViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
-        .also {
-            url = it.findViewById(R.id.url)
-            method = it.findViewById(R.id.method)
-            protocol = it.findViewById(R.id.protocol)
-            status = it.findViewById(R.id.status)
-            response = it.findViewById(R.id.response)
-            ssl = it.findViewById(R.id.ssl)
-            requestTime = it.findViewById(R.id.request_time)
-            responseTime = it.findViewById(R.id.response_time)
-            duration = it.findViewById(R.id.duration)
-            requestSize = it.findViewById(R.id.request_size)
-            responseSize = it.findViewById(R.id.response_size)
-            totalSize = it.findViewById(R.id.total_size)
-        }
+    ): View? =
+        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
+            .also {
+                url = it.findViewById(R.id.url)
+                method = it.findViewById(R.id.method)
+                protocol = it.findViewById(R.id.protocol)
+                status = it.findViewById(R.id.status)
+                response = it.findViewById(R.id.response)
+                ssl = it.findViewById(R.id.ssl)
+                requestTime = it.findViewById(R.id.request_time)
+                responseTime = it.findViewById(R.id.response_time)
+                duration = it.findViewById(R.id.duration)
+                requestSize = it.findViewById(R.id.request_size)
+                responseSize = it.findViewById(R.id.response_size)
+                totalSize = it.findViewById(R.id.total_size)
+            }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.transaction.observe(this, Observer { transaction ->
-            url.text = transaction.url
-            method.text = transaction.method
-            protocol.text = transaction.protocol
-            status.text = transaction.status.toString()
-            response.text = transaction.responseSummaryText
-            ssl.text = getString(
-                if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no
-            )
-            requestTime.text = transaction.requestDateString
-            responseTime.text = transaction.responseDateString
-            duration.text = transaction.durationString
-            requestSize.text = transaction.requestSizeString
-            responseSize.text = transaction.responseSizeString
-            totalSize.text = transaction.totalSizeString
-        })
+        viewModel.transaction.observe(
+            this,
+            Observer { transaction ->
+                url.text = transaction.url
+                method.text = transaction.method
+                protocol.text = transaction.protocol
+                status.text = transaction.status.toString()
+                response.text = transaction.responseSummaryText
+                ssl.text = getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)
+                requestTime.text = transaction.requestDateString
+                responseTime.text = transaction.responseDateString
+                duration.text = transaction.durationString
+                requestSize.text = transaction.requestSizeString
+                responseSize.text = transaction.responseSizeString
+                totalSize.text = transaction.totalSizeString
+            }
+        )
     }
 }

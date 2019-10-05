@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
-import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
+import com.chuckerteam.chucker.internal.data.entity.WebsocketTraffic
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 

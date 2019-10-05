@@ -69,9 +69,12 @@ class TransactionActivity : BaseChuckerActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.transactionTitle.observe(this, Observer {
-            findViewById<TextView>(R.id.toolbar_title).text = it
-        })
+        viewModel.transactionTitle.observe(
+            this,
+            Observer {
+                findViewById<TextView>(R.id.toolbar_title).text = it
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,15 +92,18 @@ class TransactionActivity : BaseChuckerActivity() {
                 share(getShareCurlCommand(viewModel.transaction.value!!))
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
 
     private fun share(content: String) {
-        startActivity(Intent.createChooser(Intent().apply {
+        val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, content)
             type = "text/plain"
-        }, null))
+        }
+        startActivity(Intent.createChooser(intent, null))
     }
 
     internal inner class PagerAdapter(context: Context, fm: FragmentManager) :
@@ -125,9 +131,11 @@ class TransactionActivity : BaseChuckerActivity() {
         private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
-            context.startActivity(Intent(context, TransactionActivity::class.java).apply {
-                putExtra(ARG_TRANSACTION_ID, transactionId)
-            })
+            context.startActivity(
+                Intent(context, TransactionActivity::class.java).apply {
+                    putExtra(ARG_TRANSACTION_ID, transactionId)
+                }
+            )
         }
     }
 }

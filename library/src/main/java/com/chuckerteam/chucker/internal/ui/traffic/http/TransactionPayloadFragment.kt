@@ -20,7 +20,11 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Html
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
@@ -65,9 +69,12 @@ internal class TransactionPayloadFragment : Fragment(), SearchView.OnQueryTextLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.transaction.observe(this, Observer { transaction ->
-            UiLoaderTask(this).execute(Pair(type, transaction))
-        })
+        viewModel.transaction.observe(
+            this,
+            Observer { transaction ->
+                UiLoaderTask(this).execute(Pair(type, transaction))
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -121,8 +128,7 @@ internal class TransactionPayloadFragment : Fragment(), SearchView.OnQueryTextLi
     private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
         AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
 
-        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
-                UiPayload {
+        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>): UiPayload {
             val (type, transaction) = params[0]
             return if (type == TYPE_REQUEST) {
                 UiPayload(

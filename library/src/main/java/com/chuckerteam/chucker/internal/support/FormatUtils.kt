@@ -4,33 +4,38 @@ import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.google.gson.JsonIOException
 import com.google.gson.JsonParser
 import org.xml.sax.InputSource
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.util.*
+import java.util.Locale
 import javax.xml.XMLConstants
 import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerConfigurationException
+import javax.xml.transform.TransformerException
+import javax.xml.transform.TransformerFactoryConfigurationError
 import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
+private const val THOUSAND = 1000
+private const val ONE_K = 1024
 
-internal fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
-    var out = ""
-    if (httpHeaders != null) {
-        for ((name, value) in httpHeaders) {
-            out += (if (withMarkup) "<b>" else "") + name + ": " + (if (withMarkup) "</b>" else "") +
-                    value + if (withMarkup) "<br />" else "\n"
-        }
-    }
-    return out
+fun Long?.formatBytes(): String = when {
+    this == null -> ""
+    else -> formatByteCount(this, true)
+}
+
+fun Int?.formatBytes(): String = when {
+    this == null -> ""
+    else -> formatByteCount(this.toLong(), true)
 }
 
 fun formatByteCount(bytes: Long, si: Boolean): String {
-    val unit = if (si) 1000 else 1024
+    val unit = if (si) THOUSAND else ONE_K
     if (bytes < unit) return "$bytes B"
     val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
     val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
@@ -42,14 +47,23 @@ fun formatByteCount(bytes: Long, si: Boolean): String {
     )
 }
 
-fun formatJson(json: String): String {
-    return try {
-        val jp = JsonParser()
-        val je = jp.parse(json)
-        JsonConverter.instance.toJson(je)
-    } catch (e: Exception) {
-        json
+internal fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
+    var out = ""
+    if (httpHeaders != null) {
+        for ((name, value) in httpHeaders) {
+            out += (if (withMarkup) "<b>" else "") + name + ": " + (if (withMarkup) "</b>" else "") +
+                value + if (withMarkup) "<br />" else "\n"
+        }
     }
+    return out
+}
+
+fun formatJson(json: String): String = try {
+    val jp = JsonParser()
+    val je = jp.parse(json)
+    JsonConverter.instance.toJson(je)
+} catch (e: JsonIOException) {
+    json
 }
 
 fun formatXml(xml: String): String {
@@ -70,19 +84,38 @@ fun formatXml(xml: String): String {
         val xmlSource = SAXSource(InputSource(ByteArrayInputStream(xml.toByteArray())))
         val res = StreamResult(ByteArrayOutputStream())
         serializer.transform(xmlSource, res)
+
         return String((res.outputStream as ByteArrayOutputStream).toByteArray())
-    } catch (e: Exception) {
+    } catch (e: TransformerFactoryConfigurationError) {
+        return xml
+    } catch (e: TransformerConfigurationException) {
+        return xml
+    } catch (e: TransformerException) {
         return xml
     }
 }
 
-internal fun getShareText(context: Context, transaction: HttpTransaction): String = """
+internal fun getShareText(context: Context, transaction: HttpTransaction): String {
+    val isSsl = context.getString(
+        if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no
+    )
+    val requestBody = if (transaction.isRequestBodyPlainText) {
+        transaction.getFormattedRequestBody()
+    } else {
+        context.getString(R.string.chucker_body_omitted)
+    }
+    val responseBody = if (transaction.isResponseBodyPlainText) {
+        transaction.getFormattedResponseBody()
+    } else {
+        context.getString(R.string.chucker_body_omitted)
+    }
+    return """
     ${context.getString(R.string.chucker_url)}: ${transaction.url ?: ""}
     ${context.getString(R.string.chucker_method)}: ${transaction.method ?: ""}
     ${context.getString(R.string.chucker_protocol)}: ${transaction.protocol ?: ""}
     ${context.getString(R.string.chucker_status)}: ${transaction.status}
     ${context.getString(R.string.chucker_response)}: ${transaction.responseSummaryText ?: ""}
-    ${context.getString(R.string.chucker_ssl)}: ${context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no) ?: ""}
+    ${context.getString(R.string.chucker_ssl)}: ${isSsl ?: ""}
     
     ${context.getString(R.string.chucker_request_time)}: ${transaction.requestDateString ?: ""}
     ${context.getString(R.string.chucker_response_time)}: ${transaction.responseDateString ?: ""}
@@ -95,13 +128,14 @@ internal fun getShareText(context: Context, transaction: HttpTransaction): Strin
     ---------- ${context.getString(R.string.chucker_request)} ----------
 
     ${formatHeaders(transaction.getParsedRequestHeaders(), false)}
-    ${if (transaction.isRequestBodyPlainText) transaction.getFormattedRequestBody() else context.getString(R.string.chucker_body_omitted)}
+    $requestBody
     
     ---------- ${context.getString(R.string.chucker_response)} ----------
     
     ${formatHeaders(transaction.getParsedResponseHeaders(), false)}
-    ${if (transaction.isResponseBodyPlainText) transaction.getFormattedResponseBody() else context.getString(R.string.chucker_body_omitted)}
-""".trimIndent()
+    $responseBody
+    """.trimIndent()
+}
 
 internal fun getShareCurlCommand(transaction: HttpTransaction): String {
     var compressed = false
@@ -114,10 +148,8 @@ internal fun getShareCurlCommand(transaction: HttpTransaction): String {
         while (i < count) {
             val name = headers[i].name
             val value = headers[i].value
-            if ("Accept-Encoding".equals(name, ignoreCase = true) && "gzip".equals(
-                    value,
-                    ignoreCase = true
-                )
+            if ("Accept-Encoding".equals(name, ignoreCase = true) &&
+                "gzip".equals(value, ignoreCase = true)
             ) {
                 compressed = true
             }
@@ -146,14 +178,4 @@ fun formatThrowable(throwable: Throwable): String {
     val pw = PrintWriter(sw)
     throwable.printStackTrace(pw)
     return sw.toString()
-}
-
-fun Long?.formatBytes(): String = when {
-    this == null -> ""
-    else -> formatByteCount(this, true)
-}
-
-fun Int?.formatBytes(): String = when {
-    this == null -> ""
-    else -> formatByteCount(this.toLong(), true)
 }

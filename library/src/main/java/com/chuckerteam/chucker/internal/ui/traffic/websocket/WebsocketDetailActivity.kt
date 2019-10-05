@@ -31,16 +31,15 @@ class WebsocketDetailActivity : BaseChuckerActivity() {
         size = findViewById(R.id.size)
         body = findViewById(R.id.body)
 
-        // Create the instance now, so it can be shared by the
-        // various fragments in the view pager later.
         val trafficId = intent.getLongExtra(ARG_TRAFFIC_ID, 0)
         viewModel = ViewModelProviders.of(
-            this, WebsocketTrafficViewModelFactory(
-                    trafficId,
-                    getString(WebsocketOperation.SEND.descriptionId),
-                    getString(WebsocketOperation.MESSAGE.descriptionId)
-                )
-        ).get(WebsocketTrafficViewModel::class.java)
+            this,
+            WebsocketTrafficViewModelFactory(
+                trafficId,
+                getString(WebsocketOperation.SEND.descriptionId),
+                getString(WebsocketOperation.MESSAGE.descriptionId)
+            )
+        )[WebsocketTrafficViewModel::class.java]
         viewModel.loadWebsocketTraffic()
 
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -51,29 +50,35 @@ class WebsocketDetailActivity : BaseChuckerActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.trafficTitle.observe(this, Observer {
-            findViewById<TextView>(R.id.toolbar_title).text = it
-        })
+        viewModel.trafficTitle.observe(
+            this,
+            Observer {
+                findViewById<TextView>(R.id.toolbar_title).text = it
+            }
+        )
 
-        viewModel.traffic.observe(this, Observer { traffic ->
-            timestamp.text = "${traffic.timestamp}"
-            url.text = traffic.url
-            body.text = traffic.contentText
-            size.text = traffic.contentText?.length?.formatBytes()
-            operation.text = getString(traffic.operation.descriptionId)
-            ssl.text = getString(
-                if (traffic.ssl == true) R.string.chucker_yes else R.string.chucker_no
-            )
-        })
+        viewModel.traffic.observe(
+            this,
+            Observer { traffic ->
+                timestamp.text = "${traffic.timestamp}"
+                url.text = traffic.url
+                body.text = traffic.contentText
+                size.text = traffic.contentText?.length?.formatBytes()
+                operation.text = getString(traffic.operation.descriptionId)
+                ssl.text = getString(if (traffic.ssl == true) R.string.chucker_yes else R.string.chucker_no)
+            }
+        )
     }
 
     companion object {
         private const val ARG_TRAFFIC_ID = "transaction_id"
 
         fun start(context: Context, trafficId: Long) {
-            context.startActivity(Intent(context, WebsocketDetailActivity::class.java).apply {
-                putExtra(ARG_TRAFFIC_ID, trafficId)
-            })
+            context.startActivity(
+                Intent(context, WebsocketDetailActivity::class.java).apply {
+                    putExtra(ARG_TRAFFIC_ID, trafficId)
+                }
+            )
         }
     }
 }

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.TrafficType
-import com.chuckerteam.chucker.internal.data.entity.TrafficType.*
 import com.chuckerteam.chucker.internal.ui.traffic.http.HttpTransactionViewHolder
 import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketLifecycleViewHolder
 import com.chuckerteam.chucker.internal.ui.traffic.websocket.WebsocketTrafficViewHolder
@@ -31,17 +30,17 @@ class TrafficAdapter(private val listener: (Long, Int, TrafficType) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrafficViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(getLayout(viewType), parent, false)
         return when (viewType) {
-            HTTP.ordinal -> HttpTransactionViewHolder(view, listener)
-            WEBSOCKET_LIFECYCLE.ordinal -> WebsocketLifecycleViewHolder(view, listener)
-            WEBSOCKET_TRAFFIC.ordinal -> WebsocketTrafficViewHolder(view, listener)
+            TrafficType.HTTP.ordinal -> HttpTransactionViewHolder(view, listener)
+            TrafficType.WEBSOCKET_LIFECYCLE.ordinal -> WebsocketLifecycleViewHolder(view, listener)
+            TrafficType.WEBSOCKET_TRAFFIC.ordinal -> WebsocketTrafficViewHolder(view, listener)
             else -> throw IllegalArgumentException("Unsupported row type: $viewType")
         }
     }
 
     private fun getLayout(viewType: Int): Int = when (viewType) {
-        HTTP.ordinal -> R.layout.chucker_list_item_transaction
-        WEBSOCKET_LIFECYCLE.ordinal -> R.layout.chucker_list_item_websocket_lifecycle
-        WEBSOCKET_TRAFFIC.ordinal -> R.layout.chucker_list_item_websocket_data
+        TrafficType.HTTP.ordinal -> R.layout.chucker_list_item_transaction
+        TrafficType.WEBSOCKET_LIFECYCLE.ordinal -> R.layout.chucker_list_item_websocket_lifecycle
+        TrafficType.WEBSOCKET_TRAFFIC.ordinal -> R.layout.chucker_list_item_websocket_data
         else -> throw IllegalArgumentException("Unsupported row type: $viewType")
     }
 }
@@ -55,5 +54,4 @@ interface TrafficRow {
     val id: Long
     val timestamp: Long
     val type: TrafficType
-    override fun equals(other: Any?): Boolean
 }

@@ -29,20 +29,8 @@ class WebsocketLifecycleViewHolder(view: View, listener: (Long, Int, TrafficType
     }
 }
 
-@Suppress("EqualsOrHashCode")
 internal class WebsocketLifecycleRow(val traffic: WebsocketTraffic) : TrafficRow {
     override val id: Long = traffic.id
     override val timestamp: Long = traffic.timestamp ?: 0L
     override val type = WEBSOCKET_LIFECYCLE
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as WebsocketTrafficRow
-
-        if (traffic != other.traffic) return false
-
-        return true
-    }
 }

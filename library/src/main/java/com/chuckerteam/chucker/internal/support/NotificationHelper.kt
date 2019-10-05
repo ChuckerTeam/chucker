@@ -55,42 +55,44 @@ class NotificationHelper(private val context: Context) {
 
     internal fun show(throwable: RecordedThrowable) {
         if (!BaseChuckerActivity.isInForeground()) {
-            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentIntent(
-                    PendingIntent.getActivity(
-                        context,
-                        ERROR_NOTIFICATION_ID,
-                        Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+            val builder =
+                NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentIntent(
+                        PendingIntent.getActivity(
+                            context,
+                            ERROR_NOTIFICATION_ID,
+                            Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
                     )
-                )
-                .setLocalOnly(true)
-                .setSmallIcon(R.drawable.chucker_ic_subject_white_24dp)
-                .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
-                .setContentTitle(throwable.clazz)
-                .setAutoCancel(true)
-                .setContentText(throwable.message)
-                .addAction(createClearAction(ClearDatabaseService.ClearAction.Error))
+                    .setLocalOnly(true)
+                    .setSmallIcon(R.drawable.chucker_ic_subject_white_24dp)
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
+                    .setContentTitle(throwable.clazz)
+                    .setAutoCancel(true)
+                    .setContentText(throwable.message)
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.Error))
             notificationManager.notify(ERROR_NOTIFICATION_ID, builder.build())
         }
     }
 
     private fun buildTrafficNotification() {
         if (!BaseChuckerActivity.isInForeground()) {
-            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentIntent(
-                    PendingIntent.getActivity(
-                        context,
-                        TRANSACTION_NOTIFICATION_ID,
-                        Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+            val builder =
+                NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentIntent(
+                        PendingIntent.getActivity(
+                            context,
+                            TRANSACTION_NOTIFICATION_ID,
+                            Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
                     )
-                )
-                .setLocalOnly(true)
-                .setSmallIcon(R.drawable.chucker_ic_notification)
-                .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
-                .setContentTitle(context.getString(R.string.chucker_http_notification_title))
-                .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
+                    .setLocalOnly(true)
+                    .setSmallIcon(R.drawable.chucker_ic_notification)
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
+                    .setContentTitle(context.getString(R.string.chucker_http_notification_title))
+                    .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 for ((count, i) in (transactionBuffer.size() - 1 downTo 0).withIndex()) {
@@ -118,7 +120,7 @@ class NotificationHelper(private val context: Context) {
         val deleteIntent = Intent(context, ClearDatabaseService::class.java)
         deleteIntent.putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
         val intent =
-            PendingIntent.getService(context, 11, deleteIntent, PendingIntent.FLAG_ONE_SHOT)
+            PendingIntent.getService(context, REQUEST_CODE, deleteIntent, PendingIntent.FLAG_ONE_SHOT)
         return NotificationCompat.Action(
             R.drawable.chucker_ic_delete_white_24dp,
             clearTitle,
@@ -133,6 +135,7 @@ class NotificationHelper(private val context: Context) {
         notificationManager.cancel(ERROR_NOTIFICATION_ID)
 
     companion object {
+        private const val REQUEST_CODE = 11
         private const val CHANNEL_ID = "chucker"
         private const val TRANSACTION_NOTIFICATION_ID = 1138
         private const val ERROR_NOTIFICATION_ID = 3546

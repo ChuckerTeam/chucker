@@ -53,9 +53,14 @@ class HttpTransactionViewHolder(view: View, listener: (Long, Int, TrafficType) -
     }
 }
 
-@Suppress("EqualsOrHashCode")
 internal class HttpTrafficRow(val transaction: HttpTransactionTuple) :
     TrafficRow {
+    companion object {
+        private const val REDIRECTION_STATUS_VALUES = 300
+        private const val CLIENT_ERROR_STATUS_VALUES = 400
+        private const val SERVER_ERROR_STATUS_VALUES = 500
+    }
+
     override val id: Long = transaction.id
     override val timestamp = transaction.requestDate ?: 0L
     override val type = HTTP
@@ -64,20 +69,9 @@ internal class HttpTrafficRow(val transaction: HttpTransactionTuple) :
         transaction.status === Failed -> R.color.chucker_status_error
         transaction.status === Requested -> R.color.chucker_status_requested
         transaction.responseCode == null -> R.color.chucker_status_default
-        transaction.responseCode!! >= 500 -> R.color.chucker_status_500
-        transaction.responseCode!! >= 400 -> R.color.chucker_status_400
-        transaction.responseCode!! >= 300 -> R.color.chucker_status_300
+        transaction.responseCode!! >= SERVER_ERROR_STATUS_VALUES -> R.color.chucker_status_500
+        transaction.responseCode!! >= CLIENT_ERROR_STATUS_VALUES -> R.color.chucker_status_400
+        transaction.responseCode!! >= REDIRECTION_STATUS_VALUES -> R.color.chucker_status_300
         else -> R.color.chucker_status_default
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as HttpTrafficRow
-
-        if (transaction != other.transaction) return false
-
-        return true
     }
 }

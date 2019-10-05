@@ -9,8 +9,11 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.chuckerteam.chucker.internal.support.*
+import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.chuckerteam.chucker.internal.support.formatBytes
 import com.chuckerteam.chucker.internal.support.formatHeaders
+import com.chuckerteam.chucker.internal.support.formatJson
+import com.chuckerteam.chucker.internal.support.formatXml
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 
@@ -86,7 +89,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> error
                 Status.Requested -> null
-                else -> "${responseCode.toString()} $responseMessage"
+                else -> "$responseCode $responseMessage"
             }
         }
 
@@ -105,7 +108,7 @@ internal class HttpTransaction(
     override fun notificationText(context: Context) = when (status) {
         Status.Failed -> " ! ! !  $method $path"
         Status.Requested -> " . . .  $method $path"
-        else -> "${responseCode.toString()} $method $path"
+        else -> "$responseCode $method $path"
     }
 
     fun setRequestHeaders(headers: Headers) {

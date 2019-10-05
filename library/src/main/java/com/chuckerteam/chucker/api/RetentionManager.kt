@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
+import com.chuckerteam.chucker.api.RetentionManager.Period
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.util.concurrent.TimeUnit
 

@@ -39,4 +39,3 @@ internal class HttpTransactionTuple(
             return (reqBytes + resBytes).formatBytes()
         }
 }
-

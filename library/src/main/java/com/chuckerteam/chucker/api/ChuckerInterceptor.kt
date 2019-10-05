@@ -7,7 +7,9 @@ import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
-import okhttp3.*
+import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
 import java.io.IOException
@@ -59,11 +61,15 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.requestContentType = requestBody?.contentType()?.toString()
         transaction.requestContentLength = requestBody?.contentLength() ?: 0L
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
+        val encodingIsSupported =
+            io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
         transaction.isRequestBodyPlainText = encodingIsSupported
 
         if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
+            val source = io.getNativeSource(
+                Buffer(),
+                io.bodyIsGzipped(request.headers().get("Content-Encoding"))
+            )
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
@@ -110,7 +116,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.responseContentLength = responseBody?.contentLength() ?: 0L
         transaction.setResponseHeaders(filterHeaders(response.headers()))
 
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
+        val responseEncodingIsSupported =
+            io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
@@ -173,7 +180,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
         return response.body()!!.source()
     }
-
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
