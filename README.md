@@ -182,6 +182,21 @@ Short `TODO` List for new contributors:
 
 ## Acknowledgments 🌸
 
+### Contributors
+
+Big thanks to our contributors
+
+- [Ashok Varma](https://github.com/Ashok-Varma) Clean up
+- [Bernat Borrás Paronella](https://github.com/alorma) Redact headers + HTTP methods in notifications
+- [Hafiz Waleed Hussain](https://github.com/Hafiz-Waleed-Hussain) Search highlight in response tab
+- [Karol Wrótniak](https://github.com/koral--) Fix race condition + Application name retrieval
+- [OlliZi](https://github.com/OlliZi) Support for images
+- [Paul Hawke](https://github.com/psh) API Clean
+- [Paul Woitaschek](https://github.com/PaulWoitaschek) Fix typo in API
+- [SeungHun Choe](https://github.com/uOOOO) Fix memory leak
+
+### Libraries
+
 Chucker uses the following open source libraries:
 
 - [OkHttp](https://github.com/square/okhttp) - Copyright Square, Inc.
