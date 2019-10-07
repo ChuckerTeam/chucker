@@ -21,9 +21,7 @@ class HttpBinClient(
 ) {
 
     private val collector = ChuckerCollector(
-        context = context,
-        showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
+        context = context
     )
 
     private val chuckerInterceptor = ChuckerInterceptor(

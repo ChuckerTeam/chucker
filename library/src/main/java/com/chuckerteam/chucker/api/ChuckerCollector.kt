@@ -1,9 +1,12 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import com.chuckerteam.chucker.api.config.ErrorsFeature
+import com.chuckerteam.chucker.api.config.HttpFeature
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 
 /**
@@ -12,18 +15,14 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
  * provide it to
  *
  * @param context An Android Context
- * @param showNotification Control whether a notification is shown while HTTP activity
- * is recorded.
- * @param retentionManager Set the retention period for HTTP transaction data captured
- * by this collector. The default is one week.
  */
-class ChuckerCollector @JvmOverloads constructor(
-    context: Context,
-    var showNotification: Boolean = true,
-    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+class ChuckerCollector(
+    context: Context
 ) {
-    private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
+    private val retentionManager: RetentionManager = RetentionManager(context)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
+    private val httpFeature: HttpFeature = FeatureManager.find()
+    private val errorsFeature: ErrorsFeature = FeatureManager.find()
 
     init {
         RepositoryProvider.initialize(context)
@@ -35,9 +34,11 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param throwable The triggered [Throwable]
      */
     fun onError(tag: String, throwable: Throwable) {
+        if (!errorsFeature.enabled) return
+
         val recordedThrowable = RecordedThrowable(tag, throwable)
         RepositoryProvider.throwable().saveThrowable(recordedThrowable)
-        if (showNotification) {
+        if (errorsFeature.showNotification) {
             notificationHelper.show(recordedThrowable)
         }
         retentionManager.doMaintenance()
@@ -48,8 +49,10 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The HTTP transaction sent
      */
     internal fun onRequestSent(transaction: HttpTransaction) {
+        if (!httpFeature.enabled) return
+
         RepositoryProvider.transaction().insertTransaction(transaction)
-        if (showNotification) {
+        if (httpFeature.showNotification) {
             notificationHelper.show(transaction)
         }
         retentionManager.doMaintenance()
@@ -61,8 +64,10 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The sent HTTP transaction completed with the response
      */
     internal fun onResponseReceived(transaction: HttpTransaction) {
+        if (!httpFeature.enabled) return
+
         val updated = RepositoryProvider.transaction().updateTransaction(transaction)
-        if (showNotification && updated > 0) {
+        if (httpFeature.showNotification && updated > 0) {
             notificationHelper.show(transaction)
         }
     }

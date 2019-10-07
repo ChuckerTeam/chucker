@@ -3,18 +3,21 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
+import com.chuckerteam.chucker.api.config.HttpFeature
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
+import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import okio.Buffer
+import okio.BufferedSource
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
 import java.util.concurrent.TimeUnit
-import okhttp3.Headers
-import okhttp3.Interceptor
-import okhttp3.Response
-import okio.Buffer
-import okio.BufferedSource
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -38,6 +41,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
+    private val httpFeature: HttpFeature = FeatureManager.find()
 
     fun redactHeader(name: String) = apply {
         headersToRedact.add(name)
@@ -47,8 +51,15 @@ class ChuckerInterceptor @JvmOverloads constructor(
     @Suppress("LongMethod", "ComplexMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val requestBody = request.body()
 
+        return when {
+            httpFeature.enabled -> captureTransaction(request, chain)
+            else -> chain.proceed(request)
+        }
+    }
+
+    private fun captureTransaction(request: Request, chain: Interceptor.Chain): Response {
+        val requestBody = request.body()
         val transaction = HttpTransaction()
         transaction.apply {
             requestDate = System.currentTimeMillis()

@@ -4,29 +4,31 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
+import com.chuckerteam.chucker.api.config.HttpFeature
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.FeatureManager
 import java.util.concurrent.TimeUnit
 
 /**
  * Class responsible of holding the logic for the retention of your HTTP transactions
  * and your throwable. You can customize how long data should be stored here.
  * @param context An Android Context
- * @param retentionPeriod A [Period] to specify the retention of data. Default 1 week.
  */
 @Suppress("MagicNumber")
-class RetentionManager @JvmOverloads constructor(
-    context: Context,
-    retentionPeriod: Period = Period.ONE_WEEK
+class RetentionManager(
+    context: Context
 ) {
 
+    private val httpFeature: HttpFeature = FeatureManager.find()
+
     // The actual retention period in milliseconds (default to ONE_WEEK)
-    private val period: Long = toMillis(retentionPeriod)
+    private val period: Long = toMillis(httpFeature.retentionPeriod)
     // How often the cleanup should happen
     private val cleanupFrequency: Long
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
 
     init {
-        cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR)
+        cleanupFrequency = if (httpFeature.retentionPeriod == Period.ONE_HOUR)
             TimeUnit.MINUTES.toMillis(30)
         else
             TimeUnit.HOURS.toMillis(2)
