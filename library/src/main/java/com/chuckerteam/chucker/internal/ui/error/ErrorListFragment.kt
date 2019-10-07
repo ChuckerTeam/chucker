@@ -73,14 +73,11 @@ internal class ErrorListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.clear -> {
-                askForConfirmation()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
+        return if (item.itemId == R.id.clear) {
+            askForConfirmation()
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 

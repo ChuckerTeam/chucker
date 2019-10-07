@@ -135,13 +135,14 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
         UiPayload {
             val (type, transaction) = params[0]
-            return when (type) {
-                TYPE_REQUEST -> UiPayload(
+            return if (type == TYPE_REQUEST) {
+                UiPayload(
                     transaction.getRequestHeadersString(true),
                     transaction.getFormattedRequestBody(),
                     transaction.isRequestBodyPlainText
                 )
-                else -> UiPayload(
+            } else {
+                UiPayload(
                     transaction.getResponseHeadersString(true),
                     transaction.getFormattedResponseBody(),
                     transaction.isResponseBodyPlainText,
