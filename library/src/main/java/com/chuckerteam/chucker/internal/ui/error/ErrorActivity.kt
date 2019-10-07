@@ -69,14 +69,11 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.share_text -> {
-                throwable?.let { share(it) }
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
+        return if (item.itemId == R.id.share_text) {
+            throwable?.let { share(it) }
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 
