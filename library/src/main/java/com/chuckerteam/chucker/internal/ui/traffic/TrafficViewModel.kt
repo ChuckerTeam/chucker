@@ -61,9 +61,10 @@ class TrafficViewModel : ViewModel() {
 
     private fun websocketDataSource(currentFilter: String?): LiveData<List<WebsocketTraffic>> {
         val repository = RepositoryProvider.websocket()
-        return when {
-            currentFilter.isNullOrEmpty() -> repository.getSortedTraffic()
-            else -> repository.getFilteredTraffic(currentFilter)
+        return if (currentFilter.isNullOrEmpty()) {
+            repository.getSortedTraffic()
+        } else {
+            repository.getFilteredTraffic(currentFilter)
         }
     }
 
@@ -72,8 +73,9 @@ class TrafficViewModel : ViewModel() {
     private fun HttpTransactionTuple.toTrafficRow(): TrafficRow =
         HttpTrafficRow(this)
 
-    private fun WebsocketTraffic.toTrafficRow(): TrafficRow = when {
-        isData -> WebsocketTrafficRow(this)
-        else -> WebsocketLifecycleRow(this)
+    private fun WebsocketTraffic.toTrafficRow(): TrafficRow = if (isData) {
+        WebsocketTrafficRow(this)
+    } else {
+        WebsocketLifecycleRow(this)
     }
 }

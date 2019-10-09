@@ -1,12 +1,12 @@
 package com.chuckerteam.chucker.internal.support
 
+import java.io.EOFException
+import java.nio.charset.Charset
+import kotlin.math.min
 import okio.Buffer
 import okio.BufferedSource
 import okio.GzipSource
 import okio.Okio
-import java.io.EOFException
-import java.nio.charset.Charset
-import kotlin.math.min
 
 private const val PREFIX_SIZE = 64L
 private const val CODE_POINT_SIZE = 16

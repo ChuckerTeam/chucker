@@ -8,6 +8,10 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
 class WebsocketClient {
+    companion object {
+        const val TERMINATION_CODE = 4321
+    }
+
     private var coinbaseSocket: WebSocket? = null
 
     fun start() {
@@ -23,21 +27,20 @@ class WebsocketClient {
             send("")
             send("{}")
             send(gson.toJson(HttpBinApi.Data("message")))
-            close(4321, "Because I said so")
+            close(TERMINATION_CODE, "Because I said so")
         }
 
         with(createEchoSocket(false)) {
             send("")
             send("{}")
             send(gson.toJson(HttpBinApi.Data("message")))
-            close(4321, "Because I said so")
+            close(TERMINATION_CODE, "Because I said so")
         }
-
     }
 
     fun stop() {
         if (coinbaseSocket != null) {
-            coinbaseSocket?.close(1000, "Thanks!")
+            coinbaseSocket?.close(TERMINATION_CODE, "Thanks!")
             coinbaseSocket = null
         }
     }

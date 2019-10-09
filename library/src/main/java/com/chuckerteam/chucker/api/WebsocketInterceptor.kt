@@ -17,12 +17,13 @@ fun OkHttpClient.newLoggedWebSocket(request: Request, listener: WebSocketListene
             it is ChuckerInterceptor
         } as ChuckerInterceptor?
 
-    return when (interceptor) {
-        null -> newWebSocket(request, listener)
-        else -> LoggedWebsocket(
+    return if (interceptor != null) {
+        LoggedWebsocket(
             newWebSocket(request, LoggedWebSocketListener(listener, interceptor.collector)),
             interceptor.collector
         )
+    } else {
+        newWebSocket(request, listener)
     }
 }
 

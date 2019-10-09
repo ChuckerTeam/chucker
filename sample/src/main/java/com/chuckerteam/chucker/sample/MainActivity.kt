@@ -44,6 +44,3 @@ class MainActivity : AppCompatActivity() {
         startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP))
     }
 }
-
-
-

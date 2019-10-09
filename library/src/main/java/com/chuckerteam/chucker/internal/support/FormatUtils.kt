@@ -6,7 +6,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.google.gson.JsonIOException
 import com.google.gson.JsonParser
-import org.xml.sax.InputSource
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
@@ -20,18 +19,21 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
+import org.xml.sax.InputSource
 
 private const val THOUSAND = 1000
 private const val ONE_K = 1024
 
-fun Long?.formatBytes(): String = when {
-    this == null -> ""
-    else -> formatByteCount(this, true)
+fun Long?.formatBytes(): String = if (this != null) {
+    formatByteCount(this, true)
+} else {
+    ""
 }
 
-fun Int?.formatBytes(): String = when {
-    this == null -> ""
-    else -> formatByteCount(this.toLong(), true)
+fun Int?.formatBytes(): String = if (this != null) {
+    formatByteCount(this.toLong(), true)
+} else {
+    ""
 }
 
 fun formatByteCount(bytes: Long, si: Boolean): String {

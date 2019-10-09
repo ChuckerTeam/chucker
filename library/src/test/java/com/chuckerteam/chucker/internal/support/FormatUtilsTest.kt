@@ -110,7 +110,8 @@ class FormatUtilsTest {
                 
 
 
-            """.trimIndent(), getShareText(context, HttpTransaction())
+                """.trimIndent(),
+                getShareText(context, HttpTransaction())
             )
         }
 
@@ -144,33 +145,34 @@ class FormatUtilsTest {
             )
             assertEquals(
                 """
-                    c-url: https://example.com/
-                    c-method: GET
-                    c-prot: https
-                    c-stat: Failed
-                    c-res: e
-                    c-ssl: c-yes
-                    
-                    c-req-time: 2
-                    c-res-time: 3
-                    c-dur: 4 ms
-                    
-                    c-req-size: 5 B
-                    c-res-size: 6 B
-                    c-size: 11 B
-                    
-                    ---------- c-req ----------
-                    
-                    a: b
-                    
-                    Request Body
-                    
-                    ---------- c-res ----------
-                    
-                    c: d
-                    
-                    Response Body
-            """.trimIndent(), getShareText(context, httpTransaction)
+                c-url: https://example.com/
+                c-method: GET
+                c-prot: https
+                c-stat: Failed
+                c-res: e
+                c-ssl: c-yes
+                
+                c-req-time: 2
+                c-res-time: 3
+                c-dur: 4 ms
+                
+                c-req-size: 5 B
+                c-res-size: 6 B
+                c-size: 11 B
+                
+                ---------- c-req ----------
+                
+                a: b
+                
+                Request Body
+                
+                ---------- c-res ----------
+                
+                c: d
+                
+                Response Body
+                """.trimIndent(),
+                getShareText(context, httpTransaction)
             )
         }
     }
@@ -194,7 +196,8 @@ class FormatUtilsTest {
                 formatHeaders(
                     listOf(
                         HttpHeader("foo", "bar")
-                    ), true
+                    ),
+                    true
                 )
             )
         }
@@ -206,7 +209,8 @@ class FormatUtilsTest {
                 formatHeaders(
                     listOf(
                         HttpHeader("foo", "")
-                    ), true
+                    ),
+                    true
                 )
             )
         }
@@ -220,7 +224,8 @@ class FormatUtilsTest {
                         HttpHeader("foo", "bar"),
                         HttpHeader("baz", "zot"),
                         HttpHeader("apples", "oranges")
-                    ), true
+                    ),
+                    true
                 )
             )
         }
@@ -245,7 +250,8 @@ class FormatUtilsTest {
                 formatHeaders(
                     listOf(
                         HttpHeader("foo", "bar")
-                    ), false
+                    ),
+                    false
                 )
             )
         }
@@ -257,7 +263,8 @@ class FormatUtilsTest {
                 formatHeaders(
                     listOf(
                         HttpHeader("foo", "")
-                    ), false
+                    ),
+                    false
                 )
             )
         }
@@ -271,7 +278,8 @@ class FormatUtilsTest {
                         HttpHeader("foo", "bar"),
                         HttpHeader("baz", "zot"),
                         HttpHeader("apples", "oranges")
-                    ), false
+                    ),
+                    false
                 )
             )
         }
@@ -388,18 +396,18 @@ class FormatUtilsTest {
         fun testFormatJson_withNullValues() {
             val parsedJson = formatJson(
                 """
-            {
-              "field": null
-            }
-            """.trimIndent()
+                {
+                  "field": null
+                }
+                """.trimIndent()
             )
 
             assertEquals(
                 """
-            {
-              "field": null
-            }
-            """.trimIndent(),
+                {
+                  "field": null
+                }
+                """.trimIndent(),
                 parsedJson
             )
         }
@@ -408,18 +416,18 @@ class FormatUtilsTest {
         fun testFormatJson_withEmptyValues() {
             val parsedJson = formatJson(
                 """
-            {
-              "field": ""
-            }
-            """.trimIndent()
+                {
+                  "field": ""
+                }
+                """.trimIndent()
             )
 
             assertEquals(
                 """
-            {
-              "field": ""
-            }
-            """.trimIndent(),
+                {
+                  "field": ""
+                }
+                """.trimIndent(),
                 parsedJson
             )
         }
@@ -432,11 +440,11 @@ class FormatUtilsTest {
 
             assertEquals(
                 """
-            {
-              "field1": "something",
-              "field2": "else"
-            }
-            """.trimIndent(),
+                {
+                  "field1": "something",
+                  "field2": "else"
+                }
+                """.trimIndent(),
                 parsedJson
             )
         }

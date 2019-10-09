@@ -91,14 +91,11 @@ class TrafficFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =
-        when (item.itemId) {
-            R.id.clear -> {
-                askForConfirmation()
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
+        if (item.itemId == R.id.clear) {
+            askForConfirmation()
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
 
     private fun askForConfirmation() =
