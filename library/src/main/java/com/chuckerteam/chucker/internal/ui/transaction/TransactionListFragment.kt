@@ -93,7 +93,7 @@ internal class TransactionListFragment :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.clear) {
-            AlertDialog.Builder(context!!)
+            AlertDialog.Builder(requireContext())
                 .setTitle(R.string.chucker_clear)
                 .setMessage(R.string.chucker_clear_http_confirmation)
                 .setPositiveButton(
