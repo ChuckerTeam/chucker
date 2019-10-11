@@ -17,7 +17,6 @@ package com.chuckerteam.chucker.internal.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 
 abstract class BaseChuckerActivity : AppCompatActivity() {
