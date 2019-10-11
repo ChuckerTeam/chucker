@@ -27,7 +27,10 @@ import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import com.google.android.material.tabs.TabLayout
 
-class MainActivity : BaseChuckerActivity(), TransactionAdapter.TransactionClickListListener, ErrorAdapter.ErrorClickListListener {
+class MainActivity :
+    BaseChuckerActivity(),
+    TransactionAdapter.TransactionClickListListener,
+    ErrorAdapter.ErrorClickListListener {
     private lateinit var viewPager: ViewPager
 
     private val applicationName: CharSequence
