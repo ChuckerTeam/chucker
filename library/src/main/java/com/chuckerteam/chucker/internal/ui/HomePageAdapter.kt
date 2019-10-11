@@ -9,9 +9,6 @@ import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment
 import java.lang.ref.WeakReference
 
-/**
- * @author Olivier Perez
- */
 internal class HomePageAdapter(context: Context, fragmentManager: FragmentManager) :
     FragmentStatePagerAdapter(fragmentManager) {
     private val context: WeakReference<Context> = WeakReference(context)
