@@ -40,6 +40,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
     private lateinit var adapter: PagerAdapter
 
+    private var selectedTabPosition = 0
     private var transactionId: Long = 0
     private var transaction: HttpTransaction? = null
 
@@ -61,7 +62,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         tabLayout.setupWithViewPager(viewPager)
 
-        transactionId = intent.getLongExtra(ARG_TRANSACTION_ID, 0)
+        transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
     }
 
     override fun onResume() {
@@ -149,14 +150,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     companion object {
+        private const val EXTRA_TRANSACTION_ID = "transaction_id"
 
-        private const val ARG_TRANSACTION_ID = "transaction_id"
-        private var selectedTabPosition = 0
-
-        @JvmStatic
         fun start(context: Context, transactionId: Long) {
             val intent = Intent(context, TransactionActivity::class.java)
-            intent.putExtra(ARG_TRANSACTION_ID, transactionId)
+            intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
             context.startActivity(intent)
         }
     }

@@ -15,7 +15,6 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.text.DateFormat
 
-private const val EXTRA_THROWABLE_ID = "EXTRA_THROWABLE_ID"
 private const val TEXT_PLAIN = "text/plain"
 
 internal class ErrorActivity : AppCompatActivity() {
@@ -105,11 +104,13 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(context: Context, throwableId: Long) =
-            Intent(context, ErrorActivity::class.java).apply {
-                putExtra(EXTRA_THROWABLE_ID, throwableId)
-            }
+        private const val EXTRA_THROWABLE_ID = "transaction_id"
+
+        fun start(context: Context, throwableId: Long) {
+            val intent = Intent(context, ErrorActivity::class.java)
+            intent.putExtra(EXTRA_THROWABLE_ID, throwableId)
+            context.startActivity(intent)
+        }
     }
 
     private val RecordedThrowable.formattedDate: String
