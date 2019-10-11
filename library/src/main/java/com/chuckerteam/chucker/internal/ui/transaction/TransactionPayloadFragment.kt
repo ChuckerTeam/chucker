@@ -19,7 +19,6 @@ import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Html
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -37,9 +36,9 @@ private const val ARG_TYPE = "type"
 
 internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
 
-    internal lateinit var headers: TextView
-    internal lateinit var body: TextView
-    internal lateinit var binaryData: ImageView
+    private lateinit var headers: TextView
+    private lateinit var body: TextView
+    private lateinit var binaryData: ImageView
 
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
@@ -57,13 +56,12 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false)
-        headers = view.findViewById<TextView>(R.id.headers)
-        body = view.findViewById<TextView>(R.id.body)
-        binaryData = view.findViewById<ImageView>(R.id.image)
-        return view
-    }
+    ): View? =
+        inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
+            headers = findViewById(R.id.headers)
+            body = findViewById(R.id.body)
+            binaryData = findViewById(R.id.image)
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,7 +74,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if ((type == TYPE_RESPONSE || type == TYPE_REQUEST) && !TextUtils.isEmpty(body.text)) {
+        if ((type == TYPE_RESPONSE || type == TYPE_REQUEST) && body.text.isNotEmpty()) {
             val searchMenuItem = menu.findItem(R.id.search)
             searchMenuItem.isVisible = true
             val searchView = searchMenuItem.actionView as SearchView
@@ -99,7 +97,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     }
 
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {
-        headers.visibility = if (TextUtils.isEmpty(headersString)) View.GONE else View.VISIBLE
+        headers.visibility = if (headersString.isEmpty()) View.GONE else View.VISIBLE
         headers.text = Html.fromHtml(headersString)
         val isImageData = image != null
         if (!isPlainText && !isImageData) {
@@ -117,9 +115,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         activity?.invalidateOptionsMenu()
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean {
-        return false
-    }
+    override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank())
@@ -151,10 +147,8 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             }
         }
 
-        override fun onPostExecute(result: UiPayload) {
-            with(result) {
-                fragment.setBody(headersString, bodyString, isPlainText, image)
-            }
+        override fun onPostExecute(result: UiPayload) = with(result) {
+            fragment.setBody(headersString, bodyString, isPlainText, image)
         }
     }
 

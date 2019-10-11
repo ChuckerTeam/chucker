@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chuckerteam.chucker.internal.ui.transaction;
+package com.chuckerteam.chucker.internal.ui.transaction
 
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction;
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 
-interface TransactionFragment {
-    void transactionUpdated(HttpTransaction transaction);
+internal interface TransactionFragment {
+    fun transactionUpdated(transaction: HttpTransaction)
 }
