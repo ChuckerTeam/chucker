@@ -34,7 +34,6 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
-import java.lang.ref.WeakReference
 
 internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
@@ -107,7 +106,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        adapter = PagerAdapter(applicationContext, supportFragmentManager)
+        adapter = PagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
@@ -127,8 +126,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
         startActivity(Intent.createChooser(sendIntent, null))
     }
 
-    internal inner class PagerAdapter(context: Context, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-        private val context: WeakReference<Context> = WeakReference(context)
+    internal inner class PagerAdapter(fm: FragmentManager) :
+        FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val titleResIds = intArrayOf(
             R.string.chucker_overview,
             R.string.chucker_request,
@@ -145,7 +144,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         override fun getCount(): Int = titleResIds.size
 
         override fun getPageTitle(position: Int): CharSequence? =
-            context.get()?.getString(titleResIds[position])
+            this@TransactionActivity.getString(titleResIds[position])
     }
 
     companion object {

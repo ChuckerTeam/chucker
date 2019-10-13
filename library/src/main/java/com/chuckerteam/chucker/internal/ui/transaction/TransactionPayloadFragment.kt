@@ -18,7 +18,6 @@ package com.chuckerteam.chucker.internal.ui.transaction
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -27,6 +26,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -98,7 +98,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {
         headers.visibility = if (headersString.isEmpty()) View.GONE else View.VISIBLE
-        headers.text = Html.fromHtml(headersString)
+        headers.text = HtmlCompat.fromHtml(headersString, HtmlCompat.FROM_HTML_MODE_LEGACY)
         val isImageData = image != null
         if (!isPlainText && !isImageData) {
             body.text = context?.getString(R.string.chucker_body_omitted)
@@ -162,10 +162,8 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     companion object {
 
         const val TYPE_REQUEST = 0
-
         const val TYPE_RESPONSE = 1
 
-        @JvmStatic
         fun newInstance(type: Int): TransactionPayloadFragment {
             return TransactionPayloadFragment().apply {
                 arguments = Bundle().apply {
