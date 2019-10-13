@@ -95,7 +95,6 @@ internal class ErrorListFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
         fun newInstance() = ErrorListFragment()
     }
 }

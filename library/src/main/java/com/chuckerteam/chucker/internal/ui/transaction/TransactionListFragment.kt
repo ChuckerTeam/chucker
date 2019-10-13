@@ -138,7 +138,6 @@ internal class TransactionListFragment :
         TransactionActivity.start(requireActivity(), transactionId)
 
     companion object {
-        @JvmStatic
         fun newInstance(): TransactionListFragment {
             return TransactionListFragment()
         }
