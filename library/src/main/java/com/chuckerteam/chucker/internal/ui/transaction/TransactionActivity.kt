@@ -40,7 +40,6 @@ internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
     private lateinit var adapter: PagerAdapter
 
-    private var selectedTabPosition = 0
     private var transactionId: Long = 0
     private var transaction: HttpTransaction? = null
 
@@ -151,6 +150,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     companion object {
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
+        private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
             val intent = Intent(context, TransactionActivity::class.java)
