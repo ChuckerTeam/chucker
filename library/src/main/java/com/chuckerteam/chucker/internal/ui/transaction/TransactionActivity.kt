@@ -37,7 +37,7 @@ import com.google.android.material.tabs.TabLayout
 
 internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
-    private lateinit var adapter: PagerAdapter
+    private lateinit var adapter: TransactionPagerAdapter
 
     private var transactionId: Long = 0
     private var transaction: HttpTransaction? = null
@@ -106,7 +106,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        adapter = PagerAdapter(supportFragmentManager)
+        adapter = TransactionPagerAdapter(this, supportFragmentManager)
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
@@ -124,27 +124,6 @@ internal class TransactionActivity : BaseChuckerActivity() {
             type = "text/plain"
         }
         startActivity(Intent.createChooser(sendIntent, null))
-    }
-
-    internal inner class PagerAdapter(fm: FragmentManager) :
-        FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val titleResIds = intArrayOf(
-            R.string.chucker_overview,
-            R.string.chucker_request,
-            R.string.chucker_response
-        )
-
-        override fun getItem(position: Int): Fragment = when (position) {
-            0 -> TransactionOverviewFragment()
-            1 -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST)
-            2 -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE)
-            else -> throw IllegalArgumentException("no item")
-        }
-
-        override fun getCount(): Int = titleResIds.size
-
-        override fun getPageTitle(position: Int): CharSequence? =
-            this@TransactionActivity.getString(titleResIds[position])
     }
 
     companion object {
