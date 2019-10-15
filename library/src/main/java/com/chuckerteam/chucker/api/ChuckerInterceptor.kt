@@ -8,16 +8,16 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -52,44 +52,15 @@ class ChuckerInterceptor @JvmOverloads constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
-        return when {
-            httpFeature.enabled -> captureTransaction(request, chain)
-            else -> chain.proceed(request)
+        return if (httpFeature.enabled) {
+            captureTransaction(request, chain)
+        } else {
+            chain.proceed(request)
         }
     }
 
     private fun captureTransaction(request: Request, chain: Interceptor.Chain): Response {
-        val requestBody = request.body()
-        val transaction = HttpTransaction()
-        transaction.apply {
-            requestDate = System.currentTimeMillis()
-            method = request.method()
-            populateUrl(request.url().toString())
-            setRequestHeaders(request.headers())
-            requestContentType = requestBody?.contentType()?.toString()
-            requestContentLength = requestBody?.contentLength() ?: 0L
-        }
-
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
-        transaction.isRequestBodyPlainText = encodingIsSupported
-
-        if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
-            val buffer = source.buffer()
-            requestBody.writeTo(buffer)
-            var charset: Charset = UTF8
-            val contentType = requestBody.contentType()
-            if (contentType != null) {
-                charset = contentType.charset(UTF8) ?: UTF8
-            }
-            if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer, charset, maxContentLength)
-                transaction.requestBody = content
-            } else {
-                transaction.isResponseBodyPlainText = false
-            }
-        }
-
+        val transaction = captureRequest(request)
         collector.onRequestSent(transaction)
 
         val startNs = System.nanoTime()
@@ -137,22 +108,47 @@ class ChuckerInterceptor @JvmOverloads constructor(
                     return response
                 }
             }
-            if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
-                transaction.responseBody = content
-            } else {
-                transaction.isResponseBodyPlainText = false
-
-                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
-                    transaction.responseImageData = buffer.clone().readByteArray()
-                }
-            }
-            transaction.responseContentLength = buffer.size()
+            transaction.completeWithBody(buffer, charset)
         }
 
         collector.onResponseReceived(transaction)
 
         return response
+    }
+
+    private fun captureRequest(request: Request): HttpTransaction {
+        val requestBody = request.body()
+        val transaction = HttpTransaction()
+
+        transaction.apply {
+            requestDate = System.currentTimeMillis()
+            method = request.method()
+            populateUrl(request.url().toString())
+            setRequestHeaders(request.headers())
+            requestContentType = requestBody?.contentType()?.toString()
+            requestContentLength = requestBody?.contentLength() ?: 0L
+        }
+
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
+        transaction.isRequestBodyPlainText = encodingIsSupported
+
+        if (requestBody != null && encodingIsSupported) {
+            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
+            val buffer = source.buffer()
+            requestBody.writeTo(buffer)
+            var charset: Charset = UTF8
+            val contentType = requestBody.contentType()
+            if (contentType != null) {
+                charset = contentType.charset(UTF8) ?: UTF8
+            }
+            if (io.isPlaintext(buffer)) {
+                val content = io.readFromBuffer(buffer, charset, maxContentLength)
+                transaction.requestBody = content
+            } else {
+                transaction.isResponseBodyPlainText = false
+            }
+        }
+        return transaction
     }
 
     /** Overrides all the headers in [headersToRedact] with a `**` */
@@ -180,6 +176,20 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
         }
         return response.body()!!.source()
+    }
+
+    private fun HttpTransaction.completeWithBody(buffer: Buffer, charset: Charset) {
+        if (io.isPlaintext(buffer)) {
+            val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+            this.responseBody = content
+        } else {
+            this.isResponseBodyPlainText = false
+
+            if (this.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
+                this.responseImageData = buffer.clone().readByteArray()
+            }
+        }
+        this.responseContentLength = buffer.size()
     }
 
     companion object {

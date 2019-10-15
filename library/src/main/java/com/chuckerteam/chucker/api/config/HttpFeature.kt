@@ -8,9 +8,9 @@ import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment
 
 class HttpFeature(
-        override val enabled: Boolean,
-        val showNotification: Boolean,
-        val retentionPeriod: RetentionManager.Period
+    override val enabled: Boolean,
+    val showNotification: Boolean,
+    val retentionPeriod: RetentionManager.Period
 ) : Feature {
     override val name: Int = R.string.chucker_tab_network
 

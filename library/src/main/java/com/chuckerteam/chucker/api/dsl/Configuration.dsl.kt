@@ -42,7 +42,7 @@ class HttpFeatureBuilder {
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 
     fun build(): HttpFeature =
-            HttpFeature(enabled, showNotification, retentionPeriod)
+        HttpFeature(enabled, showNotification, retentionPeriod)
 }
 
 @ChuckerConfig
@@ -51,5 +51,5 @@ class ErrorsFeatureBuilder {
     var showNotification: Boolean = true
 
     fun build(): ErrorsFeature =
-            ErrorsFeature(enabled, showNotification)
+        ErrorsFeature(enabled, showNotification)
 }
