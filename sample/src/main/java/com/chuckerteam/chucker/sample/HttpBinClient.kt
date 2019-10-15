@@ -4,7 +4,6 @@ import android.content.Context
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
