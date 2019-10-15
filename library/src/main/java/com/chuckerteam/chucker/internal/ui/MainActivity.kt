@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
+import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.ui.error.ErrorActivity
 import com.chuckerteam.chucker.internal.ui.error.ErrorAdapter
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
@@ -53,11 +54,7 @@ class MainActivity :
         viewPager.addOnPageChangeListener(object : TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                if (position == 0) {
-                    Chucker.dismissTransactionsNotification(this@MainActivity)
-                } else {
-                    Chucker.dismissErrorsNotification(this@MainActivity)
-                }
+                FeatureManager.getAt(position).dismissNotification(this@MainActivity)
             }
         })
         consumeIntent(intent)
@@ -74,11 +71,7 @@ class MainActivity :
     private fun consumeIntent(intent: Intent) {
         // Get the screen to show, by default => HTTP
         val screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP)
-        if (screenToShow == Chucker.SCREEN_HTTP) {
-            viewPager.currentItem = HomePageAdapter.SCREEN_HTTP_INDEX
-        } else {
-            viewPager.currentItem = HomePageAdapter.SCREEN_ERROR_INDEX
-        }
+        viewPager.currentItem = FeatureManager.getPositionOf(screenToShow)
     }
 
     override fun onErrorClick(throwableId: Long, position: Int) {

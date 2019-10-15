@@ -11,12 +11,12 @@ class ChuckerApplication : Application() {
 
         configureChucker {
             http {
-                enabled = false
+                enabled = true
                 showNotification = true
                 retentionPeriod = RetentionManager.Period.ONE_HOUR
             }
             error {
-                enabled = false
+                enabled = true
             }
         }
     }
