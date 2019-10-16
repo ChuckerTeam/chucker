@@ -2,6 +2,7 @@
 <resources>
     <color name="chucker_color_primary">#40c4ff</color>
     <color name="chucker_color_background">#121212</color>
+    <color name="chucker_color_surface">#121212</color>
     <color name="chucker_color_secondary">#69f0ae</color>
     <color name="chucker_color_error">#cf6679</color>
     <color name="chucker_color_on_primary">#000000</color>

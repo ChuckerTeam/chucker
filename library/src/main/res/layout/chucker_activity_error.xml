@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
+            app:popupTheme="@style/Chucker.Theme">
 
             <TextView
                 android:id="@+id/toolbar_title"
