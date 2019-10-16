@@ -9,8 +9,8 @@
     <color name="chucker_primary_text_color">#ffffff</color>
     <color name="chucker_secondary_text_color">#000000</color>
 
-    <color name="chucker_status_default">#757575</color>
-    <color name="chucker_status_requested">#e0e0e0</color>
+    <color name="chucker_status_default">#e0e0e0</color>
+    <color name="chucker_status_requested">#757575</color>
     <color name="chucker_status_error">#e57373</color>
     <color name="chucker_status_500">#e53935</color>
     <color name="chucker_status_400">#ffb74d</color>
