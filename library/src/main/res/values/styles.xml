@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ Copyright (C) 2017 Jeff Gilfelt.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +15,16 @@
  -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Chucker.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/chucker_primary_color</item>
-        <item name="colorPrimaryDark">@color/chucker_primary_dark_color</item>
-        <item name="colorAccent">@color/chucker_secondary_color</item>
+        <item name="colorPrimary">@color/chucker_color_primary</item>
+        <item name="colorSecondary">@color/chucker_color_secondary</item>
+        <item name="android:colorBackground">@color/chucker_color_background</item>
+        <item name="colorSurface">@color/chucker_color_background</item>
+        <item name="colorError">@color/chucker_status_error</item>
+        <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
+        <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
+        <item name="colorOnBackground">@color/chucker_color_on_background</item>
+        <item name="colorOnSurface">@color/chucker_color_on_surface</item>
+        <item name="colorOnError">@color/chucker_color_on_error</item>
     </style>
 
     <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">

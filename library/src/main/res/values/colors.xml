@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Palette from
-    https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=01579B&secondary.color=00E676
-    -->
-    <color name="chucker_primary_color">#01579b</color>
-    <color name="chucker_primary_light_color">#4f83cc</color>
-    <color name="chucker_primary_dark_color">#002f6c</color>
-    <color name="chucker_secondary_color">#00e676</color>
-    <color name="chucker_secondary_light_color">#66ffa6</color>
-    <color name="chucker_secondary_dark_color">#00b248</color>
-    <color name="chucker_primary_text_color">#ffffff</color>
-    <color name="chucker_secondary_text_color">#000000</color>
+    <color name="chucker_color_primary">#01579b</color>
+    <color name="chucker_color_background">#ffffff</color>
+    <color name="chucker_color_secondary">#00e676</color>
+    <color name="chucker_color_error">#F44336</color>
+    <color name="chucker_color_on_primary">#000000</color>
+    <color name="chucker_color_on_secondary">#ffffff</color>
+    <color name="chucker_color_on_background">#000000</color>
+    <color name="chucker_color_on_surface">#000000</color>
+    <color name="chucker_color_on_error">#ffffff</color>
 
     <color name="chucker_status_default">#212121</color>
     <color name="chucker_status_requested">#9E9E9E</color>

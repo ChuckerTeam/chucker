@@ -90,7 +90,7 @@ public class NotificationHelper {
                     .setContentIntent(PendingIntent.getActivity(context, TRANSACTION_NOTIFICATION_ID, Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP), PendingIntent.FLAG_UPDATE_CURRENT))
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_notification)
-                    .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction.INSTANCE));
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
