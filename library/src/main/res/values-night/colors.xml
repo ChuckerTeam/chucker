@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chucker_primary_color">#01579b</color>
+    <color name="chucker_primary_light_color">#4f83cc</color>
+    <color name="chucker_primary_dark_color">#002f6c</color>
+    <color name="chucker_secondary_color">#00e676</color>
+    <color name="chucker_secondary_light_color">#66ffa6</color>
+    <color name="chucker_secondary_dark_color">#00b248</color>
+    <color name="chucker_primary_text_color">#ffffff</color>
+    <color name="chucker_secondary_text_color">#000000</color>
+
+    <color name="chucker_status_default">#212121</color>
+    <color name="chucker_status_requested">#9E9E9E</color>
+    <color name="chucker_status_error">#F44336</color>
+    <color name="chucker_status_500">#B71C1C</color>
+    <color name="chucker_status_400">#FF9800</color>
+    <color name="chucker_status_300">#0D47A1</color>
+</resources>

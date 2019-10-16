@@ -15,7 +15,7 @@
  ~ limitations under the License.
  -->
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Chucker.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Chucker.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/chucker_primary_color</item>
         <item name="colorPrimaryDark">@color/chucker_primary_dark_color</item>
         <item name="colorAccent">@color/chucker_secondary_color</item>
