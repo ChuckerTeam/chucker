@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="chucker_color_primary">#81d4fa</color>
+    <color name="chucker_color_primary_variant">#121212</color>
     <color name="chucker_color_background">#121212</color>
     <color name="chucker_color_surface">#121212</color>
     <color name="chucker_color_secondary">#69f0ae</color>

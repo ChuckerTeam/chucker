@@ -17,6 +17,7 @@
 
     <style name="Chucker.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/chucker_color_primary</item>
+        <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
         <item name="colorSecondary">@color/chucker_color_secondary</item>
         <item name="android:colorBackground">@color/chucker_color_background</item>
         <item name="colorSurface">@color/chucker_color_surface</item>
