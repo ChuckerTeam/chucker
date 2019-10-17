@@ -11,7 +11,10 @@ import android.text.style.UnderlineSpan
  *
  * @param search the text to highlight
  */
-fun String.highlightWithDefinedColors(search: String, backgroundColor: Int, foregroundColor: Int): CharSequence {
+fun String.highlightWithDefinedColors(
+        search: String,
+        backgroundColor: Int,
+        foregroundColor: Int): CharSequence {
     val startIndexes = indexesOf(this, search)
     return applyColoredSpannable(this, startIndexes, search.length, backgroundColor, foregroundColor)
 }
@@ -26,7 +29,10 @@ private fun indexesOf(text: String, search: String): List<Int> {
     return startPositions
 }
 
-private fun applyColoredSpannable(text: String, indexes: List<Int>, length: Int, backgroundColor: Int, foregroundColor: Int): SpannableStringBuilder {
+private fun applyColoredSpannable(
+        text: String, indexes: List<Int>,
+        length: Int, backgroundColor: Int,
+        foregroundColor: Int): SpannableStringBuilder {
     return indexes
             .fold(SpannableStringBuilder(text)) { builder, position ->
                 builder.setSpan(
