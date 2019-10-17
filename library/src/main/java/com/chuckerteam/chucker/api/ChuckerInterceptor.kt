@@ -107,7 +107,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
             responseContentType = responseBody?.contentType()?.toString()
             responseContentLength = responseBody?.contentLength() ?: 0L
             setResponseHeaders(filterHeaders(response.headers()))
-
         }
 
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
