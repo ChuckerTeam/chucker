@@ -15,7 +15,9 @@
  */
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,15 +28,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.highlight
-
-private const val ARG_TYPE = "type"
+import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
+
+    private var backgroundSpanColor: Int = Color.YELLOW
+    private var foregroundSpanColor: Int = Color.RED
 
     private lateinit var headers: TextView
     private lateinit var body: TextView
@@ -90,6 +94,12 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         populateUI()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_background_span_color)
+        foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
+    }
+
     private fun populateUI() {
         if (isAdded && transaction != null) {
             UiLoaderTask(this).execute(Pair(type, transaction!!))
@@ -119,7 +129,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank())
-            body.text = originalBody?.highlight(newText)
+            body.text = originalBody?.highlightWithDefinedColors(newText, backgroundSpanColor, foregroundSpanColor)
         else
             body.text = originalBody
         return true
@@ -160,6 +170,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     )
 
     companion object {
+        private const val ARG_TYPE = "type"
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1

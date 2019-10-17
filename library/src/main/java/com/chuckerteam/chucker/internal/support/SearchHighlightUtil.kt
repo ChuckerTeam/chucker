@@ -1,6 +1,5 @@
 package com.chuckerteam.chucker.internal.support
 
-import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
@@ -12,9 +11,9 @@ import android.text.style.UnderlineSpan
  *
  * @param search the text to highlight
  */
-fun String.highlight(search: String): CharSequence {
+fun String.highlightWithDefinedColors(search: String, backgroundColor: Int, foregroundColor: Int): CharSequence {
     val startIndexes = indexesOf(this, search)
-    return applySpannable(this, startIndexes, search.length)
+    return applyColoredSpannable(this, startIndexes, search.length, backgroundColor, foregroundColor)
 }
 
 private fun indexesOf(text: String, search: String): List<Int> {
@@ -27,27 +26,27 @@ private fun indexesOf(text: String, search: String): List<Int> {
     return startPositions
 }
 
-private fun applySpannable(text: String, indexes: List<Int>, length: Int): SpannableStringBuilder {
+private fun applyColoredSpannable(text: String, indexes: List<Int>, length: Int, backgroundColor: Int, foregroundColor: Int): SpannableStringBuilder {
     return indexes
-        .fold(SpannableStringBuilder(text)) { builder, position ->
-            builder.setSpan(
-                UnderlineSpan(),
-                position,
-                position + length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            builder.setSpan(
-                ForegroundColorSpan(Color.RED),
-                position,
-                position + length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            builder.setSpan(
-                BackgroundColorSpan(Color.YELLOW),
-                position,
-                position + length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            builder
-        }
+            .fold(SpannableStringBuilder(text)) { builder, position ->
+                builder.setSpan(
+                        UnderlineSpan(),
+                        position,
+                        position + length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                builder.setSpan(
+                        ForegroundColorSpan(foregroundColor),
+                        position,
+                        position + length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                builder.setSpan(
+                        BackgroundColorSpan(backgroundColor),
+                        position,
+                        position + length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                builder
+            }
 }
