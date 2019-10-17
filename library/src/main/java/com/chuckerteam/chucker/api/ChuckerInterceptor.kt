@@ -50,12 +50,14 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val requestBody = request.body()
 
         val transaction = HttpTransaction()
-        transaction.requestDate = System.currentTimeMillis()
-        transaction.method = request.method()
-        transaction.populateUrl(request.url().toString())
-        transaction.setRequestHeaders(request.headers())
-        transaction.requestContentType = requestBody?.contentType()?.toString()
-        transaction.requestContentLength = requestBody?.contentLength() ?: 0L
+        transaction.apply {
+            requestDate = System.currentTimeMillis()
+            method = request.method()
+            populateUrl(request.url().toString())
+            setRequestHeaders(request.headers())
+            requestContentType = requestBody?.contentType()?.toString()
+            requestContentLength = requestBody?.contentLength() ?: 0L
+        }
 
         val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
         transaction.isRequestBodyPlainText = encodingIsSupported
@@ -95,15 +97,18 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         // includes headers added later in the chain
         transaction.setRequestHeaders(filterHeaders(response.request().headers()))
-        transaction.responseDate = System.currentTimeMillis()
-        transaction.tookMs = tookMs
-        transaction.protocol = response.protocol().toString()
-        transaction.responseCode = response.code()
-        transaction.responseMessage = response.message()
+        transaction.apply {
+            responseDate = System.currentTimeMillis()
+            this.tookMs = tookMs
+            protocol = response.protocol().toString()
+            responseCode = response.code()
+            responseMessage = response.message()
 
-        transaction.responseContentType = responseBody?.contentType()?.toString()
-        transaction.responseContentLength = responseBody?.contentLength() ?: 0L
-        transaction.setResponseHeaders(filterHeaders(response.headers()))
+            responseContentType = responseBody?.contentType()?.toString()
+            responseContentLength = responseBody?.contentLength() ?: 0L
+            setResponseHeaders(filterHeaders(response.headers()))
+
+        }
 
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
