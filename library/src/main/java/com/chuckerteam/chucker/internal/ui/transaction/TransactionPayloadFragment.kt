@@ -33,9 +33,9 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
 
 internal class TransactionPayloadFragment :
-        Fragment(R.layout.chucker_fragment_transaction_payload),
-        TransactionFragment,
-        SearchView.OnQueryTextListener {
+    Fragment(R.layout.chucker_fragment_transaction_payload),
+    TransactionFragment,
+    SearchView.OnQueryTextListener {
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -123,8 +123,7 @@ internal class TransactionPayloadFragment :
     private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
         AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
 
-        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
-        UiPayload {
+        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>): UiPayload {
             val (type, transaction) = params[0]
             return if (type == TYPE_REQUEST) {
                 UiPayload(
