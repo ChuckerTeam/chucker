@@ -34,7 +34,8 @@ import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
 
 internal class TransactionPayloadFragment :
         Fragment(R.layout.chucker_fragment_transaction_payload),
-        TransactionFragment, SearchView.OnQueryTextListener {
+        TransactionFragment,
+        SearchView.OnQueryTextListener {
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
