@@ -21,10 +21,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 
-internal class TransactionOverviewFragment : Fragment(), TransactionFragment {
+class TransactionOverviewFragment : Fragment() {
+
     private lateinit var url: TextView
     private lateinit var method: TextView
     private lateinit var protocol: TextView
@@ -37,43 +39,39 @@ internal class TransactionOverviewFragment : Fragment(), TransactionFragment {
     private lateinit var requestSize: TextView
     private lateinit var responseSize: TextView
     private lateinit var totalSize: TextView
-
-    private var transaction: HttpTransaction? = null
+    private lateinit var viewModel: TransactionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false).apply {
-            url = findViewById(R.id.url)
-            method = findViewById(R.id.method)
-            protocol = findViewById(R.id.protocol)
-            status = findViewById(R.id.status)
-            response = findViewById(R.id.response)
-            ssl = findViewById(R.id.ssl)
-            requestTime = findViewById(R.id.request_time)
-            responseTime = findViewById(R.id.response_time)
-            duration = findViewById(R.id.duration)
-            requestSize = findViewById(R.id.request_size)
-            responseSize = findViewById(R.id.response_size)
-            totalSize = findViewById(R.id.total_size)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
+            .also {
+                url = it.findViewById(R.id.url)
+                method = it.findViewById(R.id.method)
+                protocol = it.findViewById(R.id.protocol)
+                status = it.findViewById(R.id.status)
+                response = it.findViewById(R.id.response)
+                ssl = it.findViewById(R.id.ssl)
+                requestTime = it.findViewById(R.id.request_time)
+                responseTime = it.findViewById(R.id.response_time)
+                duration = it.findViewById(R.id.duration)
+                requestSize = it.findViewById(R.id.request_size)
+                responseSize = it.findViewById(R.id.response_size)
+                totalSize = it.findViewById(R.id.total_size)
+            }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        populateUI()
-    }
-
-    override fun transactionUpdated(transaction: HttpTransaction) {
-        this.transaction = transaction
-        populateUI()
-    }
-
-    private fun populateUI() {
-        if (isAdded) {
-            transaction?.let { transaction ->
+        viewModel.transaction.observe(
+            this,
+            Observer { transaction ->
                 url.text = transaction.url
                 method.text = transaction.method
                 protocol.text = transaction.protocol
@@ -87,6 +85,6 @@ internal class TransactionOverviewFragment : Fragment(), TransactionFragment {
                 responseSize.text = transaction.responseSizeString
                 totalSize.text = transaction.totalSizeString
             }
-        }
+        )
     }
 }
