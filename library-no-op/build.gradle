@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion rootProject.compileSdkVersion
 
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "com.github.ChuckerTeam.Chucker.library-no-op"]
+    }
+
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
     }
