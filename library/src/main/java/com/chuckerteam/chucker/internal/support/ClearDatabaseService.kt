@@ -8,8 +8,7 @@ import java.io.Serializable
 internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME) {
 
     override fun onHandleIntent(intent: Intent?) {
-        System.err.println("onHandleIntent")
-        when (val a = intent?.getSerializableExtra(EXTRA_ITEM_TO_CLEAR)) {
+        when (intent?.getSerializableExtra(EXTRA_ITEM_TO_CLEAR)) {
             is ClearAction.Transaction -> {
                 RepositoryProvider.transaction().deleteAllTransactions()
                 NotificationHelper.clearBuffer()
