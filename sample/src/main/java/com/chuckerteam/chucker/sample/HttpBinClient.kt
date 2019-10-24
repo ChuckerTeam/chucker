@@ -25,8 +25,7 @@ class HttpBinClient(
 
     private val chuckerInterceptor = ChuckerInterceptor(
         context = context,
-        collector = collector,
-        maxContentLength = 250000L
+        collector = collector
     )
 
     private val httpClient =

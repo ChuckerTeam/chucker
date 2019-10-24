@@ -78,32 +78,22 @@ The main Chucker activity is launched in its own task, allowing it to be display
 
 ## Configure 🎨
 
-You can customize chucker providing an instance of a `ChuckerCollector`:
+You can customize Chucker by calling the DSL `configureChucker`.
+It may be used to disable one of the features (HTTP or Errors).
 
 ```kotlin
-// Create the Collector
-val chuckerCollector = ChuckerCollector(
-        context = this,
-        // Toggles visibility of the push notification
-        showNotification = true,
-        // Allows to customize the retention period of collected data
+configureChucker {
+    http {
+        enabled = true
+        showNotification = true
         retentionPeriod = RetentionManager.Period.ONE_HOUR
-)
-
-// Create the Interceptor
-val chuckerInterceptor = ChuckerInterceptor(
-        context = this,
-        // The previously created Collector
-        collector = chuckerCollector,
-        // The max body content length, after this responses will be truncated.
-        maxContentLength = 250000L,
-        // List of headers to obfuscate in the Chucker UI
-        headersToRedact = listOf("Auth-Token"))
-
-// Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
-val client = OkHttpClient.Builder()
-        .addInterceptor(chuckerInterceptor)
-        .build()
+        maxContentLength = 250000L
+        headersToRedact = listOf("Auth-Token")
+    }
+    error {
+        enabled = true
+    }
+}
 ```
 
 ### Throwables ☄️
