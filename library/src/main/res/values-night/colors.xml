@@ -7,7 +7,7 @@
     <color name="chucker_color_secondary">#69f0ae</color>
     <color name="chucker_color_error">#cf6679</color>
     <color name="chucker_color_on_primary">#000000</color>
-    <color name="chucker_color_on_secondary">#ffffff</color>
+    <color name="chucker_color_on_secondary">#000000</color>
     <color name="chucker_color_on_background">#ffffff</color>
     <color name="chucker_color_on_surface">#ffffff</color>
     <color name="chucker_color_on_error">#000000</color>
