@@ -44,7 +44,7 @@ class NotificationHelper(val context: Context) {
                 NotificationChannel(
                     CHANNEL_ID,
                     context.getString(R.string.chucker_notification_category),
-                    NotificationManager.IMPORTANCE_LOW
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
             )
         }
