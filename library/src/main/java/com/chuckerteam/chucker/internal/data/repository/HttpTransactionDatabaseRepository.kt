@@ -11,35 +11,37 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     private val executor: Executor = Executors.newSingleThreadExecutor()
 
+    private val transcationDao get() = database.transactionDao()
+
     override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
-        return database.transactionDao().getFilteredTuples("$code%", pathQuery)
+        return transcationDao.getFilteredTuples("$code%", pathQuery)
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction> {
-        return database.transactionDao().getById(transactionId)
+        return transcationDao.getById(transactionId)
     }
 
     override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {
-        return database.transactionDao().getSortedTuples()
+        return transcationDao.getSortedTuples()
     }
 
     override fun deleteAllTransactions() {
-        executor.execute { database.transactionDao().deleteAll() }
+        executor.execute { transcationDao.deleteAll() }
     }
 
     override fun insertTransaction(transaction: HttpTransaction) {
         executor.execute {
-            val id = database.transactionDao().insert(transaction)
+            val id = transcationDao.insert(transaction)
             transaction.id = id ?: 0
         }
     }
 
     override fun updateTransaction(transaction: HttpTransaction): Int {
-        return database.transactionDao().update(transaction)
+        return transcationDao.update(transaction)
     }
 
     override fun deleteOldTransactions(threshold: Long) {
-        executor.execute { database.transactionDao().deleteBefore(threshold) }
+        executor.execute { transcationDao.deleteBefore(threshold) }
     }
 }
