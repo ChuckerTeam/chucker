@@ -113,7 +113,7 @@ Chucker supports also collecting and displaying **Throwables** of your applicati
 ```kotlin
 try {
     // Do something risky
-} catch (IOException exception) {
+} catch (exception: IOException) {
     chuckerCollector.onError("TAG", exception)
 }
 ```
@@ -127,8 +127,8 @@ It is intended for **use during development**, and not in release builds or othe
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
 ```kotlin
-interceptor.redactHeader("Auth-Token");
-interceptor.redactHeader("User-Session");
+interceptor.redactHeader("Auth-Token")
+interceptor.redactHeader("User-Session")
 ```
 
 ## Migrating 🚗
