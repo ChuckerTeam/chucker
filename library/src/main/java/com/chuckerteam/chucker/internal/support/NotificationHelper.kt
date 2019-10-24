@@ -26,7 +26,6 @@ class NotificationHelper(val context: Context) {
         private val transactionBuffer = LongSparseArray<HttpTransaction>()
         private val transactionIdsSet = HashSet<Long>()
 
-        @JvmStatic
         fun clearBuffer() {
             synchronized(transactionBuffer) {
                 transactionBuffer.clear()
@@ -44,7 +43,7 @@ class NotificationHelper(val context: Context) {
                 NotificationChannel(
                     CHANNEL_ID,
                     context.getString(R.string.chucker_notification_category),
-                    NotificationManager.IMPORTANCE_LOW
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
             )
         }
