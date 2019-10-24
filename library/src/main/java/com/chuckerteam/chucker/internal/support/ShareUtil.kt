@@ -26,7 +26,8 @@ private fun share(
     activity: AppCompatActivity,
     textToShare: String,
     shareTitle: String? = null,
-    shareSubject: String? = null) {
+    shareSubject: String? = null
+) {
     activity.startActivity(
         ShareCompat.IntentBuilder.from(activity)
             .setType(MIME_TYPE)
