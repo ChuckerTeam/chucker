@@ -68,7 +68,7 @@ class NotificationHelper(val context: Context) {
 
     internal fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
-        if (!BaseChuckerActivity.isInForeground()) {
+        if (!BaseChuckerActivity.isInForeground) {
             val builder =
                 NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentIntent(
@@ -111,7 +111,7 @@ class NotificationHelper(val context: Context) {
     }
 
     internal fun show(throwable: RecordedThrowable) {
-        if (!BaseChuckerActivity.isInForeground()) {
+        if (!BaseChuckerActivity.isInForeground) {
             val builder =
                 NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentIntent(
