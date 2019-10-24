@@ -29,6 +29,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.shareTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
 
@@ -80,11 +81,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.share_text -> {
-            share(FormatUtils.getShareText(this, transaction!!))
+            shareTransaction(FormatUtils.getShareText(this, transaction!!))
             true
         }
         R.id.share_curl -> {
-            share(FormatUtils.getShareCurlCommand(transaction!!))
+            shareTransaction(FormatUtils.getShareCurlCommand(transaction!!))
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -112,15 +113,6 @@ internal class TransactionActivity : BaseChuckerActivity() {
             }
         })
         viewPager.currentItem = selectedTabPosition
-    }
-
-    private fun share(content: String) {
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, content)
-            type = "text/plain"
-        }
-        startActivity(Intent.createChooser(sendIntent, null))
     }
 
     companion object {
