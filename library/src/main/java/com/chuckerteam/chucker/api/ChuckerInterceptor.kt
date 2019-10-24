@@ -8,16 +8,16 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -27,24 +27,17 @@ private const val MAX_BLOB_SIZE = 1000_000L
  *
  * @param context An Android [Context]
  * @param collector A [ChuckerCollector] to customize data retention
- * @param maxContentLength The maximum length for request and response content
- * before they are truncated. Warning: setting this value too high may cause unexpected
- * results.
- * @param headersToRedact List of headers that you want to redact. They will be not be shown in
- * the ChuckerUI but will be replaced with a `**`.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
-    private val collector: ChuckerCollector = ChuckerCollector(context),
-    private val maxContentLength: Long = 250000L,
-    private val headersToRedact: MutableSet<String> = mutableSetOf()
+    private val collector: ChuckerCollector = ChuckerCollector(context)
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
     private val httpFeature: HttpFeature = FeatureManager.find()
 
     fun redactHeader(name: String) = apply {
-        headersToRedact.add(name)
+        httpFeature.headersToRedact.add(name)
     }
 
     @Throws(IOException::class)
@@ -142,7 +135,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 charset = contentType.charset(UTF8) ?: UTF8
             }
             if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer, charset, maxContentLength)
+                val content = io.readFromBuffer(buffer, charset, httpFeature.maxContentLength)
                 transaction.requestBody = content
             } else {
                 transaction.isResponseBodyPlainText = false
@@ -151,11 +144,11 @@ class ChuckerInterceptor @JvmOverloads constructor(
         return transaction
     }
 
-    /** Overrides all the headers in [headersToRedact] with a `**` */
+    /** Overrides all the headers in [HttpFeature.headersToRedact] with a `**` */
     private fun filterHeaders(headers: Headers): Headers {
         val builder = headers.newBuilder()
         for (name in headers.names()) {
-            if (name in headersToRedact) {
+            if (name in httpFeature.headersToRedact) {
                 builder.set(name, "**")
             }
         }
@@ -168,8 +161,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
     @Throws(IOException::class)
     private fun getNativeSource(response: Response): BufferedSource {
         if (io.bodyIsGzipped(response.headers().get("Content-Encoding"))) {
-            val source = response.peekBody(maxContentLength).source()
-            if (source.buffer().size() < maxContentLength) {
+            val source = response.peekBody(httpFeature.maxContentLength).source()
+            if (source.buffer().size() < httpFeature.maxContentLength) {
                 return io.getNativeSource(source, true)
             } else {
                 Log.w(LOG_TAG, "gzip encoded response was too long")
@@ -180,7 +173,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     private fun HttpTransaction.completeWithBody(buffer: Buffer, charset: Charset) {
         if (io.isPlaintext(buffer)) {
-            val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+            val content = io.readFromBuffer(buffer.clone(), charset, httpFeature.maxContentLength)
             this.responseBody = content
         } else {
             this.isResponseBodyPlainText = false

@@ -38,11 +38,32 @@ class ChuckerConfigBuilder {
 @ChuckerConfig
 class HttpFeatureBuilder {
     var enabled: Boolean = true
+    /**
+     * Control whether a notification is shown while HTTP activity is recorded.
+     * The default is true.
+     */
     var showNotification: Boolean = true
+
+    /**
+     * Set the retention period for HTTP transaction data captured by this collector.
+     * The default is one week.
+     */
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 
+    /**
+     * The maximum length for request and response content before they are truncated.
+     * Warning: setting this value too high may cause unexpected results.
+     */
+    var maxContentLength: Long = 250000L
+
+    /**
+     * List of headers that you want to redact. They will be not be shown in
+     * the ChuckerUI but will be replaced with a `**`.
+     */
+    var headersToRedact: MutableSet<String> = mutableSetOf()
+
     fun build(): HttpFeature =
-        HttpFeature(enabled, showNotification, retentionPeriod)
+        HttpFeature(enabled, showNotification, retentionPeriod, maxContentLength, headersToRedact)
 }
 
 @ChuckerConfig
