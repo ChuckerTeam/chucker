@@ -29,7 +29,7 @@ private fun share(
         shareSubject: String? = null) {
     activity.startActivity(
             ShareCompat.IntentBuilder.from(activity)
-                    .setType(INTENT_TYPE)
+                    .setType(MIME_TYPE)
                     .setChooserTitle(shareTitle)
                     .setSubject(shareSubject)
                     .setText(textToShare)
@@ -37,4 +37,4 @@ private fun share(
     )
 }
 
-private const val INTENT_TYPE = "text/plain"
+private const val MIME_TYPE = "text/plain"
