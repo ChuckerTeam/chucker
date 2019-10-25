@@ -83,12 +83,14 @@ internal class ErrorActivity : AppCompatActivity() {
             throwable.message,
             throwable.content
         )
-        ShareCompat.IntentBuilder.from(this)
-            .setType(MIME_TYPE)
-            .setChooserTitle(getString(R.string.chucker_share_transaction_title))
-            .setSubject(getString(R.string.chucker_share_error_subject))
-            .setText(throwableDetailsText)
-            .createChooserIntent()
+        startActivity(
+            ShareCompat.IntentBuilder.from(this)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+                .setSubject(getString(R.string.chucker_share_error_subject))
+                .setText(throwableDetailsText)
+                .createChooserIntent()
+        )
     }
 
     private fun populateUI(throwable: RecordedThrowable) {
