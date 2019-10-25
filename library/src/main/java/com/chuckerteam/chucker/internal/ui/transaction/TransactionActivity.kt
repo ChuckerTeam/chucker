@@ -23,13 +23,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FormatUtils
-import com.chuckerteam.chucker.internal.support.shareTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
 
@@ -81,11 +81,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.share_text -> {
-            shareTransaction(FormatUtils.getShareText(this, transaction!!))
+            share(FormatUtils.getShareText(this, transaction!!))
             true
         }
         R.id.share_curl -> {
-            shareTransaction(FormatUtils.getShareCurlCommand(transaction!!))
+            share(FormatUtils.getShareCurlCommand(transaction!!))
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -115,7 +115,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewPager.currentItem = selectedTabPosition
     }
 
+    private fun share(transactionDetailsText: String) {
+        startActivity(
+            ShareCompat.IntentBuilder.from(this)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_error_title))
+                .setSubject(getString(R.string.chucker_share_transaction_subject))
+                .setText(transactionDetailsText)
+                .createChooserIntent()
+        )
+    }
+
     companion object {
+        private const val MIME_TYPE = "text/plain"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 

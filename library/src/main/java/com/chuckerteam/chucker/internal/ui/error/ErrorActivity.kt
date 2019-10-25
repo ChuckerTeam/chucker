@@ -8,11 +8,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.shareError
 import java.text.DateFormat
 
 internal class ErrorActivity : AppCompatActivity() {
@@ -75,7 +75,7 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     private fun share(throwable: RecordedThrowable) {
-        val text = getString(
+        val throwableDetailsText = getString(
             R.string.chucker_share_error_content,
             throwable.formattedDate,
             throwable.clazz,
@@ -83,7 +83,12 @@ internal class ErrorActivity : AppCompatActivity() {
             throwable.message,
             throwable.content
         )
-        shareError(text)
+        ShareCompat.IntentBuilder.from(this)
+            .setType(MIME_TYPE)
+            .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+            .setSubject(getString(R.string.chucker_share_error_subject))
+            .setText(throwableDetailsText)
+            .createChooserIntent()
     }
 
     private fun populateUI(throwable: RecordedThrowable) {
@@ -95,6 +100,7 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val MIME_TYPE = "text/plain"
         private const val EXTRA_THROWABLE_ID = "transaction_id"
 
         fun start(context: Context, throwableId: Long) {
