@@ -20,9 +20,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -30,12 +30,15 @@ import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
-import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
 
 internal class TransactionPayloadFragment :
-    Fragment(R.layout.chucker_fragment_transaction_payload),
+    Fragment(),
     TransactionFragment,
     SearchView.OnQueryTextListener {
+
+    private lateinit var headers: TextView
+    private lateinit var body: TextView
+    private lateinit var binaryData: ImageView
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -51,6 +54,17 @@ internal class TransactionPayloadFragment :
         retainInstance = true
         setHasOptionsMenu(true)
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
+            headers = findViewById(R.id.headers)
+            body = findViewById(R.id.body)
+            binaryData = findViewById(R.id.image)
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
