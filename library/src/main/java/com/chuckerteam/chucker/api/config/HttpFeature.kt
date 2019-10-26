@@ -16,7 +16,7 @@ class HttpFeature(
 ) : Feature {
     override val name: Int = R.string.chucker_tab_network
 
-    override val tag: Int = Chucker.SCREEN_ERROR
+    override val tag: Int = Chucker.SCREEN_HTTP
 
     override fun newFragment(): Fragment {
         return TransactionListFragment.newInstance()
