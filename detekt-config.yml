@@ -11,6 +11,9 @@ complexity:
   ComplexCondition:
     active: true
     threshold: 5
+  TooManyFunctions:
+    active: true
+    ignoreOverridden: true
 
 style:
   ReturnCount:
