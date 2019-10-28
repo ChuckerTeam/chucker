@@ -86,7 +86,7 @@ internal class ErrorActivity : AppCompatActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+                .setChooserTitle(getString(R.string.chucker_share_error_title))
                 .setSubject(getString(R.string.chucker_share_error_subject))
                 .setText(throwableDetailsText)
                 .createChooserIntent()

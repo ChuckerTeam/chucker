@@ -119,7 +119,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.chucker_share_error_title))
+                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
                 .setSubject(getString(R.string.chucker_share_transaction_subject))
                 .setText(transactionDetailsText)
                 .createChooserIntent()
