@@ -23,6 +23,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
@@ -114,16 +115,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewPager.currentItem = selectedTabPosition
     }
 
-    private fun share(content: String) {
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, content)
-            type = "text/plain"
-        }
-        startActivity(Intent.createChooser(sendIntent, null))
+    private fun share(transactionDetailsText: String) {
+        startActivity(
+            ShareCompat.IntentBuilder.from(this)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+                .setSubject(getString(R.string.chucker_share_transaction_subject))
+                .setText(transactionDetailsText)
+                .createChooserIntent()
+        )
     }
 
     companion object {
+        private const val MIME_TYPE = "text/plain"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 

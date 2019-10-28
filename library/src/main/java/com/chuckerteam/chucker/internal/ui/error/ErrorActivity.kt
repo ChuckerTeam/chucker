@@ -75,7 +75,7 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     private fun share(throwable: RecordedThrowable) {
-        val text = getString(
+        val throwableDetailsText = getString(
             R.string.chucker_share_error_content,
             throwable.formattedDate,
             throwable.clazz,
@@ -83,12 +83,12 @@ internal class ErrorActivity : AppCompatActivity() {
             throwable.message,
             throwable.content
         )
-
         startActivity(
             ShareCompat.IntentBuilder.from(this)
-                .setType(TEXT_PLAIN)
-                .setSubject(getString(R.string.chucker_share_error_title))
-                .setText(text)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_error_title))
+                .setSubject(getString(R.string.chucker_share_error_subject))
+                .setText(throwableDetailsText)
                 .createChooserIntent()
         )
     }
@@ -102,8 +102,8 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val MIME_TYPE = "text/plain"
         private const val EXTRA_THROWABLE_ID = "transaction_id"
-        private const val TEXT_PLAIN = "text/plain"
 
         fun start(context: Context, throwableId: Long) {
             val intent = Intent(context, ErrorActivity::class.java)
