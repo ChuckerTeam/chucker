@@ -17,7 +17,7 @@ Chuck.getLaunchIntent(context)
 now you will call
 
 ```kotlin
-Chucker.getLaunchIntent(context)
+Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP)
 ```
 
 ## 2. Package name changes
