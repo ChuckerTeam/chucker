@@ -16,6 +16,7 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -35,9 +36,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.google.android.material.snackbar.Snackbar
 
 internal class TransactionListFragment :
     Fragment(),
@@ -49,6 +53,8 @@ internal class TransactionListFragment :
     private lateinit var adapter: TransactionAdapter
     private lateinit var dataSource: LiveData<List<HttpTransactionTuple>>
     private lateinit var tutorialView: View
+
+    private var transactions: List<HttpTransaction> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +88,13 @@ internal class TransactionListFragment :
         dataSource.observe(this, this)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        RepositoryProvider.transaction().getAllTransactions()
+                .observe(this, Observer { transactions = it })
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chucker_transactions_list, menu)
         val searchMenuItem = menu.findItem(R.id.search)
@@ -92,21 +105,41 @@ internal class TransactionListFragment :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.clear) {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.chucker_clear)
-                .setMessage(R.string.chucker_clear_http_confirmation)
-                .setPositiveButton(
-                    R.string.chucker_clear
-                ) { _, _ ->
-                    RepositoryProvider.transaction().deleteAllTransactions()
-                    NotificationHelper.clearBuffer()
+        return when (item.itemId) {
+            R.id.clear -> {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.chucker_clear)
+                        .setMessage(R.string.chucker_clear_http_confirmation)
+                        .setPositiveButton(
+                                R.string.chucker_clear
+                        ) { _, _ ->
+                            RepositoryProvider.transaction().deleteAllTransactions()
+                            NotificationHelper.clearBuffer()
+                        }
+                        .setNegativeButton(R.string.chucker_cancel, null)
+                        .show()
+                true
+            }
+            R.id.export -> {
+                if (transactions.isEmpty()) {
+                    view?.let { Snackbar.make(it, R.string.chucker_export_empty_text, Snackbar.LENGTH_SHORT).show() }
+                } else {
+                    AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.chucker_export)
+                            .setMessage(R.string.chucker_export_http_confirmation)
+                            .setPositiveButton(R.string.chucker_export) { _, _ ->
+                                share(transactions.joinToString(
+                                        separator = "\n${getString(R.string.chucker_export_separator)}\n",
+                                        prefix = "${getString(R.string.chucker_export_prefix)}\n",
+                                        postfix = "\n${getString(R.string.chucker_export_postfix)}\n"
+                                ) { "\n${FormatUtils.getShareText(context, it)}\n" })
+                            }
+                            .setNegativeButton(R.string.chucker_cancel, null)
+                            .show()
                 }
-                .setNegativeButton(R.string.chucker_cancel, null)
-                .show()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -136,6 +169,18 @@ internal class TransactionListFragment :
 
     override fun onTransactionClick(transactionId: Long, position: Int) =
         TransactionActivity.start(requireActivity(), transactionId)
+
+    private fun share(content: String) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TITLE, "chucker_export")
+            putExtra(Intent.EXTRA_SUBJECT, "chucker_export")
+            putExtra(Intent.EXTRA_TEXT, content)
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(sendIntent, null))
+    }
+
 
     companion object {
         fun newInstance(): TransactionListFragment {

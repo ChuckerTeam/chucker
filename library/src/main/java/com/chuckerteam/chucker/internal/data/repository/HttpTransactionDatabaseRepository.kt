@@ -22,6 +22,10 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         return transcationDao.getById(transactionId)
     }
 
+    override fun getAllTransactions(): LiveData<List<HttpTransaction>> {
+        return transcationDao.getAll()
+    }
+
     override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {
         return transcationDao.getSortedTuples()
     }
