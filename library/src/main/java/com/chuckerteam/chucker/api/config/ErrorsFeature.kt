@@ -9,10 +9,10 @@ import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment
 class ErrorsFeature(
     override val enabled: Boolean,
     val showNotification: Boolean
-) : Feature {
+) : TabFeature {
     override val name: Int = R.string.chucker_tab_errors
 
-    override val tag: Int = Chucker.SCREEN_ERROR
+    override val id: Int = Chucker.SCREEN_ERROR
 
     override fun newFragment(): Fragment {
         return ErrorListFragment.newInstance()

@@ -1,11 +1,14 @@
 package com.chuckerteam.chucker.api.config
 
 import android.content.Context
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 
-interface Feature {
+interface TabFeature {
+    @get:StringRes
     val name: Int
-    val tag: Int
+    val id: Int
     val enabled: Boolean
-    fun newFragment(): Nothing
+    fun newFragment(): Fragment
     fun dismissNotification(context: Context)
 }

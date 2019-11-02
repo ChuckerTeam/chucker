@@ -2,6 +2,8 @@ package com.chuckerteam.chucker.api.dsl
 
 import com.chuckerteam.chucker.api.RetentionManager
 
+const val DEFAULT_MAX_CONTENT_LENGTH = 250000L
+
 @DslMarker
 annotation class ChuckerConfig
 
@@ -25,6 +27,8 @@ class HttpFeatureBuilder {
     var enabled: Boolean = true
     var showNotification: Boolean = true
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+    var maxContentLength: Long = 0
+    var headersToRedact: MutableSet<String> = mutableSetOf()
 }
 
 @ChuckerConfig

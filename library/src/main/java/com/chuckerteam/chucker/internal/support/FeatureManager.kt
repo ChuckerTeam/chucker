@@ -1,16 +1,16 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.api.config.Feature
+import com.chuckerteam.chucker.api.config.TabFeature
 
 internal object FeatureManager {
 
-    private val features = mutableListOf<Feature>()
+    private val features = mutableListOf<TabFeature>()
 
-    fun configure(feature: Feature) {
-        features.add(feature)
+    fun configure(tabFeature: TabFeature) {
+        features.add(tabFeature)
     }
 
-    inline fun <reified T : Feature> find(): T {
+    inline fun <reified T : TabFeature> find(): T {
         return features.first { it is T } as T
     }
 
@@ -18,11 +18,11 @@ internal object FeatureManager {
         return features.count { it.enabled }
     }
 
-    fun getAt(position: Int): Feature {
+    fun getAt(position: Int): TabFeature {
         return features.filter { it.enabled }[position]
     }
 
     fun getPositionOf(screenToShow: Int): Int {
-        return features.filter { it.enabled }.indexOfFirst { it.tag == screenToShow }
+        return features.filter { it.enabled }.indexOfFirst { it.id == screenToShow }
     }
 }

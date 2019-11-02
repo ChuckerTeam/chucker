@@ -13,10 +13,10 @@ class HttpFeature(
     val retentionPeriod: RetentionManager.Period,
     var maxContentLength: Long,
     var headersToRedact: MutableSet<String>
-) : Feature {
+) : TabFeature {
     override val name: Int = R.string.chucker_tab_network
 
-    override val tag: Int = Chucker.SCREEN_HTTP
+    override val id: Int = Chucker.SCREEN_HTTP
 
     override fun newFragment(): Fragment {
         return TransactionListFragment.newInstance()

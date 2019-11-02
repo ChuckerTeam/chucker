@@ -8,16 +8,16 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 
 private const val MAX_BLOB_SIZE = 1000_000L
 

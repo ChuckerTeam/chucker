@@ -5,6 +5,8 @@ import com.chuckerteam.chucker.api.config.ErrorsFeature
 import com.chuckerteam.chucker.api.config.HttpFeature
 import com.chuckerteam.chucker.internal.support.FeatureManager
 
+const val DEFAULT_MAX_CONTENT_LENGTH = 250000L
+
 @DslMarker
 annotation class ChuckerConfig
 
@@ -54,7 +56,7 @@ class HttpFeatureBuilder {
      * The maximum length for request and response content before they are truncated.
      * Warning: setting this value too high may cause unexpected results.
      */
-    var maxContentLength: Long = 250000L
+    var maxContentLength: Long = DEFAULT_MAX_CONTENT_LENGTH
 
     /**
      * List of headers that you want to redact. They will be not be shown in
