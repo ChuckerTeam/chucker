@@ -5,11 +5,15 @@ import android.content.Context
 /**
  * No-op implementation.
  */
-class ChuckerCollector @JvmOverloads constructor(
-    context: Context,
-    var showNotification: Boolean = true,
-    var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+class ChuckerCollector(
+    context: Context
 ) {
+    @Deprecated("This constructor will disappear in a following version.")
+    constructor(
+        context: Context,
+        showNotification: Boolean,
+        retentionPeriod: RetentionManager.Period
+    ) : this(context)
 
     fun onError(obj: Any?, obj2: Any?) {
         // Empty method for the library-no-op artifact

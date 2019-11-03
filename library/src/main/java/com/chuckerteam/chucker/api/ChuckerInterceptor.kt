@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.api.config.HttpFeature
+import com.chuckerteam.chucker.api.dsl.DEFAULT_MAX_CONTENT_LENGTH
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FeatureManager
 import com.chuckerteam.chucker.internal.support.IOUtils
@@ -33,6 +34,19 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private val collector: ChuckerCollector = ChuckerCollector(context)
 ) : Interceptor {
 
+    @Deprecated("This constructor will disappear in a following version.")
+    constructor(
+        context: Context,
+        collector: ChuckerCollector = ChuckerCollector(context),
+        maxContentLength: Long = DEFAULT_MAX_CONTENT_LENGTH,
+        headersToRedact: MutableSet<String> = mutableSetOf()
+    ) : this(context, collector) {
+        // This 2 lines are here to avoid breaking changes in the constructor signature
+        // They will disappear when we will make the breaking changes.
+        httpFeature.maxContentLength = maxContentLength
+        httpFeature.headersToRedact = headersToRedact
+    }
+
     private val io: IOUtils = IOUtils(context)
     private val httpFeature: HttpFeature = FeatureManager.find()
 
@@ -41,7 +55,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     @Throws(IOException::class)
-    @Suppress("LongMethod", "ComplexMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 

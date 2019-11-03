@@ -5,9 +5,9 @@ import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.api.internal.EmptyFragment
 
 class HttpFeature(
-    override val enabled: Boolean,
-    val showNotification: Boolean,
-    val retentionPeriod: RetentionManager.Period
+    override var enabled: Boolean,
+    var showNotification: Boolean,
+    var retentionPeriod: RetentionManager.Period
 ) : TabFeature {
     override val name: Int = 0
 
@@ -15,5 +15,7 @@ class HttpFeature(
 
     override fun newFragment() = EmptyFragment()
 
-    override fun dismissNotification(context: Context) {}
+    override fun dismissNotification(context: Context) {
+        // Empty method for the library-no-op artifact
+    }
 }

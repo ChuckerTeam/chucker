@@ -20,6 +20,7 @@ class ChuckerApplication : Application() {
             }
             error {
                 enabled = true
+                showNotification = true
             }
         }
     }

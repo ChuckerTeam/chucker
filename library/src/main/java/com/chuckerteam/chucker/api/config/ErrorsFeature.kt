@@ -7,8 +7,8 @@ import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment
 
 class ErrorsFeature(
-    override val enabled: Boolean,
-    val showNotification: Boolean
+    override var enabled: Boolean,
+    var showNotification: Boolean
 ) : TabFeature {
     override val name: Int = R.string.chucker_tab_errors
 
@@ -20,5 +20,13 @@ class ErrorsFeature(
 
     override fun dismissNotification(context: Context) {
         Chucker.dismissErrorsNotification(context)
+    }
+
+    companion object {
+        fun default(): ErrorsFeature =
+            ErrorsFeature(
+                enabled = true,
+                showNotification = true
+            )
     }
 }

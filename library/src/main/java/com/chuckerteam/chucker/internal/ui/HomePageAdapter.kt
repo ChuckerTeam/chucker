@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference
 
 internal class HomePageAdapter(context: Context, fragmentManager: FragmentManager) :
     FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     private val context: WeakReference<Context> = WeakReference(context)
 
     override fun getItem(position: Int): Fragment =
@@ -18,9 +19,4 @@ internal class HomePageAdapter(context: Context, fragmentManager: FragmentManage
 
     override fun getPageTitle(position: Int): CharSequence? =
         context.get()?.getString(FeatureManager.getAt(position).name)
-
-    companion object {
-        const val SCREEN_HTTP_INDEX = 0
-        const val SCREEN_ERROR_INDEX = 1
-    }
 }

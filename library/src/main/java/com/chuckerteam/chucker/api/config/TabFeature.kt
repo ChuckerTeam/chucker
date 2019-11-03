@@ -8,7 +8,7 @@ interface TabFeature {
     @get:StringRes
     val name: Int
     val id: Int
-    val enabled: Boolean
+    var enabled: Boolean
     fun newFragment(): Fragment
     fun dismissNotification(context: Context)
 }

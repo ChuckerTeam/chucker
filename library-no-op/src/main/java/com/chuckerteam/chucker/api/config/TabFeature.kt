@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 interface TabFeature {
     val name: Int
     val id: Int
-    val enabled: Boolean
+    var enabled: Boolean
     fun newFragment(): Fragment
     fun dismissNotification(context: Context)
 }

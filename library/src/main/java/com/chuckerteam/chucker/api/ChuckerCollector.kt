@@ -19,8 +19,22 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
 class ChuckerCollector(
     context: Context
 ) {
+    @Deprecated("This constructor will disappear in a following version.")
+    constructor(
+        context: Context,
+        showNotification: Boolean,
+        retentionPeriod: RetentionManager.Period
+    ) : this(context) {
+        // This 3 lines are here to avoid breaking changes in the constructor signature
+        // They will disappear when we will make the breaking changes.
+        httpFeature.showNotification = showNotification
+        httpFeature.retentionPeriod = retentionPeriod
+        errorsFeature.showNotification = showNotification
+    }
+
     private val retentionManager: RetentionManager = RetentionManager(context)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
+
     private val httpFeature: HttpFeature = FeatureManager.find()
     private val errorsFeature: ErrorsFeature = FeatureManager.find()
 
