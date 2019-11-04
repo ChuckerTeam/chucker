@@ -80,7 +80,7 @@ class NotificationHelper(val context: Context) {
                     )
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_notification)
-                    .setColor(ContextCompat.getColor(context, R.color.chucker_primary_color))
+                    .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
             val inboxStyle = NotificationCompat.InboxStyle()

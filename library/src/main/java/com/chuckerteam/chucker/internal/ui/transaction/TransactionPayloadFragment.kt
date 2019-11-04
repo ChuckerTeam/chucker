@@ -15,7 +15,9 @@
  */
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,19 +28,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.highlight
+import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
-private const val ARG_TYPE = "type"
-
-internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment :
+    Fragment(),
+    TransactionFragment,
+    SearchView.OnQueryTextListener {
 
     private lateinit var headers: TextView
     private lateinit var body: TextView
     private lateinit var binaryData: ImageView
+
+    private var backgroundSpanColor: Int = Color.YELLOW
+    private var foregroundSpanColor: Int = Color.RED
 
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
@@ -60,7 +67,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
             headers = findViewById(R.id.headers)
             body = findViewById(R.id.body)
-            binaryData = findViewById(R.id.image)
+            binaryData = findViewById(R.id.binaryData)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,6 +95,12 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     override fun transactionUpdated(transaction: HttpTransaction) {
         this.transaction = transaction
         populateUI()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_background_span_color)
+        foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
     }
 
     private fun populateUI() {
@@ -119,7 +132,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank())
-            body.text = originalBody?.highlight(newText)
+            body.text = originalBody?.highlightWithDefinedColors(newText, backgroundSpanColor, foregroundSpanColor)
         else
             body.text = originalBody
         return true
@@ -128,8 +141,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
         AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
 
-        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>):
-        UiPayload {
+        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>): UiPayload {
             val (type, transaction) = params[0]
             return if (type == TYPE_REQUEST) {
                 UiPayload(
@@ -160,6 +172,7 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
     )
 
     companion object {
+        private const val ARG_TYPE = "type"
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1

@@ -15,10 +15,19 @@
  ~ limitations under the License.
  -->
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Chucker.Theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/chucker_primary_color</item>
-        <item name="colorPrimaryDark">@color/chucker_primary_dark_color</item>
-        <item name="colorAccent">@color/chucker_secondary_color</item>
+
+    <style name="Chucker.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/chucker_color_primary</item>
+        <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
+        <item name="colorSecondary">@color/chucker_color_secondary</item>
+        <item name="android:colorBackground">@color/chucker_color_background</item>
+        <item name="colorSurface">@color/chucker_color_surface</item>
+        <item name="colorError">@color/chucker_status_error</item>
+        <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
+        <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
+        <item name="colorOnBackground">@color/chucker_color_on_background</item>
+        <item name="colorOnSurface">@color/chucker_color_on_surface</item>
+        <item name="colorOnError">@color/chucker_color_on_error</item>
     </style>
 
     <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">
