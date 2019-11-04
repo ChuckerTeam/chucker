@@ -88,12 +88,42 @@ configureChucker {
         showNotification = true
         retentionPeriod = RetentionManager.Period.ONE_HOUR
         maxContentLength = 250000L
-        headersToRedact = listOf("Auth-Token")
+        headers {
+            redact("Authorization")
+            redact("Auth-Token")
+            redact("User-Session")
+        }
     }
     error {
         enabled = true
+        showNotification = true
     }
 }
+```
+
+### Configure for Java
+
+```java
+HashSet<String> headersToRedact = new HashSet<>();
+headersToRedact.add("Authorization");
+headersToRedact.add("Auth-Token");
+headersToRedact.add("User-Session");
+
+List<TabFeature> features = Arrays.asList(
+        new HttpFeature(
+                true,
+                true,
+                RetentionManager.Period.ONE_HOUR,
+                DEFAULT_MAX_CONTENT_LENGTH,
+                headersToRedact
+        ),
+        new ErrorsFeature(
+                true,
+                true
+        )
+);
+
+ChuckerJavaConfig.configure(features);
 ```
 
 ### Throwables ☄️
