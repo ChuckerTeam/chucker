@@ -67,7 +67,7 @@ internal class TransactionPayloadFragment :
         inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
             headers = findViewById(R.id.headers)
             body = findViewById(R.id.body)
-            binaryData = findViewById(R.id.image)
+            binaryData = findViewById(R.id.binaryData)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
