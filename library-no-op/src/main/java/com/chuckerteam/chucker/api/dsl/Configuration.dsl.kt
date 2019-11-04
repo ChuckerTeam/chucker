@@ -28,7 +28,16 @@ class HttpFeatureBuilder {
     var showNotification: Boolean = true
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
     var maxContentLength: Long = 0
-    var headersToRedact: MutableSet<String> = mutableSetOf()
+    internal var headersToRedact: MutableSet<String> = mutableSetOf()
+
+    @ChuckerConfig
+    fun headers(redactHeaders: RedactHeaders.() -> Unit) = Unit
+}
+
+@ChuckerConfig
+class RedactHeaders {
+    @ChuckerConfig
+    fun redact(header: String) = Unit
 }
 
 @ChuckerConfig

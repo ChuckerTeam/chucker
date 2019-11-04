@@ -16,7 +16,11 @@ class ChuckerApplication : Application() {
                 showNotification = true
                 retentionPeriod = RetentionManager.Period.ONE_HOUR
                 maxContentLength = DEFAULT_MAX_CONTENT_LENGTH
-                headersToRedact = mutableSetOf("Authorization", "Auth-Token", "User-Session")
+                headers {
+                    redact("Authorization")
+                    redact("Auth-Token")
+                    redact("User-Session")
+                }
             }
             error {
                 enabled = true

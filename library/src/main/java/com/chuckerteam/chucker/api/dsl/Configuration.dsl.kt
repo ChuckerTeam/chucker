@@ -62,10 +62,23 @@ class HttpFeatureBuilder {
      * List of headers that you want to redact. They will be not be shown in
      * the ChuckerUI but will be replaced with a `**`.
      */
-    var headersToRedact: MutableSet<String> = mutableSetOf()
+    internal var headersToRedact: MutableSet<String> = mutableSetOf()
 
     fun build(): HttpFeature =
         HttpFeature(enabled, showNotification, retentionPeriod, maxContentLength, headersToRedact)
+
+    @ChuckerConfig
+    fun headers(redactHeaders: RedactHeaders.() -> Unit) {
+        RedactHeaders(this).apply(redactHeaders)
+    }
+}
+
+@ChuckerConfig
+class RedactHeaders(private val httpFeature: HttpFeatureBuilder) {
+    @ChuckerConfig
+    fun redact(header: String) {
+        httpFeature.headersToRedact.add(header)
+    }
 }
 
 @ChuckerConfig
