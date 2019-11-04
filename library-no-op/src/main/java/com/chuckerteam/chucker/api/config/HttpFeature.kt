@@ -7,7 +7,9 @@ import com.chuckerteam.chucker.api.internal.EmptyFragment
 class HttpFeature(
     override var enabled: Boolean,
     var showNotification: Boolean,
-    var retentionPeriod: RetentionManager.Period
+    var retentionPeriod: RetentionManager.Period,
+    var maxContentLength: Long,
+    var headersToRedact: MutableSet<String>
 ) : TabFeature {
     override val name: Int = 0
 
