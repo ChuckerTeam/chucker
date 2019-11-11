@@ -12,6 +12,7 @@ android {
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
         consumerProguardFiles 'proguard-rules.pro'
+        vectorDrawables.useSupportLibrary = true
     }
 
     kotlinOptions {
