@@ -1,37 +1,26 @@
 package com.chuckerteam.chucker.internal.ui
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import com.chuckerteam.chucker.R
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment
-import java.lang.ref.WeakReference
 
-internal class HomePageAdapter(context: Context, fragmentManager: FragmentManager) :
-    FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    private val context: WeakReference<Context> = WeakReference(context)
+internal class HomePageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+    FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItem(position: Int): Fragment = if (position == SCREEN_HTTP_INDEX) {
+    override fun createFragment(position: Int): Fragment = if (position == SCREEN_NETWORK_INDEX) {
         TransactionListFragment.newInstance()
     } else {
         ErrorListFragment.newInstance()
     }
 
-    override fun getCount(): Int = 2
-
-    override fun getPageTitle(position: Int): CharSequence? =
-        context.get()?.getString(
-            if (position == SCREEN_HTTP_INDEX) {
-                R.string.chucker_tab_network
-            } else {
-                R.string.chucker_tab_errors
-            }
-        )
+    override fun getItemCount(): Int = HOME_SCREENS_NUMBER
 
     companion object {
-        const val SCREEN_HTTP_INDEX = 0
+        private const val HOME_SCREENS_NUMBER = 2
+        const val SCREEN_NETWORK_INDEX = 0
         const val SCREEN_ERROR_INDEX = 1
     }
 }
