@@ -45,28 +45,8 @@ class MainActivity :
         setSupportActionBar(toolbar)
         toolbar.subtitle = applicationName
 
-        viewPager = findViewById(R.id.viewPagerHome)
-        viewPager.adapter = HomePageAdapter(supportFragmentManager, lifecycle)
+        setupViewPager()
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
-        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
-            currentTab.text = if (currentPosition == HomePageAdapter.SCREEN_NETWORK_INDEX) {
-                getString(R.string.chucker_tab_network)
-            } else {
-                getString(R.string.chucker_tab_errors)
-            }
-        }.attach()
-
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == HomePageAdapter.SCREEN_NETWORK_INDEX) {
-                    Chucker.dismissTransactionsNotification(this@MainActivity)
-                } else {
-                    Chucker.dismissErrorsNotification(this@MainActivity)
-                }
-            }
-        })
         consumeIntent(intent)
     }
 
@@ -82,10 +62,35 @@ class MainActivity :
         // Get the screen to show, by default => HTTP
         val screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP)
         viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
-            HomePageAdapter.SCREEN_NETWORK_INDEX
+            HomePageAdapter.NETWORK_SCREEN_POSITION
         } else {
-            HomePageAdapter.SCREEN_ERROR_INDEX
+            HomePageAdapter.ERROR_SCREEN_POSITION
         }
+    }
+
+    private fun setupViewPager() {
+        viewPager = findViewById(R.id.viewPagerHome)
+        viewPager.adapter = HomePageAdapter(supportFragmentManager, lifecycle)
+
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutHome)
+        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
+            currentTab.text = if (currentPosition == HomePageAdapter.NETWORK_SCREEN_POSITION) {
+                getString(R.string.chucker_tab_network)
+            } else {
+                getString(R.string.chucker_tab_errors)
+            }
+        }.attach()
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (position == HomePageAdapter.NETWORK_SCREEN_POSITION) {
+                    Chucker.dismissTransactionsNotification(this@MainActivity)
+                } else {
+                    Chucker.dismissErrorsNotification(this@MainActivity)
+                }
+            }
+        })
     }
 
     override fun onErrorClick(throwableId: Long, position: Int) {

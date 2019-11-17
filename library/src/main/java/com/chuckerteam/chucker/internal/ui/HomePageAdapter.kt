@@ -10,7 +10,7 @@ import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment
 internal class HomePageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun createFragment(position: Int): Fragment = if (position == SCREEN_NETWORK_INDEX) {
+    override fun createFragment(position: Int): Fragment = if (position == NETWORK_SCREEN_POSITION) {
         TransactionListFragment.newInstance()
     } else {
         ErrorListFragment.newInstance()
@@ -20,7 +20,7 @@ internal class HomePageAdapter(fragmentManager: FragmentManager, lifecycle: Life
 
     companion object {
         private const val HOME_SCREENS_NUMBER = 2
-        const val SCREEN_NETWORK_INDEX = 0
-        const val SCREEN_ERROR_INDEX = 1
+        internal const val NETWORK_SCREEN_POSITION = 0
+        internal const val ERROR_SCREEN_POSITION = 1
     }
 }

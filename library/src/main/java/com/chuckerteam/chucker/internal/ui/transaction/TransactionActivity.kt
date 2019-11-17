@@ -25,17 +25,18 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
-    private lateinit var adapter: TransactionPagerAdapter
+    private lateinit var viewPagerAdapter: TransactionPagerAdapter
 
     private var transactionId: Long = 0
     private var transaction: HttpTransaction? = null
@@ -50,13 +51,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val viewPager = findViewById<ViewPager>(R.id.viewpager)
-        if (viewPager != null) {
-            setupViewPager(viewPager)
-        }
-
-        val tabLayout = findViewById<TabLayout>(R.id.tabs)
-        tabLayout.setupWithViewPager(viewPager)
+        setupViewPager()
 
         transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
     }
@@ -103,16 +98,27 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
     }
 
-    private fun setupViewPager(viewPager: ViewPager) {
-        adapter = TransactionPagerAdapter(this, supportFragmentManager)
-        viewPager.adapter = adapter
-        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+    private fun setupViewPager() {
+        val viewPager = findViewById<ViewPager2>(R.id.viewPagerTransaction)
+        viewPagerAdapter = TransactionPagerAdapter(supportFragmentManager, lifecycle)
+        viewPager.adapter = viewPagerAdapter
+        viewPager.offscreenPageLimit = 3
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 selectedTabPosition = position
                 populateUI(transaction)
             }
         })
         viewPager.currentItem = selectedTabPosition
+
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutTransaction)
+        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
+            currentTab.text = when (currentPosition) {
+                TransactionPagerAdapter.OVERVIEW_SCREEN_POSITION -> getString(R.string.chucker_overview)
+                TransactionPagerAdapter.REQUEST_SCREEN_POSITION -> getString(R.string.chucker_request)
+                else -> getString(R.string.chucker_response)
+            }
+        }.attach()
     }
 
     private fun share(transactionDetailsText: String) {
