@@ -102,7 +102,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerTransaction)
         viewPagerAdapter = TransactionPagerAdapter(supportFragmentManager, lifecycle)
         viewPager.adapter = viewPagerAdapter
-        viewPager.offscreenPageLimit = TransactionPagerAdapter.TRANSACTION_SCREEN_OFFSCREEN_LIMIT
+        viewPager.offscreenPageLimit = TransactionPagerAdapter.TRANSACTION_SCREEN_OFFSCREEN_LIMIT as Int
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 selectedTabPosition = position
