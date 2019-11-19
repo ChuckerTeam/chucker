@@ -12,8 +12,8 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.ArrayList
 import okhttp3.Headers
+import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -87,10 +87,10 @@ internal class HttpTransaction(
         }
 
     val requestDateString: String?
-        get() = requestDate?.toString()
+        get() = requestDate?.let { Date(it).toString() }
 
     val responseDateString: String?
-        get() = responseDate?.toString()
+        get() = responseDate?.let { Date(it).toString() }
 
     val durationString: String?
         get() = tookMs?.let { "$it ms" }
