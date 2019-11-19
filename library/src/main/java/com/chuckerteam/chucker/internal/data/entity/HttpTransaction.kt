@@ -12,8 +12,9 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
+import java.util.Date
+import kotlin.collections.ArrayList
 import okhttp3.Headers
-import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
