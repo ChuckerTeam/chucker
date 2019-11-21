@@ -19,6 +19,12 @@ object Chucker {
     val isOp = true
 
     /**
+     * Configuration that can alter certain behaviour of Chucker
+     * @see [Configs] for more information
+     */
+    var configs: Configs? = null
+
+    /**
      * Get an Intent to launch the Chucker UI directly.
      * @param context An Android [Context].
      * @param screen The [Screen] to display: SCREEN_HTTP or SCREEN_ERROR.

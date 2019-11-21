@@ -9,11 +9,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.chuckerteam.chucker.internal.support.DateFormatter
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.ArrayList
 import okhttp3.Headers
+import java.util.*
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -87,10 +88,10 @@ internal class HttpTransaction(
         }
 
     val requestDateString: String?
-        get() = requestDate?.toString()
+        get() = requestDate?.let { DateFormatter.getFormattedTime(it) }
 
     val responseDateString: String?
-        get() = responseDate?.toString()
+        get() = responseDate?.let { DateFormatter.getFormattedTime(it) }
 
     val durationString: String?
         get() = tookMs?.let { "$it ms" }
