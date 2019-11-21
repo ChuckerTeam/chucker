@@ -16,9 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         client = HttpBinClient(applicationContext)
 
-        Chucker.configs = Configs.Builder()
-                .localisedTime(true)
-                .build()
+        Chucker.configs = Configs.Builder().localisedTime(true).build()
 
         do_http.setOnClickListener { client.doHttpActivity() }
         trigger_exception.setOnClickListener { client.recordException() }
