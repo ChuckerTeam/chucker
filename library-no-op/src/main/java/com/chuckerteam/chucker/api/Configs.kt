@@ -12,7 +12,6 @@ class Configs private constructor(val localiseTime: Boolean = false) {
         }
 
         fun build(): Configs {
-
             return Configs(localisedTime)
         }
     }

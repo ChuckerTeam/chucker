@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-private const val LOCALISED_DATE_FORMAT = "dd MMM yyyy hh:mm a EEE"
+private const val LOCALISED_DATE_FORMAT = "dd MMM yyyy hh:mm:ss a EEE"
 object DateFormatter {
     private val simpleDateFormat = SimpleDateFormat(LOCALISED_DATE_FORMAT, Locale.getDefault()).apply {
         timeZone = TimeZone.getDefault()
