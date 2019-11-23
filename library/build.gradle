@@ -55,7 +55,7 @@ dependencies {
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    implementation "com.google.android.material:material:$material"
+    implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
