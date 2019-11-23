@@ -47,7 +47,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
 apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
