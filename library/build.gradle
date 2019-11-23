@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'org.jetbrains.dokka-android'
+apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -23,13 +23,15 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 
-    includeNonPublic = false
-    reportUndocumented = true
-    skipEmptyPackages = true
+    configuration {
+        includeNonPublic = false
+        reportUndocumented = true
+        skipEmptyPackages = true
 
-    packageOptions {
-        prefix = "com.chuckerteam.chucker.internal"
-        suppress = true
+        perPackageOption {
+            prefix = "com.chuckerteam.chucker.internal"
+            suppress = true
+        }
     }
 }
 
