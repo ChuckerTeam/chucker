@@ -100,16 +100,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     private fun setupViewPager() {
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerTransaction)
-        viewPagerAdapter = TransactionPagerAdapter(supportFragmentManager, lifecycle)
-        viewPager.adapter = viewPagerAdapter
-        viewPager.offscreenPageLimit = TransactionPagerAdapter.TRANSACTION_SCREEN_OFFSCREEN_LIMIT as Int
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                selectedTabPosition = position
-                populateUI(transaction)
-            }
-        })
-        viewPager.currentItem = selectedTabPosition
+
+        viewPagerAdapter = TransactionPagerAdapter(this)
+        viewPager.apply {
+            adapter = viewPagerAdapter
+            offscreenPageLimit = TransactionPagerAdapter.TRANSACTION_SCREEN_OFFSCREEN_LIMIT as Int
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    selectedTabPosition = position
+                    populateUI(transaction)
+                }
+            })
+            currentItem = selectedTabPosition
+        }
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayoutTransaction)
         TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->

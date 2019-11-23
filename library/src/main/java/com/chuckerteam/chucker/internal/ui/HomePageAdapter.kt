@@ -1,14 +1,13 @@
 package com.chuckerteam.chucker.internal.ui
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.chuckerteam.chucker.internal.ui.error.ErrorListFragment
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment
 
-internal class HomePageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
-    FragmentStateAdapter(fragmentManager, lifecycle) {
+internal class HomePageAdapter(fragmentActivity: FragmentActivity) :
+    FragmentStateAdapter(fragmentActivity) {
 
     override fun createFragment(position: Int): Fragment = if (position == NETWORK_SCREEN_POSITION) {
         TransactionListFragment.newInstance()

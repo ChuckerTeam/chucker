@@ -1,12 +1,11 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-internal class TransactionPagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
-    FragmentStateAdapter(fm, lifecycle) {
+internal class TransactionPagerAdapter(fragmentActivity: FragmentActivity) :
+    FragmentStateAdapter(fragmentActivity) {
 
     override fun createFragment(position: Int): Fragment = when (position) {
         OVERVIEW_SCREEN_POSITION -> TransactionOverviewFragment()

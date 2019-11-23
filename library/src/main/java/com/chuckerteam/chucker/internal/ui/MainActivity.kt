@@ -70,17 +70,8 @@ class MainActivity :
 
     private fun setupViewPager() {
         viewPager = findViewById(R.id.viewPagerHome)
-        viewPager.adapter = HomePageAdapter(supportFragmentManager, lifecycle)
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutHome)
-        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
-            currentTab.text = if (currentPosition == HomePageAdapter.NETWORK_SCREEN_POSITION) {
-                getString(R.string.chucker_tab_network)
-            } else {
-                getString(R.string.chucker_tab_errors)
-            }
-        }.attach()
-
+        viewPager.adapter = HomePageAdapter(this)
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -91,6 +82,15 @@ class MainActivity :
                 }
             }
         })
+
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutHome)
+        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
+            currentTab.text = if (currentPosition == HomePageAdapter.NETWORK_SCREEN_POSITION) {
+                getString(R.string.chucker_tab_network)
+            } else {
+                getString(R.string.chucker_tab_errors)
+            }
+        }.attach()
     }
 
     override fun onErrorClick(throwableId: Long, position: Int) {
