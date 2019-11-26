@@ -37,10 +37,8 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
-
-
-internal class TransactionPayloadFragment : Fragment(),
-    SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment :
+    Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var headers: TextView
     private lateinit var body: TextView
