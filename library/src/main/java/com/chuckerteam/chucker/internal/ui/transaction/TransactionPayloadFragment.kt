@@ -141,8 +141,10 @@ internal class TransactionPayloadFragment :
     private fun preparePayload(vararg params: Pair<Int, HttpTransaction>) {
         uiScope.launch {
             val payload = withContext(Dispatchers.IO) { formatPayload(params[0]) }
-            with(payload) {
-                setBody(headersString, bodyString, isPlainText, image)
+            uiScope.launch {
+                with(payload) {
+                    setBody(headersString, bodyString, isPlainText, image)
+                }
             }
         }
     }
