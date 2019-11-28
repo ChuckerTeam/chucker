@@ -18,7 +18,6 @@ package com.chuckerteam.chucker.internal.ui.transaction
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -34,6 +33,11 @@ import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class TransactionPayloadFragment :
     Fragment(),
@@ -50,7 +54,8 @@ internal class TransactionPayloadFragment :
     private var type: Int = 0
     private var transaction: HttpTransaction? = null
     private var originalBody: String? = null
-    private var uiLoaderTask: UiLoaderTask? = null
+    private val job = SupervisorJob()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +78,6 @@ internal class TransactionPayloadFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateUI()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        uiLoaderTask?.cancel(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -105,7 +105,7 @@ internal class TransactionPayloadFragment :
 
     private fun populateUI() {
         if (isAdded && transaction != null) {
-            UiLoaderTask(this).execute(Pair(type, transaction!!))
+            preparePayload(Pair(type, transaction!!))
         }
     }
 
@@ -138,29 +138,30 @@ internal class TransactionPayloadFragment :
         return true
     }
 
-    private class UiLoaderTask(val fragment: TransactionPayloadFragment) :
-        AsyncTask<Pair<Int, HttpTransaction>, Unit, UiPayload>() {
+    private fun preparePayload(vararg params: Pair<Int, HttpTransaction>) {
+        uiScope.launch {
+            val payload = withContext(Dispatchers.IO) { formatPayload(params[0]) }
+            with(payload) {
+                setBody(headersString, bodyString, isPlainText, image)
+            }
+        }
+    }
 
-        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>): UiPayload {
-            val (type, transaction) = params[0]
-            return if (type == TYPE_REQUEST) {
-                UiPayload(
+    private fun formatPayload(param: Pair<Int, HttpTransaction>): UiPayload {
+        val (type, transaction) = param
+        return if (type == TYPE_REQUEST) {
+            UiPayload(
                     transaction.getRequestHeadersString(true),
                     transaction.getFormattedRequestBody(),
                     transaction.isRequestBodyPlainText
-                )
-            } else {
-                UiPayload(
+            )
+        } else {
+            UiPayload(
                     transaction.getResponseHeadersString(true),
                     transaction.getFormattedResponseBody(),
                     transaction.isResponseBodyPlainText,
                     transaction.responseImageBitmap
-                )
-            }
-        }
-
-        override fun onPostExecute(result: UiPayload) = with(result) {
-            fragment.setBody(headersString, bodyString, isPlainText, image)
+            )
         }
     }
 
