@@ -6,15 +6,15 @@ import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.hasBody
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
+import java.io.IOException
+import java.nio.charset.Charset
+import java.nio.charset.UnsupportedCharsetException
+import java.util.concurrent.TimeUnit
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -113,30 +113,31 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
-            val source = getNativeSource(response)
-            source.request(java.lang.Long.MAX_VALUE)
-            val buffer = source.buffer()
-            var charset: Charset = UTF8
-            val contentType = responseBody?.contentType()
-            if (contentType != null) {
-                try {
-                    charset = contentType.charset(UTF8) ?: UTF8
-                } catch (e: UnsupportedCharsetException) {
-                    collector.onResponseReceived(transaction)
-                    return response
+            getNativeSource(response).use { source ->
+                source.request(java.lang.Long.MAX_VALUE)
+                val buffer = source.buffer()
+                var charset: Charset = UTF8
+                val contentType = responseBody?.contentType()
+                if (contentType != null) {
+                    try {
+                        charset = contentType.charset(UTF8) ?: UTF8
+                    } catch (e: UnsupportedCharsetException) {
+                        collector.onResponseReceived(transaction)
+                        return response
+                    }
                 }
-            }
-            if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
-                transaction.responseBody = content
-            } else {
-                transaction.isResponseBodyPlainText = false
+                if (io.isPlaintext(buffer)) {
+                    val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+                    transaction.responseBody = content
+                } else {
+                    transaction.isResponseBodyPlainText = false
 
-                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
-                    transaction.responseImageData = buffer.clone().readByteArray()
+                    if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
+                        transaction.responseImageData = buffer.clone().readByteArray()
+                    }
                 }
+                transaction.responseContentLength = buffer.size()
             }
-            transaction.responseContentLength = buffer.size()
         }
 
         collector.onResponseReceived(transaction)
