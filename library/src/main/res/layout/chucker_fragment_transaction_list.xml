@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager"
         tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment"
         tools:listitem="@layout/chucker_list_item_transaction" />
 
