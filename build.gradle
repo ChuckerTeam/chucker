@@ -1,21 +1,23 @@
 buildscript {
     ext {
-        androidGradleVersion = '3.4.2'
+        androidGradleVersion = '3.5.2'
         androidMavenGradleVersion = '2.1'
+        appCompatVersion = '1.1.0'
         constraintLayoutVersion = '1.1.3'
-        dokkaVersion = '0.9.17'
+        detektVersion = '1.1.1'
+        dokkaVersion = '0.10.0'
         gradleBintrayVersion = '1.8.4'
-        gsonVersion = '2.8.5'
+        gsonVersion = '2.8.6'
         junitGradlePluignVersion = '1.3.1.1'
         junitVersion = '5.4.2'
         kotlinVersion = '1.3.50'
-        leakcanary = '2.0-beta-2'
-        material = '1.1.0-beta01'
+        ktLintVersion = '9.1.1'
+        leakcanaryVersion = '2.0-beta-4'
+        materialComponentsVersion = '1.1.0-beta02'
         mockkVersion = '1.9.3'
-        okhttp3Version = '3.12.2'
-        retrofitVersion = '2.5.0'
+        okhttp3Version = '3.12.6'
+        retrofitVersion = '2.6.2'
         roomVersion = '2.1.0'
-        supportLibVersion = '1.1.0-rc01'
     }
 
     repositories {
@@ -30,9 +32,9 @@ buildscript {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$gradleBintrayVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.1.0"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:8.0.0"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintVersion"
     }
 }
 

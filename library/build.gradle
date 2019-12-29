@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'org.jetbrains.dokka-android'
+apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -23,13 +23,15 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 
-    includeNonPublic = false
-    reportUndocumented = true
-    skipEmptyPackages = true
+    configuration {
+        includeNonPublic = false
+        reportUndocumented = true
+        skipEmptyPackages = true
 
-    packageOptions {
-        prefix = "com.chuckerteam.chucker.internal"
-        suppress = true
+        perPackageOption {
+            prefix = "com.chuckerteam.chucker.internal"
+            suppress = true
+        }
     }
 }
 
@@ -51,11 +53,11 @@ artifacts {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    implementation "com.google.android.material:material:$material"
+    implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"

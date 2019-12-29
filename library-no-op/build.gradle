@@ -20,7 +20,7 @@ artifacts {
 
 dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
