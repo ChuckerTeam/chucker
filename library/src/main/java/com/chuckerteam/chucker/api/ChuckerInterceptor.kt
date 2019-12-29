@@ -9,6 +9,7 @@ import com.chuckerteam.chucker.internal.support.hasBody
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okio.Buffer
 import okio.BufferedSource
 import java.io.IOException
@@ -113,36 +114,43 @@ class ChuckerInterceptor @JvmOverloads constructor(
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
-            getNativeSource(response).use { source ->
-                source.request(java.lang.Long.MAX_VALUE)
-                val buffer = source.buffer()
-                var charset: Charset = UTF8
-                val contentType = responseBody?.contentType()
-                if (contentType != null) {
-                    try {
-                        charset = contentType.charset(UTF8) ?: UTF8
-                    } catch (e: UnsupportedCharsetException) {
-                        collector.onResponseReceived(transaction)
-                        return response
-                    }
-                }
-                if (io.isPlaintext(buffer)) {
-                    val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
-                    transaction.responseBody = content
-                } else {
-                    transaction.isResponseBodyPlainText = false
-
-                    if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
-                        transaction.responseImageData = buffer.clone().readByteArray()
-                    }
-                }
-                transaction.responseContentLength = buffer.size()
-            }
+            processResponseBody(response, responseBody, transaction)
         }
 
         collector.onResponseReceived(transaction)
 
         return response
+    }
+
+    /**
+     * Private method to process the HTTP Response body and populate the corresponding response fields
+     * of a the [HttpTransaction].
+     */
+    private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
+        getNativeSource(response).use { source ->
+            source.request(java.lang.Long.MAX_VALUE)
+            val buffer = source.buffer()
+            var charset: Charset = UTF8
+            val contentType = responseBody?.contentType()
+            if (contentType != null) {
+                try {
+                    charset = contentType.charset(UTF8) ?: UTF8
+                } catch (e: UnsupportedCharsetException) {
+                    return
+                }
+            }
+            if (io.isPlaintext(buffer)) {
+                val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+                transaction.responseBody = content
+            } else {
+                transaction.isResponseBodyPlainText = false
+
+                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
+                    transaction.responseImageData = buffer.clone().readByteArray()
+                }
+            }
+            transaction.responseContentLength = buffer.size()
+        }
     }
 
     /** Overrides all the headers in [headersToRedact] with a `**` */
