@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
@@ -37,7 +36,6 @@ internal class ErrorListFragment : Fragment() {
             findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
 
             val recyclerView = findViewById<RecyclerView>(R.id.list)
-            recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
             adapter = ErrorAdapter(listener)
             recyclerView.adapter = adapter
