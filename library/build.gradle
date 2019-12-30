@@ -7,6 +7,10 @@ apply plugin: 'org.jetbrains.dokka'
 android {
     compileSdkVersion rootProject.compileSdkVersion
 
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "com.github.ChuckerTeam.Chucker.library-no-op"]
+    }
+
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         versionName VERSION_NAME
