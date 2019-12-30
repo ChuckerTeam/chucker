@@ -116,11 +116,11 @@ Generally name of classes from Chuck (e.g. `ChuckInterceptor`) got udpated to Ch
 So if to launch the UI of Chuck, you would normally call:
 
 ```kotlin
-Chuck.getLaunchIntent(context)
+Chuck.getLaunchIntent(...)
 ```
 
 now you will call
 
 ```kotlin
-Chucker.getLaunchIntent(context)
+Chucker.getLaunchIntent(...)
 ```
