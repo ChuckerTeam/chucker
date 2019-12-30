@@ -114,7 +114,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> error
                 Status.Requested -> null
-                else -> "${responseCode.toString()} $responseMessage"
+                else -> "$responseCode $responseMessage"
             }
         }
 
@@ -123,7 +123,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> "${responseCode.toString()} $method $path"
+                else -> "$responseCode $method $path"
             }
         }
 
