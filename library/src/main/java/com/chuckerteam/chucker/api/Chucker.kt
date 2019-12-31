@@ -12,11 +12,14 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
  */
 object Chucker {
 
+    const val SCREEN_HTTP = 1
+    const val SCREEN_ERROR = 2
+
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
-    val isOp = true
+    const val isOp = true
 
     /**
      * Get an Intent to launch the Chucker UI directly.
@@ -24,6 +27,7 @@ object Chucker {
      * @param screen The [Screen] to display: SCREEN_HTTP or SCREEN_ERROR.
      * @return An Intent for the main Chucker Activity that can be started with [Context.startActivity].
      */
+    @JvmStatic
     fun getLaunchIntent(context: Context, @Screen screen: Int): Intent {
         return Intent(context, MainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -36,6 +40,7 @@ object Chucker {
      *
      * @param collector the ChuckerCollector
      */
+    @JvmStatic
     fun registerDefaultCrashHandler(collector: ChuckerCollector) {
         Thread.setDefaultUncaughtExceptionHandler(ChuckerCrashHandler(collector))
     }
@@ -43,6 +48,7 @@ object Chucker {
     /**
      * Method to dismiss the Chucker notification of HTTP Transactions
      */
+    @JvmStatic
     fun dismissTransactionsNotification(context: Context) {
         NotificationHelper(context).dismissTransactionsNotification()
     }
@@ -50,12 +56,10 @@ object Chucker {
     /**
      * Method to dismiss the Chucker notification of Uncaught Errors.
      */
+    @JvmStatic
     fun dismissErrorsNotification(context: Context) {
         NotificationHelper(context).dismissErrorsNotification()
     }
-
-    const val SCREEN_HTTP = 1
-    const val SCREEN_ERROR = 2
 
     /**
      * Annotation used to specify which screen of Chucker should be launched.
