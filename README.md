@@ -177,14 +177,23 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 Short `TODO` List for new contributors:
 
 - [ ] Kotlinize classes inside the `.internal` package.
-- [ ] Have a empty state graphics/message for requests with no headers.
+- [x] Have a empty state graphics/message for requests with no headers.
 - [ ] Increment the test coverage.
 
 ## Acknowledgments 🌸
 
+### Maintainers
+
+Chucker is currently developed and maintained by the [ChuckerTeam](https://github.com/ChuckerTeam). When submitting a new PR, please ping one of:
+
+- [@olivierperez](https://github.com/olivierperez)
+- [@cortinico](https://github.com/cortinico)
+- [@redwarp](https://github.com/redwarp)
+- [@vbuberen](https://github.com/vbuberen)
+
 ### Contributors
 
-Big thanks to our contributors
+Big thanks to our contributors ❤️ Please add your name here once you submit a PR.
 
 - [Ashok Varma](https://github.com/Ashok-Varma) Clean up
 - [Bernat Borrás Paronella](https://github.com/alorma) Redact headers + HTTP methods in notifications
@@ -206,7 +215,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018 Nicola Corti & Olivier Perez & Benoit Vermont.
+    Copyright (C) 2018 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");
