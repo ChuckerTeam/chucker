@@ -104,10 +104,14 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             val saveMenuItem = menu.findItem(R.id.save_body)
 
             // SAF is not available on pre-Kit Kat so let's hide the icon.
-            saveMenuItem.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-            saveMenuItem.setOnMenuItemClickListener {
-                viewBodyExternally()
-                true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                saveMenuItem.isVisible = true
+                saveMenuItem.setOnMenuItemClickListener {
+                    viewBodyExternally()
+                    true
+                }
+            } else {
+                saveMenuItem.isVisible = false
             }
         }
 
@@ -240,12 +244,13 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
                 val context = fragment.context ?: return false
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
-                        if (type == TYPE_REQUEST) {
-                            transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                        } else if (transaction.responseBody != null) {
-                            transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                        } else {
-                            fos.write(transaction.responseImageData)
+                        when {
+                            type == TYPE_REQUEST ->
+                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                            transaction.responseBody != null ->
+                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                            else ->
+                                fos.write(transaction.responseImageData)
                         }
                     }
                 }
@@ -261,13 +266,12 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
         override fun onPostExecute(result: Boolean) {
             fragment.fileSaverTask = null
-            fragment.context?.let {
-                if (result) {
-                    Toast.makeText(it, R.string.chucker_file_saved, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(it, R.string.chucker_file_not_saved, Toast.LENGTH_SHORT).show()
-                }
+            val toastMessageId = if (result) {
+                R.string.chucker_file_saved
+            } else {
+                R.string.chucker_file_not_saved
             }
+            Toast.makeText(fragment.context, toastMessageId, Toast.LENGTH_SHORT).show()
         }
     }
 
