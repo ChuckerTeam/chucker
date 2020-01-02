@@ -45,7 +45,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     @Throws(IOException::class)
-    @Suppress("LongMethod", "ComplexMethod")
+    @Suppress("LongMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val requestBody = request.body()

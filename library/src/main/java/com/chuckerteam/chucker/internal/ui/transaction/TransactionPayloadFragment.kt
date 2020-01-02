@@ -17,12 +17,11 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -40,18 +39,14 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
-private const val ARG_TYPE = "type"
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
-internal class TransactionPayloadFragment :
-    Fragment(),
-    TransactionFragment,
-    SearchView.OnQueryTextListener {
+internal class TransactionPayloadFragment : Fragment(), TransactionFragment, SearchView.OnQueryTextListener {
 
     private lateinit var headers: TextView
     private lateinit var body: TextView
@@ -236,6 +231,7 @@ internal class TransactionPayloadFragment :
     private class FileSaverTask(val fragment: TransactionPayloadFragment) :
         AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
 
+        @Suppress("NestedBlockDepth")
         override fun doInBackground(vararg params: Triple<Int, Uri, HttpTransaction>): Boolean {
             val (type, uri, transaction) = params[0]
             try {
