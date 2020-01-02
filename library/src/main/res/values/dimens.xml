@@ -3,6 +3,8 @@
     <dimen name="chucker_half_grid">4dp</dimen>
     <dimen name="chucker_base_grid">8dp</dimen>
     <dimen name="chucker_doub_grid">16dp</dimen>
+    <dimen name="chucker_quad_grid">32dp</dimen>
+    <dimen name="chucker_octa_grid">64dp</dimen>
 
     <dimen name="chucker_item_size">56dp</dimen>
 </resources>
