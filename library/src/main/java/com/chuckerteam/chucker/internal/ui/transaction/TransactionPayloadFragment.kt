@@ -33,6 +33,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -101,7 +102,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             }
 
             val saveMenuItem = menu.findItem(R.id.save_body)
-            saveMenuItem.isVisible = true
+
+            // SAF is not available on pre-Kit Kat so let's hide the icon.
+            saveMenuItem.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
             saveMenuItem.setOnMenuItemClickListener {
                 viewBodyExternally()
                 true
@@ -148,27 +151,26 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
         activity?.invalidateOptionsMenu()
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("DefaultLocale")
     private fun viewBodyExternally() {
         transaction?.let { transaction ->
             if (type == TYPE_REQUEST && (transaction.requestContentLength ?: 0L) == 0L) {
                 Toast.makeText(
-                    requireContext(), R.string.chucker_empty_request_body,
+                    requireContext(),
+                    R.string.chucker_empty_request_body,
                     Toast.LENGTH_SHORT
                 ).show()
             } else if (type == TYPE_RESPONSE && (transaction.responseContentLength ?: 0L) == 0L) {
                 Toast.makeText(
-                    requireContext(), R.string.chucker_empty_response_body,
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                Toast.makeText(
-                    requireContext(), R.string.chucker_save_is_only_supported_on_19,
+                    requireContext(),
+                    R.string.chucker_empty_response_body,
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
+                    putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
                     type = "*/*"
                 }
                 if (intent.resolveActivity(requireActivity().packageManager) != null) {
@@ -281,6 +283,8 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1
+
+        const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
         fun newInstance(type: Int): TransactionPayloadFragment {
             return TransactionPayloadFragment().apply {
