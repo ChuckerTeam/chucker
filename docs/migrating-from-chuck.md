@@ -24,8 +24,8 @@ repositories {
 }
 
 dependencies {
-    debugImplementation "com.github.ChuckerTeam.Chucker:library:3.0.0"
-    releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.0.0"
+    debugImplementation "com.github.ChuckerTeam.Chucker:library:3.0.1"
+    releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.0.1"
 }
 ```
 

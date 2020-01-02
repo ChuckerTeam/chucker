@@ -23,9 +23,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
@@ -34,11 +32,10 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
-import java.lang.ref.WeakReference
 
 internal class TransactionActivity : BaseChuckerActivity() {
     private lateinit var title: TextView
-    private lateinit var adapter: PagerAdapter
+    private lateinit var adapter: TransactionPagerAdapter
 
     private var transactionId: Long = 0
     private var transaction: HttpTransaction? = null
@@ -61,7 +58,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         tabLayout.setupWithViewPager(viewPager)
 
-        transactionId = intent.getLongExtra(ARG_TRANSACTION_ID, 0)
+        transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
     }
 
     override fun onResume() {
@@ -107,7 +104,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        adapter = PagerAdapter(applicationContext, supportFragmentManager)
+        adapter = TransactionPagerAdapter(this, supportFragmentManager)
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
@@ -118,45 +115,25 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewPager.currentItem = selectedTabPosition
     }
 
-    private fun share(content: String) {
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, content)
-            type = "text/plain"
-        }
-        startActivity(Intent.createChooser(sendIntent, null))
-    }
-
-    internal inner class PagerAdapter(context: Context, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-        private val context: WeakReference<Context> = WeakReference(context)
-        private val titleResIds = intArrayOf(
-            R.string.chucker_overview,
-            R.string.chucker_request,
-            R.string.chucker_response
+    private fun share(transactionDetailsText: String) {
+        startActivity(
+            ShareCompat.IntentBuilder.from(this)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+                .setSubject(getString(R.string.chucker_share_transaction_subject))
+                .setText(transactionDetailsText)
+                .createChooserIntent()
         )
-
-        override fun getItem(position: Int): Fragment = when (position) {
-            0 -> TransactionOverviewFragment()
-            1 -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST)
-            2 -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE)
-            else -> throw IllegalArgumentException("no item")
-        }
-
-        override fun getCount(): Int = titleResIds.size
-
-        override fun getPageTitle(position: Int): CharSequence? =
-            context.get()?.getString(titleResIds[position])
     }
 
     companion object {
-
-        private const val ARG_TRANSACTION_ID = "transaction_id"
+        private const val MIME_TYPE = "text/plain"
+        private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 
-        @JvmStatic
         fun start(context: Context, transactionId: Long) {
             val intent = Intent(context, TransactionActivity::class.java)
-            intent.putExtra(ARG_TRANSACTION_ID, transactionId)
+            intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
             context.startActivity(intent)
         }
     }

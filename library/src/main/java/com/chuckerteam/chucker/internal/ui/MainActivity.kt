@@ -82,7 +82,7 @@ class MainActivity :
     }
 
     override fun onErrorClick(throwableId: Long, position: Int) {
-        startActivity(ErrorActivity.newInstance(this, throwableId))
+        ErrorActivity.start(this, throwableId)
     }
 
     override fun onTransactionClick(transactionId: Long, position: Int) {

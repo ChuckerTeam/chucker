@@ -54,7 +54,10 @@
     <string name="chucker_network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
     <string name="chucker_errors_tutorial">This tab displays error recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
     <string name="chucker_notification_category">Chucker notifications</string>
-    <string name="chucker_share_error_title">Error report</string>
+    <string name="chucker_share_error_title">Share error details</string>
+    <string name="chucker_share_transaction_title">Share transaction details</string>
+    <string name="chucker_share_error_subject">Error details</string>
+    <string name="chucker_share_transaction_subject">Transaction details</string>
     <string name="chucker_share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>

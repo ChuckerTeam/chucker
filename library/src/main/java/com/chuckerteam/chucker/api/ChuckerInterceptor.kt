@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okio.Buffer
 import okio.BufferedSource
 
@@ -50,12 +51,14 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val requestBody = request.body()
 
         val transaction = HttpTransaction()
-        transaction.requestDate = System.currentTimeMillis()
-        transaction.method = request.method()
-        transaction.populateUrl(request.url().toString())
-        transaction.setRequestHeaders(request.headers())
-        transaction.requestContentType = requestBody?.contentType()?.toString()
-        transaction.requestContentLength = requestBody?.contentLength() ?: 0L
+        transaction.apply {
+            requestDate = System.currentTimeMillis()
+            method = request.method()
+            populateUrl(request.url().toString())
+            setRequestHeaders(request.headers())
+            requestContentType = requestBody?.contentType()?.toString()
+            requestContentLength = requestBody?.contentLength() ?: 0L
+        }
 
         val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
         transaction.isRequestBodyPlainText = encodingIsSupported
@@ -95,21 +98,36 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         // includes headers added later in the chain
         transaction.setRequestHeaders(filterHeaders(response.request().headers()))
-        transaction.responseDate = System.currentTimeMillis()
-        transaction.tookMs = tookMs
-        transaction.protocol = response.protocol().toString()
-        transaction.responseCode = response.code()
-        transaction.responseMessage = response.message()
+        transaction.apply {
+            responseDate = System.currentTimeMillis()
+            this.tookMs = tookMs
+            protocol = response.protocol().toString()
+            responseCode = response.code()
+            responseMessage = response.message()
 
-        transaction.responseContentType = responseBody?.contentType()?.toString()
-        transaction.responseContentLength = responseBody?.contentLength() ?: 0L
-        transaction.setResponseHeaders(filterHeaders(response.headers()))
+            responseContentType = responseBody?.contentType()?.toString()
+            responseContentLength = responseBody?.contentLength() ?: 0L
+            setResponseHeaders(filterHeaders(response.headers()))
+        }
 
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
-            val source = getNativeSource(response)
+            processResponseBody(response, responseBody, transaction)
+        }
+
+        collector.onResponseReceived(transaction)
+
+        return response
+    }
+
+    /**
+     * Private method to process the HTTP Response body and populate the corresponding response fields
+     * of a the [HttpTransaction].
+     */
+    private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
+        getNativeSource(response).use { source ->
             source.request(java.lang.Long.MAX_VALUE)
             val buffer = source.buffer()
             var charset: Charset = UTF8
@@ -118,8 +136,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 try {
                     charset = contentType.charset(UTF8) ?: UTF8
                 } catch (e: UnsupportedCharsetException) {
-                    collector.onResponseReceived(transaction)
-                    return response
+                    return
                 }
             }
             if (io.isPlaintext(buffer)) {
@@ -134,10 +151,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
             transaction.responseContentLength = buffer.size()
         }
-
-        collector.onResponseReceived(transaction)
-
-        return response
     }
 
     /** Overrides all the headers in [headersToRedact] with a `**` */

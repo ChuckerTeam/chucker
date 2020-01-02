@@ -15,9 +15,6 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.text.DateFormat
 
-private const val EXTRA_THROWABLE_ID = "EXTRA_THROWABLE_ID"
-private const val TEXT_PLAIN = "text/plain"
-
 internal class ErrorActivity : AppCompatActivity() {
 
     private var throwableId: Long = 0
@@ -78,7 +75,7 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     private fun share(throwable: RecordedThrowable) {
-        val text = getString(
+        val throwableDetailsText = getString(
             R.string.chucker_share_error_content,
             throwable.formattedDate,
             throwable.clazz,
@@ -86,12 +83,12 @@ internal class ErrorActivity : AppCompatActivity() {
             throwable.message,
             throwable.content
         )
-
         startActivity(
             ShareCompat.IntentBuilder.from(this)
-                .setType(TEXT_PLAIN)
-                .setSubject(getString(R.string.chucker_share_error_title))
-                .setText(text)
+                .setType(MIME_TYPE)
+                .setChooserTitle(getString(R.string.chucker_share_error_title))
+                .setSubject(getString(R.string.chucker_share_error_subject))
+                .setText(throwableDetailsText)
                 .createChooserIntent()
         )
     }
@@ -105,11 +102,14 @@ internal class ErrorActivity : AppCompatActivity() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(context: Context, throwableId: Long) =
-            Intent(context, ErrorActivity::class.java).apply {
-                putExtra(EXTRA_THROWABLE_ID, throwableId)
-            }
+        private const val MIME_TYPE = "text/plain"
+        private const val EXTRA_THROWABLE_ID = "transaction_id"
+
+        fun start(context: Context, throwableId: Long) {
+            val intent = Intent(context, ErrorActivity::class.java)
+            intent.putExtra(EXTRA_THROWABLE_ID, throwableId)
+            context.startActivity(intent)
+        }
     }
 
     private val RecordedThrowable.formattedDate: String

@@ -37,7 +37,6 @@ abstract class BaseChuckerActivity : AppCompatActivity() {
     }
 
     companion object {
-        @JvmStatic
         var isInForeground: Boolean = false
             private set
     }
