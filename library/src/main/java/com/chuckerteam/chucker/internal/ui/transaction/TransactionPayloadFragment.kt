@@ -31,14 +31,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 internal class TransactionPayloadFragment :
-    Fragment(),
-    TransactionFragment,
-    SearchView.OnQueryTextListener {
+    Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var headers: TextView
     private lateinit var body: TextView
@@ -48,14 +48,14 @@ internal class TransactionPayloadFragment :
     private var foregroundSpanColor: Int = Color.RED
 
     private var type: Int = 0
-    private var transaction: HttpTransaction? = null
+    private lateinit var viewModel: TransactionViewModel
     private var originalBody: String? = null
     private var uiLoaderTask: UiLoaderTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments!!.getInt(ARG_TYPE)
-        retainInstance = true
+        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
@@ -72,7 +72,12 @@ internal class TransactionPayloadFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        populateUI()
+        viewModel.transaction.observe(
+            this,
+            Observer { transaction ->
+                UiLoaderTask(this).execute(Pair(type, transaction))
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -92,21 +97,10 @@ internal class TransactionPayloadFragment :
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun transactionUpdated(transaction: HttpTransaction) {
-        this.transaction = transaction
-        populateUI()
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         backgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_background_span_color)
         foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
-    }
-
-    private fun populateUI() {
-        if (isAdded && transaction != null) {
-            UiLoaderTask(this).execute(Pair(type, transaction!!))
-        }
     }
 
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {
@@ -177,12 +171,11 @@ internal class TransactionPayloadFragment :
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1
 
-        fun newInstance(type: Int): TransactionPayloadFragment {
-            return TransactionPayloadFragment().apply {
+        fun newInstance(type: Int): TransactionPayloadFragment =
+            TransactionPayloadFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_TYPE, type)
                 }
             }
-        }
     }
 }

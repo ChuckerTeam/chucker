@@ -15,7 +15,6 @@
  */
 package com.chuckerteam.chucker.internal.ui.transaction
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,25 +24,33 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.FormatUtils.getShareCurlCommand
+import com.chuckerteam.chucker.internal.support.FormatUtils.getShareText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 internal class TransactionActivity : BaseChuckerActivity() {
+
     private lateinit var title: TextView
     private lateinit var viewPagerAdapter: TransactionPagerAdapter
-
-    private var transactionId: Long = 0
-    private var transaction: HttpTransaction? = null
+    private lateinit var viewModel: TransactionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chucker_activity_transaction)
+
+        val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
+
+        // Create the instance now, so it can be shared by the
+        // various fragments in the view pager later.
+        viewModel = ViewModelProviders
+            .of(this, TransactionViewModelFactory(transactionId))
+            .get(TransactionViewModel::class.java)
+        viewModel.loadTransaction()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -52,51 +59,35 @@ internal class TransactionActivity : BaseChuckerActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupViewPager()
-
-        transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
     }
 
     override fun onResume() {
         super.onResume()
-        RepositoryProvider.transaction().getTransaction(transactionId)
-            .observe(
-                this,
-                Observer { observed ->
-                    transaction = observed
-                    populateUI(observed)
-                }
-            )
+        viewModel.transactionTitle.observe(
+            this,
+            Observer { title.text = it }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.chucker_transaction, menu)
+        menuInflater.inflate(R.menu.chucker_transaction, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.share_text -> {
-            share(FormatUtils.getShareText(this, transaction!!))
-            true
-        }
-        R.id.share_curl -> {
-            share(FormatUtils.getShareCurlCommand(transaction!!))
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun populateUI(transaction: HttpTransaction?) {
-        if (transaction != null) {
-            title.text = "${transaction.method} ${transaction.path}"
-            for (fragment in supportFragmentManager.fragments) {
-                if (fragment is TransactionFragment) {
-                    (fragment as TransactionFragment).transactionUpdated(transaction)
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.share_text -> {
+                share(getShareText(this, viewModel.transaction.value!!))
+                true
+            }
+            R.id.share_curl -> {
+                share(getShareCurlCommand(viewModel.transaction.value!!))
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
-    }
 
     private fun setupViewPager() {
         val viewPager = findViewById<ViewPager2>(R.id.viewPagerTransaction)
@@ -108,7 +99,6 @@ internal class TransactionActivity : BaseChuckerActivity() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     selectedTabPosition = position
-                    populateUI(transaction)
                 }
             })
             currentItem = selectedTabPosition
@@ -141,9 +131,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
         private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
-            val intent = Intent(context, TransactionActivity::class.java)
-            intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
-            context.startActivity(intent)
+            context.startActivity(
+                Intent(context, TransactionActivity::class.java).apply {
+                    putExtra(EXTRA_TRANSACTION_ID, transactionId)
+                }
+            )
         }
     }
 }

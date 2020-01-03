@@ -13,19 +13,23 @@ object Chucker {
 
     val isOp = false
 
-    @JvmStatic fun getLaunchIntent(context: Context, screen: Int): Intent {
+    @JvmStatic
+    fun getLaunchIntent(context: Context, screen: Int): Intent {
         return Intent()
     }
 
-    @JvmStatic fun registerDefaultCrashHandler(collector: ChuckerCollector) {
+    @JvmStatic
+    fun registerDefaultCrashHandler(collector: ChuckerCollector) {
         // Empty method for the library-no-op artifact
     }
 
-    @JvmStatic fun dismissTransactionsNotification(context: Context) {
+    @JvmStatic
+    fun dismissTransactionsNotification(context: Context) {
         // Empty method for the library-no-op artifact
     }
 
-    @JvmStatic fun dismissErrorsNotification(context: Context) {
+    @JvmStatic
+    fun dismissErrorsNotification(context: Context) {
         // Empty method for the library-no-op artifact
     }
 }

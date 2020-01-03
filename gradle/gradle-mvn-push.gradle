@@ -15,7 +15,7 @@ afterEvaluate { proj ->
                     packaging 'aar'
 
                     // Add your description here
-                    name "$group:${proj.name}"
+                    name "${rootProject.group}:${proj.name}"
                     description = POM_DESCRIPTION
                     url siteUrl
 
