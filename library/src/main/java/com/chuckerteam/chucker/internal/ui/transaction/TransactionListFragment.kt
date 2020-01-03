@@ -32,7 +32,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
@@ -66,7 +65,6 @@ internal class TransactionListFragment :
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         val context = view.context
-        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         )
