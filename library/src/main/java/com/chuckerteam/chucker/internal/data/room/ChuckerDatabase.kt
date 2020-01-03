@@ -14,8 +14,8 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
     abstract fun transactionDao(): HttpTransactionDao
 
     companion object {
-        private val OLD_DB_NAME = "chuck.db"
-        private val DB_NAME = "chucker.db"
+        private const val OLD_DB_NAME = "chuck.db"
+        private const val DB_NAME = "chucker.db"
 
         fun create(context: Context): ChuckerDatabase {
             // We eventually delete the old DB if a previous version of Chuck/Chucker was used.

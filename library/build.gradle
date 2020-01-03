@@ -7,6 +7,10 @@ apply plugin: 'org.jetbrains.dokka'
 android {
     compileSdkVersion rootProject.compileSdkVersion
 
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "com.github.ChuckerTeam.Chucker.library-no-op"]
+    }
+
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         versionName VERSION_NAME
@@ -65,6 +69,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:$viewModelVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
 }

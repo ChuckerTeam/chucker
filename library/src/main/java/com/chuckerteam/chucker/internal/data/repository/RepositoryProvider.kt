@@ -13,13 +13,13 @@ internal object RepositoryProvider {
     private var transactionRepository: HttpTransactionRepository? = null
     private var throwableRepository: RecordedThrowableRepository? = null
 
-    @JvmStatic fun transaction(): HttpTransactionRepository {
+    fun transaction(): HttpTransactionRepository {
         return checkNotNull(transactionRepository) {
             "You can't access the transaction repository if you don't initialize it!"
         }
     }
 
-    @JvmStatic fun throwable(): RecordedThrowableRepository {
+    fun throwable(): RecordedThrowableRepository {
         return checkNotNull(throwableRepository) {
             "You can't access the throwable repository if you don't initialize it!"
         }
@@ -28,7 +28,6 @@ internal object RepositoryProvider {
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
-    @JvmStatic
     fun initialize(context: Context) {
         if (transactionRepository == null || throwableRepository == null) {
             val db = ChuckerDatabase.create(context)
