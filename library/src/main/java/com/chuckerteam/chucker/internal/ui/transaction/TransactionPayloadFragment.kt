@@ -264,9 +264,9 @@ internal class TransactionPayloadFragment : Fragment(), TransactionFragment, Sea
             return true
         }
 
-        override fun onPostExecute(result: Boolean) {
+        override fun onPostExecute(isSuccessful: Boolean) {
             fragment.fileSaverTask = null
-            val toastMessageId = if (result) {
+            val toastMessageId = if (isSuccessful) {
                 R.string.chucker_file_saved
             } else {
                 R.string.chucker_file_not_saved
