@@ -60,11 +60,11 @@ class ChuckerInterceptor @JvmOverloads constructor(
             requestContentLength = requestBody?.contentLength() ?: 0L
         }
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get("Content-Encoding"))
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
         transaction.isRequestBodyPlainText = encodingIsSupported
 
         if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get("Content-Encoding")))
+            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get(CONTENT_ENCODING)))
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
@@ -110,7 +110,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
             setResponseHeaders(filterHeaders(response.headers()))
         }
 
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get("Content-Encoding"))
+        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
         transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
@@ -169,7 +169,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
      */
     @Throws(IOException::class)
     private fun getNativeSource(response: Response): BufferedSource {
-        if (io.bodyIsGzipped(response.headers().get("Content-Encoding"))) {
+        if (io.bodyIsGzipped(response.headers().get(CONTENT_ENCODING))) {
             val source = response.peekBody(maxContentLength).source()
             if (source.buffer().size() < maxContentLength) {
                 return io.getNativeSource(source, true)
@@ -182,5 +182,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
+        private val CONTENT_ENCODING = "Content-Encoding"
     }
 }

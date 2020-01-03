@@ -114,7 +114,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> error
                 Status.Requested -> null
-                else -> responseCode.toString() + " " + responseMessage
+                else -> "$responseCode $responseMessage"
             }
         }
 
@@ -123,12 +123,12 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path
+                else -> "$responseCode $method $path"
             }
         }
 
     val isSsl: Boolean
-        get() = scheme?.toLowerCase() == "https"
+        get() = scheme.equals("https", ignoreCase = true)
 
     val responseImageBitmap: Bitmap?
         get() {
@@ -187,9 +187,9 @@ internal class HttpTransaction(
 
     private fun formatBody(body: String, contentType: String?): String {
         return when {
-            contentType != null && contentType.toLowerCase().contains("json") ->
+            contentType != null && contentType.contains("json", ignoreCase = true) ->
                 FormatUtils.formatJson(body)
-            contentType != null && contentType.toLowerCase().contains("xml") ->
+            contentType != null && contentType.contains("xml", ignoreCase = true) ->
                 FormatUtils.formatXml(body)
             else -> body
         }

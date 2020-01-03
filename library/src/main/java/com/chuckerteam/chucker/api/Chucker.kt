@@ -12,6 +12,9 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
  */
 object Chucker {
 
+    const val SCREEN_HTTP = 1
+    const val SCREEN_ERROR = 2
+
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
@@ -57,9 +60,6 @@ object Chucker {
     fun dismissErrorsNotification(context: Context) {
         NotificationHelper(context).dismissErrorsNotification()
     }
-
-    const val SCREEN_HTTP = 1
-    const val SCREEN_ERROR = 2
 
     /**
      * Annotation used to specify which screen of Chucker should be launched.
