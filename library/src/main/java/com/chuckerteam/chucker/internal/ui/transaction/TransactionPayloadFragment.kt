@@ -99,6 +99,7 @@ internal class TransactionPayloadFragment :
         fileSaverTask?.cancel(true)
     }
 
+    @SuppressLint("NewApi")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if ((type == TYPE_RESPONSE || type == TYPE_REQUEST)) {
             if (body.text.isNotEmpty()) {
@@ -109,10 +110,17 @@ internal class TransactionPayloadFragment :
                 searchView.setIconifiedByDefault(true)
             }
 
+            val transaction = viewModel.transaction.value
             val saveMenuItem = menu.findItem(R.id.save_body)
+            val showSaveMenuItem = when {
+                // SAF is not available on pre-Kit Kat so let's hide the icon.
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> false
+                (type == TYPE_REQUEST && 0L == (transaction?.requestContentLength ?: 0L)) -> false
+                (type == TYPE_RESPONSE && 0L == (transaction?.responseContentLength ?: 0L)) -> false
+                else -> true
+            }
 
-            // SAF is not available on pre-Kit Kat so let's hide the icon.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (showSaveMenuItem) {
                 saveMenuItem.isVisible = true
                 saveMenuItem.setOnMenuItemClickListener {
                     viewBodyExternally()
@@ -155,21 +163,8 @@ internal class TransactionPayloadFragment :
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("DefaultLocale")
     private fun viewBodyExternally() {
-        transaction?.let { transaction ->
-            if (type == TYPE_REQUEST && (transaction.requestContentLength ?: 0L) == 0L) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.chucker_empty_request_body,
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (type == TYPE_RESPONSE && (transaction.responseContentLength ?: 0L) == 0L) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.chucker_empty_response_body,
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+        viewModel.transaction.value?.let {
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
                     type = "*/*"
@@ -182,7 +177,6 @@ internal class TransactionPayloadFragment :
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
         }
     }
 
@@ -190,7 +184,10 @@ internal class TransactionPayloadFragment :
         if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val uri = resultData?.data
             if (uri != null) {
-                fileSaverTask = FileSaverTask(this).apply { execute(Triple(type, uri, transaction!!)) }
+                val transaction = viewModel.transaction.value
+                fileSaverTask = FileSaverTask(this).apply {
+                    execute(Triple(type, uri, transaction!!))
+                }
             }
         }
     }
