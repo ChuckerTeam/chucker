@@ -11,7 +11,7 @@ object Chucker {
     const val SCREEN_HTTP = 1
     const val SCREEN_ERROR = 2
 
-    const val isOp = false
+    val isOp = false
 
     @JvmStatic
     fun getLaunchIntent(context: Context, screen: Int): Intent {

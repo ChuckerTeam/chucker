@@ -19,7 +19,7 @@ object Chucker {
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
-    const val isOp = true
+    val isOp = true
 
     /**
      * Get an Intent to launch the Chucker UI directly.
