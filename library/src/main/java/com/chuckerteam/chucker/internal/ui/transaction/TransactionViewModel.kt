@@ -8,9 +8,9 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.observeOnce
 
-class TransactionViewModel(private val transactionId: Long) : ViewModel() {
-    val transactionTitle: MutableLiveData<String> = MutableLiveData()
-    internal var transaction: MutableLiveData<HttpTransaction> = MutableLiveData()
+internal class TransactionViewModel(private val transactionId: Long) : ViewModel() {
+    internal val transactionTitle: MutableLiveData<String> = MutableLiveData()
+    internal val transaction: MutableLiveData<HttpTransaction> = MutableLiveData()
 
     fun loadTransaction() {
         RepositoryProvider.transaction()
@@ -24,7 +24,7 @@ class TransactionViewModel(private val transactionId: Long) : ViewModel() {
     }
 }
 
-class TransactionViewModelFactory(private val transactionId: Long = 0L) :
+internal class TransactionViewModelFactory(private val transactionId: Long = 0L) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(Long::class.java).newInstance(transactionId)
