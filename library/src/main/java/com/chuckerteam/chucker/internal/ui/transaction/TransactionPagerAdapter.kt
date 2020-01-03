@@ -5,17 +5,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.chuckerteam.chucker.R
-import java.lang.ref.WeakReference
 
 internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
     FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val context: WeakReference<Context> = WeakReference(context)
-
-    private val titleResIds = intArrayOf(
-        R.string.chucker_overview,
-        R.string.chucker_request,
-        R.string.chucker_response
+    private val titles = arrayOf(
+        context.getString(R.string.chucker_overview),
+        context.getString(R.string.chucker_request),
+        context.getString(R.string.chucker_response)
     )
 
     override fun getItem(position: Int): Fragment = when (position) {
@@ -25,8 +22,7 @@ internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
         else -> throw IllegalArgumentException("no item")
     }
 
-    override fun getCount(): Int = titleResIds.size
+    override fun getCount(): Int = titles.size
 
-    override fun getPageTitle(position: Int): CharSequence? =
-        context.get()?.getString(titleResIds[position])
+    override fun getPageTitle(position: Int): CharSequence? = titles[position]
 }
