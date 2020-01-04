@@ -17,6 +17,8 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -43,6 +45,7 @@ class TransactionOverviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
     }
 
@@ -66,6 +69,13 @@ class TransactionOverviewFragment : Fragment() {
                 responseSize = it.findViewById(R.id.response_size)
                 totalSize = it.findViewById(R.id.total_size)
             }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val saveMenuItem = menu.findItem(R.id.save_body)
+        saveMenuItem.isVisible = false
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

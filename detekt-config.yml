@@ -8,6 +8,9 @@ build:
 
 complexity:
   active: true
+  ComplexMethod:
+    active: true
+    threshold: 16
   ComplexCondition:
     active: true
     threshold: 5

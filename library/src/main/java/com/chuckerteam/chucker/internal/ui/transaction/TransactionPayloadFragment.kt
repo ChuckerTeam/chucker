@@ -15,10 +15,15 @@
  */
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -27,6 +32,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -36,6 +43,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+
+private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
@@ -51,6 +63,7 @@ internal class TransactionPayloadFragment :
     private lateinit var viewModel: TransactionViewModel
     private var originalBody: String? = null
     private var uiLoaderTask: UiLoaderTask? = null
+    private var fileSaverTask: FileSaverTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,15 +96,38 @@ internal class TransactionPayloadFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         uiLoaderTask?.cancel(true)
+        fileSaverTask?.cancel(true)
     }
 
+    @SuppressLint("NewApi")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if ((type == TYPE_RESPONSE || type == TYPE_REQUEST) && body.text.isNotEmpty()) {
-            val searchMenuItem = menu.findItem(R.id.search)
-            searchMenuItem.isVisible = true
-            val searchView = searchMenuItem.actionView as SearchView
-            searchView.setOnQueryTextListener(this)
-            searchView.setIconifiedByDefault(true)
+        if ((type == TYPE_RESPONSE || type == TYPE_REQUEST)) {
+            if (body.text.isNotEmpty()) {
+                val searchMenuItem = menu.findItem(R.id.search)
+                searchMenuItem.isVisible = true
+                val searchView = searchMenuItem.actionView as SearchView
+                searchView.setOnQueryTextListener(this)
+                searchView.setIconifiedByDefault(true)
+            }
+
+            val transaction = viewModel.transaction.value
+            val showSaveMenuItem = when {
+                // SAF is not available on pre-Kit Kat so let's hide the icon.
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
+                (type == TYPE_REQUEST && 0L == (transaction?.requestContentLength ?: 0L)) -> false
+                (type == TYPE_RESPONSE && 0L == (transaction?.responseContentLength ?: 0L)) -> false
+                else -> true
+            }
+
+            if (showSaveMenuItem) {
+                menu.findItem(R.id.save_body).apply {
+                    isVisible = true
+                    setOnMenuItemClickListener {
+                        viewBodyExternally()
+                        true
+                    }
+                }
+            }
         }
 
         super.onCreateOptionsMenu(menu, inflater)
@@ -104,6 +140,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun setBody(headersString: String, bodyString: String?, isPlainText: Boolean, image: Bitmap?) {
+        uiLoaderTask = null
         headers.visibility = if (headersString.isEmpty()) View.GONE else View.VISIBLE
         headers.text = HtmlCompat.fromHtml(headersString, HtmlCompat.FROM_HTML_MODE_LEGACY)
         val isImageData = image != null
@@ -120,6 +157,38 @@ internal class TransactionPayloadFragment :
         }
         originalBody = body.text.toString()
         activity?.invalidateOptionsMenu()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    @SuppressLint("DefaultLocale")
+    private fun viewBodyExternally() {
+        viewModel.transaction.value?.let {
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+                type = "*/*"
+            }
+            if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
+            } else {
+                Toast.makeText(
+                    requireContext(), R.string.chucker_save_failed_to_open_document,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val uri = resultData?.data
+            val transaction = viewModel.transaction.value
+            if (uri != null && transaction != null) {
+                fileSaverTask = FileSaverTask(this).apply {
+                    execute(Triple(type, uri, transaction))
+                }
+            }
+        }
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = false
@@ -158,6 +227,50 @@ internal class TransactionPayloadFragment :
         }
     }
 
+    private class FileSaverTask(val fragment: TransactionPayloadFragment) :
+        AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
+
+        @Suppress("NestedBlockDepth")
+        override fun doInBackground(vararg params: Triple<Int, Uri, HttpTransaction>): Boolean {
+            val (type, uri, transaction) = params[0]
+            try {
+                val context = fragment.context ?: return false
+                context.contentResolver.openFileDescriptor(uri, "w")?.use {
+                    FileOutputStream(it.fileDescriptor).use { fos ->
+                        when {
+                            type == TYPE_REQUEST -> {
+                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                            }
+                            transaction.responseBody != null -> {
+                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                            }
+                            else -> {
+                                fos.write(transaction.responseImageData)
+                            }
+                        }
+                    }
+                }
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+                return false
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return false
+            }
+            return true
+        }
+
+        override fun onPostExecute(isSuccessful: Boolean) {
+            fragment.fileSaverTask = null
+            val toastMessageId = if (isSuccessful) {
+                R.string.chucker_file_saved
+            } else {
+                R.string.chucker_file_not_saved
+            }
+            Toast.makeText(fragment.context, toastMessageId, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private data class UiPayload(
         val headersString: String,
         val bodyString: String?,
@@ -170,6 +283,8 @@ internal class TransactionPayloadFragment :
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1
+
+        const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
         fun newInstance(type: Int): TransactionPayloadFragment =
             TransactionPayloadFragment().apply {
