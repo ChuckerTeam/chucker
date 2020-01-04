@@ -61,13 +61,13 @@ internal class TransactionBodyAdapter(
                     item.line.clearSpans()
                     item.line = item.line.toString()
                         .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
-                    notifyItemChanged(index)
+                    notifyItemChanged(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
                     if (spans.isNotEmpty()) {
                         item.line.clearSpans()
-                        notifyItemChanged(index)
+                        notifyItemChanged(index + 1)
                     }
                 }
             }
@@ -80,7 +80,7 @@ internal class TransactionBodyAdapter(
                 val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
                 if (spans.isNotEmpty()) {
                     item.line.clearSpans()
-                    notifyItemChanged(index)
+                    notifyItemChanged(index + 1)
                 }
             }
     }
