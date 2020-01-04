@@ -132,17 +132,17 @@ class NotificationHelper(val context: Context) {
     }
 
     private fun createClearAction(clearAction: ClearDatabaseService.ClearAction):
-    NotificationCompat.Action {
-        val clearTitle = context.getString(R.string.chucker_clear)
-        val deleteIntent = Intent(context, ClearDatabaseService::class.java).apply {
-            putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
+        NotificationCompat.Action {
+            val clearTitle = context.getString(R.string.chucker_clear)
+            val deleteIntent = Intent(context, ClearDatabaseService::class.java).apply {
+                putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
+            }
+            val intent = PendingIntent.getService(
+                context, INTENT_REQUEST_CODE,
+                deleteIntent, PendingIntent.FLAG_ONE_SHOT
+            )
+            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
         }
-        val intent = PendingIntent.getService(
-            context, INTENT_REQUEST_CODE,
-            deleteIntent, PendingIntent.FLAG_ONE_SHOT
-        )
-        return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
-    }
 
     internal fun dismissTransactionsNotification() {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
