@@ -30,7 +30,6 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradleVersion"
         classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradleVersion"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$gradleBintrayVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"

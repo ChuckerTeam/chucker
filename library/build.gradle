@@ -74,5 +74,4 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 }
 
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
