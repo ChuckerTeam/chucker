@@ -111,23 +111,22 @@ internal class TransactionPayloadFragment :
             }
 
             val transaction = viewModel.transaction.value
-            val saveMenuItem = menu.findItem(R.id.save_body)
             val showSaveMenuItem = when {
                 // SAF is not available on pre-Kit Kat so let's hide the icon.
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> false
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
                 (type == TYPE_REQUEST && 0L == (transaction?.requestContentLength ?: 0L)) -> false
                 (type == TYPE_RESPONSE && 0L == (transaction?.responseContentLength ?: 0L)) -> false
                 else -> true
             }
 
             if (showSaveMenuItem) {
-                saveMenuItem.isVisible = true
-                saveMenuItem.setOnMenuItemClickListener {
-                    viewBodyExternally()
-                    true
+                menu.findItem(R.id.save_body).apply {
+                    isVisible = true
+                    setOnMenuItemClickListener {
+                        viewBodyExternally()
+                        true
+                    }
                 }
-            } else {
-                saveMenuItem.isVisible = false
             }
         }
 
@@ -183,10 +182,10 @@ internal class TransactionPayloadFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val uri = resultData?.data
-            if (uri != null) {
-                val transaction = viewModel.transaction.value
+            val transaction = viewModel.transaction.value
+            if (uri != null && transaction != null) {
                 fileSaverTask = FileSaverTask(this).apply {
-                    execute(Triple(type, uri, transaction!!))
+                    execute(Triple(type, uri, transaction))
                 }
             }
         }
@@ -239,12 +238,15 @@ internal class TransactionPayloadFragment :
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when {
-                            type == TYPE_REQUEST ->
+                            type == TYPE_REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                            transaction.responseBody != null ->
+                            }
+                            transaction.responseBody != null -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                            else ->
+                            }
+                            else -> {
                                 fos.write(transaction.responseImageData)
+                            }
                         }
                     }
                 }

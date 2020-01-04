@@ -42,6 +42,7 @@
         android:icon="@drawable/chucker_ic_save_white_24dp"
         android:title="@string/chucker_save"
         android:id="@+id/save_body"
+        android:visible="false"
         app:showAsAction="always">
     </item>
 </menu>
