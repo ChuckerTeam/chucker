@@ -194,10 +194,11 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
-        if (newText.isNotBlank())
+        if (newText.isNotBlank()) {
             body.text = originalBody?.highlightWithDefinedColors(newText, backgroundSpanColor, foregroundSpanColor)
-        else
+        } else {
             body.text = originalBody
+        }
         return true
     }
 
