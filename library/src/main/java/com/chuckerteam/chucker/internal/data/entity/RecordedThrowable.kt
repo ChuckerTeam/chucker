@@ -11,7 +11,8 @@ import com.chuckerteam.chucker.internal.support.FormatUtils
  */
 @Entity(tableName = "throwables")
 internal data class RecordedThrowable(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
+    var id: Long? = 0,
     @ColumnInfo(name = "tag") var tag: String?,
     @ColumnInfo(name = "date") var date: Long?,
     @ColumnInfo(name = "clazz") var clazz: String?,
