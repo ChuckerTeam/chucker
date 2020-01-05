@@ -177,10 +177,34 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 Short `TODO` List for new contributors:
 
 - [ ] Kotlinize classes inside the `.internal` package.
-- [ ] Have a empty state graphics/message for requests with no headers.
+- [x] Have a empty state graphics/message for requests with no headers.
 - [ ] Increment the test coverage.
 
 ## Acknowledgments 🌸
+
+### Maintainers
+
+Chucker is currently developed and maintained by the [ChuckerTeam](https://github.com/ChuckerTeam). When submitting a new PR, please ping one of:
+
+- [@olivierperez](https://github.com/olivierperez)
+- [@cortinico](https://github.com/cortinico)
+- [@redwarp](https://github.com/redwarp)
+- [@vbuberen](https://github.com/vbuberen)
+
+### Contributors
+
+Big thanks to our contributors ❤️ Please add your name here once you submit a PR.
+
+- [Ashok Varma](https://github.com/Ashok-Varma) Clean up
+- [Bernat Borrás Paronella](https://github.com/alorma) Redact headers + HTTP methods in notifications
+- [Hafiz Waleed Hussain](https://github.com/Hafiz-Waleed-Hussain) Search highlight in response tab
+- [Karol Wrótniak](https://github.com/koral--) Fix race condition + Application name retrieval
+- [OlliZi](https://github.com/OlliZi) Support for images
+- [Paul Hawke](https://github.com/psh) API Clean
+- [Paul Woitaschek](https://github.com/PaulWoitaschek) Fix typo in API
+- [SeungHun Choe](https://github.com/uOOOO) Fix memory leak
+
+### Libraries
 
 Chucker uses the following open source libraries:
 
@@ -191,7 +215,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018 Nicola Corti & Olivier Perez.
+    Copyright (C) 2018 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");

@@ -12,7 +12,8 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.ArrayList
+import java.util.Date
+import kotlin.collections.ArrayList
 import okhttp3.Headers
 
 /**
@@ -21,7 +22,8 @@ import okhttp3.Headers
  */
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
+    var id: Long = 0,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,
     @ColumnInfo(name = "responseDate") var responseDate: Long?,
     @ColumnInfo(name = "tookMs") var tookMs: Long?,
@@ -87,10 +89,10 @@ internal class HttpTransaction(
         }
 
     val requestDateString: String?
-        get() = requestDate?.toString()
+        get() = requestDate?.let { Date(it).toString() }
 
     val responseDateString: String?
-        get() = responseDate?.toString()
+        get() = responseDate?.let { Date(it).toString() }
 
     val durationString: String?
         get() = tookMs?.let { "$it ms" }
@@ -113,7 +115,7 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> error
                 Status.Requested -> null
-                else -> responseCode.toString() + " " + responseMessage
+                else -> "$responseCode $responseMessage"
             }
         }
 
@@ -122,12 +124,12 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> responseCode.toString() + " " + method + " " + path
+                else -> "$responseCode $method $path"
             }
         }
 
     val isSsl: Boolean
-        get() = scheme?.toLowerCase() == "https"
+        get() = scheme.equals("https", ignoreCase = true)
 
     val responseImageBitmap: Bitmap?
         get() {
@@ -186,9 +188,9 @@ internal class HttpTransaction(
 
     private fun formatBody(body: String, contentType: String?): String {
         return when {
-            contentType != null && contentType.toLowerCase().contains("json") ->
+            contentType != null && contentType.contains("json", ignoreCase = true) ->
                 FormatUtils.formatJson(body)
-            contentType != null && contentType.toLowerCase().contains("xml") ->
+            contentType != null && contentType.contains("xml", ignoreCase = true) ->
                 FormatUtils.formatXml(body)
             else -> body
         }

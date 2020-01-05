@@ -19,6 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
+    android:layoutDirection="ltr"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionPayloadFragment">
 
     <LinearLayout
@@ -41,7 +42,7 @@
             android:textIsSelectable="true"/>
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/binaryData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />

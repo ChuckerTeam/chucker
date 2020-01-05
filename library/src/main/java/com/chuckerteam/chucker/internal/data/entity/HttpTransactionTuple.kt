@@ -21,7 +21,7 @@ internal class HttpTransactionTuple(
     @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
     @ColumnInfo(name = "error") var error: String?
 ) {
-    val isSsl: Boolean get() = scheme?.toLowerCase() == "https"
+    val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
     val status: HttpTransaction.Status
         get() = when {

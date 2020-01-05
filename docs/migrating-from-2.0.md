@@ -11,13 +11,13 @@ Generally name of classes from Chucker 2.x used to have `Chuck` as a prefix (e.g
 So if to launch the UI of Chucker, you would normally call:
 
 ```kotlin
-Chuck.getLaunchIntent(context)
+Chuck.getLaunchIntent(...)
 ```
 
 now you will call
 
 ```kotlin
-Chucker.getLaunchIntent(context)
+Chucker.getLaunchIntent(...)
 ```
 
 ## 2. Package name changes
