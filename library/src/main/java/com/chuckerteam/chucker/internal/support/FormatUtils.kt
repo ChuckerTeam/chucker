@@ -1,7 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
-import android.text.TextUtils
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -61,7 +60,7 @@ internal object FormatUtils {
 
     fun formatXml(xml: String): String {
         return try {
-            val transformerFactory = (SAXTransformerFactory.newInstance() as SAXTransformerFactory).apply {
+            val transformerFactory = SAXTransformerFactory.newInstance().apply {
                 setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
                 setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "")
                 setAttribute("http://javax.xml.XMLConstants/property/accessExternalStylesheet", "")
@@ -103,8 +102,8 @@ internal object FormatUtils {
 
         var headers = formatHeaders(transaction.getParsedRequestHeaders(), false)
 
-        if (!TextUtils.isEmpty(headers)) {
-            text += headers + "\n"
+        if (headers.isNotBlank()) {
+            text += "${headers}\n"
         }
 
         text += if (transaction.isRequestBodyPlainText) {
@@ -114,12 +113,12 @@ internal object FormatUtils {
         }
 
         text += "\n\n"
-        text += "---------- " + context.getString(R.string.chucker_response) + " ----------\n\n"
+        text += "---------- ${context.getString(R.string.chucker_response)} ----------\n\n"
 
         headers = formatHeaders(transaction.getParsedResponseHeaders(), false)
 
-        if (!TextUtils.isEmpty(headers)) {
-            text += headers + "\n"
+        if (headers.isNotBlank()) {
+            text += "${headers}\n"
         }
 
         text += if (transaction.isResponseBodyPlainText) {
@@ -134,7 +133,7 @@ internal object FormatUtils {
     @JvmStatic
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
-        var curlCmd = "curl -X " + transaction.method
+        var curlCmd = "curl -X $transaction.method"
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
@@ -147,9 +146,9 @@ internal object FormatUtils {
         }
 
         val requestBody = transaction.requestBody
-        if (requestBody != null && requestBody.isNotEmpty()) {
+        if (!requestBody.isNullOrEmpty()) {
             // try to keep to a single line and use a subshell to preserve any line breaks
-            curlCmd += " --data $'" + requestBody.replace("\n", "\\n") + "'"
+            curlCmd += " --data $'$requestBody.replace(\"\\n\", \"\\\\n\")'"
         }
         curlCmd += (if (compressed) " --compressed " else " ") + transaction.url
         return curlCmd
