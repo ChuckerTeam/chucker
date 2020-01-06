@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.internal.bind.DateTypeAdapter
 import java.util.Date
 
-object JsonConverter {
+internal object JsonConverter {
 
-    @JvmStatic val instance: Gson by lazy {
+    val instance: Gson by lazy {
         GsonBuilder()
             .serializeNulls()
             .setPrettyPrinting()
