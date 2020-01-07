@@ -27,7 +27,7 @@ import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import com.google.android.material.tabs.TabLayout
 
-class MainActivity :
+internal class MainActivity :
     BaseChuckerActivity(),
     TransactionAdapter.TransactionClickListListener,
     ErrorAdapter.ErrorClickListListener {

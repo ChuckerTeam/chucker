@@ -32,7 +32,7 @@ import com.chuckerteam.chucker.internal.support.FormatUtils.getShareText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayout
 
-class TransactionActivity : BaseChuckerActivity() {
+internal class TransactionActivity : BaseChuckerActivity() {
 
     private lateinit var title: TextView
     private lateinit var viewModel: TransactionViewModel
@@ -116,13 +116,10 @@ class TransactionActivity : BaseChuckerActivity() {
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 
-        @JvmStatic
         fun start(context: Context, transactionId: Long) {
-            context.startActivity(
-                Intent(context, TransactionActivity::class.java).apply {
-                    putExtra(EXTRA_TRANSACTION_ID, transactionId)
-                }
-            )
+            val intent = Intent(context, TransactionActivity::class.java)
+            intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
+            context.startActivity(intent)
         }
     }
 }
