@@ -63,7 +63,7 @@ internal class IOUtils(private val context: Context) {
     }
 
     fun bodyHasSupportedEncoding(contentEncoding: String?) =
-            contentEncoding.isNullOrEmpty() ||
+        contentEncoding.isNullOrEmpty() ||
             contentEncoding.equals("identity", ignoreCase = true) ||
             contentEncoding.equals("gzip", ignoreCase = true)
 
