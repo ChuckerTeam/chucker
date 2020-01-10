@@ -35,10 +35,11 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    private val headersToRedact: MutableSet<String> = mutableSetOf()
+    headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
+    private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
 
     fun redactHeader(name: String) = apply {
         headersToRedact.add(name)
