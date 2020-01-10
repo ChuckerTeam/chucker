@@ -17,10 +17,14 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
 class NotificationHelper(val context: Context) {
+
     companion object {
-        private const val CHANNEL_ID = "chucker"
+        private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
+        private const val ERRORS_CHANNEL_ID = "chucker_errors"
+
         private const val TRANSACTION_NOTIFICATION_ID = 1138
         private const val ERROR_NOTIFICATION_ID = 3546
+
         private const val BUFFER_SIZE = 10
         private const val INTENT_REQUEST_CODE = 11
         private val transactionBuffer = LongSparseArray<HttpTransaction>()
@@ -37,15 +41,37 @@ class NotificationHelper(val context: Context) {
     private val notificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+    private val transactionsScreenIntent by lazy {
+        PendingIntent.getActivity(
+            context,
+            TRANSACTION_NOTIFICATION_ID,
+            Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
+    private val errorsScreenIntent by lazy {
+        PendingIntent.getActivity(
+            context,
+            ERROR_NOTIFICATION_ID,
+            Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(
-                NotificationChannel(
-                    CHANNEL_ID,
-                    context.getString(R.string.chucker_notification_category),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+            val transactionsChannel = NotificationChannel(
+                TRANSACTIONS_CHANNEL_ID,
+                context.getString(R.string.chucker_networks_notification_category),
+                NotificationManager.IMPORTANCE_DEFAULT
             )
+            val errorsChannel = NotificationChannel(
+                ERRORS_CHANNEL_ID,
+                context.getString(R.string.chucker_errors_notification_category),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannels(listOf(transactionsChannel, errorsChannel))
         }
     }
 
@@ -69,19 +95,13 @@ class NotificationHelper(val context: Context) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground) {
             val builder =
-                NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(
-                        PendingIntent.getActivity(
-                            context,
-                            TRANSACTION_NOTIFICATION_ID,
-                            Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-                    )
+                NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
+                    .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_http_notification_24dp)
+                    .setSmallIcon(R.drawable.chucker_ic_transaction_notification_24dp)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
+                    .setAutoCancel(true)
                     .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
@@ -95,10 +115,7 @@ class NotificationHelper(val context: Context) {
                     }
                     count++
                 }
-                builder.apply {
-                    setAutoCancel(true)
-                    setStyle(inboxStyle)
-                }
+                builder.setStyle(inboxStyle)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     builder.setSubText(transactionIdsSet.size.toString())
                 } else {
@@ -112,16 +129,10 @@ class NotificationHelper(val context: Context) {
     internal fun show(throwable: RecordedThrowable) {
         if (!BaseChuckerActivity.isInForeground) {
             val builder =
-                NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentIntent(
-                        PendingIntent.getActivity(
-                            context, ERROR_NOTIFICATION_ID,
-                            Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-                    )
+                NotificationCompat.Builder(context, ERRORS_CHANNEL_ID)
+                    .setContentIntent(errorsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_throwable_notification)
+                    .setSmallIcon(R.drawable.chucker_ic_error_notifications_24dp)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
                     .setContentTitle(throwable.clazz)
                     .setAutoCancel(true)
