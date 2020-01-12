@@ -227,10 +227,9 @@ internal class TransactionPayloadFragment :
             }
 
             // The body could either be an image, binary encoded or plain text.
-            if (type == TYPE_RESPONSE && transaction.responseImageBitmap != null) {
-                transaction.responseImageBitmap?.let {
-                    result.add(TransactionPayloadItem.ImageItem(it))
-                }
+            val responseBitmap = transaction.responseImageBitmap
+            if (type == TYPE_RESPONSE && responseBitmap != null) {
+                result.add(TransactionPayloadItem.ImageItem(responseBitmap))
             } else if (!isBodyPlainText) {
                 fragment.context?.getString(R.string.chucker_body_omitted)?.let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
