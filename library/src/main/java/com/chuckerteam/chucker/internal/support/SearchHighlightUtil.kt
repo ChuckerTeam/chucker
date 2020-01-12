@@ -15,7 +15,7 @@ fun String.highlightWithDefinedColors(
     search: String,
     backgroundColor: Int,
     foregroundColor: Int
-): CharSequence {
+): SpannableStringBuilder {
     val startIndexes = indexesOf(this, search)
     return applyColoredSpannable(this, startIndexes, search.length, backgroundColor, foregroundColor)
 }

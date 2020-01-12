@@ -60,4 +60,5 @@
     <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="chucker_setup">Setup</string>
+    <string name="chucker_binary_data">binary data</string>
 </resources>
