@@ -11,7 +11,7 @@ import android.text.style.UnderlineSpan
  *
  * @param search the text to highlight
  */
-fun String.highlightWithDefinedColors(
+internal fun String.highlightWithDefinedColors(
     search: String,
     backgroundColor: Int,
     foregroundColor: Int

@@ -10,7 +10,7 @@ import okhttp3.Response
 const val HTTP_CONTINUE = 100
 
 /** Returns true if the response must have a (possibly 0-length) body. See RFC 7231.  */
-fun Response.hasBody(): Boolean {
+internal fun Response.hasBody(): Boolean {
     // HEAD requests never yield a body regardless of the response headers.
     if (this.request().method() == "HEAD") {
         return false
@@ -29,12 +29,12 @@ fun Response.hasBody(): Boolean {
     return this.contentLenght != -1L || this.isChunked
 }
 
-val Response.contentLenght: Long
+internal val Response.contentLenght: Long
     get() {
         return this.header("Content-Length")?.toLongOrNull() ?: -1
     }
 
-val Response.isChunked: Boolean
+internal val Response.isChunked: Boolean
     get() {
         return this.header("Transfer-Encoding").equals("chunked", ignoreCase = true)
     }

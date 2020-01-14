@@ -27,7 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.chuckerteam.chucker.R
 
-class TransactionOverviewFragment : Fragment() {
+internal class TransactionOverviewFragment : Fragment() {
 
     private lateinit var url: TextView
     private lateinit var method: TextView
