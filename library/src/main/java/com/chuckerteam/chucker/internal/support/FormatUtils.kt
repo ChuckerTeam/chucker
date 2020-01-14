@@ -51,7 +51,7 @@ internal object FormatUtils {
 
     fun formatJson(json: String): String {
         return try {
-            val je = JsonParser().parse(json)
+            val je = JsonParser.parseString(json)
             JsonConverter.instance.toJson(je)
         } catch (e: JsonParseException) {
             json

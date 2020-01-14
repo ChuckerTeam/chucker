@@ -16,8 +16,8 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
-class NotificationHelper(val context: Context) {
-
+internal class NotificationHelper(val context: Context) {
+  
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
         private const val ERRORS_CHANNEL_ID = "chucker_errors"
@@ -91,7 +91,7 @@ class NotificationHelper(val context: Context) {
         }
     }
 
-    internal fun show(transaction: HttpTransaction) {
+    fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground) {
             val builder =
@@ -126,7 +126,7 @@ class NotificationHelper(val context: Context) {
         }
     }
 
-    internal fun show(throwable: RecordedThrowable) {
+    fun show(throwable: RecordedThrowable) {
         if (!BaseChuckerActivity.isInForeground) {
             val builder =
                 NotificationCompat.Builder(context, ERRORS_CHANNEL_ID)
@@ -155,11 +155,11 @@ class NotificationHelper(val context: Context) {
             return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
         }
 
-    internal fun dismissTransactionsNotification() {
+    fun dismissTransactionsNotification() {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
     }
 
-    internal fun dismissErrorsNotification() {
+    fun dismissErrorsNotification() {
         notificationManager.cancel(ERROR_NOTIFICATION_ID)
     }
 }
