@@ -17,7 +17,7 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
 internal class NotificationHelper(val context: Context) {
-  
+
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
         private const val ERRORS_CHANNEL_ID = "chucker_errors"
