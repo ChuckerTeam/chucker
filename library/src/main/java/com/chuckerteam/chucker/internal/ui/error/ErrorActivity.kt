@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.R
