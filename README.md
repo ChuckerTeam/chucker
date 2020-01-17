@@ -127,8 +127,7 @@ It is intended for **use during development**, and not in release builds or othe
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
 ```kotlin
-interceptor.redactHeader("Auth-Token");
-interceptor.redactHeader("User-Session");
+interceptor.redactHeader("Auth-Token", "User-Session");
 ```
 
 ## Migrating 🚗
