@@ -41,6 +41,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private val io: IOUtils = IOUtils(context)
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
 
+    /** Adds [headerName] into [headersToRedact] */
     fun redactHeader(vararg headerName: String) {
         headersToRedact.addAll(headerName)
     }
