@@ -98,7 +98,7 @@ val chuckerInterceptor = ChuckerInterceptor(
         // The max body content length, after this responses will be truncated.
         maxContentLength = 250000L,
         // List of headers to obfuscate in the Chucker UI
-        headersToRedact = listOf("Auth-Token"))
+        headersToRedact = setOf("Auth-Token"))
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
