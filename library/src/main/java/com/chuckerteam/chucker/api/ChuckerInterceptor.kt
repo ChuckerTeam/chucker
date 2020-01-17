@@ -29,7 +29,7 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * before they are truncated. Warning: setting this value too high may cause unexpected
  * results.
  * @param headersToRedact Set of headers that you want to redact. They will be replaced
- * with a `**` in the ChuckerUI.
+ * with a `**` in the Chucker UI.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
