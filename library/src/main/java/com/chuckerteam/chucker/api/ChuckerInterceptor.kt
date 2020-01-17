@@ -158,7 +158,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private fun filterHeaders(headers: Headers): Headers {
         val builder = headers.newBuilder()
         for (name in headers.names()) {
-            if (name in headersToRedact) {
+            if (headersToRedact.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
                 builder.set(name, "**")
             }
         }
