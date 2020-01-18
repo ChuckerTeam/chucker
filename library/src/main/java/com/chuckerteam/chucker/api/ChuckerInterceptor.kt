@@ -9,7 +9,6 @@ import com.chuckerteam.chucker.internal.support.hasBody
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -49,27 +48,21 @@ class ChuckerInterceptor @JvmOverloads constructor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val response: Response
         val transaction = HttpTransaction()
 
         processRequest(request, transaction)
         collector.onRequestSent(transaction)
 
-        // Measure request duration
-        val startNs = System.nanoTime()
-        val response: Response
-        val tookMs: Long
         try {
             response = chain.proceed(request)
         } catch (e: IOException) {
-            tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
-            transaction.tookMs = tookMs
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
             throw e
         }
 
-        tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
-        transaction.tookMs = tookMs
+        transaction.tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
 
         processResponse(response, transaction)
         collector.onResponseReceived(transaction)
