@@ -114,8 +114,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val responseBody = response.body()
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
-        // includes headers added later in the chain
         transaction.apply {
+            // includes headers added later in the chain
             setRequestHeaders(filterHeaders(response.request().headers()))
             setResponseHeaders(filterHeaders(response.headers()))
 
