@@ -70,7 +70,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
         return response
     }
 
-    /** Retrieves request data */
+    /**
+     * Processes the [Request] and populates the corresponding fields
+     * of a the [HttpTransaction].
+     */
     private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body()
 
@@ -105,7 +108,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
     }
 
-    /** Retrieves response data */
+    /**
+     * Processes the [Response] and populates the corresponding fields
+     * of a the [HttpTransaction].
+     */
     private fun processResponse(response: Response, transaction: HttpTransaction) {
         val responseBody = response.body()
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
@@ -116,7 +122,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
             setResponseHeaders(filterHeaders(response.headers()))
 
             isResponseBodyPlainText = responseEncodingIsSupported
-            responseDate = System.currentTimeMillis()
+            requestDate = response.sentRequestAtMillis()
+            responseDate = response.receivedResponseAtMillis()
             protocol = response.protocol().toString()
             responseCode = response.code()
             responseMessage = response.message()
@@ -131,7 +138,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Private method to process the HTTP Response body and populate the corresponding response fields
+     * Processes the [ResponseBody] and populates the corresponding response fields
      * of a the [HttpTransaction].
      */
     private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
@@ -190,6 +197,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
-        private val CONTENT_ENCODING = "Content-Encoding"
+        private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }
