@@ -6,7 +6,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 
 /**
  * Repository Interface representing all the operations that are needed to let Chucker work
- * with [HttpTransaction] and [HttpTransactionTuple]. Please use [ChuckerDatabaseRepository] that
+ * with [HttpTransaction] and [HttpTransactionTuple]. Please use [HttpTransactionDatabaseRepository] that
  * uses Room and SqLite to run those operations.
  */
 internal interface HttpTransactionRepository {

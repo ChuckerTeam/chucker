@@ -12,6 +12,7 @@ import java.nio.charset.UnsupportedCharsetException
 import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
@@ -46,23 +47,49 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     @Throws(IOException::class)
-    @Suppress("LongMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val transaction = HttpTransaction()
+
+        processRequest(request, transaction)
+        collector.onRequestSent(transaction)
+
+        // Measure request duration
+        val startNs = System.nanoTime()
+        val response: Response
+        try {
+            response = chain.proceed(request)
+        } catch (e: IOException) {
+            transaction.error = e.toString()
+            collector.onResponseReceived(transaction)
+            throw e
+        }
+
+        val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
+        transaction.tookMs = tookMs
+
+        processResponse(response, transaction)
+        collector.onResponseReceived(transaction)
+
+        return response
+    }
+
+    /** Retrieves request data */
+    private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body()
 
-        val transaction = HttpTransaction()
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
+
         transaction.apply {
+            setRequestHeaders(request.headers())
+            populateUrl(request.url().toString())
+
+            isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
             method = request.method()
-            populateUrl(request.url().toString())
-            setRequestHeaders(request.headers())
             requestContentType = requestBody?.contentType()?.toString()
             requestContentLength = requestBody?.contentLength() ?: 0L
         }
-
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
-        transaction.isRequestBodyPlainText = encodingIsSupported
 
         if (requestBody != null && encodingIsSupported) {
             val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get(CONTENT_ENCODING)))
@@ -80,47 +107,31 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 transaction.isResponseBodyPlainText = false
             }
         }
+    }
 
-        collector.onRequestSent(transaction)
-
-        val startNs = System.nanoTime()
-        val response: Response
-        try {
-            response = chain.proceed(request)
-        } catch (e: IOException) {
-            transaction.error = e.toString()
-            collector.onResponseReceived(transaction)
-            throw e
-        }
-
-        val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
-
+    /** Retrieves response data */
+    private fun processResponse(response: Response, transaction: HttpTransaction) {
         val responseBody = response.body()
+        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         // includes headers added later in the chain
-        transaction.setRequestHeaders(filterHeaders(response.request().headers()))
         transaction.apply {
+            setRequestHeaders(filterHeaders(response.request().headers()))
+            setResponseHeaders(filterHeaders(response.headers()))
+
+            isResponseBodyPlainText = responseEncodingIsSupported
             responseDate = System.currentTimeMillis()
-            this.tookMs = tookMs
             protocol = response.protocol().toString()
             responseCode = response.code()
             responseMessage = response.message()
 
             responseContentType = responseBody?.contentType()?.toString()
             responseContentLength = responseBody?.contentLength() ?: 0L
-            setResponseHeaders(filterHeaders(response.headers()))
         }
-
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
-        transaction.isResponseBodyPlainText = responseEncodingIsSupported
 
         if (response.hasBody() && responseEncodingIsSupported) {
             processResponseBody(response, responseBody, transaction)
         }
-
-        collector.onResponseReceived(transaction)
-
-        return response
     }
 
     /**
