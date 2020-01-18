@@ -62,8 +62,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
             throw e
         }
 
-        transaction.tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
-
         processResponse(response, transaction)
         collector.onResponseReceived(transaction)
 
@@ -130,6 +128,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
             responseContentType = responseBody?.contentType()?.toString()
             responseContentLength = responseBody?.contentLength() ?: 0L
+
+            tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
 
         if (response.hasBody() && responseEncodingIsSupported) {
