@@ -57,15 +57,18 @@ class ChuckerInterceptor @JvmOverloads constructor(
         // Measure request duration
         val startNs = System.nanoTime()
         val response: Response
+        val tookMs: Long
         try {
             response = chain.proceed(request)
         } catch (e: IOException) {
+            tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
+            transaction.tookMs = tookMs
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
             throw e
         }
 
-        val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
+        tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
         transaction.tookMs = tookMs
 
         processResponse(response, transaction)
