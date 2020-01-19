@@ -17,8 +17,6 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import okio.BufferedSource
 
-private const val MAX_BLOB_SIZE = 1000_000L
-
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
@@ -26,10 +24,10 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * @param context An Android [Context]
  * @param collector A [ChuckerCollector] to customize data retention
  * @param maxContentLength The maximum length for request and response content
- * before they are truncated. Warning: setting this value too high may cause unexpected
+ * before their truncation. Warning: setting this value too high may cause unexpected
  * results.
- * @param headersToRedact List of headers that you want to redact. They will be not be shown in
- * the ChuckerUI but will be replaced with a `**`.
+ * @param headersToRedact List of headers you want to redact.
+ * They will be replaced with `**` in Chucker UI.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
@@ -69,8 +67,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Processes the [Request] and populates the corresponding fields
-     * of a the [HttpTransaction].
+     * Processes a [Request] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body()
@@ -107,8 +104,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Processes the [Response] and populates the corresponding fields
-     * of a the [HttpTransaction].
+     * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processResponse(response: Response, transaction: HttpTransaction) {
         val responseBody = response.body()
@@ -138,8 +134,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Processes the [ResponseBody] and populates the corresponding response fields
-     * of a the [HttpTransaction].
+     * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
         getNativeSource(response).use { source ->
@@ -168,7 +163,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
     }
 
-    /** Overrides all the headers in [headersToRedact] with a `**` */
+    /** Overrides all headers from [headersToRedact] with `**` */
     private fun filterHeaders(headers: Headers): Headers {
         val builder = headers.newBuilder()
         for (name in headers.names()) {
@@ -180,7 +175,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Returns the [BufferedSource] of the response and also UnGzip it if necessary.
+     * Returns a [BufferedSource] of a [Response] and UnGzip it if necessary.
      */
     @Throws(IOException::class)
     private fun getNativeSource(response: Response): BufferedSource {
@@ -197,6 +192,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
+        private const val MAX_BLOB_SIZE = 1000_000L
         private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }
