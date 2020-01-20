@@ -11,6 +11,7 @@ object Chucker {
     const val SCREEN_HTTP = 1
     const val SCREEN_ERROR = 2
 
+    @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     val isOp = false
 
     @JvmStatic

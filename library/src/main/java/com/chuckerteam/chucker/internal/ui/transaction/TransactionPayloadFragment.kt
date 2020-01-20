@@ -101,13 +101,7 @@ internal class TransactionPayloadFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val transaction = viewModel.transaction.value
 
-        val showSearchIcon = when {
-            (type == TYPE_REQUEST && true == transaction?.isRequestBodyPlainText) -> true
-            (type == TYPE_RESPONSE && true == transaction?.isResponseBodyPlainText) -> true
-            else -> false
-        }
-
-        if (showSearchIcon) {
+        if (shouldShowSearchIcon(transaction)) {
             val searchMenuItem = menu.findItem(R.id.search)
             searchMenuItem.isVisible = true
             val searchView = searchMenuItem.actionView as SearchView
@@ -115,15 +109,7 @@ internal class TransactionPayloadFragment :
             searchView.setIconifiedByDefault(true)
         }
 
-        val showSaveMenuItem = when {
-            // SAF is not available on pre-Kit Kat so let's hide the icon.
-            (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-            (type == TYPE_REQUEST && 0L == (transaction?.requestContentLength ?: 0L)) -> false
-            (type == TYPE_RESPONSE && 0L == (transaction?.responseContentLength ?: 0L)) -> false
-            else -> true
-        }
-
-        if (showSaveMenuItem) {
+        if (shouldShowSaveIcon(transaction)) {
             menu.findItem(R.id.save_body).apply {
                 isVisible = true
                 setOnMenuItemClickListener {
@@ -134,6 +120,28 @@ internal class TransactionPayloadFragment :
         }
 
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
+        // SAF is not available on pre-Kit Kat so let's hide the icon.
+        (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
+        (type == TYPE_REQUEST) -> {
+            (0L == (transaction?.requestContentLength ?: 0L))
+        }
+        (type == TYPE_RESPONSE) -> {
+            (0L == (transaction?.responseContentLength ?: 0L))
+        }
+        else -> true
+    }
+
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when {
+        (type == TYPE_REQUEST) -> {
+            (true == transaction?.isRequestBodyPlainText) && (0L == (transaction.requestContentLength))
+        }
+        (type == TYPE_RESPONSE) -> {
+            (true == transaction?.isResponseBodyPlainText) && (0L == (transaction.responseContentLength))
+        }
+        else -> false
     }
 
     override fun onAttach(context: Context) {
