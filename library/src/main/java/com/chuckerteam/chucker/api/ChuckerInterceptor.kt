@@ -28,7 +28,7 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * @param maxContentLength The maximum length for request and response content
  * before they are truncated. Warning: setting this value too high may cause unexpected
  * results.
- * @param headersToRedact Set of headers that you want to redact. They will be replaced
+ * @param headersToRedact a [Set] of headers that you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
