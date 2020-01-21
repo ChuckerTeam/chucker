@@ -28,8 +28,8 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * @param maxContentLength The maximum length for request and response content
  * before they are truncated. Warning: setting this value too high may cause unexpected
  * results.
- * @param headersToRedact List of headers that you want to redact. They will be not be shown in
- * the ChuckerUI but will be replaced with a `**`.
+ * @param headersToRedact a [Set] of headers that you want to redact. They will be replaced
+ * with a `**` in the Chucker UI.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
@@ -41,8 +41,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private val io: IOUtils = IOUtils(context)
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
 
-    fun redactHeader(name: String) = apply {
-        headersToRedact.add(name)
+    /** Adds [headerName] into [headersToRedact] */
+    fun redactHeader(vararg headerName: String) {
+        headersToRedact.addAll(headerName)
     }
 
     @Throws(IOException::class)
@@ -158,7 +159,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private fun filterHeaders(headers: Headers): Headers {
         val builder = headers.newBuilder()
         for (name in headers.names()) {
-            if (name in headersToRedact) {
+            if (headersToRedact.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
                 builder.set(name, "**")
             }
         }
