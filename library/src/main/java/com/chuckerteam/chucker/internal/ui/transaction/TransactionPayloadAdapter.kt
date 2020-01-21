@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
@@ -18,8 +20,15 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * performances when loading big payloads.
  */
 internal class TransactionBodyAdapter(
-    private val bodyItems: List<TransactionPayloadItem>
+    private val bodyItems: List<TransactionPayloadItem>,
+    private val layoutManager: RecyclerView.LayoutManager,
+    val context: Context
 ) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+
+    private var linesWithHighlightsByIndex = mutableListOf<Int>()
+    private var currentHightLineIndex = 0
+    private var currentSearchString: String? = null
+    private val scrollOffsetPx = context.dpToPx(20)
 
     override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {
         holder.bind(bodyItems[position])
@@ -54,10 +63,14 @@ internal class TransactionBodyAdapter(
     }
 
     internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
+        linesWithHighlightsByIndex.clear()
+        currentHightLineIndex = 0
+        currentSearchString = newText
         bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 if (newText in item.line) {
+                    linesWithHighlightsByIndex.add(index)
                     item.line.clearSpans()
                     item.line = item.line.toString()
                         .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
@@ -71,6 +84,38 @@ internal class TransactionBodyAdapter(
                     }
                 }
             }
+    }
+
+    internal fun hasSearchResults(): Boolean = linesWithHighlightsByIndex.isNotEmpty()
+
+    internal fun goToNextHighlightLine(backgroundColor: Int, foregroundColor: Int, hightlightBackgroundColor: Int, highlightForegroundColor: Int) {
+        val oldLineIdx = linesWithHighlightsByIndex[currentHightLineIndex]
+        val nextIdx = (++currentHightLineIndex).takeIf { it < linesWithHighlightsByIndex.size } ?: 0
+        currentHightLineIndex = nextIdx
+        val newLineIdx = linesWithHighlightsByIndex[currentHightLineIndex]
+
+        val lines = bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+
+        // Update old
+        lines[oldLineIdx].let { item ->
+            item.line.clearSpans()
+            item.line = item.line.toString()
+                .highlightWithDefinedColors(currentSearchString!!, backgroundColor, foregroundColor)
+            notifyItemChanged(oldLineIdx + 1)
+        }
+
+        // set new
+        lines[newLineIdx].let { item ->
+            item.line.clearSpans()
+            item.line = item.line.toString()
+                .highlightWithDefinedColors(currentSearchString!!, hightlightBackgroundColor, highlightForegroundColor)
+            notifyItemChanged(newLineIdx + 1)
+            (layoutManager as? LinearLayoutManager)?.let {
+                it.scrollToPositionWithOffset(newLineIdx, scrollOffsetPx)
+            } ?: run {
+                layoutManager.scrollToPosition(newLineIdx)
+            }
+        }
     }
 
     internal fun resetHighlight() {
@@ -127,4 +172,8 @@ internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
     internal class ImageItem(val image: Bitmap) : TransactionPayloadItem()
+}
+
+fun Context.dpToPx(dp: Int): Int {
+    return (dp * resources.displayMetrics.density).toInt()
 }

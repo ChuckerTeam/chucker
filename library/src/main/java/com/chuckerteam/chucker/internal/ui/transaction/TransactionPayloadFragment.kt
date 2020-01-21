@@ -57,6 +57,9 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
+    private var highlightBackgroundSpanColor: Int = Color.BLUE
+    private var hightlightForegroundSpanColor: Int = Color.WHITE
+
     private var type: Int = 0
 
     private lateinit var viewModel: TransactionViewModel
@@ -140,6 +143,8 @@ internal class TransactionPayloadFragment :
         super.onAttach(context)
         backgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_background_span_color)
         foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
+        highlightBackgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_highlight_background_span_color)
+        hightlightForegroundSpanColor = ContextCompat.getColor(context, R.color.chucker_highlight_foreground_span_color)
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -174,7 +179,14 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean = false
+    override fun onQueryTextSubmit(query: String): Boolean {
+        val adapter = (transactionContentList.adapter as TransactionBodyAdapter)
+        if (adapter.hasSearchResults()) {
+            adapter.goToNextHighlightLine(backgroundSpanColor, foregroundSpanColor, highlightBackgroundSpanColor, hightlightForegroundSpanColor)
+            return true
+        }
+        return false
+    }
 
     override fun onQueryTextChange(newText: String): Boolean {
         val adapter = (transactionContentList.adapter as TransactionBodyAdapter)
@@ -248,7 +260,7 @@ internal class TransactionPayloadFragment :
             val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.transaction_content)
             progressBar?.visibility = View.INVISIBLE
             recyclerView?.visibility = View.VISIBLE
-            recyclerView?.adapter = TransactionBodyAdapter(result)
+            recyclerView?.adapter = TransactionBodyAdapter(result, recyclerView?.layoutManager!!, recyclerView.context)
         }
     }
 
