@@ -19,6 +19,7 @@ object Chucker {
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
+    @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     val isOp = true
 
     /**
