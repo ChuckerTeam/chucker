@@ -155,7 +155,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
             } else {
                 transaction.isResponseBodyPlainText = false
 
-                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
+                val isImageContentType = (transaction.responseContentType?.contains(CONTENT_TYPE_IMAGE) == true)
+
+                if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
                     transaction.responseImageData = buffer.clone().readByteArray()
                 }
             }
@@ -192,7 +194,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
+
         private const val MAX_BLOB_SIZE = 1000_000L
+
+        private const val CONTENT_TYPE_IMAGE = "image"
         private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }
