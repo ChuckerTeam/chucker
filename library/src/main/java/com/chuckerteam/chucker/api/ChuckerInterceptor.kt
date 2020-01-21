@@ -138,7 +138,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
      * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
-        getNativeSource(response).use { source ->
+        getNativeSource(response)?.use { source ->
             source.request(java.lang.Long.MAX_VALUE)
             val buffer = source.buffer()
             var charset: Charset = UTF8
@@ -151,7 +151,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 }
             }
             if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+                val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.responseBody = content
             } else {
                 transaction.isResponseBodyPlainText = false
@@ -159,7 +159,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 val isImageContentType = (transaction.responseContentType?.contains(CONTENT_TYPE_IMAGE) == true)
 
                 if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
-                    transaction.responseImageData = buffer.clone().readByteArray()
+                    transaction.responseImageData = buffer.readByteArray()
                 }
             }
             transaction.responseContentLength = buffer.size()
@@ -181,7 +181,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
      * Returns a [BufferedSource] of a [Response] and UnGzip it if necessary.
      */
     @Throws(IOException::class)
-    private fun getNativeSource(response: Response): BufferedSource {
+    private fun getNativeSource(response: Response): BufferedSource? {
         if (io.bodyIsGzipped(response.headers().get(CONTENT_ENCODING))) {
             val source = response.peekBody(maxContentLength).source()
             if (source.buffer().size() < maxContentLength) {
@@ -190,7 +190,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 Log.w(LOG_TAG, "gzip encoded response was too long")
             }
         }
-        return response.body()!!.source()
+        // Let's clone the response Buffer in order to don't cause an IllegalStateException: closed
+        //  if others interceptors are manipulating the body (see #192).
+        return response.body()?.source()?.buffer()?.clone()
     }
 
     companion object {
