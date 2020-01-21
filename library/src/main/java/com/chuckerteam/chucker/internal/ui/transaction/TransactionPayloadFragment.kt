@@ -125,21 +125,17 @@ internal class TransactionPayloadFragment :
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
         // SAF is not available on pre-Kit Kat so let's hide the icon.
         (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-        (type == TYPE_REQUEST) -> {
-            (0L == (transaction?.requestContentLength ?: 0L))
-        }
-        (type == TYPE_RESPONSE) -> {
-            (0L == (transaction?.responseContentLength ?: 0L))
-        }
+        (type == TYPE_REQUEST) -> (0L != (transaction?.requestContentLength))
+        (type == TYPE_RESPONSE) -> (0L != (transaction?.responseContentLength))
         else -> true
     }
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when {
         (type == TYPE_REQUEST) -> {
-            (true == transaction?.isRequestBodyPlainText) && (0L == (transaction.requestContentLength))
+            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
         (type == TYPE_RESPONSE) -> {
-            (true == transaction?.isResponseBodyPlainText) && (0L == (transaction.responseContentLength))
+            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
         else -> false
     }
