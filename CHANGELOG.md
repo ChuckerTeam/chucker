@@ -1,22 +1,23 @@
-Change Log
-==========
+# Change Log
 
-Version 3.1.0 *(2020-01-24)*
-----------------------------
+## Version 3.1.0 *(2020-01-24)*
 
 This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
 
-**Summary of Changes**
+### Summary of Changes
 
 * The library is now fully converted to Kotlin!
 * The whole UI has been revamped to support Dark Theme.
-* The library is now using `ViewModel` internally to handle state changes.
 * The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
 * HTTP Response/Request Body can now be saved on file.
 * Notifications for Throwable and HTTP Traffic are now going on two separate channels.
 * A lot of classes inside the `.internal` package have restricted visibility (from public to internal).
 
-**Wall of PRs**
+### Wall of PRs
+
+Please find here the list of all the PRs that got merged inside the upcoming version.
+
+#### Enhancements
 
 * [#182] New: Notifications update
 * [#160] New: Add date formatting for requestDate and responseDate
@@ -27,6 +28,9 @@ This is a new minor release of Chucker. Please note that this minor release cont
 * [#119] New: Display explanation text on tabs if empty
 * [#118] New: Update the request/response body to use a monospace font
 * [#98]  New: Add search button on request tab
+
+#### Bugfixes
+
 * [#198] Fix: Clone the Response Buffer rather than using it directly
 * [#188] Fix: Hide library resources
 * [#186] Fix: Fix for wrong class used for extending in ErrorActivity
@@ -43,6 +47,9 @@ This is a new minor release of Chucker. Please note that this minor release cont
 * [#121] Fix: Force all layouts to be LTR
 * [#103] Fix: Fix content type for response formatting
 * [#85]  Fix: Fix race conditions in NotificationHelper.
+
+#### Internals
+
 * [#190] Refactor: ChuckerInterceptor refactoring
 * [#189] Refactor: Headers redaction refactoring
 * [#169] Refactor: Minor code cleanup
@@ -73,7 +80,7 @@ This is a new minor release of Chucker. Please note that this minor release cont
 * [#107] Infra: Detekt to 1.0.1
 * [#104] Infra: Kotlin to 1.3.50
 
-**Contributors**
+#### Credits
 
 This release was possible thanks to the contribution of:
 
@@ -96,26 +103,25 @@ This release was possible thanks to the contribution of:
 @PaulWoitaschek 
 
 
-Version 3.0.1 *(2019-08-16)*
-----------------------------
+## Version 3.0.1 *(2019-08-16)*
 
 This is a hotfix release for Chucker `3.0.0`.
 
-**Summary of Changes**
+### Summary of Changes
 
 * Fix: [#96] Limit size of binary image to 1 million bytes.
 
-**Contributors**
+### Credits
 
 This release was possible thanks to the contribution of: @redwarp
 
 
-Version 3.0.0 *(2019-08-12)*
-----------------------------
+## Version 3.0.0 *(2019-08-12)*
+
 
 This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
-**Summary of Changes**
+### Summary of Changes
 
 * Chucker DB is now using [Room](https://developer.android.com/topic/libraries/architecture/room) instead of [Cupboard](https://bitbucket.org/littlerobots/cupboard/wiki/Home) as ORM.
 * The public api of Chucker (classes in `com.chuckerteam.chucker.api`) is now rewritten in Kotlin.
@@ -126,7 +132,7 @@ This is a new major release of Chucker. Please note that this major release cont
 * Added support to search and highlight text in the Http Response body.
 * We moved the artifact from JCenter to JitPack
 
-**Wall of PRs**
+### Wall of PRs
 
 * New: [#67] Add support for images
 * New: [#53] Remove usage of methods from okhttp3.internal
@@ -165,7 +171,7 @@ This is a new major release of Chucker. Please note that this major release cont
 * Infra: [#28] Updating Dependencies
 * Infra: [#16] [TECH] Configure a debug keystore
 
-**Contributors**
+### Contributors
 
 This release was possible thanks to the contribution of:
 
@@ -180,23 +186,19 @@ This release was possible thanks to the contribution of:
 @redwarp
 @uOOOO
 
-Version 2.0.4 *(2019-05-18)*
-----------------------------
+## Version 2.0.4 *(2019-05-18)*
 
  * Fix: [#27] no-op Chuck#init method is missing
 
-Version 2.0.3 *(2018-11-28)*
-----------------------------
+## Version 2.0.3 *(2018-11-28)*
 
  * Fix: [#20] Changed SqLite DB Version Number 3 -> 4
 
-Version 2.0.2 *(2018-11-14)*
-----------------------------
+## Version 2.0.2 *(2018-11-14)*
 
  * Fix: [#5] Empty Content-Encoding are allowed again
 
-Version 2.0.1 *(2018-11-05)*
-----------------------------
+## Version 2.0.1 *(2018-11-05)*
 
  * New: Adds a class ChuckCollector that can be used out of ChuckInterceptor.
  * New: Chucker can now collect throwables.
@@ -211,39 +213,33 @@ Version 2.0.1 *(2018-11-05)*
  * Breaking: API classes are now in package `api`.
  * Misc: Move some internal classes.
 
-Version 1.1.0 *(2017-08-06)*
-----------------------------
+## Version 1.1.0 *(2017-08-06)*
 
  * Fix: Supports apps targeting Android O (API 26).
 
-Version 1.0.4 *(2017-02-22)*
-----------------------------
+## Version 1.0.4 *(2017-02-22)*
 
  * New: Displays uncompressed gzip encoded request/response bodies when used as a network interceptor.
 
-Version 1.0.3 *(2017-02-14)*
-----------------------------
+## Version 1.0.3 *(2017-02-14)*
 
  * New: Adds a maximum content length threshold, beyond which bodies are truncated.
  * New: Adds a data retention length property and cleanup task.
  * New: Adds a clear action to the notification.
  * Fix: Mitigates against CursorWindow blowout when transactions are large.
 
-Version 1.0.2 *(2017-02-10)*
-----------------------------
+## Version 1.0.2 *(2017-02-10)*
 
  * Fix: Added Proguard rule for compat SearchView.
  * Fix: Null search query displaying invalid results.
 
-Version 1.0.1 *(2017-02-09)*
-----------------------------
+## Version 1.0.1 *(2017-02-09)*
 
  * New: Adds a search action which filters on request path or response code.
  * New: Adds a transaction count to the notification.
  * Fix: Limits the size of the static transaction buffer correctly.
 
-Version 1.0.0 *(2017-02-07)*
-----------------------------
+## Version 1.0.0 *(2017-02-07)*
 
 Initial release.
 
