@@ -7,19 +7,24 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.nio.charset.Charset
 import java.util.Locale
 import javax.xml.XMLConstants
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerException
-import javax.xml.transform.sax.SAXSource
-import javax.xml.transform.sax.SAXTransformerFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.math.ln
 import kotlin.math.pow
+import org.w3c.dom.Document
 import org.xml.sax.InputSource
+import org.xml.sax.SAXParseException
 
 internal object FormatUtils {
 
@@ -60,22 +65,31 @@ internal object FormatUtils {
 
     fun formatXml(xml: String): String {
         return try {
-            val transformerFactory = SAXTransformerFactory.newInstance().apply {
+            val documentFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+            // This flag is required for security reasons
+            documentFactory.isExpandEntityReferences = false
+
+            val documentBuilder: DocumentBuilder = documentFactory.newDocumentBuilder()
+            val inputSource = InputSource(ByteArrayInputStream(xml.toByteArray(Charset.defaultCharset())))
+            val document: Document = documentBuilder.parse(inputSource)
+
+            val domSource = DOMSource(document)
+            val writer = StringWriter()
+            val result = StreamResult(writer)
+
+            TransformerFactory.newInstance().apply {
                 setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
-                setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "")
-                setAttribute("http://javax.xml.XMLConstants/property/accessExternalStylesheet", "")
-            }
-
-            val serializer = transformerFactory.newTransformer().apply {
-                setOutputProperty(OutputKeys.INDENT, "yes")
+            }.newTransformer().apply {
                 setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                setOutputProperty(OutputKeys.INDENT, "yes")
+                transform(domSource, result)
             }
-
-            val xmlSource = SAXSource(InputSource(ByteArrayInputStream(xml.toByteArray())))
-            val res = StreamResult(ByteArrayOutputStream())
-            serializer.transform(xmlSource, res)
-            ((res.outputStream as ByteArrayOutputStream).toByteArray()).toString()
-        } catch (e: TransformerException) {
+            writer.toString()
+        } catch (e: SAXParseException) {
+            xml
+        } catch (io: IOException) {
+            xml
+        } catch (t: TransformerException) {
             xml
         }
     }
