@@ -1,6 +1,101 @@
 Change Log
 ==========
 
+Version 3.1.0 *(2020-01-24)*
+----------------------------
+
+This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
+
+**Summary of Changes**
+
+* The library is now fully converted to Kotlin!
+* The whole UI has been revamped to support Dark Theme.
+* The library is now using `ViewModel` internally to handle state changes.
+* The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
+* HTTP Response/Request Body can now be saved on file.
+* Notifications for Throwable and HTTP Traffic are now going on two separate channels.
+* A lot of classes inside the `.internal` package have restricted visibility (from public to internal).
+
+**Wall of PRs**
+
+* [#182] New: Notifications update
+* [#160] New: Add date formatting for requestDate and responseDate
+* [#156] New: Update assets to match changed design
+* [#145] New: Introduce a shared view model into transaction details activity + fragments
+* [#143] New: Feature/dark theme
+* [#138] New: Add an option to save the request or response body
+* [#119] New: Display explanation text on tabs if empty
+* [#118] New: Update the request/response body to use a monospace font
+* [#98]  New: Add search button on request tab
+* [#198] Fix: Clone the Response Buffer rather than using it directly
+* [#188] Fix: Hide library resources
+* [#186] Fix: Fix for wrong class used for extending in ErrorActivity
+* [#181] Fix: Mask true type of headersToRedact and update documentation
+* [#180] Fix: Visibility fix for internal members
+* [#172] Fix: Fixing handling of big body payloads
+* [#171] Fix: Fix "null" prefix in POM name
+* [#167] Fix: Fix issue with LinearLayoutManager after code minification
+* [#165] Fix: Close the native source.
+* [#148] Fix: Another fix for notifications in Q
+* [#147] Fix: Remove unused variable in ClearDatabaseService
+* [#146] Fix: Pass the -module-name Kotlin Compiler flag
+* [#144] Fix: Fix notification importance for Android Q
+* [#121] Fix: Force all layouts to be LTR
+* [#103] Fix: Fix content type for response formatting
+* [#85]  Fix: Fix race conditions in NotificationHelper.
+* [#190] Refactor: ChuckerInterceptor refactoring
+* [#189] Refactor: Headers redaction refactoring
+* [#169] Refactor: Minor code cleanup
+* [#149] Refactor: Update/share util
+* [#142] Refactor: Cleanup kotlin classes
+* [#139] Refactor: Remove deprecations
+* [#137] Refactor: Unification for activities start
+* [#136] Refactor: Kotlinify classes in .internal.ui.transaction package
+* [#135] Refactor: Kotlinify classes in .internal.ui package
+* [#126] Refactor: Fix inconsistency when referencing screen constants from Java
+* [#125] Refactor: Kotlinify Chucker sample app
+* [#123] Refactor: Kotlinify classes in .internal.ui.error package
+* [#122] Refactor: Kotlinify NotificationHelper
+* [#120] Refactor: Kotlinify FormatUtils
+* [#114] Refactor: Kotlinify IOUtils
+* [#112] Refactor: Kotlinify ClearDatabaseService
+* [#111] Refactor: Removing SimpleOnPageChangedListener
+* [#109] Refactor: Kotlinify ChuckerCrashHandler
+* [#108] Refactor: Kotlinify JsonConverter
+* [#101] Refactor: Move the .internal package outside of .api
+* [#193] Infra: Update Multiple Dependencies
+* [#185] Infra: CI pipeline optimisation
+* [#176] Infra: Bump KtLint to 0.36.0
+* [#175] Infra: Remove redundant publishing tools
+* [#174] Infra: Remove stale support-lib-version from gradle file
+* [#162] Infra: Update/components versions
+* [#133] Infra: Updating Detekt to 1.1.0
+* [#107] Infra: Detekt to 1.0.1
+* [#104] Infra: Kotlin to 1.3.50
+
+**Contributors**
+
+This release was possible thanks to the contribution of:
+
+@christopherniksch
+@yoavst 
+@psh
+@kmayoral
+@vbuberen
+@dcampogiani 
+@ullas-jain
+@rakshit444
+@olivierperez
+@p-schneider
+@Volfor
+@cortinico
+@koral--
+@redwarp
+@uOOOO
+@sprohaszka 
+@PaulWoitaschek 
+
+
 Version 3.0.1 *(2019-08-16)*
 ----------------------------
 
@@ -198,3 +293,70 @@ Initial release.
 [#86]: https://github.com/ChuckerTeam/chucker/pull/86
 [#87]: https://github.com/ChuckerTeam/chucker/pull/87
 [#96]: https://github.com/ChuckerTeam/chucker/pull/96
+[#85]: https://github.com/ChuckerTeam/chucker/pull/85
+[#90]: https://github.com/ChuckerTeam/chucker/pull/90
+[#98]: https://github.com/ChuckerTeam/chucker/pull/98
+[#99]: https://github.com/ChuckerTeam/chucker/pull/99
+[#101]: https://github.com/ChuckerTeam/chucker/pull/101
+[#103]: https://github.com/ChuckerTeam/chucker/pull/103
+[#104]: https://github.com/ChuckerTeam/chucker/pull/104
+[#107]: https://github.com/ChuckerTeam/chucker/pull/107
+[#108]: https://github.com/ChuckerTeam/chucker/pull/108
+[#109]: https://github.com/ChuckerTeam/chucker/pull/109
+[#111]: https://github.com/ChuckerTeam/chucker/pull/111
+[#112]: https://github.com/ChuckerTeam/chucker/pull/112
+[#114]: https://github.com/ChuckerTeam/chucker/pull/114
+[#118]: https://github.com/ChuckerTeam/chucker/pull/118
+[#119]: https://github.com/ChuckerTeam/chucker/pull/119
+[#120]: https://github.com/ChuckerTeam/chucker/pull/120
+[#121]: https://github.com/ChuckerTeam/chucker/pull/121
+[#122]: https://github.com/ChuckerTeam/chucker/pull/122
+[#123]: https://github.com/ChuckerTeam/chucker/pull/123
+[#125]: https://github.com/ChuckerTeam/chucker/pull/125
+[#126]: https://github.com/ChuckerTeam/chucker/pull/126
+[#127]: https://github.com/ChuckerTeam/chucker/pull/127
+[#130]: https://github.com/ChuckerTeam/chucker/pull/130
+[#131]: https://github.com/ChuckerTeam/chucker/pull/131
+[#132]: https://github.com/ChuckerTeam/chucker/pull/132
+[#133]: https://github.com/ChuckerTeam/chucker/pull/133
+[#135]: https://github.com/ChuckerTeam/chucker/pull/135
+[#136]: https://github.com/ChuckerTeam/chucker/pull/136
+[#137]: https://github.com/ChuckerTeam/chucker/pull/137
+[#138]: https://github.com/ChuckerTeam/chucker/pull/138
+[#139]: https://github.com/ChuckerTeam/chucker/pull/139
+[#142]: https://github.com/ChuckerTeam/chucker/pull/142
+[#143]: https://github.com/ChuckerTeam/chucker/pull/143
+[#144]: https://github.com/ChuckerTeam/chucker/pull/144
+[#145]: https://github.com/ChuckerTeam/chucker/pull/145
+[#146]: https://github.com/ChuckerTeam/chucker/pull/146
+[#147]: https://github.com/ChuckerTeam/chucker/pull/147
+[#148]: https://github.com/ChuckerTeam/chucker/pull/148
+[#149]: https://github.com/ChuckerTeam/chucker/pull/149
+[#150]: https://github.com/ChuckerTeam/chucker/pull/150
+[#153]: https://github.com/ChuckerTeam/chucker/pull/153
+[#156]: https://github.com/ChuckerTeam/chucker/pull/156
+[#160]: https://github.com/ChuckerTeam/chucker/pull/160
+[#162]: https://github.com/ChuckerTeam/chucker/pull/162
+[#165]: https://github.com/ChuckerTeam/chucker/pull/165
+[#167]: https://github.com/ChuckerTeam/chucker/pull/167
+[#169]: https://github.com/ChuckerTeam/chucker/pull/169
+[#170]: https://github.com/ChuckerTeam/chucker/pull/170
+[#171]: https://github.com/ChuckerTeam/chucker/pull/171
+[#172]: https://github.com/ChuckerTeam/chucker/pull/172
+[#173]: https://github.com/ChuckerTeam/chucker/pull/173
+[#174]: https://github.com/ChuckerTeam/chucker/pull/174
+[#175]: https://github.com/ChuckerTeam/chucker/pull/175
+[#176]: https://github.com/ChuckerTeam/chucker/pull/176
+[#180]: https://github.com/ChuckerTeam/chucker/pull/180
+[#181]: https://github.com/ChuckerTeam/chucker/pull/181
+[#182]: https://github.com/ChuckerTeam/chucker/pull/182
+[#183]: https://github.com/ChuckerTeam/chucker/pull/183
+[#185]: https://github.com/ChuckerTeam/chucker/pull/185
+[#186]: https://github.com/ChuckerTeam/chucker/pull/186
+[#188]: https://github.com/ChuckerTeam/chucker/pull/188
+[#189]: https://github.com/ChuckerTeam/chucker/pull/189
+[#190]: https://github.com/ChuckerTeam/chucker/pull/190
+[#191]: https://github.com/ChuckerTeam/chucker/pull/191
+[#193]: https://github.com/ChuckerTeam/chucker/pull/193
+[#196]: https://github.com/ChuckerTeam/chucker/pull/196
+[#198]: https://github.com/ChuckerTeam/chucker/pull/198
