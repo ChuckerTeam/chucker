@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
-import com.chuckerteam.chucker.api.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.util.concurrent.TimeUnit
 
 /**
@@ -26,10 +26,11 @@ class RetentionManager @JvmOverloads constructor(
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
 
     init {
-        cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR)
+        cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR) {
             TimeUnit.MINUTES.toMillis(30)
-        else
+        } else {
             TimeUnit.HOURS.toMillis(2)
+        }
     }
 
     /**

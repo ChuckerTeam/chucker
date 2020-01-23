@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
+    android:layoutDirection="ltr"
     android:padding="@dimen/chucker_base_grid">
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/chucker_time_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,7 +55,7 @@
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
         android:src="@drawable/chucker_ic_https_grey_24dp"
-        android:tint="@color/chucker_primary_color"
+        android:tint="@color/chucker_color_primary"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/chucker_path"
         app:layout_constraintTop_toBottomOf="@+id/chucker_path"
@@ -88,4 +89,4 @@
         app:layout_constraintStart_toEndOf="@+id/chucker_duration"
         app:layout_constraintTop_toTopOf="@+id/chucker_duration"
         tools:text="16.45 KB" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

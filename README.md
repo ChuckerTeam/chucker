@@ -1,6 +1,5 @@
 # Chucker
-
-[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
+[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
 
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -98,7 +97,7 @@ val chuckerInterceptor = ChuckerInterceptor(
         // The max body content length, after this responses will be truncated.
         maxContentLength = 250000L,
         // List of headers to obfuscate in the Chucker UI
-        headersToRedact = listOf("Auth-Token"))
+        headersToRedact = setOf("Auth-Token"))
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
@@ -127,8 +126,7 @@ It is intended for **use during development**, and not in release builds or othe
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
 ```kotlin
-interceptor.redactHeader("Auth-Token");
-interceptor.redactHeader("User-Session");
+interceptor.redactHeader("Auth-Token", "User-Session");
 ```
 
 ## Migrating 🚗
@@ -169,6 +167,8 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 
 ## Contributing 🤝
 
+We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.com/archives/CRWD6370R) channel on [kotlinlang.slack.com](https://kotlinlang.slack.com/). Come and joing the conversation over there.
+
 **We're looking for contributors! Don't be shy.** 😁 Feel free to open issues/pull requests to help me improve this project.
 
 * When reporting a new Issue, make sure to attach **Screenshots**, **Videos** or **GIFs** of the problem you are reporting.
@@ -177,10 +177,34 @@ Please refer to [this section of the OkHttp wiki](https://github.com/square/okht
 Short `TODO` List for new contributors:
 
 - [ ] Kotlinize classes inside the `.internal` package.
-- [ ] Have a empty state graphics/message for requests with no headers.
+- [x] Have a empty state graphics/message for requests with no headers.
 - [ ] Increment the test coverage.
 
 ## Acknowledgments 🌸
+
+### Maintainers
+
+Chucker is currently developed and maintained by the [ChuckerTeam](https://github.com/ChuckerTeam). When submitting a new PR, please ping one of:
+
+- [@olivierperez](https://github.com/olivierperez)
+- [@cortinico](https://github.com/cortinico)
+- [@redwarp](https://github.com/redwarp)
+- [@vbuberen](https://github.com/vbuberen)
+
+### Contributors
+
+Big thanks to our contributors ❤️ Please add your name here once you submit a PR.
+
+- [Ashok Varma](https://github.com/Ashok-Varma) Clean up
+- [Bernat Borrás Paronella](https://github.com/alorma) Redact headers + HTTP methods in notifications
+- [Hafiz Waleed Hussain](https://github.com/Hafiz-Waleed-Hussain) Search highlight in response tab
+- [Karol Wrótniak](https://github.com/koral--) Fix race condition + Application name retrieval
+- [OlliZi](https://github.com/OlliZi) Support for images
+- [Paul Hawke](https://github.com/psh) API Clean
+- [Paul Woitaschek](https://github.com/PaulWoitaschek) Fix typo in API
+- [SeungHun Choe](https://github.com/uOOOO) Fix memory leak
+
+### Libraries
 
 Chucker uses the following open source libraries:
 
@@ -191,7 +215,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018 Nicola Corti & Olivier Perez.
+    Copyright (C) 2018 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");

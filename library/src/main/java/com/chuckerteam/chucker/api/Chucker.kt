@@ -2,20 +2,24 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
-import android.support.annotation.IntDef
-import com.chuckerteam.chucker.api.internal.support.ChuckerCrashHandler
-import com.chuckerteam.chucker.api.internal.support.NotificationHelper
-import com.chuckerteam.chucker.api.internal.ui.MainActivity
+import androidx.annotation.IntDef
+import com.chuckerteam.chucker.internal.support.ChuckerCrashHandler
+import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.ui.MainActivity
 
 /**
  * Chucker methods and utilities to interact with the library.
  */
 object Chucker {
 
+    const val SCREEN_HTTP = 1
+    const val SCREEN_ERROR = 2
+
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
+    @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     val isOp = true
 
     /**
@@ -57,9 +61,6 @@ object Chucker {
     fun dismissErrorsNotification(context: Context) {
         NotificationHelper(context).dismissErrorsNotification()
     }
-
-    const val SCREEN_HTTP = 1
-    const val SCREEN_ERROR = 2
 
     /**
      * Annotation used to specify which screen of Chucker should be launched.
