@@ -1,26 +1,81 @@
-Change Log
-==========
+# Change Log
 
-Version 3.0.1 *(2019-08-16)*
-----------------------------
+## Version 3.1.0 *(2020-01-24)*
+
+This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
+
+### Summary of Changes
+
+* The library is now fully converted to Kotlin and migrated to AndroidX!
+* The whole UI has been revamped to support Dark Theme which follows your device theme.
+* The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
+* HTTP Response/Request Body can now be saved in file.
+* Notifications for Throwable and HTTP Traffic are now going into separate channels.
+* A lot of classes inside the `.internal` package have restricted visibility (from public to internal). Also, resources like strings, dimens and drawables from Chucker won't appear in your autocomplete suggestions.
+
+### Bugfixes
+
+* Fixed ANRs during big response payloads processing.
+* Fixed contentType response formatting.
+* Fixed notifications importance in Android Q.
+* Fixed date formatting in transaction overview.
+* Fixed visibility of internal library classes and resources.
+* Fixed XML formatting crash
+
+### Dependency Updates
+
+- Updated Kotlin to 1.3.61
+- Updated Retrofit to 2.6.4
+- Updated Room to 2.2.3
+- Updated OkHttp to 3.12.6
+- Updated Gson to 2.8.6
+- Updated Dokka to 0.10.0
+- Updated KtLint to 9.1.1
+- Updated Gradle wrapper to 6.1
+- Updated Android Gradle plugin to 3.5.3
+
+#### Credits
+
+This release was possible thanks to the contribution of:
+
+@christopherniksch
+@yoavst 
+@psh
+@kmayoral
+@vbuberen
+@dcampogiani 
+@ullas-jain
+@rakshit444
+@olivierperez
+@p-schneider
+@Volfor
+@cortinico
+@koral--
+@redwarp
+@uOOOO
+@sprohaszka 
+@PaulWoitaschek 
+
+
+## Version 3.0.1 *(2019-08-16)*
 
 This is a hotfix release for Chucker `3.0.0`.
 
-**Summary of Changes**
+### Summary of Changes
 
 * Fix: [#96] Limit size of binary image to 1 million bytes.
 
-**Contributors**
+### Credits
 
 This release was possible thanks to the contribution of: @redwarp
 
 
-Version 3.0.0 *(2019-08-12)*
-----------------------------
+## Version 3.0.0 *(2019-08-12)*
+
 
 This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
-**Summary of Changes**
+### Summary of Changes
 
 * Chucker DB is now using [Room](https://developer.android.com/topic/libraries/architecture/room) instead of [Cupboard](https://bitbucket.org/littlerobots/cupboard/wiki/Home) as ORM.
 * The public api of Chucker (classes in `com.chuckerteam.chucker.api`) is now rewritten in Kotlin.
@@ -31,46 +86,7 @@ This is a new major release of Chucker. Please note that this major release cont
 * Added support to search and highlight text in the Http Response body.
 * We moved the artifact from JCenter to JitPack
 
-**Wall of PRs**
-
-* New: [#67] Add support for images
-* New: [#53] Remove usage of methods from okhttp3.internal
-* New: [#49] Add missing `@JvmOverload` on the ChuckerInterceptor
-* New: [#29] Replacing Cupboard with Room
-* New: [#24] Redact header (from okhttp logging)
-* New: [#23] Polishing the Color palette
-* New: [#22] Modernize the project icon
-* New: [#21] Polish the MainActivity
-* New: [#17] Highlight search result in response tab
-* New: [#10] Updating the ListItem layout to use CL
-* New: [#6] Issue #43 Ask for confirmation when delete history
-* Breaking: [#66] Renamed registerDefaultCrashHanlder to registerDefaultCrashHandler
-* Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
-* Breaking: [#42] Kotlinize the Public API of Chucker
-* Breaking: [#35] Cleanup form the old Chuck names
-* Fix: [#87] Improving counting of seen transactions in notification message
-* Fix: [#86] Add positions to string formatting placeholders
-* Fix: [#81] Fix for null values being omitted in the parsed body
-* Fix: [#75] Fix application name retrieval.
-* Fix: [#72] Fetch payload in AsyncTask
-* Fix: [#71] Fix crash when clicking notification
-* Fix: [#77] Fix image being loaded twice for request and response.
-* Fix: [#62] LeakCanary memory leak report
-* Fix: [#44] Fix for 'Push Notification is wrongly reporting the first HTTP request
-* Fix: [#39] Prevent potential XXE attacks from XML formatting
-* Fix: [#38] Do not display URL Query if the query is null
-* Fix: [#54] clean up
-* Fix: [#50] ChuckerInterceptor Cleanup
-* Fix: [#4] Add no-op check to Chuck utility class
-* Infra: [#65] Kotlin to 1.3.41
-* Infra: [#59] Gradle to 5.5
-* Infra: [#51] Setup KtLint and Detekt
-* Infra: [#41] Switch Release Artifact to JitPack
-* Infra: [#40] Reorganize dependency versions
-* Infra: [#28] Updating Dependencies
-* Infra: [#16] [TECH] Configure a debug keystore
-
-**Contributors**
+### Contributors
 
 This release was possible thanks to the contribution of:
 
@@ -85,23 +101,19 @@ This release was possible thanks to the contribution of:
 @redwarp
 @uOOOO
 
-Version 2.0.4 *(2019-05-18)*
-----------------------------
+## Version 2.0.4 *(2019-05-18)*
 
  * Fix: [#27] no-op Chuck#init method is missing
 
-Version 2.0.3 *(2018-11-28)*
-----------------------------
+## Version 2.0.3 *(2018-11-28)*
 
  * Fix: [#20] Changed SqLite DB Version Number 3 -> 4
 
-Version 2.0.2 *(2018-11-14)*
-----------------------------
+## Version 2.0.2 *(2018-11-14)*
 
  * Fix: [#5] Empty Content-Encoding are allowed again
 
-Version 2.0.1 *(2018-11-05)*
-----------------------------
+## Version 2.0.1 *(2018-11-05)*
 
  * New: Adds a class ChuckCollector that can be used out of ChuckInterceptor.
  * New: Chucker can now collect throwables.
@@ -116,39 +128,33 @@ Version 2.0.1 *(2018-11-05)*
  * Breaking: API classes are now in package `api`.
  * Misc: Move some internal classes.
 
-Version 1.1.0 *(2017-08-06)*
-----------------------------
+## Version 1.1.0 *(2017-08-06)*
 
  * Fix: Supports apps targeting Android O (API 26).
 
-Version 1.0.4 *(2017-02-22)*
-----------------------------
+## Version 1.0.4 *(2017-02-22)*
 
  * New: Displays uncompressed gzip encoded request/response bodies when used as a network interceptor.
 
-Version 1.0.3 *(2017-02-14)*
-----------------------------
+## Version 1.0.3 *(2017-02-14)*
 
  * New: Adds a maximum content length threshold, beyond which bodies are truncated.
  * New: Adds a data retention length property and cleanup task.
  * New: Adds a clear action to the notification.
  * Fix: Mitigates against CursorWindow blowout when transactions are large.
 
-Version 1.0.2 *(2017-02-10)*
-----------------------------
+## Version 1.0.2 *(2017-02-10)*
 
  * Fix: Added Proguard rule for compat SearchView.
  * Fix: Null search query displaying invalid results.
 
-Version 1.0.1 *(2017-02-09)*
-----------------------------
+## Version 1.0.1 *(2017-02-09)*
 
  * New: Adds a search action which filters on request path or response code.
  * New: Adds a transaction count to the notification.
  * Fix: Limits the size of the static transaction buffer correctly.
 
-Version 1.0.0 *(2017-02-07)*
-----------------------------
+## Version 1.0.0 *(2017-02-07)*
 
 Initial release.
 
@@ -198,3 +204,71 @@ Initial release.
 [#86]: https://github.com/ChuckerTeam/chucker/pull/86
 [#87]: https://github.com/ChuckerTeam/chucker/pull/87
 [#96]: https://github.com/ChuckerTeam/chucker/pull/96
+[#85]: https://github.com/ChuckerTeam/chucker/pull/85
+[#90]: https://github.com/ChuckerTeam/chucker/pull/90
+[#98]: https://github.com/ChuckerTeam/chucker/pull/98
+[#99]: https://github.com/ChuckerTeam/chucker/pull/99
+[#101]: https://github.com/ChuckerTeam/chucker/pull/101
+[#103]: https://github.com/ChuckerTeam/chucker/pull/103
+[#104]: https://github.com/ChuckerTeam/chucker/pull/104
+[#107]: https://github.com/ChuckerTeam/chucker/pull/107
+[#108]: https://github.com/ChuckerTeam/chucker/pull/108
+[#109]: https://github.com/ChuckerTeam/chucker/pull/109
+[#111]: https://github.com/ChuckerTeam/chucker/pull/111
+[#112]: https://github.com/ChuckerTeam/chucker/pull/112
+[#114]: https://github.com/ChuckerTeam/chucker/pull/114
+[#118]: https://github.com/ChuckerTeam/chucker/pull/118
+[#119]: https://github.com/ChuckerTeam/chucker/pull/119
+[#120]: https://github.com/ChuckerTeam/chucker/pull/120
+[#121]: https://github.com/ChuckerTeam/chucker/pull/121
+[#122]: https://github.com/ChuckerTeam/chucker/pull/122
+[#123]: https://github.com/ChuckerTeam/chucker/pull/123
+[#125]: https://github.com/ChuckerTeam/chucker/pull/125
+[#126]: https://github.com/ChuckerTeam/chucker/pull/126
+[#127]: https://github.com/ChuckerTeam/chucker/pull/127
+[#130]: https://github.com/ChuckerTeam/chucker/pull/130
+[#131]: https://github.com/ChuckerTeam/chucker/pull/131
+[#132]: https://github.com/ChuckerTeam/chucker/pull/132
+[#133]: https://github.com/ChuckerTeam/chucker/pull/133
+[#135]: https://github.com/ChuckerTeam/chucker/pull/135
+[#136]: https://github.com/ChuckerTeam/chucker/pull/136
+[#137]: https://github.com/ChuckerTeam/chucker/pull/137
+[#138]: https://github.com/ChuckerTeam/chucker/pull/138
+[#139]: https://github.com/ChuckerTeam/chucker/pull/139
+[#142]: https://github.com/ChuckerTeam/chucker/pull/142
+[#143]: https://github.com/ChuckerTeam/chucker/pull/143
+[#144]: https://github.com/ChuckerTeam/chucker/pull/144
+[#145]: https://github.com/ChuckerTeam/chucker/pull/145
+[#146]: https://github.com/ChuckerTeam/chucker/pull/146
+[#147]: https://github.com/ChuckerTeam/chucker/pull/147
+[#148]: https://github.com/ChuckerTeam/chucker/pull/148
+[#149]: https://github.com/ChuckerTeam/chucker/pull/149
+[#150]: https://github.com/ChuckerTeam/chucker/pull/150
+[#153]: https://github.com/ChuckerTeam/chucker/pull/153
+[#156]: https://github.com/ChuckerTeam/chucker/pull/156
+[#160]: https://github.com/ChuckerTeam/chucker/pull/160
+[#162]: https://github.com/ChuckerTeam/chucker/pull/162
+[#165]: https://github.com/ChuckerTeam/chucker/pull/165
+[#167]: https://github.com/ChuckerTeam/chucker/pull/167
+[#169]: https://github.com/ChuckerTeam/chucker/pull/169
+[#170]: https://github.com/ChuckerTeam/chucker/pull/170
+[#171]: https://github.com/ChuckerTeam/chucker/pull/171
+[#172]: https://github.com/ChuckerTeam/chucker/pull/172
+[#173]: https://github.com/ChuckerTeam/chucker/pull/173
+[#174]: https://github.com/ChuckerTeam/chucker/pull/174
+[#175]: https://github.com/ChuckerTeam/chucker/pull/175
+[#176]: https://github.com/ChuckerTeam/chucker/pull/176
+[#180]: https://github.com/ChuckerTeam/chucker/pull/180
+[#181]: https://github.com/ChuckerTeam/chucker/pull/181
+[#182]: https://github.com/ChuckerTeam/chucker/pull/182
+[#183]: https://github.com/ChuckerTeam/chucker/pull/183
+[#185]: https://github.com/ChuckerTeam/chucker/pull/185
+[#186]: https://github.com/ChuckerTeam/chucker/pull/186
+[#188]: https://github.com/ChuckerTeam/chucker/pull/188
+[#189]: https://github.com/ChuckerTeam/chucker/pull/189
+[#190]: https://github.com/ChuckerTeam/chucker/pull/190
+[#191]: https://github.com/ChuckerTeam/chucker/pull/191
+[#193]: https://github.com/ChuckerTeam/chucker/pull/193
+[#196]: https://github.com/ChuckerTeam/chucker/pull/196
+[#198]: https://github.com/ChuckerTeam/chucker/pull/198
+[#201]: https://github.com/ChuckerTeam/chucker/pull/201
