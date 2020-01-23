@@ -31,6 +31,7 @@ Please find here the list of all the PRs that got merged inside the upcoming ver
 
 #### Bugfixes
 
+* [#201] Fix: Fix for XML parsing
 * [#198] Fix: Clone the Response Buffer rather than using it directly
 * [#188] Fix: Hide library resources
 * [#186] Fix: Fix for wrong class used for extending in ErrorActivity
@@ -356,3 +357,4 @@ Initial release.
 [#193]: https://github.com/ChuckerTeam/chucker/pull/193
 [#196]: https://github.com/ChuckerTeam/chucker/pull/196
 [#198]: https://github.com/ChuckerTeam/chucker/pull/198
+[#201]: https://github.com/ChuckerTeam/chucker/pull/201
