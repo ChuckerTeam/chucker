@@ -6,12 +6,33 @@ This is a new minor release of Chucker. Please note that this minor release cont
 
 ### Summary of Changes
 
-* The library is now fully converted to Kotlin!
-* The whole UI has been revamped to support Dark Theme.
+* The library is now fully converted to Kotlin and migrated to AndroidX!
+* The whole UI has been revamped to support Dark Theme which follows your device theme.
 * The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
 * HTTP Response/Request Body can now be saved on file.
 * Notifications for Throwable and HTTP Traffic are now going on two separate channels.
-* A lot of classes inside the `.internal` package have restricted visibility (from public to internal).
+* A lot of classes inside the `.internal` package have restricted visibility (from public to internal). Also, resources like strings, dimens and drawables from Chucker won't appear in your autocomplete suggestions.
+
+### Bugfixes
+
+* Fixed ANRs during big response payloads processing.
+* Fixed contentType response formatting.
+* Fixed notifications importance in Android Q.
+* Fixed date formatting in transaction overview.
+* Fixed visibility of internal library classes and resources.
+* Fixed XML parsing
+
+### Dependency Updates
+
+- Updated Kotlin to 1.3.61
+- Updated Retrofit to 2.6.4
+- Updated Room to 2.2.3
+- Updated OkHttp to 3.12.6
+- Updated Gson to 2.8.6
+- Updated Dokka to 0.10.0
+- Updated KtLint to 9.1.1
+- Updated Gradle wrapper to 6.1
+- Updated Android Gradle plugin to 3.5.3
 
 #### Credits
 
