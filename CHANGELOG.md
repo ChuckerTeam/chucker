@@ -13,74 +13,6 @@ This is a new minor release of Chucker. Please note that this minor release cont
 * Notifications for Throwable and HTTP Traffic are now going on two separate channels.
 * A lot of classes inside the `.internal` package have restricted visibility (from public to internal).
 
-### Wall of PRs
-
-Please find here the list of all the PRs that got merged inside the upcoming version.
-
-#### Enhancements
-
-* [#182] New: Notifications update
-* [#160] New: Add date formatting for requestDate and responseDate
-* [#156] New: Update assets to match changed design
-* [#145] New: Introduce a shared view model into transaction details activity + fragments
-* [#143] New: Feature/dark theme
-* [#138] New: Add an option to save the request or response body
-* [#119] New: Display explanation text on tabs if empty
-* [#118] New: Update the request/response body to use a monospace font
-* [#98]  New: Add search button on request tab
-
-#### Bugfixes
-
-* [#201] Fix: Fix for XML parsing
-* [#198] Fix: Clone the Response Buffer rather than using it directly
-* [#188] Fix: Hide library resources
-* [#186] Fix: Fix for wrong class used for extending in ErrorActivity
-* [#181] Fix: Mask true type of headersToRedact and update documentation
-* [#180] Fix: Visibility fix for internal members
-* [#172] Fix: Fixing handling of big body payloads
-* [#171] Fix: Fix "null" prefix in POM name
-* [#167] Fix: Fix issue with LinearLayoutManager after code minification
-* [#165] Fix: Close the native source.
-* [#148] Fix: Another fix for notifications in Q
-* [#147] Fix: Remove unused variable in ClearDatabaseService
-* [#146] Fix: Pass the -module-name Kotlin Compiler flag
-* [#144] Fix: Fix notification importance for Android Q
-* [#121] Fix: Force all layouts to be LTR
-* [#103] Fix: Fix content type for response formatting
-* [#85]  Fix: Fix race conditions in NotificationHelper.
-
-#### Internals
-
-* [#190] Refactor: ChuckerInterceptor refactoring
-* [#189] Refactor: Headers redaction refactoring
-* [#169] Refactor: Minor code cleanup
-* [#149] Refactor: Update/share util
-* [#142] Refactor: Cleanup kotlin classes
-* [#139] Refactor: Remove deprecations
-* [#137] Refactor: Unification for activities start
-* [#136] Refactor: Kotlinify classes in .internal.ui.transaction package
-* [#135] Refactor: Kotlinify classes in .internal.ui package
-* [#126] Refactor: Fix inconsistency when referencing screen constants from Java
-* [#125] Refactor: Kotlinify Chucker sample app
-* [#123] Refactor: Kotlinify classes in .internal.ui.error package
-* [#122] Refactor: Kotlinify NotificationHelper
-* [#120] Refactor: Kotlinify FormatUtils
-* [#114] Refactor: Kotlinify IOUtils
-* [#112] Refactor: Kotlinify ClearDatabaseService
-* [#111] Refactor: Removing SimpleOnPageChangedListener
-* [#109] Refactor: Kotlinify ChuckerCrashHandler
-* [#108] Refactor: Kotlinify JsonConverter
-* [#101] Refactor: Move the .internal package outside of .api
-* [#193] Infra: Update Multiple Dependencies
-* [#185] Infra: CI pipeline optimisation
-* [#176] Infra: Bump KtLint to 0.36.0
-* [#175] Infra: Remove redundant publishing tools
-* [#174] Infra: Remove stale support-lib-version from gradle file
-* [#162] Infra: Update/components versions
-* [#133] Infra: Updating Detekt to 1.1.0
-* [#107] Infra: Detekt to 1.0.1
-* [#104] Infra: Kotlin to 1.3.50
-
 #### Credits
 
 This release was possible thanks to the contribution of:
@@ -132,45 +64,6 @@ This is a new major release of Chucker. Please note that this major release cont
 * Added support to render images in Response page.
 * Added support to search and highlight text in the Http Response body.
 * We moved the artifact from JCenter to JitPack
-
-### Wall of PRs
-
-* New: [#67] Add support for images
-* New: [#53] Remove usage of methods from okhttp3.internal
-* New: [#49] Add missing `@JvmOverload` on the ChuckerInterceptor
-* New: [#29] Replacing Cupboard with Room
-* New: [#24] Redact header (from okhttp logging)
-* New: [#23] Polishing the Color palette
-* New: [#22] Modernize the project icon
-* New: [#21] Polish the MainActivity
-* New: [#17] Highlight search result in response tab
-* New: [#10] Updating the ListItem layout to use CL
-* New: [#6] Issue #43 Ask for confirmation when delete history
-* Breaking: [#66] Renamed registerDefaultCrashHanlder to registerDefaultCrashHandler
-* Breaking: [#36] Hide the RetentionManager in the API (Issue #31)
-* Breaking: [#42] Kotlinize the Public API of Chucker
-* Breaking: [#35] Cleanup form the old Chuck names
-* Fix: [#87] Improving counting of seen transactions in notification message
-* Fix: [#86] Add positions to string formatting placeholders
-* Fix: [#81] Fix for null values being omitted in the parsed body
-* Fix: [#75] Fix application name retrieval.
-* Fix: [#72] Fetch payload in AsyncTask
-* Fix: [#71] Fix crash when clicking notification
-* Fix: [#77] Fix image being loaded twice for request and response.
-* Fix: [#62] LeakCanary memory leak report
-* Fix: [#44] Fix for 'Push Notification is wrongly reporting the first HTTP request
-* Fix: [#39] Prevent potential XXE attacks from XML formatting
-* Fix: [#38] Do not display URL Query if the query is null
-* Fix: [#54] clean up
-* Fix: [#50] ChuckerInterceptor Cleanup
-* Fix: [#4] Add no-op check to Chuck utility class
-* Infra: [#65] Kotlin to 1.3.41
-* Infra: [#59] Gradle to 5.5
-* Infra: [#51] Setup KtLint and Detekt
-* Infra: [#41] Switch Release Artifact to JitPack
-* Infra: [#40] Reorganize dependency versions
-* Infra: [#28] Updating Dependencies
-* Infra: [#16] [TECH] Configure a debug keystore
 
 ### Contributors
 
