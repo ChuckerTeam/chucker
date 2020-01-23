@@ -7,15 +7,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.text.DateFormat
 
-internal class ErrorActivity : AppCompatActivity() {
+internal class ErrorActivity : BaseChuckerActivity() {
 
     private var throwableId: Long = 0
     private var throwable: RecordedThrowable? = null

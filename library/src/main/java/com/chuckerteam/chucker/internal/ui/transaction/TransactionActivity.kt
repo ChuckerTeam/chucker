@@ -131,11 +131,9 @@ internal class TransactionActivity : BaseChuckerActivity() {
         private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
-            context.startActivity(
-                Intent(context, TransactionActivity::class.java).apply {
-                    putExtra(EXTRA_TRANSACTION_ID, transactionId)
-                }
-            )
+            val intent = Intent(context, TransactionActivity::class.java)
+            intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
+            context.startActivity(intent)
         }
     }
 }

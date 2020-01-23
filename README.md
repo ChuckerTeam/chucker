@@ -1,6 +1,5 @@
 # Chucker
-
-[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375) ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
+[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
 
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -98,7 +97,7 @@ val chuckerInterceptor = ChuckerInterceptor(
         // The max body content length, after this responses will be truncated.
         maxContentLength = 250000L,
         // List of headers to obfuscate in the Chucker UI
-        headersToRedact = listOf("Auth-Token"))
+        headersToRedact = setOf("Auth-Token"))
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
@@ -127,8 +126,7 @@ It is intended for **use during development**, and not in release builds or othe
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
 ```kotlin
-interceptor.redactHeader("Auth-Token");
-interceptor.redactHeader("User-Session");
+interceptor.redactHeader("Auth-Token", "User-Session");
 ```
 
 ## Migrating 🚗
@@ -168,6 +166,8 @@ If you're looking for the **latest stable version**, you can always find it on t
 Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
 
 ## Contributing 🤝
+
+We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.com/archives/CRWD6370R) channel on [kotlinlang.slack.com](https://kotlinlang.slack.com/). Come and joing the conversation over there.
 
 **We're looking for contributors! Don't be shy.** 😁 Feel free to open issues/pull requests to help me improve this project.
 

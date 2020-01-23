@@ -19,7 +19,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 
-abstract class BaseChuckerActivity : AppCompatActivity() {
+internal abstract class BaseChuckerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -13,7 +13,7 @@ import okio.Okio
 private const val PREFIX_SIZE = 64L
 private const val CODE_POINT_SIZE = 16
 
-class IOUtils(private val context: Context) {
+internal class IOUtils(private val context: Context) {
 
     /**
      * Returns true if the body in question probably contains human readable text. Uses a small sample
@@ -63,8 +63,7 @@ class IOUtils(private val context: Context) {
     }
 
     fun bodyHasSupportedEncoding(contentEncoding: String?) =
-        contentEncoding == null ||
-            contentEncoding.isEmpty() ||
+        contentEncoding.isNullOrEmpty() ||
             contentEncoding.equals("identity", ignoreCase = true) ||
             contentEncoding.equals("gzip", ignoreCase = true)
 

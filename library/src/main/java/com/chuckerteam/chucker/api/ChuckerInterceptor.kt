@@ -9,15 +9,13 @@ import com.chuckerteam.chucker.internal.support.hasBody
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
-import java.util.concurrent.TimeUnit
 import okhttp3.Headers
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import okio.BufferedSource
-
-private const val MAX_BLOB_SIZE = 1000_000L
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -26,42 +24,67 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * @param context An Android [Context]
  * @param collector A [ChuckerCollector] to customize data retention
  * @param maxContentLength The maximum length for request and response content
- * before they are truncated. Warning: setting this value too high may cause unexpected
+ * before their truncation. Warning: setting this value too high may cause unexpected
  * results.
- * @param headersToRedact List of headers that you want to redact. They will be not be shown in
- * the ChuckerUI but will be replaced with a `**`.
+ * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
+ * with a `**` in the Chucker UI.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    private val headersToRedact: MutableSet<String> = mutableSetOf()
+    headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
+    private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
 
-    fun redactHeader(name: String) = apply {
-        headersToRedact.add(name)
+    /** Adds [headerName] into [headersToRedact] */
+    fun redactHeader(vararg headerName: String) {
+        headersToRedact.addAll(headerName)
     }
 
     @Throws(IOException::class)
-    @Suppress("LongMethod", "ComplexMethod")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val response: Response
+        val transaction = HttpTransaction()
+
+        processRequest(request, transaction)
+        collector.onRequestSent(transaction)
+
+        try {
+            response = chain.proceed(request)
+        } catch (e: IOException) {
+            transaction.error = e.toString()
+            collector.onResponseReceived(transaction)
+            throw e
+        }
+
+        processResponse(response, transaction)
+        collector.onResponseReceived(transaction)
+
+        return response
+    }
+
+    /**
+     * Processes a [Request] and populates corresponding fields of a [HttpTransaction].
+     */
+    private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body()
 
-        val transaction = HttpTransaction()
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
+
         transaction.apply {
+            setRequestHeaders(request.headers())
+            populateUrl(request.url().toString())
+
+            isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
             method = request.method()
-            populateUrl(request.url().toString())
-            setRequestHeaders(request.headers())
             requestContentType = requestBody?.contentType()?.toString()
             requestContentLength = requestBody?.contentLength() ?: 0L
         }
-
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
-        transaction.isRequestBodyPlainText = encodingIsSupported
 
         if (requestBody != null && encodingIsSupported) {
             val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get(CONTENT_ENCODING)))
@@ -79,55 +102,43 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 transaction.isResponseBodyPlainText = false
             }
         }
+    }
 
-        collector.onRequestSent(transaction)
-
-        val startNs = System.nanoTime()
-        val response: Response
-        try {
-            response = chain.proceed(request)
-        } catch (e: IOException) {
-            transaction.error = e.toString()
-            collector.onResponseReceived(transaction)
-            throw e
-        }
-
-        val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
-
+    /**
+     * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
+     */
+    private fun processResponse(response: Response, transaction: HttpTransaction) {
         val responseBody = response.body()
+        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
-        // includes headers added later in the chain
-        transaction.setRequestHeaders(filterHeaders(response.request().headers()))
         transaction.apply {
-            responseDate = System.currentTimeMillis()
-            this.tookMs = tookMs
+            // includes headers added later in the chain
+            setRequestHeaders(filterHeaders(response.request().headers()))
+            setResponseHeaders(filterHeaders(response.headers()))
+
+            isResponseBodyPlainText = responseEncodingIsSupported
+            requestDate = response.sentRequestAtMillis()
+            responseDate = response.receivedResponseAtMillis()
             protocol = response.protocol().toString()
             responseCode = response.code()
             responseMessage = response.message()
 
             responseContentType = responseBody?.contentType()?.toString()
             responseContentLength = responseBody?.contentLength() ?: 0L
-            setResponseHeaders(filterHeaders(response.headers()))
-        }
 
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
-        transaction.isResponseBodyPlainText = responseEncodingIsSupported
+            tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
+        }
 
         if (response.hasBody() && responseEncodingIsSupported) {
             processResponseBody(response, responseBody, transaction)
         }
-
-        collector.onResponseReceived(transaction)
-
-        return response
     }
 
     /**
-     * Private method to process the HTTP Response body and populate the corresponding response fields
-     * of a the [HttpTransaction].
+     * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processResponseBody(response: Response, responseBody: ResponseBody?, transaction: HttpTransaction) {
-        getNativeSource(response).use { source ->
+        getNativeSource(response)?.use { source ->
             source.request(java.lang.Long.MAX_VALUE)
             val buffer = source.buffer()
             var charset: Charset = UTF8
@@ -140,24 +151,26 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 }
             }
             if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer.clone(), charset, maxContentLength)
+                val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.responseBody = content
             } else {
                 transaction.isResponseBodyPlainText = false
 
-                if (transaction.responseContentType?.contains("image") == true && buffer.size() < MAX_BLOB_SIZE) {
-                    transaction.responseImageData = buffer.clone().readByteArray()
+                val isImageContentType = (transaction.responseContentType?.contains(CONTENT_TYPE_IMAGE) == true)
+
+                if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
+                    transaction.responseImageData = buffer.readByteArray()
                 }
             }
             transaction.responseContentLength = buffer.size()
         }
     }
 
-    /** Overrides all the headers in [headersToRedact] with a `**` */
+    /** Overrides all headers from [headersToRedact] with `**` */
     private fun filterHeaders(headers: Headers): Headers {
         val builder = headers.newBuilder()
         for (name in headers.names()) {
-            if (name in headersToRedact) {
+            if (headersToRedact.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
                 builder.set(name, "**")
             }
         }
@@ -165,10 +178,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Returns the [BufferedSource] of the response and also UnGzip it if necessary.
+     * Returns a [BufferedSource] of a [Response] and UnGzip it if necessary.
      */
     @Throws(IOException::class)
-    private fun getNativeSource(response: Response): BufferedSource {
+    private fun getNativeSource(response: Response): BufferedSource? {
         if (io.bodyIsGzipped(response.headers().get(CONTENT_ENCODING))) {
             val source = response.peekBody(maxContentLength).source()
             if (source.buffer().size() < maxContentLength) {
@@ -177,11 +190,17 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 Log.w(LOG_TAG, "gzip encoded response was too long")
             }
         }
-        return response.body()!!.source()
+        // Let's clone the response Buffer in order to don't cause an IllegalStateException: closed
+        //  if others interceptors are manipulating the body (see #192).
+        return response.body()?.source()?.buffer()?.clone()
     }
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
-        private val CONTENT_ENCODING = "Content-Encoding"
+
+        private const val MAX_BLOB_SIZE = 1000_000L
+
+        private const val CONTENT_TYPE_IMAGE = "image"
+        private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }

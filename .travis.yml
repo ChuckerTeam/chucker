@@ -22,4 +22,4 @@ android:
     - extra-google-m2repository
 
 script:
-   - ./gradlew clean build lint ktlintCheck detekt test
+   - ./gradlew clean ktlintCheck lint detekt build test

@@ -1,8 +1,7 @@
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: "com.jfrog.bintray"
 
-def siteUrl = 'https://github.com/olivierperez/chucker' // Homepage URL of the library
-def gitUrl = 'https://github.com/olivierperez/chucker.git' // Git repository URL
+def siteUrl = 'https://github.com/ChuckerTeam/chucker' // Homepage URL of the library
+def gitUrl = 'https://github.com/ChuckerTeam/chucker.git' // Git repository URL
 group = GROUP // Maven Group ID for the artifact
 
 afterEvaluate { proj ->
@@ -40,27 +39,6 @@ afterEvaluate { proj ->
                     }
                 }
             }
-        }
-    }
-
-// https://github.com/bintray/gradle-bintray-plugin
-    bintray {
-        user = System.getenv('BINTRAY_USER')
-        key = System.getenv('BINTRAY_API_KEY')
-
-        configurations = ['archives']
-        pkg {
-            repo = POM_REPO_NAME
-            // it is the name that appears in bintray when logged
-            name = "$POM_REPO_NAME:${proj.name}"
-            websiteUrl = POM_URL
-            vcsUrl = POM_SCM_CONNECTION
-            issueTrackerUrl = POM_ISSUE_TRACKER
-            licenses = [POM_LICENCE]
-            publish = true
-            publicDownloadNumbers = false
-            githubRepo = POM_GITHUB_REPO
-            githubReleaseNotesFile = "CHANGELOG.md"
         }
     }
 }
