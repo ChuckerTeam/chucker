@@ -192,8 +192,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 Log.w(LOG_TAG, "gzip encoded response was too long")
             }
         }
-        // Let's clone the response Buffer in order to don't cause an IllegalStateException: closed
-        //  if others interceptors are manipulating the body (see #192).
         return response.body()?.source()?.buffer()
     }
 
