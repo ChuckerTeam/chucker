@@ -47,24 +47,27 @@ class ChuckerInterceptor @JvmOverloads constructor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response: Response
+        val originalResponse: Response
         val transaction = HttpTransaction()
 
         processRequest(request, transaction)
         collector.onRequestSent(transaction)
 
         try {
-            response = chain.proceed(request)
+            originalResponse = chain.proceed(request)
         } catch (e: IOException) {
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
             throw e
         }
 
-        processResponse(response, transaction)
+        // Creating a copy of response to avoid problems with multiple interceptors
+        val responseCopy = originalResponse.newBuilder().build()
+
+        processResponse(responseCopy, transaction)
         collector.onResponseReceived(transaction)
 
-        return response
+        return originalResponse
     }
 
     /**
@@ -191,7 +194,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
         // Let's clone the response Buffer in order to don't cause an IllegalStateException: closed
         //  if others interceptors are manipulating the body (see #192).
-        return response.body()?.source()?.buffer()?.clone()
+        return response.body()?.source()?.buffer()
     }
 
     companion object {
