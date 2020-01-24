@@ -162,7 +162,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
                     transaction.responseImageData = buffer.readByteArray()
                 }
             }
-            transaction.responseContentLength = buffer.size()
         }
     }
 
