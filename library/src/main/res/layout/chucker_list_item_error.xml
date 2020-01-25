@@ -20,7 +20,6 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:layoutDirection="ltr"
     android:padding="8dp">
 
     <TextView

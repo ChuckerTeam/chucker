@@ -20,7 +20,6 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="ltr"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
