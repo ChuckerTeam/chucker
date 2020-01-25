@@ -67,5 +67,9 @@ internal class IOUtils(private val context: Context) {
             contentEncoding.equals("identity", ignoreCase = true) ||
             contentEncoding.equals("gzip", ignoreCase = true)
 
-    fun bodyIsGzipped(contentEncoding: String?) = contentEncoding?.equals("gzip", ignoreCase = true) ?: false
+    fun bodyIsGzipped(contentEncoding: String?) = CONTENT_ENCODING_GZIP.equals(contentEncoding, ignoreCase = true)
+
+    private companion object {
+        const val CONTENT_ENCODING_GZIP = "gzip"
+    }
 }
