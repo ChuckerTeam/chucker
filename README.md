@@ -176,7 +176,8 @@ We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.co
 
 Short `TODO` List for new contributors:
 
-- [ ] Increment the test coverage.
+- Increment the test coverage.
+- [Issues marked as `Help wanted`](https://github.com/ChuckerTeam/chucker/labels/help%20wanted)
 
 ## Acknowledgments 🌸
 
@@ -204,7 +205,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2020 Chucker Team.
+    Copyright (C) 2018-2020 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");
