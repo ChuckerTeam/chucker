@@ -1,6 +1,16 @@
 # Change Log
 
+## Version 3.1.1 *(2020-01-25)*
+
+This is hot-fix release to fix issue introduced in `3.1.0`.
+
+### Summary of Changes
+
+- Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/203) introduced in 3.1.0 where some of response bodies were shown as `null` and their sizes were 0 bytes.
+
 ## Version 3.1.0 *(2020-01-24)*
+
+### This version shouldn't be used as dependency due to [#203](https://github.com/ChuckerTeam/chucker/issues/203). Use 3.1.1 instead.
 
 This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
 

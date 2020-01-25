@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.0.1"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.0.1"
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.1.1"
+  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.1.1"
 }
 ```
 
@@ -63,7 +63,7 @@ Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the ch
 
 * Compatible with **OkHTTP 4**
 * **API >= 16** compatible
-* Easy to integrate (just a 2 gradle implementation line).
+* Easy to integrate (just 2 gradle `implementation` lines).
 * Works **out of the box**, no customization needed.
 * **Empty release artifact** 🧼 (no traces of Chucker in your final APK).
 * Support for body text search with **highlighting** 🕵️‍♂️
@@ -94,9 +94,9 @@ val chuckerInterceptor = ChuckerInterceptor(
         context = this,
         // The previously created Collector
         collector = chuckerCollector,
-        // The max body content length, after this responses will be truncated.
+        // The max body content length in bytes, after this responses will be truncated.
         maxContentLength = 250000L,
-        // List of headers to obfuscate in the Chucker UI
+        // List of headers to replace with ** in the Chucker UI
         headersToRedact = setOf("Auth-Token"))
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
@@ -107,7 +107,7 @@ val client = OkHttpClient.Builder()
 
 ### Throwables ☄️
 
-Chucker supports also collecting and displaying **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
+Chucker can also collect and display **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
 
 ```kotlin
 try {
@@ -176,8 +176,6 @@ We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.co
 
 Short `TODO` List for new contributors:
 
-- [ ] Kotlinize classes inside the `.internal` package.
-- [x] Have a empty state graphics/message for requests with no headers.
 - [ ] Increment the test coverage.
 
 ## Acknowledgments 🌸
@@ -191,18 +189,9 @@ Chucker is currently developed and maintained by the [ChuckerTeam](https://githu
 - [@redwarp](https://github.com/redwarp)
 - [@vbuberen](https://github.com/vbuberen)
 
-### Contributors
+### Thanks
 
-Big thanks to our contributors ❤️ Please add your name here once you submit a PR.
-
-- [Ashok Varma](https://github.com/Ashok-Varma) Clean up
-- [Bernat Borrás Paronella](https://github.com/alorma) Redact headers + HTTP methods in notifications
-- [Hafiz Waleed Hussain](https://github.com/Hafiz-Waleed-Hussain) Search highlight in response tab
-- [Karol Wrótniak](https://github.com/koral--) Fix race condition + Application name retrieval
-- [OlliZi](https://github.com/OlliZi) Support for images
-- [Paul Hawke](https://github.com/psh) API Clean
-- [Paul Woitaschek](https://github.com/PaulWoitaschek) Fix typo in API
-- [SeungHun Choe](https://github.com/uOOOO) Fix memory leak
+Big thanks to our contributors ❤️
 
 ### Libraries
 
@@ -215,7 +204,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018 Chucker Team.
+    Copyright (C) 2020 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");
