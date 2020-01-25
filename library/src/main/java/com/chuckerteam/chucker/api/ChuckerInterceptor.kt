@@ -143,7 +143,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         source.request(Long.MAX_VALUE) // Buffer the entire body.
         var buffer = source.buffer()
 
-        if (CONTENT_ENCODING_GZIP.equals(response.headers()[CONTENT_ENCODING], ignoreCase = true)) {
+        if (io.bodyIsGzipped(response.headers()[CONTENT_ENCODING])) {
             GzipSource(buffer.clone()).use { gzippedResponseBody ->
                 buffer = Buffer()
                 buffer.writeAll(gzippedResponseBody)
@@ -181,7 +181,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         private const val MAX_BLOB_SIZE = 1000_000L
 
-        private const val CONTENT_ENCODING_GZIP = "gzip"
         private const val CONTENT_TYPE_IMAGE = "image"
         private const val CONTENT_ENCODING = "Content-Encoding"
     }
