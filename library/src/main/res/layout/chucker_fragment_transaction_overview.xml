@@ -1,262 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- ~ Copyright (C) 2017 Jeff Gilfelt.
- ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");
- ~ you may not use this file except in compliance with the License.
- ~ You may obtain a copy of the License at
- ~
- ~      http://www.apache.org/licenses/LICENSE-2.0
- ~
- ~ Unless required by applicable law or agreed to in writing, software
- ~ distributed under the License is distributed on an "AS IS" BASIS,
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
- -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionOverviewFragment">
+    android:layout_height="wrap_content"
+    android:padding="@dimen/chucker_doub_grid">
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:stretchColumns="1">
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.28" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      android:text="@string/chucker_url"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/chucker_url"
-            style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/url"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
 
-        <TextView
-            android:id="@+id/url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Chucker.TextAppearance.Value"
-            tools:text="https://example.com/path/to/resource?here=might_be_really_long"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_method"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/url" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/method"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@+id/url"
+      tools:text="GET" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_protocol"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/method" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_method"
-                style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/protocol"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/method"
+      tools:text="HTTP/1.1" />
 
-            <TextView
-                android:id="@+id/method"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="GET"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_status"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/protocol" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/status"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/protocol"
+      tools:text="Complete" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_response"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/status" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_protocol"
-                style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/response"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/status"
+      tools:text="200 OK" />
 
-            <TextView
-                android:id="@+id/protocol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="HTTP/1.1"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_ssl"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/response" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/ssl"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/response"
+      tools:text="Yes" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_base_grid"
+      android:text="@string/chucker_request_time"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/ssl" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_status"
-                style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/request_time"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_base_grid"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/ssl"
+      tools:text="05/02/17 11:52:49" />
 
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="Complete"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_response_time"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/request_time" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/response_time"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/request_time"
+      tools:text="05/02/17 11:52:49" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_duration"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/response_time" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_response"
-                style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/duration"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/response_time"
+      tools:text="405 ms" />
 
-            <TextView
-                android:id="@+id/response"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="200 OK"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_base_grid"
+      android:text="@string/chucker_request_size"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/duration" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/request_size"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_base_grid"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/duration"
+      tools:text="53 KB" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_response_size"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/request_size" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_ssl"
-                style="@style/Chucker.TextAppearance.Label"/>
+    <TextView
+      android:id="@+id/response_size"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/request_size"
+      tools:text="148 KB" />
 
-            <TextView
-                android:id="@+id/ssl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="Yes"/>
+    <TextView
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_total_size"
+      app:layout_constraintEnd_toStartOf="@id/guideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/response_size" />
 
-        </TableRow>
+    <TextView
+      android:id="@+id/total_size"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/guideline"
+      app:layout_constraintTop_toBottomOf="@id/response_size"
+      tools:text="201 KB" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_request_time"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/request_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="05/02/17 11:52:49"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_response_time"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/response_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="05/02/17 11:52:49"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_duration"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="405 ms"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_request_size"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/request_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="53 KB"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_response_size"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/response_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="148 KB"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chucker_total_size"
-                style="@style/Chucker.TextAppearance.Label"/>
-
-            <TextView
-                android:id="@+id/total_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Chucker.TextAppearance.Value"
-                tools:text="201 KB"/>
-
-        </TableRow>
-
-    </TableLayout>
-
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

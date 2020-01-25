@@ -16,7 +16,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chuckerteam.chucker">
-    <application>
+    <application
+      android:supportsRtl="true">
         <activity
             android:name="com.chuckerteam.chucker.internal.ui.MainActivity"
             android:label="@string/chucker_name"

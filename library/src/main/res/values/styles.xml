@@ -40,7 +40,6 @@
 
     <style name="Chucker.TextAppearance.Value" parent="android:TextAppearance.Small">
         <item name="android:paddingLeft">16dp</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:textIsSelectable">true</item>
     </style>
 
