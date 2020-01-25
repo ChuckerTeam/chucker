@@ -158,7 +158,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         } else {
             transaction.isResponseBodyPlainText = false
 
-            val isImageContentType = (transaction.responseContentType?.contains(CONTENT_TYPE_IMAGE) == true)
+            val isImageContentType = (transaction.responseContentType?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
             if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
                 transaction.responseImageData = buffer.readByteArray()
             }
