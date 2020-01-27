@@ -10,9 +10,10 @@
 
     <ProgressBar
         android:id="@+id/progress_loading_transaction"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:layout_gravity="center"
         android:layout_margin="@dimen/chucker_doub_grid"
         android:visibility="visible" />
 
