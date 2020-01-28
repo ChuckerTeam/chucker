@@ -33,13 +33,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/Chucker.Theme" >
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/chucker_doub_grid"
                 style="@style/Chucker.TextAppearance.TransactionTitle"
                 tools:text="Title"/>
 
