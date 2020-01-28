@@ -145,7 +145,7 @@ internal object FormatUtils {
 
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
-        var curlCmd = "curl -X $transaction.method"
+        var curlCmd = "curl -X ${transaction.method}"
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
@@ -154,13 +154,13 @@ internal object FormatUtils {
             ) {
                 compressed = true
             }
-            curlCmd += " -H \"$header.name: $header.value\""
+            curlCmd += " -H \"${header.name}: ${header.value}\""
         }
 
         val requestBody = transaction.requestBody
         if (!requestBody.isNullOrEmpty()) {
             // try to keep to a single line and use a subshell to preserve any line breaks
-            curlCmd += " --data $'$requestBody.replace(\"\\n\", \"\\\\n\")'"
+            curlCmd += " --data $'${requestBody.replace("\n", "\\n")}'"
         }
         curlCmd += (if (compressed) " --compressed " else " ") + transaction.url
         return curlCmd
