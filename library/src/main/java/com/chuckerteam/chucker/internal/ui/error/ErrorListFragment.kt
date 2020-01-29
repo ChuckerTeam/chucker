@@ -31,7 +31,7 @@ internal class ErrorListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.chucker_fragment_error_list, container, false).apply {
+        return inflater.inflate(R.layout.fragment_error_list, container, false).apply {
             tutorialView = findViewById(R.id.tutorial)
             findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
 
@@ -66,7 +66,7 @@ internal class ErrorListFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_errors_list, menu)
+        inflater.inflate(R.menu.errors_list, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -82,12 +82,12 @@ internal class ErrorListFragment : Fragment() {
     private fun askForConfirmation() {
         context?.let {
             AlertDialog.Builder(it)
-                .setTitle(R.string.chucker_clear)
-                .setMessage(R.string.chucker_clear_error_confirmation)
-                .setPositiveButton(R.string.chucker_clear) { _, _ ->
+                .setTitle(R.string.clear)
+                .setMessage(R.string.clear_error_confirmation)
+                .setPositiveButton(R.string.clear) { _, _ ->
                     RepositoryProvider.throwable().deleteAllThrowables()
                 }
-                .setNegativeButton(R.string.chucker_cancel, null)
+                .setNegativeButton(R.string.cancel, null)
                 .show()
         }
     }

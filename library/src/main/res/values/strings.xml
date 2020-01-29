@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- ~ Copyright (C) 2017 Jeff Gilfelt.
- ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");
- ~ you may not use this file except in compliance with the License.
- ~ You may obtain a copy of the License at
- ~
- ~      http://www.apache.org/licenses/LICENSE-2.0
- ~
- ~ Unless required by applicable law or agreed to in writing, software
- ~ distributed under the License is distributed on an "AS IS" BASIS,
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
- -->
 <resources>
-    <string name="chucker_name">Chucker</string>
-    <string name="chucker_http_notification_title">Recording HTTP activity</string>
-    <string name="chucker_clear">Clear</string>
-    <string name="chucker_cancel">Cancel</string>
-    <string name="chucker_overview">Overview</string>
-    <string name="chucker_request">Request</string>
-    <string name="chucker_response">Response</string>
-    <string name="chucker_url">URL</string>
-    <string name="chucker_method">Method</string>
-    <string name="chucker_protocol">Protocol</string>
-    <string name="chucker_status">Status</string>
-    <string name="chucker_ssl">SSL</string>
-    <string name="chucker_request_time">Request time</string>
-    <string name="chucker_response_time">Response time</string>
-    <string name="chucker_duration">Duration</string>
-    <string name="chucker_request_size">Request size</string>
-    <string name="chucker_response_size">Response size</string>
-    <string name="chucker_total_size">Total size</string>
-    <string name="chucker_yes">Yes</string>
-    <string name="chucker_no">No</string>
-    <string name="chucker_share">Share</string>
-    <string name="chucker_share_as_text">Share as text</string>
-    <string name="chucker_share_as_curl">Share as curl command</string>
-    <string name="chucker_save">Save body to file</string>
-    <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
-    <string name="chucker_file_saved">File was saved successfully!</string>
-    <string name="chucker_file_not_saved">Failed to save file</string>
-    <string name="chucker_body_omitted">(encoded or binary body omitted)</string>
-    <string name="chucker_search">Search</string>
-    <string name="chucker_body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
-    <string name="chucker_body_content_truncated">\n\n--- Content truncated ---</string>
-    <string name="chucker_tab_network">Network</string>
-    <string name="chucker_tab_errors">Errors</string>
-    <string name="chucker_network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
-    <string name="chucker_errors_tutorial">This tab displays error recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
-    <string name="chucker_networks_notification_category">Chucker network requests</string>
-    <string name="chucker_errors_notification_category">Chucker throwables</string>
-    <string name="chucker_share_error_title">Share error details</string>
-    <string name="chucker_share_transaction_title">Share transaction details</string>
-    <string name="chucker_share_error_subject">Error details</string>
-    <string name="chucker_share_transaction_subject">Transaction details</string>
-    <string name="chucker_share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
-    <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
-    <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>
-    <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
-    <string name="chucker_setup">Setup</string>
-    <string name="chucker_binary_data">binary data</string>
+    <string name="name">Chucker</string>
+    <string name="http_notification_title">Recording HTTP activity</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="overview">Overview</string>
+    <string name="request">Request</string>
+    <string name="response">Response</string>
+    <string name="url">URL</string>
+    <string name="method">Method</string>
+    <string name="protocol">Protocol</string>
+    <string name="status">Status</string>
+    <string name="ssl">SSL</string>
+    <string name="request_time">Request time</string>
+    <string name="response_time">Response time</string>
+    <string name="duration">Duration</string>
+    <string name="request_size">Request size</string>
+    <string name="response_size">Response size</string>
+    <string name="total_size">Total size</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="share">Share</string>
+    <string name="share_as_text">Share as text</string>
+    <string name="share_as_curl">Share as curl command</string>
+    <string name="save">Save body to file</string>
+    <string name="save_failed_to_open_document">Failed to open file chooser</string>
+    <string name="file_saved">File was saved successfully!</string>
+    <string name="file_not_saved">Failed to save file</string>
+    <string name="body_omitted">(encoded or binary body omitted)</string>
+    <string name="search">Search</string>
+    <string name="body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
+    <string name="body_content_truncated">\n\n--- Content truncated ---</string>
+    <string name="tab_network">Network</string>
+    <string name="tab_errors">Errors</string>
+    <string name="network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
+    <string name="errors_tutorial">This tab displays error recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
+    <string name="networks_notification_category">Chucker network requests</string>
+    <string name="errors_notification_category">Chucker throwables</string>
+    <string name="share_error_title">Share error details</string>
+    <string name="share_transaction_title">Share transaction details</string>
+    <string name="share_error_subject">Error details</string>
+    <string name="share_transaction_subject">Transaction details</string>
+    <string name="share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
+    <string name="clear_http_confirmation">Do you want to clear complete network calls history?</string>
+    <string name="clear_error_confirmation">Do you want to clear complete errors history?</string>
+    <string name="check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
+    <string name="setup">Setup</string>
+    <string name="binary_data">binary data</string>
 </resources>

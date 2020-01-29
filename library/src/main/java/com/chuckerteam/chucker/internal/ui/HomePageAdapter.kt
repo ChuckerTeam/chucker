@@ -24,9 +24,9 @@ internal class HomePageAdapter(context: Context, fragmentManager: FragmentManage
     override fun getPageTitle(position: Int): CharSequence? =
         context.get()?.getString(
             if (position == SCREEN_HTTP_INDEX) {
-                R.string.chucker_tab_network
+                R.string.tab_network
             } else {
-                R.string.chucker_tab_errors
+                R.string.tab_errors
             }
         )
 

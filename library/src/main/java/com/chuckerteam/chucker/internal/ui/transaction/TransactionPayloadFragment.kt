@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
@@ -75,7 +60,7 @@ internal class TransactionPayloadFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? =
-        inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
+        inflater.inflate(R.layout.fragment_transaction_payload, container, false).apply {
             transactionContentList = findViewById(R.id.transaction_content)
             transactionContentList.isNestedScrollingEnabled = false
             progressLoading = findViewById(R.id.progress_loading_transaction)
@@ -142,8 +127,8 @@ internal class TransactionPayloadFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        backgroundSpanColor = ContextCompat.getColor(context, R.color.chucker_background_span_color)
-        foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
+        backgroundSpanColor = ContextCompat.getColor(context, R.color.background_span_color)
+        foregroundSpanColor = ContextCompat.getColor(context, R.color.foreground_span_color)
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -159,7 +144,7 @@ internal class TransactionPayloadFragment :
                 startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
             } else {
                 Toast.makeText(
-                    requireContext(), R.string.chucker_save_failed_to_open_document,
+                    requireContext(), R.string.save_failed_to_open_document,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -235,7 +220,7 @@ internal class TransactionPayloadFragment :
             if (type == TYPE_RESPONSE && responseBitmap != null) {
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap))
             } else if (!isBodyPlainText) {
-                fragment.context?.getString(R.string.chucker_body_omitted)?.let {
+                fragment.context?.getString(R.string.body_omitted)?.let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
@@ -292,9 +277,9 @@ internal class TransactionPayloadFragment :
         override fun onPostExecute(isSuccessful: Boolean) {
             fragment.fileSaverTask = null
             val toastMessageId = if (isSuccessful) {
-                R.string.chucker_file_saved
+                R.string.file_saved
             } else {
-                R.string.chucker_file_not_saved
+                R.string.file_not_saved
             }
             Toast.makeText(fragment.context, toastMessageId, Toast.LENGTH_SHORT).show()
         }

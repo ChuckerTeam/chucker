@@ -16,8 +16,13 @@
  -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item android:title="@string/chucker_clear"
+    <item android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item android:title="@string/clear"
         android:id="@+id/clear"
-        android:icon="@drawable/chucker_ic_delete_white_24dp"
+        android:icon="@drawable/ic_delete_white_24dp"
         app:showAsAction="always" />
 </menu>

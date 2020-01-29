@@ -63,12 +63,12 @@ internal class NotificationHelper(val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val transactionsChannel = NotificationChannel(
                 TRANSACTIONS_CHANNEL_ID,
-                context.getString(R.string.chucker_networks_notification_category),
+                context.getString(R.string.networks_notification_category),
                 NotificationManager.IMPORTANCE_LOW
             )
             val errorsChannel = NotificationChannel(
                 ERRORS_CHANNEL_ID,
-                context.getString(R.string.chucker_errors_notification_category),
+                context.getString(R.string.errors_notification_category),
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannels(listOf(transactionsChannel, errorsChannel))
@@ -98,9 +98,9 @@ internal class NotificationHelper(val context: Context) {
                 NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_transaction_notification_24dp)
-                    .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
-                    .setContentTitle(context.getString(R.string.chucker_http_notification_title))
+                    .setSmallIcon(R.drawable.ic_transaction_notification_24dp)
+                    .setColor(ContextCompat.getColor(context, R.color.color_primary))
+                    .setContentTitle(context.getString(R.string.http_notification_title))
                     .setAutoCancel(true)
                     .addAction(createClearAction(ClearDatabaseService.ClearAction.Transaction))
             val inboxStyle = NotificationCompat.InboxStyle()
@@ -132,8 +132,8 @@ internal class NotificationHelper(val context: Context) {
                 NotificationCompat.Builder(context, ERRORS_CHANNEL_ID)
                     .setContentIntent(errorsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_error_notifications_24dp)
-                    .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
+                    .setSmallIcon(R.drawable.ic_error_notifications_24dp)
+                    .setColor(ContextCompat.getColor(context, R.color.status_error))
                     .setContentTitle(throwable.clazz)
                     .setAutoCancel(true)
                     .setContentText(throwable.message)
@@ -144,7 +144,7 @@ internal class NotificationHelper(val context: Context) {
 
     private fun createClearAction(clearAction: ClearDatabaseService.ClearAction):
         NotificationCompat.Action {
-            val clearTitle = context.getString(R.string.chucker_clear)
+            val clearTitle = context.getString(R.string.clear)
             val deleteIntent = Intent(context, ClearDatabaseService::class.java).apply {
                 putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
             }
@@ -152,7 +152,7 @@ internal class NotificationHelper(val context: Context) {
                 context, INTENT_REQUEST_CODE,
                 deleteIntent, PendingIntent.FLAG_ONE_SHOT
             )
-            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
+            return NotificationCompat.Action(R.drawable.ic_delete_white_24dp, clearTitle, intent)
         }
 
     fun dismissTransactionsNotification() {

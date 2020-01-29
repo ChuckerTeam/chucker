@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="chucker_color_primary">#01579b</color>
-    <color name="chucker_color_primary_variant">#002f6c</color>
-    <color name="chucker_color_background">#ffffff</color>
-    <color name="chucker_color_surface">#ffffff</color>
-    <color name="chucker_color_secondary">#00e676</color>
-    <color name="chucker_color_error">#F44336</color>
-    <color name="chucker_color_on_primary">#ffffff</color>
-    <color name="chucker_color_on_secondary">#000000</color>
-    <color name="chucker_color_on_background">#000000</color>
-    <color name="chucker_color_on_surface">#000000</color>
-    <color name="chucker_color_on_error">#ffffff</color>
+    <color name="color_primary">#01579b</color>
+    <color name="color_primary_variant">#002f6c</color>
+    <color name="color_background">#ffffff</color>
+    <color name="color_surface">#ffffff</color>
+    <color name="color_secondary">#00e676</color>
+    <color name="color_error">#F44336</color>
+    <color name="color_on_primary">#ffffff</color>
+    <color name="color_on_secondary">#000000</color>
+    <color name="color_on_background">#000000</color>
+    <color name="color_on_surface">#000000</color>
+    <color name="color_on_error">#ffffff</color>
 
-    <color name="chucker_status_default">#212121</color>
-    <color name="chucker_status_requested">#9E9E9E</color>
-    <color name="chucker_status_error">#F44336</color>
-    <color name="chucker_status_500">#B71C1C</color>
-    <color name="chucker_status_400">#FF9800</color>
-    <color name="chucker_status_300">#0D47A1</color>
+    <color name="status_default">#212121</color>
+    <color name="status_requested">#9E9E9E</color>
+    <color name="status_error">#F44336</color>
+    <color name="status_500">#B71C1C</color>
+    <color name="status_400">#FF9800</color>
+    <color name="status_300">#0D47A1</color>
 
-    <color name="chucker_background_span_color">#ffffff00</color>
-    <color name="chucker_foreground_span_color">#ffff0000</color>
+    <color name="background_span_color">#ffffff00</color>
+    <color name="foreground_span_color">#ffff0000</color>
 </resources>
