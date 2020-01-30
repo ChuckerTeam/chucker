@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.content.Context
@@ -59,7 +44,7 @@ internal class TransactionListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_transaction_list, container, false)
         tutorialView = view.findViewById(R.id.tutorial)
         view.findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
 
@@ -81,7 +66,7 @@ internal class TransactionListFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_transactions_list, menu)
+        inflater.inflate(R.menu.transactions_list, menu)
         val searchMenuItem = menu.findItem(R.id.search)
         val searchView = searchMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
@@ -92,15 +77,15 @@ internal class TransactionListFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.clear) {
             AlertDialog.Builder(requireContext())
-                .setTitle(R.string.chucker_clear)
-                .setMessage(R.string.chucker_clear_http_confirmation)
+                .setTitle(R.string.clear)
+                .setMessage(R.string.clear_http_confirmation)
                 .setPositiveButton(
-                    R.string.chucker_clear
+                    R.string.clear
                 ) { _, _ ->
                     RepositoryProvider.transaction().deleteAllTransactions()
                     NotificationHelper.clearBuffer()
                 }
-                .setNegativeButton(R.string.chucker_cancel, null)
+                .setNegativeButton(R.string.cancel, null)
                 .show()
             true
         } else {
