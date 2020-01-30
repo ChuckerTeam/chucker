@@ -27,6 +27,7 @@ internal class TransactionViewModel(private val transactionId: Long) : ViewModel
 internal class TransactionViewModelFactory(private val transactionId: Long = 0L) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(Long::class.java).newInstance(transactionId)
+        require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
+        return TransactionViewModel(transactionId) as T
     }
 }
