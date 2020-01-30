@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -51,7 +51,7 @@ internal class TransactionPayloadFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments!!.getInt(ARG_TYPE)
-        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
@@ -69,7 +69,7 @@ internal class TransactionPayloadFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.transaction.observe(
-            this,
+            viewLifecycleOwner,
             Observer { transaction ->
                 PayloadLoaderTask(this).execute(Pair(type, transaction))
             }

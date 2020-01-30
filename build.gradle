@@ -18,7 +18,7 @@ buildscript {
         okhttp3Version = '3.12.6'
         retrofitVersion = '2.6.4'
         roomVersion = '2.2.3'
-        viewModelVersion = '2.1.0'
+        viewModelVersion = '2.2.0'
     }
 
     repositories {
