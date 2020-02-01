@@ -7,19 +7,24 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.nio.charset.Charset
 import java.util.Locale
 import javax.xml.XMLConstants
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerException
-import javax.xml.transform.sax.SAXSource
-import javax.xml.transform.sax.SAXTransformerFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.math.ln
 import kotlin.math.pow
+import org.w3c.dom.Document
 import org.xml.sax.InputSource
+import org.xml.sax.SAXParseException
 
 internal object FormatUtils {
 
@@ -60,44 +65,53 @@ internal object FormatUtils {
 
     fun formatXml(xml: String): String {
         return try {
-            val transformerFactory = SAXTransformerFactory.newInstance().apply {
+            val documentFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+            // This flag is required for security reasons
+            documentFactory.isExpandEntityReferences = false
+
+            val documentBuilder: DocumentBuilder = documentFactory.newDocumentBuilder()
+            val inputSource = InputSource(ByteArrayInputStream(xml.toByteArray(Charset.defaultCharset())))
+            val document: Document = documentBuilder.parse(inputSource)
+
+            val domSource = DOMSource(document)
+            val writer = StringWriter()
+            val result = StreamResult(writer)
+
+            TransformerFactory.newInstance().apply {
                 setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
-                setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "")
-                setAttribute("http://javax.xml.XMLConstants/property/accessExternalStylesheet", "")
-            }
-
-            val serializer = transformerFactory.newTransformer().apply {
-                setOutputProperty(OutputKeys.INDENT, "yes")
+            }.newTransformer().apply {
                 setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                setOutputProperty(OutputKeys.INDENT, "yes")
+                transform(domSource, result)
             }
-
-            val xmlSource = SAXSource(InputSource(ByteArrayInputStream(xml.toByteArray())))
-            val res = StreamResult(ByteArrayOutputStream())
-            serializer.transform(xmlSource, res)
-            ((res.outputStream as ByteArrayOutputStream).toByteArray()).toString()
-        } catch (e: TransformerException) {
+            writer.toString()
+        } catch (e: SAXParseException) {
+            xml
+        } catch (io: IOException) {
+            xml
+        } catch (t: TransformerException) {
             xml
         }
     }
 
     fun getShareText(context: Context, transaction: HttpTransaction): String {
-        var text = "${context.getString(R.string.chucker_url)}: ${transaction.url}\n"
-        text += "${context.getString(R.string.chucker_method)}: ${transaction.method}\n"
-        text += "${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n"
-        text += "${context.getString(R.string.chucker_status)}: ${transaction.status}\n"
-        text += "${context.getString(R.string.chucker_response)}: ${transaction.responseSummaryText}\n"
-        text += "${context.getString(R.string.chucker_ssl)}: " +
-            "${context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)}\n"
+        var text = "${context.getString(R.string.url)}: ${transaction.url}\n"
+        text += "${context.getString(R.string.method)}: ${transaction.method}\n"
+        text += "${context.getString(R.string.protocol)}: ${transaction.protocol}\n"
+        text += "${context.getString(R.string.status)}: ${transaction.status}\n"
+        text += "${context.getString(R.string.response)}: ${transaction.responseSummaryText}\n"
+        text += "${context.getString(R.string.ssl)}: " +
+            "${context.getString(if (transaction.isSsl) R.string.yes else R.string.no)}\n"
         text += "\n"
-        text += "${context.getString(R.string.chucker_request_time)}: ${transaction.requestDateString}\n"
-        text += "${context.getString(R.string.chucker_response_time)}: ${transaction.responseDateString}\n"
-        text += "${context.getString(R.string.chucker_duration)}: ${transaction.durationString}\n"
+        text += "${context.getString(R.string.request_time)}: ${transaction.requestDateString}\n"
+        text += "${context.getString(R.string.response_time)}: ${transaction.responseDateString}\n"
+        text += "${context.getString(R.string.duration)}: ${transaction.durationString}\n"
         text += "\n"
-        text += "${context.getString(R.string.chucker_request_size)}: ${transaction.requestSizeString}\n"
-        text += "${context.getString(R.string.chucker_response_size)}: ${transaction.responseSizeString}\n"
-        text += "${context.getString(R.string.chucker_total_size)}: ${transaction.totalSizeString}\n"
+        text += "${context.getString(R.string.request_size)}: ${transaction.requestSizeString}\n"
+        text += "${context.getString(R.string.response_size)}: ${transaction.responseSizeString}\n"
+        text += "${context.getString(R.string.total_size)}: ${transaction.totalSizeString}\n"
         text += "\n"
-        text += "---------- ${context.getString(R.string.chucker_request)} ----------\n\n"
+        text += "---------- ${context.getString(R.string.request)} ----------\n\n"
 
         var headers = formatHeaders(transaction.getParsedRequestHeaders(), false)
 
@@ -108,11 +122,11 @@ internal object FormatUtils {
         text += if (transaction.isRequestBodyPlainText) {
             transaction.getFormattedRequestBody()
         } else {
-            context.getString(R.string.chucker_body_omitted)
+            context.getString(R.string.body_omitted)
         }
 
         text += "\n\n"
-        text += "---------- ${context.getString(R.string.chucker_response)} ----------\n\n"
+        text += "---------- ${context.getString(R.string.response)} ----------\n\n"
 
         headers = formatHeaders(transaction.getParsedResponseHeaders(), false)
 
@@ -123,7 +137,7 @@ internal object FormatUtils {
         text += if (transaction.isResponseBodyPlainText) {
             transaction.getFormattedResponseBody()
         } else {
-            context.getString(R.string.chucker_body_omitted)
+            context.getString(R.string.body_omitted)
         }
 
         return text
@@ -131,7 +145,7 @@ internal object FormatUtils {
 
     fun getShareCurlCommand(transaction: HttpTransaction): String {
         var compressed = false
-        var curlCmd = "curl -X $transaction.method"
+        var curlCmd = "curl -X ${transaction.method}"
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
@@ -140,13 +154,13 @@ internal object FormatUtils {
             ) {
                 compressed = true
             }
-            curlCmd += " -H \"$header.name: $header.value\""
+            curlCmd += " -H \"${header.name}: ${header.value}\""
         }
 
         val requestBody = transaction.requestBody
         if (!requestBody.isNullOrEmpty()) {
             // try to keep to a single line and use a subshell to preserve any line breaks
-            curlCmd += " --data $'$requestBody.replace(\"\\n\", \"\\\\n\")'"
+            curlCmd += " --data $'${requestBody.replace("\n", "\\n")}'"
         }
         curlCmd += (if (compressed) " --compressed " else " ") + transaction.url
         return curlCmd

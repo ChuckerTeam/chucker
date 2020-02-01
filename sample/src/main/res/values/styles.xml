@@ -1,7 +1,7 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/chucker_primary_color</item>
-        <item name="colorPrimaryDark">@color/chucker_primary_dark_color</item>
-        <item name="colorAccent">@color/chucker_secondary_color</item>
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/secondary_color</item>
     </style>
 </resources>

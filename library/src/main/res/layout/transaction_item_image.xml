@@ -4,4 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:contentDescription="@string/chucker_binary_data" />
+    android:contentDescription="@string/binary_data" />

@@ -1,18 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
- ~ Copyright (C) 2017 Jeff Gilfelt.
- ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");
- ~ you may not use this file except in compliance with the License.
- ~ You may obtain a copy of the License at
- ~
- ~      http://www.apache.org/licenses/LICENSE-2.0
- ~
- ~ Unless required by applicable law or agreed to in writing, software
- ~ distributed under the License is distributed on an "AS IS" BASIS,
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
- -->
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,13 +13,13 @@
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionListFragment"
-        tools:listitem="@layout/chucker_list_item_transaction" />
+        tools:listitem="@layout/list_item_transaction" />
 
     <LinearLayout
         android:id="@+id/tutorial"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/chucker_doub_grid"
+        android:layout_margin="@dimen/doub_grid"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:visibility="gone">
@@ -42,21 +28,21 @@
             style="@style/Chucker.TextAppearance.ListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/chucker_setup" />
+            android:text="@string/setup" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:layout_marginTop="@dimen/base_grid"
             android:gravity="center_vertical"
-            android:text="@string/chucker_network_tutorial" />
+            android:text="@string/network_tutorial" />
 
         <TextView
             android:id="@+id/link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:layout_marginTop="@dimen/base_grid"
             android:gravity="center_vertical"
-            android:text="@string/chucker_check_readme" />
+            android:text="@string/check_readme" />
     </LinearLayout>
 </FrameLayout>

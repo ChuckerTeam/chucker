@@ -41,7 +41,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_transaction)
+        setContentView(R.layout.activity_transaction)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
 
@@ -52,7 +52,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
             .get(TransactionViewModel::class.java)
         viewModel.loadTransaction()
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         title = findViewById(R.id.toolbar_title)
 
@@ -70,7 +70,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.chucker_transaction, menu)
+        menuInflater.inflate(R.menu.transaction, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -90,7 +90,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
 
     private fun setupViewPager() {
-        val viewPager = findViewById<ViewPager2>(R.id.viewPagerTransaction)
+        val viewPager: ViewPager2 = findViewById(R.id.viewPagerTransaction)
 
         viewPagerAdapter = TransactionPagerAdapter(this)
         viewPager.apply {
@@ -104,12 +104,12 @@ internal class TransactionActivity : BaseChuckerActivity() {
             currentItem = selectedTabPosition
         }
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutTransaction)
+        val tabLayout : TabLayout = findViewById(R.id.tabLayoutTransaction)
         TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
             currentTab.text = when (currentPosition) {
-                TransactionPagerAdapter.OVERVIEW_SCREEN_POSITION -> getString(R.string.chucker_overview)
-                TransactionPagerAdapter.REQUEST_SCREEN_POSITION -> getString(R.string.chucker_request)
-                else -> getString(R.string.chucker_response)
+                TransactionPagerAdapter.OVERVIEW_SCREEN_POSITION -> getString(R.string.overview)
+                TransactionPagerAdapter.REQUEST_SCREEN_POSITION -> getString(R.string.request)
+                else -> getString(R.string.response)
             }
         }.attach()
     }
@@ -118,8 +118,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
-                .setSubject(getString(R.string.chucker_share_transaction_subject))
+                .setChooserTitle(getString(R.string.share_transaction_title))
+                .setSubject(getString(R.string.share_transaction_subject))
                 .setText(transactionDetailsText)
                 .createChooserIntent()
         )
