@@ -115,11 +115,11 @@ internal class TransactionPayloadFragment :
         else -> true
     }
 
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when {
-        (type == TYPE_REQUEST) -> {
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (type) {
+        TYPE_REQUEST -> {
             (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
-        (type == TYPE_RESPONSE) -> {
+        TYPE_RESPONSE -> {
             (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
         else -> false
@@ -251,15 +251,19 @@ internal class TransactionPayloadFragment :
                 val context = fragment.context ?: return false
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
-                        when {
-                            type == TYPE_REQUEST -> {
-                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                        when (type) {
+                            TYPE_REQUEST -> {
+                                transaction.requestBody?.byteInputStream()?.copyTo(fos) ?: return false
                             }
-                            transaction.responseBody != null -> {
-                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                            TYPE_RESPONSE -> {
+                                transaction.responseBody?.byteInputStream()?.copyTo(fos) ?: return false
                             }
                             else -> {
-                                fos.write(transaction.responseImageData)
+                                if (transaction.responseImageData != null) {
+                                    fos.write(transaction.responseImageData)
+                                } else {
+                                    return false
+                                }
                             }
                         }
                     }
