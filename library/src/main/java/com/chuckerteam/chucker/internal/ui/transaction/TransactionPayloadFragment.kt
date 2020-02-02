@@ -241,7 +241,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    class FileSaverTask(val fragment: TransactionPayloadFragment) :
+    class FileSaverTask(private val fragment: TransactionPayloadFragment) :
         AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
 
         @Suppress("NestedBlockDepth")
@@ -253,16 +253,16 @@ internal class TransactionPayloadFragment :
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
                             TYPE_REQUEST -> {
-                                transaction.requestBody?.byteInputStream()?.copyTo(fos) ?: return false
+                                transaction.requestBody?.byteInputStream()?.copyTo(fos) ?: throw IOException()
                             }
                             TYPE_RESPONSE -> {
-                                transaction.responseBody?.byteInputStream()?.copyTo(fos) ?: return false
+                                transaction.responseBody?.byteInputStream()?.copyTo(fos) ?: throw IOException()
                             }
                             else -> {
                                 if (transaction.responseImageData != null) {
                                     fos.write(transaction.responseImageData)
                                 } else {
-                                    return false
+                                    throw IOException()
                                 }
                             }
                         }
