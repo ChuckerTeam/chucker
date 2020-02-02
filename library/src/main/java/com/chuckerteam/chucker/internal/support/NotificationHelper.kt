@@ -107,7 +107,7 @@ internal class NotificationHelper(val context: Context) {
             synchronized(transactionBuffer) {
                 var count = 0
                 (transactionBuffer.size() - 1 downTo 0).forEach { i ->
-                    if (count < BUFFER_SIZE) {
+                    if (count < BUFFER_SIZE && (transactionBuffer.valueAt(i) != null)) {
                         if (count == 0) {
                             builder.setContentText(transactionBuffer.valueAt(i).notificationText)
                         }
