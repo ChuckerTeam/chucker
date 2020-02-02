@@ -1,8 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
-import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,29 +12,26 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class TransactionListFragment :
     Fragment(),
     SearchView.OnQueryTextListener,
-    TransactionAdapter.TransactionClickListListener,
-    Observer<List<HttpTransactionTuple>> {
+    TransactionAdapter.TransactionClickListListener {
 
-    private var currentFilter = ""
+    private lateinit var viewModel: MainViewModel
     private lateinit var adapter: TransactionAdapter
-    private lateinit var dataSource: LiveData<List<HttpTransactionTuple>>
     private lateinit var tutorialView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -59,10 +54,15 @@ internal class TransactionListFragment :
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        dataSource = getDataSource(currentFilter)
-        dataSource.observe(this, this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.transactions.observe(
+            viewLifecycleOwner,
+            Observer { transactionTuples ->
+                adapter.setData(transactionTuples)
+                tutorialView.visibility = if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -82,8 +82,7 @@ internal class TransactionListFragment :
                 .setPositiveButton(
                     R.string.clear
                 ) { _, _ ->
-                    RepositoryProvider.transaction().deleteAllTransactions()
-                    NotificationHelper.clearBuffer()
+                    viewModel.clearTransactions()
                 }
                 .setNegativeButton(R.string.cancel, null)
                 .show()
@@ -96,25 +95,8 @@ internal class TransactionListFragment :
     override fun onQueryTextSubmit(query: String): Boolean = true
 
     override fun onQueryTextChange(newText: String): Boolean {
-        currentFilter = newText
-        dataSource.removeObservers(this)
-        dataSource = getDataSource(currentFilter)
-        dataSource.observe(this, this)
+        viewModel.getFilteredItems(newText)
         return true
-    }
-
-    private fun getDataSource(currentFilter: String): LiveData<List<HttpTransactionTuple>> = when {
-        currentFilter.isEmpty() ->
-            RepositoryProvider.transaction().getSortedTransactionTuples()
-        TextUtils.isDigitsOnly(currentFilter) ->
-            RepositoryProvider.transaction().getFilteredTransactionTuples(currentFilter, "")
-        else ->
-            RepositoryProvider.transaction().getFilteredTransactionTuples("", currentFilter)
-    }
-
-    override fun onChanged(tuples: List<HttpTransactionTuple>) {
-        adapter.setData(tuples)
-        tutorialView.visibility = if (tuples.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onTransactionClick(transactionId: Long, position: Int) =
