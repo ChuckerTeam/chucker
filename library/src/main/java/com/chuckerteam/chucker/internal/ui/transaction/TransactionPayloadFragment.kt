@@ -115,11 +115,11 @@ internal class TransactionPayloadFragment :
         else -> true
     }
 
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when {
-        (type == TYPE_REQUEST) -> {
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (type) {
+        TYPE_REQUEST -> {
             (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
-        (type == TYPE_RESPONSE) -> {
+        TYPE_RESPONSE -> {
             (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
         else -> false
@@ -241,7 +241,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    class FileSaverTask(val fragment: TransactionPayloadFragment) :
+    class FileSaverTask(private val fragment: TransactionPayloadFragment) :
         AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
 
         @Suppress("NestedBlockDepth")
@@ -251,15 +251,21 @@ internal class TransactionPayloadFragment :
                 val context = fragment.context ?: return false
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
-                        when {
-                            type == TYPE_REQUEST -> {
+                        when (type) {
+                            TYPE_REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
-                            transaction.responseBody != null -> {
+                            TYPE_RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             else -> {
-                                fos.write(transaction.responseImageData)
+                                if (transaction.responseImageData != null) {
+                                    fos.write(transaction.responseImageData)
+                                } else {
+                                    throw IOException(TRANSACTION_EXCEPTION)
+                                }
                             }
                         }
                     }
@@ -287,6 +293,7 @@ internal class TransactionPayloadFragment :
 
     companion object {
         private const val ARG_TYPE = "type"
+        private const val TRANSACTION_EXCEPTION = "Transaction not ready"
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1

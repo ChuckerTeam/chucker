@@ -82,7 +82,7 @@ class HttpBinClient(
             deflate().enqueue(cb)
             cookieSet("v").enqueue(cb)
             basicAuth("me", "pass").enqueue(cb)
-            drip(512, 5, 1, 200).enqueue(cb)
+            drip(512, 10, 1, 200).enqueue(cb)
             deny().enqueue(cb)
             cache("Mon").enqueue(cb)
             cache(30).enqueue(cb)

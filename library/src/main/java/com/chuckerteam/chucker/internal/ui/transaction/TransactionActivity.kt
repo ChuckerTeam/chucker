@@ -78,11 +78,15 @@ internal class TransactionActivity : BaseChuckerActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.share_text -> {
-                share(getShareText(this, viewModel.transaction.value!!))
+                viewModel.transaction.value?.let {
+                    share(getShareText(this, it))
+                } ?: showToast(getString(R.string.request_not_ready))
                 true
             }
             R.id.share_curl -> {
-                share(getShareCurlCommand(viewModel.transaction.value!!))
+                viewModel.transaction.value?.let {
+                    share(getShareCurlCommand(it))
+                } ?: showToast(getString(R.string.request_not_ready))
                 true
             }
             else -> {
