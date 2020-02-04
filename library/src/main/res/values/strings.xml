@@ -47,5 +47,5 @@
     <string name="check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="setup">Setup</string>
     <string name="binary_data">binary data</string>
-    <string name="request_not_ready">The request isn`t ready for sharing or saving</string>
+    <string name="request_not_ready">The request isn\'t ready for sharing or saving</string>
 </resources>

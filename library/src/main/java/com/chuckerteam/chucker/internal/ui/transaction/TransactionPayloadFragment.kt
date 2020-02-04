@@ -253,16 +253,18 @@ internal class TransactionPayloadFragment :
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
                             TYPE_REQUEST -> {
-                                transaction.requestBody?.byteInputStream()?.copyTo(fos) ?: throw IOException()
+                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             TYPE_RESPONSE -> {
-                                transaction.responseBody?.byteInputStream()?.copyTo(fos) ?: throw IOException()
+                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             else -> {
                                 if (transaction.responseImageData != null) {
                                     fos.write(transaction.responseImageData)
                                 } else {
-                                    throw IOException()
+                                    throw IOException(TRANSACTION_EXCEPTION)
                                 }
                             }
                         }
@@ -291,6 +293,7 @@ internal class TransactionPayloadFragment :
 
     companion object {
         private const val ARG_TYPE = "type"
+        private const val TRANSACTION_EXCEPTION = "Transaction not ready"
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1
