@@ -107,11 +107,12 @@ internal class NotificationHelper(val context: Context) {
             synchronized(transactionBuffer) {
                 var count = 0
                 (transactionBuffer.size() - 1 downTo 0).forEach { i ->
-                    if (count < BUFFER_SIZE && (transactionBuffer.valueAt(i) != null)) {
+                    val bufferedTransaction = transactionBuffer.valueAt(i)
+                    if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
-                            builder.setContentText(transactionBuffer.valueAt(i).notificationText)
+                            builder.setContentText(bufferedTransaction.notificationText)
                         }
-                        inboxStyle.addLine(transactionBuffer.valueAt(i).notificationText)
+                        inboxStyle.addLine(bufferedTransaction.notificationText)
                     }
                     count++
                 }
