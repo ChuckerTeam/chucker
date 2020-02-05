@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
@@ -16,6 +17,8 @@ internal class MainActivity :
     BaseChuckerActivity(),
     TransactionAdapter.TransactionClickListListener,
     ErrorAdapter.ErrorClickListListener {
+
+    private lateinit var viewModel: MainViewModel
     private lateinit var viewPager: ViewPager
 
     private val applicationName: CharSequence
@@ -28,6 +31,8 @@ internal class MainActivity :
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = applicationName
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.adapter = HomePageAdapter(this, supportFragmentManager)
