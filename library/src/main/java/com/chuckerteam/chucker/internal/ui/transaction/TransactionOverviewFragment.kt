@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.os.Bundle
@@ -24,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 
 internal class TransactionOverviewFragment : Fragment() {
@@ -46,7 +31,7 @@ internal class TransactionOverviewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -54,7 +39,7 @@ internal class TransactionOverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? =
-        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
+        inflater.inflate(R.layout.fragment_transaction_overview, container, false)
             .also {
                 url = it.findViewById(R.id.url)
                 method = it.findViewById(R.id.method)
@@ -80,14 +65,14 @@ internal class TransactionOverviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.transaction.observe(
-            this,
+            viewLifecycleOwner,
             Observer { transaction ->
                 url.text = transaction.url
                 method.text = transaction.method
                 protocol.text = transaction.protocol
                 status.text = transaction.status.toString()
                 response.text = transaction.responseSummaryText
-                ssl.setText(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)
+                ssl.setText(if (transaction.isSsl) R.string.yes else R.string.no)
                 requestTime.text = transaction.requestDateString
                 responseTime.text = transaction.responseDateString
                 duration.text = transaction.durationString

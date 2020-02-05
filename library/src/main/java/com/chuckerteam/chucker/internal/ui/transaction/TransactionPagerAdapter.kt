@@ -10,9 +10,9 @@ internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
     FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val titles = arrayOf(
-        context.getString(R.string.chucker_overview),
-        context.getString(R.string.chucker_request),
-        context.getString(R.string.chucker_response)
+        context.getString(R.string.overview),
+        context.getString(R.string.request),
+        context.getString(R.string.response)
     )
 
     override fun getItem(position: Int): Fragment = when (position) {

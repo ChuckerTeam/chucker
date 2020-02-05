@@ -8,7 +8,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/chucker_doub_grid">
+    android:padding="@dimen/doub_grid">
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline"
@@ -22,7 +22,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:gravity="start"
-      android:text="@string/chucker_url"
+      android:text="@string/url"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +42,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_method"
+      android:text="@string/method"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/url" />
@@ -61,7 +61,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_protocol"
+      android:text="@string/protocol"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/method" />
@@ -80,7 +80,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_status"
+      android:text="@string/status"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/protocol" />
@@ -99,7 +99,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_response"
+      android:text="@string/response"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/status" />
@@ -118,7 +118,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_ssl"
+      android:text="@string/ssl"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/response" />
@@ -137,8 +137,8 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/chucker_base_grid"
-      android:text="@string/chucker_request_time"
+      android:layout_marginTop="@dimen/base_grid"
+      android:text="@string/request_time"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/ssl" />
@@ -148,7 +148,7 @@
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/chucker_base_grid"
+      android:layout_marginTop="@dimen/base_grid"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/guideline"
       app:layout_constraintTop_toBottomOf="@id/ssl"
@@ -158,7 +158,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_response_time"
+      android:text="@string/response_time"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/request_time" />
@@ -177,7 +177,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_duration"
+      android:text="@string/duration"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/response_time" />
@@ -196,8 +196,8 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/chucker_base_grid"
-      android:text="@string/chucker_request_size"
+      android:layout_marginTop="@dimen/base_grid"
+      android:text="@string/request_size"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/duration" />
@@ -207,7 +207,7 @@
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/chucker_base_grid"
+      android:layout_marginTop="@dimen/base_grid"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/guideline"
       app:layout_constraintTop_toBottomOf="@id/duration"
@@ -217,7 +217,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_response_size"
+      android:text="@string/response_size"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/request_size" />
@@ -236,7 +236,7 @@
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/chucker_total_size"
+      android:text="@string/total_size"
       app:layout_constraintEnd_toStartOf="@id/guideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/response_size" />
