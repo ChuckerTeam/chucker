@@ -95,7 +95,7 @@ internal class TransactionListFragment :
     override fun onQueryTextSubmit(query: String): Boolean = true
 
     override fun onQueryTextChange(newText: String): Boolean {
-        viewModel.getFilteredItems(newText)
+        viewModel.updateItemsFilter(newText)
         return true
     }
 

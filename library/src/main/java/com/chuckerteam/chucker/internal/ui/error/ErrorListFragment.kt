@@ -51,8 +51,7 @@ internal class ErrorListFragment : Fragment() {
             viewLifecycleOwner,
             Observer { errors ->
                 adapter.setData(errors)
-                tutorialView.visibility = if (errors.isNullOrEmpty()
-                ) {
+                tutorialView.visibility = if (errors.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE

@@ -37,7 +37,7 @@ internal class MainViewModel : ViewModel() {
             it
         }
 
-    fun getFilteredItems(searchQuery: String) {
+    fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
     }
 
