@@ -104,7 +104,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
             currentItem = selectedTabPosition
         }
 
-        val tabLayout : TabLayout = findViewById(R.id.tabLayoutTransaction)
+        val tabLayout: TabLayout = findViewById(R.id.tabLayoutTransaction)
         TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
             currentTab.text = when (currentPosition) {
                 TransactionPagerAdapter.OVERVIEW_SCREEN_POSITION -> getString(R.string.overview)
