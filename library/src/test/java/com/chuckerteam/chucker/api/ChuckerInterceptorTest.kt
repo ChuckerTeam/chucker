@@ -6,11 +6,14 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okio.Buffer
 import okio.ByteString
+import okio.GzipSink
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,7 +43,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
         val expectedBody = image.snapshot()
 
-        client.newCall(request).execute().body()!!.source().readByteString()
+        client.newCall(request).execute()
 
         assertEquals(expectedBody, ByteString.of(*transaction!!.responseImageData!!))
     }
@@ -55,5 +58,34 @@ class ChuckerInterceptorTest {
         val responseBody = client.newCall(request).execute().body()!!.source().readByteString()
 
         assertEquals(expectedBody, responseBody)
+    }
+
+    @Test
+    fun gzippedBody_isGunzippedForChucker() {
+        val bytes = Buffer().apply { writeUtf8("Hello, world!") }
+        val gzippedBytes = Buffer().apply {
+            GzipSink(this).use { sink -> sink.write(bytes, bytes.size()) }
+        }
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
+        val request = Request.Builder().url(serverUrl).build()
+
+        client.newCall(request).execute()
+
+        assertTrue(transaction!!.isResponseBodyPlainText)
+        assertEquals("Hello, world!", transaction!!.responseBody)
+    }
+
+    @Test
+    fun gzippedBody_isGunzippedForTheEndConsumer() {
+        val bytes = Buffer().apply { writeUtf8("Hello, world!") }
+        val gzippedBytes = Buffer().apply {
+            GzipSink(this).use { sink -> sink.write(bytes, bytes.size()) }
+        }
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val responseBody = client.newCall(request).execute().body()!!.source().readByteString()
+
+        assertEquals("Hello, world!", responseBody.utf8())
     }
 }

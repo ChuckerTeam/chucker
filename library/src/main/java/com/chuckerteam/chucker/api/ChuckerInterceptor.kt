@@ -5,6 +5,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.contentLenght
 import com.chuckerteam.chucker.internal.support.contentType
+import java.io.IOException
+import java.nio.charset.Charset
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -12,8 +14,6 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
-import java.io.IOException
-import java.nio.charset.Charset
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -128,7 +128,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         return if (responseEncodingIsSupported) {
             processResponseBody(response, transaction)
-        } else response
+        } else {
+            response
+        }
     }
 
     /**
@@ -141,15 +143,12 @@ class ChuckerInterceptor @JvmOverloads constructor(
         val charset = contentType?.charset(UTF8) ?: UTF8
         val contentLength = responseBody.contentLength()
 
-        var buffer = Buffer().apply {
-            write(responseBody.source().readByteString())
+        val responseSource = if (response.isGzipped) {
+            GzipSource(responseBody.source())
+        } else {
+            responseBody.source()
         }
-
-        if (io.bodyIsGzipped(response.headers()[CONTENT_ENCODING])) {
-            buffer = GzipSource(buffer).use { gzippedResponseBody ->
-                Buffer().apply { writeAll(gzippedResponseBody) }
-            }
-        }
+        val buffer = Buffer().apply { responseSource.use { writeAll(it) } }
 
         if (io.isPlaintext(buffer)) {
             transaction.isResponseBodyPlainText = true
@@ -168,8 +167,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
 
         return response.newBuilder()
-                .body(ResponseBody.create(contentType, contentLength, buffer))
-                .build()
+            .body(ResponseBody.create(contentType, contentLength, buffer))
+            .build()
     }
 
     /** Overrides all headers from [headersToRedact] with `**` */
@@ -182,6 +181,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
         return builder.build()
     }
+
+    /** Checks if the OkHttp response uses gzip encoding. */
+    private val Response.isGzipped get() = io.bodyIsGzipped(headers()[CONTENT_ENCODING])
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
