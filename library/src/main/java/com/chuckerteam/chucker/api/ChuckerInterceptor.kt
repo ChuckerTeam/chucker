@@ -74,7 +74,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         transaction.apply {
             setRequestHeaders(request.headers())
-            populateUrl(request.url().toString())
+            populateUrl(request.url())
 
             isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
