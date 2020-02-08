@@ -3,9 +3,8 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.hasBody
-import java.io.IOException
-import java.nio.charset.Charset
+import com.chuckerteam.chucker.internal.support.contentLenght
+import com.chuckerteam.chucker.internal.support.contentType
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -13,6 +12,8 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
+import java.io.IOException
+import java.nio.charset.Charset
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -58,10 +59,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             throw e
         }
 
-        processResponse(response, transaction)
+        val processedResponse = processResponse(response, transaction)
         collector.onResponseReceived(transaction)
 
-        return response
+        return processedResponse
     }
 
     /**
@@ -104,8 +105,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     /**
      * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponse(response: Response, transaction: HttpTransaction) {
-        val responseBody = response.body()!!
+    private fun processResponse(response: Response, transaction: HttpTransaction): Response {
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         transaction.apply {
@@ -120,33 +120,34 @@ class ChuckerInterceptor @JvmOverloads constructor(
             responseCode = response.code()
             responseMessage = response.message()
 
-            responseContentType = responseBody.contentType()?.toString()
-            responseContentLength = responseBody.contentLength()
+            responseContentType = response.contentType
+            responseContentLength = response.contentLenght
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
 
-        if (response.hasBody() && responseEncodingIsSupported) {
-            processResponseBody(response, responseBody, transaction)
-        }
+        return if (responseEncodingIsSupported) {
+            processResponseBody(response, transaction)
+        } else response
     }
 
     /**
      * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponseBody(response: Response, responseBody: ResponseBody, transaction: HttpTransaction) {
+    private fun processResponseBody(response: Response, transaction: HttpTransaction): Response {
+        val responseBody = response.body() ?: return response
+
         val contentType = responseBody.contentType()
-        val charset: Charset = contentType?.charset(UTF8) ?: UTF8
+        val charset = contentType?.charset(UTF8) ?: UTF8
         val contentLength = responseBody.contentLength()
 
-        val source = responseBody.source()
-        source.request(Long.MAX_VALUE) // Buffer the entire body.
-        var buffer = source.buffer()
+        var buffer = Buffer().apply {
+            write(responseBody.source().readByteString())
+        }
 
         if (io.bodyIsGzipped(response.headers()[CONTENT_ENCODING])) {
-            GzipSource(buffer.clone()).use { gzippedResponseBody ->
-                buffer = Buffer()
-                buffer.writeAll(gzippedResponseBody)
+            buffer = GzipSource(buffer).use { gzippedResponseBody ->
+                Buffer().apply { writeAll(gzippedResponseBody) }
             }
         }
 
@@ -162,9 +163,13 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
             if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
-                transaction.responseImageData = buffer.readByteArray()
+                transaction.responseImageData = buffer.clone().readByteArray()
             }
         }
+
+        return response.newBuilder()
+                .body(ResponseBody.create(contentType, contentLength, buffer))
+                .build()
     }
 
     /** Overrides all headers from [headersToRedact] with `**` */

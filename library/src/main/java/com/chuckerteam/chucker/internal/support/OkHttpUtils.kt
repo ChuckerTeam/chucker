@@ -38,3 +38,8 @@ internal val Response.isChunked: Boolean
     get() {
         return this.header("Transfer-Encoding").equals("chunked", ignoreCase = true)
     }
+
+internal val Response.contentType: String?
+    get() {
+        return this.header("Content-Type")
+    }
