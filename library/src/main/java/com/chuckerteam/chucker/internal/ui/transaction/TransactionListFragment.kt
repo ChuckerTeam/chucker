@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.support.combineLatest
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
@@ -28,11 +30,13 @@ internal class TransactionListFragment :
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: TransactionAdapter
     private lateinit var tutorialView: View
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        preferences = Chucker.chuckerPreferences(requireContext())
     }
 
     override fun onCreateView(
@@ -84,13 +88,16 @@ internal class TransactionListFragment :
     private fun setUpUrlEncoding(menu: Menu) {
         val encodeUrlsMenuItem = menu.findItem(R.id.encode_urls)
         encodeUrlsMenuItem.setOnMenuItemClickListener { item ->
-            viewModel.encodeUrls(!item.isChecked)
+            val encode = !item.isChecked
+            preferences.edit().putBoolean(ENABLE_URL_ENCODING, encode).apply()
+            viewModel.encodeUrls(encode)
             return@setOnMenuItemClickListener true
         }
         viewModel.encodeUrls.observe(
             viewLifecycleOwner,
             Observer { encode -> encodeUrlsMenuItem.isChecked = encode }
         )
+        viewModel.encodeUrls(preferences.getBoolean(ENABLE_URL_ENCODING, false))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -123,6 +130,8 @@ internal class TransactionListFragment :
     }
 
     companion object {
+        private const val ENABLE_URL_ENCODING = "enable_url_encoding"
+
         fun newInstance(): TransactionListFragment {
             return TransactionListFragment()
         }

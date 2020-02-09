@@ -23,7 +23,7 @@ class RetentionManager @JvmOverloads constructor(
     private val period: Long = toMillis(retentionPeriod)
     // How often the cleanup should happen
     private val cleanupFrequency: Long
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
+    private val prefs: SharedPreferences = Chucker.chuckerPreferences(context)
 
     init {
         cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR) {
@@ -91,7 +91,6 @@ class RetentionManager @JvmOverloads constructor(
     }
 
     companion object {
-        private const val PREFS_NAME = "chucker_preferences"
         private const val KEY_LAST_CLEANUP = "last_cleanup"
         private var lastCleanup: Long = 0
     }
