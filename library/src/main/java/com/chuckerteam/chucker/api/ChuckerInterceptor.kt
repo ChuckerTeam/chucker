@@ -16,6 +16,8 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
 
+private const val MAX_BLOB_SIZE = 1000_000L
+
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
