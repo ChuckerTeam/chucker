@@ -20,19 +20,19 @@ internal class TransactionAdapter internal constructor(
 ) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private var transactions: List<HttpTransactionTuple> = arrayListOf()
 
-    private val colorDefault: Int = ContextCompat.getColor(context, R.color.status_default)
-    private val colorRequested: Int = ContextCompat.getColor(context, R.color.status_requested)
-    private val colorError: Int = ContextCompat.getColor(context, R.color.status_error)
-    private val color500: Int = ContextCompat.getColor(context, R.color.status_500)
-    private val color400: Int = ContextCompat.getColor(context, R.color.status_400)
-    private val color300: Int = ContextCompat.getColor(context, R.color.status_300)
+    private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
+    private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
+    private val colorError: Int = ContextCompat.getColor(context, R.color.chucker_status_error)
+    private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
+    private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
+    private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
 
     override fun getItemCount(): Int = transactions.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_transaction, parent, false)
+                .inflate(R.layout.chucker_list_item_transaction, parent, false)
         return ViewHolder(itemView)
     }
 

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:layoutDirection="ltr"
-    android:padding="@dimen/base_grid">
+    android:padding="@dimen/chucker_base_grid">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/time_guideline"
@@ -17,10 +17,10 @@
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="@dimen/item_size"
+        android:layout_width="@dimen/chucker_item_size"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingEnd="@dimen/doub_grid"
+        android:paddingEnd="@dimen/chucker_doub_grid"
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,22 +40,22 @@
         android:id="@+id/host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/half_grid"
+        android:layout_marginStart="@dimen/chucker_half_grid"
         app:layout_constraintBottom_toBottomOf="@+id/ssl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toTopOf="@+id/ssl"
         app:layout_goneMarginStart="0dp"
-        app:layout_goneMarginTop="@dimen/doub_grid"
+        app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
 
     <ImageView
         android:id="@+id/ssl"
-        android:layout_width="@dimen/doub_grid"
-        android:layout_height="@dimen/doub_grid"
-        android:contentDescription="@string/ssl"
-        android:src="@drawable/ic_https_grey_24dp"
-        android:tint="@color/color_primary"
+        android:layout_width="@dimen/chucker_doub_grid"
+        android:layout_height="@dimen/chucker_doub_grid"
+        android:contentDescription="@string/chucker_ssl"
+        android:src="@drawable/chucker_ic_https_grey"
+        android:tint="@color/chucker_color_primary"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/path"
         app:layout_constraintTop_toBottomOf="@+id/path"

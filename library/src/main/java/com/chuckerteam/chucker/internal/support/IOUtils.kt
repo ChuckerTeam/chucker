@@ -46,11 +46,11 @@ internal class IOUtils(private val context: Context) {
         try {
             body = buffer.readString(maxBytes, charset)
         } catch (e: EOFException) {
-            body += context.getString(R.string.body_unexpected_eof)
+            body += context.getString(R.string.chucker_body_unexpected_eof)
         }
 
         if (bufferSize > maxContentLength) {
-            body += context.getString(R.string.body_content_truncated)
+            body += context.getString(R.string.chucker_body_content_truncated)
         }
         return body
     }

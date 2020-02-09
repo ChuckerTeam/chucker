@@ -29,15 +29,15 @@ internal class TransactionBodyAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADERS -> {
-                val view = inflater.inflate(R.layout.transaction_item_headers, parent, false)
+                val view = inflater.inflate(R.layout.chucker_transaction_item_headers, parent, false)
                 TransactionPayloadViewHolder.HeaderViewHolder(view)
             }
             TYPE_BODY_LINE -> {
-                val view = inflater.inflate(R.layout.transaction_item_body_line, parent, false)
+                val view = inflater.inflate(R.layout.chucker_transaction_item_body_line, parent, false)
                 TransactionPayloadViewHolder.BodyLineViewHolder(view)
             }
             else -> {
-                val view = inflater.inflate(R.layout.transaction_item_image, parent, false)
+                val view = inflater.inflate(R.layout.chucker_transaction_item_image, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(view)
             }
         }

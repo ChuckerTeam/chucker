@@ -39,7 +39,7 @@ internal class TransactionListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_transaction_list, container, false)
+        val view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false)
         tutorialView = view.findViewById(R.id.tutorial)
         view.findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
 
@@ -66,7 +66,7 @@ internal class TransactionListFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.transactions_list, menu)
+        inflater.inflate(R.menu.chucker_transactions_list, menu)
         val searchMenuItem = menu.findItem(R.id.search)
         val searchView = searchMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
@@ -77,14 +77,14 @@ internal class TransactionListFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.clear) {
             AlertDialog.Builder(requireContext())
-                .setTitle(R.string.clear)
-                .setMessage(R.string.clear_http_confirmation)
+                .setTitle(R.string.chucker_clear)
+                .setMessage(R.string.chucker_clear_http_confirmation)
                 .setPositiveButton(
-                    R.string.clear
+                    R.string.chucker_clear
                 ) { _, _ ->
                     viewModel.clearTransactions()
                 }
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.chucker_cancel, null)
                 .show()
             true
         } else {

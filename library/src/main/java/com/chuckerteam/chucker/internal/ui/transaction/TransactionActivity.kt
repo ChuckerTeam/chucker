@@ -24,7 +24,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_transaction)
+        setContentView(R.layout.chucker_activity_transaction)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
 
@@ -54,7 +54,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.transaction, menu)
+        menuInflater.inflate(R.menu.chucker_transaction, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -63,13 +63,13 @@ internal class TransactionActivity : BaseChuckerActivity() {
             R.id.share_text -> {
                 viewModel.transaction.value?.let {
                     share(getShareText(this, it))
-                } ?: showToast(getString(R.string.request_not_ready))
+                } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
             R.id.share_curl -> {
                 viewModel.transaction.value?.let {
                     share(getShareCurlCommand(it))
-                } ?: showToast(getString(R.string.request_not_ready))
+                } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
             else -> {
@@ -91,8 +91,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.share_transaction_title))
-                .setSubject(getString(R.string.share_transaction_subject))
+                .setChooserTitle(getString(R.string.chucker_share_transaction_title))
+                .setSubject(getString(R.string.chucker_share_transaction_subject))
                 .setText(transactionDetailsText)
                 .createChooserIntent()
         )

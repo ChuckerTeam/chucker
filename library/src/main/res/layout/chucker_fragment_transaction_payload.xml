@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/doub_grid"
+        android:layout_margin="@dimen/chucker_doub_grid"
         android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -24,7 +24,7 @@
         android:scrollbars="vertical"
         android:visibility="invisible"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/octa_grid"
+        android:paddingBottom="@dimen/chucker_octa_grid"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </FrameLayout>

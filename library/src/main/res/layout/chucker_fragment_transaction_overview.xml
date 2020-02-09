@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/url"
+            android:text="@string/chucker_url"
             style="@style/Chucker.TextAppearance.Label"/>
 
         <TextView
@@ -39,7 +39,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/method"
+                android:text="@string/chucker_method"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/protocol"
+                android:text="@string/chucker_protocol"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
+                android:text="@string/chucker_status"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/response"
+                android:text="@string/chucker_response"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -115,7 +115,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ssl"
+                android:text="@string/chucker_ssl"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -135,7 +135,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/request_time"
+                android:text="@string/chucker_request_time"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -154,7 +154,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/response_time"
+                android:text="@string/chucker_response_time"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -173,7 +173,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/duration"
+                android:text="@string/chucker_duration"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -193,7 +193,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/request_size"
+                android:text="@string/chucker_request_size"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -212,7 +212,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/response_size"
+                android:text="@string/chucker_response_size"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
@@ -231,7 +231,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/total_size"
+                android:text="@string/chucker_total_size"
                 style="@style/Chucker.TextAppearance.Label"/>
 
             <TextView
