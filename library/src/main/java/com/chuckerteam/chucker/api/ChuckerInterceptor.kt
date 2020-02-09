@@ -3,7 +3,9 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.hasBody
+import com.chuckerteam.chucker.internal.support.contentLenght
+import com.chuckerteam.chucker.internal.support.contentType
+import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.IOException
 import java.nio.charset.Charset
 import okhttp3.Headers
@@ -58,10 +60,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             throw e
         }
 
-        processResponse(response, transaction)
+        val processedResponse = processResponse(response, transaction)
         collector.onResponseReceived(transaction)
 
-        return response
+        return processedResponse
     }
 
     /**
@@ -74,7 +76,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         transaction.apply {
             setRequestHeaders(request.headers())
-            populateUrl(request.url().toString())
+            populateUrl(request.url())
 
             isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
@@ -84,7 +86,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
 
         if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get(CONTENT_ENCODING)))
+            val source = io.getNativeSource(Buffer(), request.isGzipped)
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
@@ -104,8 +106,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     /**
      * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponse(response: Response, transaction: HttpTransaction) {
-        val responseBody = response.body()!!
+    private fun processResponse(response: Response, transaction: HttpTransaction): Response {
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         transaction.apply {
@@ -120,35 +121,35 @@ class ChuckerInterceptor @JvmOverloads constructor(
             responseCode = response.code()
             responseMessage = response.message()
 
-            responseContentType = responseBody.contentType()?.toString()
-            responseContentLength = responseBody.contentLength()
+            responseContentType = response.contentType
+            responseContentLength = response.contentLenght
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
 
-        if (response.hasBody() && responseEncodingIsSupported) {
-            processResponseBody(response, responseBody, transaction)
+        return if (responseEncodingIsSupported) {
+            processResponseBody(response, transaction)
+        } else {
+            response
         }
     }
 
     /**
      * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponseBody(response: Response, responseBody: ResponseBody, transaction: HttpTransaction) {
+    private fun processResponseBody(response: Response, transaction: HttpTransaction): Response {
+        val responseBody = response.body() ?: return response
+
         val contentType = responseBody.contentType()
-        val charset: Charset = contentType?.charset(UTF8) ?: UTF8
+        val charset = contentType?.charset(UTF8) ?: UTF8
         val contentLength = responseBody.contentLength()
 
-        val source = responseBody.source()
-        source.request(Long.MAX_VALUE) // Buffer the entire body.
-        var buffer = source.buffer()
-
-        if (io.bodyIsGzipped(response.headers()[CONTENT_ENCODING])) {
-            GzipSource(buffer.clone()).use { gzippedResponseBody ->
-                buffer = Buffer()
-                buffer.writeAll(gzippedResponseBody)
-            }
+        val responseSource = if (response.isGzipped) {
+            GzipSource(responseBody.source())
+        } else {
+            responseBody.source()
         }
+        val buffer = Buffer().apply { responseSource.use { writeAll(it) } }
 
         if (io.isPlaintext(buffer)) {
             transaction.isResponseBodyPlainText = true
@@ -162,9 +163,13 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
             if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
-                transaction.responseImageData = buffer.readByteArray()
+                transaction.responseImageData = buffer.clone().readByteArray()
             }
         }
+
+        return response.newBuilder()
+            .body(ResponseBody.create(contentType, contentLength, buffer))
+            .build()
     }
 
     /** Overrides all headers from [headersToRedact] with `**` */
