@@ -196,7 +196,7 @@ internal class HttpTransaction(
     }
 
     private fun formatBytes(bytes: Long): String {
-        return FormatUtils.formatByteCount(bytes, true)
+        return FormatUtils.formatByteCount(bytes.coerceAtLeast(0), true)
     }
 
     fun getFormattedRequestBody(): String {

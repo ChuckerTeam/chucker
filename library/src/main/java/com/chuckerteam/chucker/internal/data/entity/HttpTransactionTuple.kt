@@ -34,8 +34,8 @@ internal class HttpTransactionTuple(
 
     val totalSizeString: String
         get() {
-            val reqBytes = requestContentLength ?: 0
-            val resBytes = responseContentLength ?: 0
+            val reqBytes = requestContentLength?.coerceAtLeast(0) ?: 0
+            val resBytes = responseContentLength?.coerceAtLeast(0) ?: 0
             return formatBytes(reqBytes + resBytes)
         }
 
