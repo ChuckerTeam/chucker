@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
@@ -60,13 +45,13 @@ internal class TransactionAdapter internal constructor(
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val code: TextView = view.findViewById(R.id.chucker_code)
-        private val path: TextView = view.findViewById(R.id.chucker_path)
-        private val host: TextView = view.findViewById(R.id.chucker_host)
-        private val start: TextView = view.findViewById(R.id.chucker_time_start)
-        private val duration: TextView = view.findViewById(R.id.chucker_duration)
-        private val size: TextView = view.findViewById(R.id.chucker_size)
-        private val ssl: ImageView = view.findViewById(R.id.chucker_ssl)
+        private val code: TextView = view.findViewById(R.id.code)
+        private val path: TextView = view.findViewById(R.id.path)
+        private val host: TextView = view.findViewById(R.id.host)
+        private val start: TextView = view.findViewById(R.id.time_start)
+        private val duration: TextView = view.findViewById(R.id.duration)
+        private val size: TextView = view.findViewById(R.id.size)
+        private val ssl: ImageView = view.findViewById(R.id.ssl)
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {

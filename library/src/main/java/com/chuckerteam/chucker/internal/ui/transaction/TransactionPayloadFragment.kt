@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2017 Jeff Gilfelt.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
@@ -38,7 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -66,7 +51,7 @@ internal class TransactionPayloadFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments!!.getInt(ARG_TYPE)
-        viewModel = ViewModelProviders.of(requireActivity())[TransactionViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
@@ -84,7 +69,7 @@ internal class TransactionPayloadFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.transaction.observe(
-            this,
+            viewLifecycleOwner,
             Observer { transaction ->
                 PayloadLoaderTask(this).execute(Pair(type, transaction))
             }
@@ -130,11 +115,11 @@ internal class TransactionPayloadFragment :
         else -> true
     }
 
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when {
-        (type == TYPE_REQUEST) -> {
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (type) {
+        TYPE_REQUEST -> {
             (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
-        (type == TYPE_RESPONSE) -> {
+        TYPE_RESPONSE -> {
             (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
         else -> false
@@ -256,7 +241,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    class FileSaverTask(val fragment: TransactionPayloadFragment) :
+    class FileSaverTask(private val fragment: TransactionPayloadFragment) :
         AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
 
         @Suppress("NestedBlockDepth")
@@ -266,15 +251,21 @@ internal class TransactionPayloadFragment :
                 val context = fragment.context ?: return false
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
-                        when {
-                            type == TYPE_REQUEST -> {
+                        when (type) {
+                            TYPE_REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
-                            transaction.responseBody != null -> {
+                            TYPE_RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             else -> {
-                                fos.write(transaction.responseImageData)
+                                if (transaction.responseImageData != null) {
+                                    fos.write(transaction.responseImageData)
+                                } else {
+                                    throw IOException(TRANSACTION_EXCEPTION)
+                                }
                             }
                         }
                     }
@@ -302,6 +293,7 @@ internal class TransactionPayloadFragment :
 
     companion object {
         private const val ARG_TYPE = "type"
+        private const val TRANSACTION_EXCEPTION = "Transaction not ready"
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1

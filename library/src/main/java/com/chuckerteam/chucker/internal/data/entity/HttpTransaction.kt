@@ -4,7 +4,6 @@ package com.chuckerteam.chucker.internal.data.entity
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -13,8 +12,8 @@ import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
 import java.util.Date
-import kotlin.collections.ArrayList
 import okhttp3.Headers
+import okhttp3.HttpUrl
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -208,12 +207,11 @@ internal class HttpTransaction(
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }
 
-    fun populateUrl(url: String): HttpTransaction {
-        this.url = url
-        val uri = Uri.parse(url)
-        host = uri.host
-        path = ("${uri.path}${uri.query?.let { "?$it" } ?: ""}")
-        scheme = uri.scheme
+    fun populateUrl(url: HttpUrl): HttpTransaction {
+        this.url = url.toString()
+        host = url.host()
+        path = ("/${url.pathSegments().joinToString("/")}${url.query()?.let { "?$it" } ?: ""}")
+        scheme = url.scheme()
         return this
     }
 }

@@ -98,7 +98,7 @@ internal class NotificationHelper(val context: Context) {
                 NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_transaction_notification_24dp)
+                    .setSmallIcon(R.drawable.chucker_ic_transaction_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .setAutoCancel(true)
@@ -107,11 +107,12 @@ internal class NotificationHelper(val context: Context) {
             synchronized(transactionBuffer) {
                 var count = 0
                 (transactionBuffer.size() - 1 downTo 0).forEach { i ->
-                    if (count < BUFFER_SIZE) {
+                    val bufferedTransaction = transactionBuffer.valueAt(i)
+                    if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
-                            builder.setContentText(transactionBuffer.valueAt(i).notificationText)
+                            builder.setContentText(bufferedTransaction.notificationText)
                         }
-                        inboxStyle.addLine(transactionBuffer.valueAt(i).notificationText)
+                        inboxStyle.addLine(bufferedTransaction.notificationText)
                     }
                     count++
                 }
@@ -132,7 +133,7 @@ internal class NotificationHelper(val context: Context) {
                 NotificationCompat.Builder(context, ERRORS_CHANNEL_ID)
                     .setContentIntent(errorsScreenIntent)
                     .setLocalOnly(true)
-                    .setSmallIcon(R.drawable.chucker_ic_error_notifications_24dp)
+                    .setSmallIcon(R.drawable.chucker_ic_error_notifications)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_status_error))
                     .setContentTitle(throwable.clazz)
                     .setAutoCancel(true)
@@ -152,7 +153,7 @@ internal class NotificationHelper(val context: Context) {
                 context, INTENT_REQUEST_CODE,
                 deleteIntent, PendingIntent.FLAG_ONE_SHOT
             )
-            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white_24dp, clearTitle, intent)
+            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white, clearTitle, intent)
         }
 
     fun dismissTransactionsNotification() {

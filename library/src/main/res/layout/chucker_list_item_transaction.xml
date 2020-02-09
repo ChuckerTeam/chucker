@@ -9,14 +9,14 @@
     android:padding="@dimen/chucker_base_grid">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/chucker_time_guideline"
+        android:id="@+id/time_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/chucker_code"
+        android:id="@+id/code"
         android:layout_width="@dimen/chucker_item_size"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -27,66 +27,66 @@
         tools:text="200" />
 
     <TextView
-        android:id="@+id/chucker_path"
+        android:id="@+id/path"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chucker_code"
+        app:layout_constraintStart_toEndOf="@+id/code"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="GET /path/to/some/resource?goes=here" />
 
     <TextView
-        android:id="@+id/chucker_host"
+        android:id="@+id/host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/chucker_half_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/chucker_ssl"
+        app:layout_constraintBottom_toBottomOf="@+id/ssl"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chucker_ssl"
-        app:layout_constraintTop_toTopOf="@+id/chucker_ssl"
+        app:layout_constraintStart_toEndOf="@+id/ssl"
+        app:layout_constraintTop_toTopOf="@+id/ssl"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
 
     <ImageView
-        android:id="@+id/chucker_ssl"
+        android:id="@+id/ssl"
         android:layout_width="@dimen/chucker_doub_grid"
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
-        android:src="@drawable/chucker_ic_https_grey_24dp"
+        android:src="@drawable/chucker_ic_https_grey"
         android:tint="@color/chucker_color_primary"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/chucker_path"
-        app:layout_constraintTop_toBottomOf="@+id/chucker_path"
+        app:layout_constraintStart_toStartOf="@+id/path"
+        app:layout_constraintTop_toBottomOf="@+id/path"
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/chucker_time_start"
+        android:id="@+id/time_start"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/chucker_duration"
-        app:layout_constraintStart_toStartOf="@+id/chucker_path"
-        app:layout_constraintTop_toBottomOf="@+id/chucker_host"
+        app:layout_constraintEnd_toStartOf="@+id/duration"
+        app:layout_constraintStart_toStartOf="@+id/path"
+        app:layout_constraintTop_toBottomOf="@+id/host"
         tools:text="18:29:07 PM" />
 
     <TextView
-        android:id="@+id/chucker_duration"
+        android:id="@+id/duration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="start"
-        app:layout_constraintEnd_toStartOf="@+id/chucker_size"
-        app:layout_constraintStart_toEndOf="@+id/chucker_time_guideline"
-        app:layout_constraintTop_toTopOf="@+id/chucker_time_start"
+        app:layout_constraintEnd_toStartOf="@+id/size"
+        app:layout_constraintStart_toEndOf="@+id/time_guideline"
+        app:layout_constraintTop_toTopOf="@+id/time_start"
         tools:text="8023 ms" />
 
     <TextView
-        android:id="@+id/chucker_size"
+        android:id="@+id/size"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chucker_duration"
-        app:layout_constraintTop_toTopOf="@+id/chucker_duration"
+        app:layout_constraintStart_toEndOf="@+id/duration"
+        app:layout_constraintTop_toTopOf="@+id/duration"
         tools:text="16.45 KB" />
 </androidx.constraintlayout.widget.ConstraintLayout>

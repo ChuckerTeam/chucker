@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- ~ Copyright (C) 2017 Jeff Gilfelt.
- ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");
- ~ you may not use this file except in compliance with the License.
- ~ You may obtain a copy of the License at
- ~
- ~      http://www.apache.org/licenses/LICENSE-2.0
- ~
- ~ Unless required by applicable law or agreed to in writing, software
- ~ distributed under the License is distributed on an "AS IS" BASIS,
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
- -->
 <resources>
     <string name="chucker_name">Chucker</string>
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
@@ -59,7 +44,8 @@
     <string name="chucker_share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>
-    <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
+    <string name="chucker_check_readme"><a href="chucker_https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="chucker_setup">Setup</string>
     <string name="chucker_binary_data">binary data</string>
+    <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>
 </resources>
