@@ -98,7 +98,6 @@ This release was possible thanks to the contribution of: @redwarp
 
 ## Version 3.0.0 *(2019-08-12)*
 
-
 This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
 ### Summary of Changes
