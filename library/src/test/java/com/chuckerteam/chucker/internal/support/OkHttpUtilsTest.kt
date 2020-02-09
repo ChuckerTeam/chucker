@@ -62,65 +62,6 @@ class OkHttpUtilsTest {
     }
 
     @Test
-    fun hasBody_withHeadMethod() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns "HEAD"
-        every { mockResponse.request() } returns mockRequest
-
-        assertFalse(mockResponse.hasBody())
-    }
-
-    @Test
-    fun hasBody_with404_hasBody() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 404
-
-        assertTrue(mockResponse.hasBody())
-    }
-
-    @Test
-    fun hasBody_with204NoContent_doesNotHaveBody() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 204
-        every { mockResponse.header("Content-Length") } returns null
-        every { mockResponse.header("Transfer-Encoding") } returns null
-
-        assertFalse(mockResponse.hasBody())
-    }
-
-    @Test
-    fun hasBody_with304NotModified_doesNotHaveBody() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 304
-        every { mockResponse.header("Content-Length") } returns null
-        every { mockResponse.header("Transfer-Encoding") } returns null
-
-        assertFalse(mockResponse.hasBody())
-    }
-
-    @Test
-    fun hasBody_withMalformedRequest_doesHaveBody() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 304
-        every { mockResponse.header("Content-Length") } returns "42"
-
-        assertTrue(mockResponse.hasBody())
-    }
-
-    @Test
     fun responseIsGzipped_withOtherEncoding_returnsTrue() {
         val mockResponse = mockk<Response>()
         every { mockResponse.headers() } returns Headers.of("Content-Encoding", "gzip")
