@@ -27,7 +27,7 @@ internal val Response.isGzipped: Boolean
         return this.headers().containsGzip
     }
 
-/** Checks if the OkHttp response uses gzip encoding. */
+/** Checks if the OkHttp request uses gzip encoding. */
 internal val Request.isGzipped: Boolean
     get() {
         return this.headers().containsGzip
