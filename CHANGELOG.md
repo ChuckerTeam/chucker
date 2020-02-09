@@ -16,6 +16,13 @@ This is hot-fix release to fix multiple issues introduced in `3.1.0`.
 * Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/222) with crash when user taps Clear from notification shade while the original app is already dead.
 * Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/223) with possible NPEs.
 
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@MiSikora
+@vbuberen
+
 ## Version 3.1.1 *(2020-01-25)*
 
 This is hot-fix release to fix issue introduced in `3.1.0`.
@@ -23,6 +30,12 @@ This is hot-fix release to fix issue introduced in `3.1.0`.
 ### Summary of Changes
 
 - Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/203) introduced in 3.1.0 where some of response bodies were shown as `null` and their sizes were 0 bytes.
+
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@cortinico
 
 ## Version 3.1.0 *(2020-01-24)*
 
