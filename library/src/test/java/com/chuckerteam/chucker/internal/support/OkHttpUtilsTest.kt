@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import io.mockk.every
 import io.mockk.mockk
+import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -117,5 +118,37 @@ class OkHttpUtilsTest {
         every { mockResponse.header("Content-Length") } returns "42"
 
         assertTrue(mockResponse.hasBody())
+    }
+
+    @Test
+    fun responseIsGzipped_withOtherEncoding_returnsTrue() {
+        val mockResponse = mockk<Response>()
+        every { mockResponse.headers() } returns Headers.of("Content-Encoding", "gzip")
+
+        assertTrue(mockResponse.isGzipped)
+    }
+
+    @Test
+    fun responseIsGzipped_withOtherEncoding_returnsFalse() {
+        val mockResponse = mockk<Response>()
+        every { mockResponse.headers() } returns Headers.of("Content-Encoding", "identity")
+
+        assertFalse(mockResponse.isGzipped)
+    }
+
+    @Test
+    fun requestIsGzipped_withOtherEncoding_returnsTrue() {
+        val mockRequest = mockk<Request>()
+        every { mockRequest.headers() } returns Headers.of("Content-Encoding", "gzip")
+
+        assertTrue(mockRequest.isGzipped)
+    }
+
+    @Test
+    fun requestIsGzipped_withOtherEncoding_returnsFalse() {
+        val mockRequest = mockk<Request>()
+        every { mockRequest.headers() } returns Headers.of("Content-Encoding", "identity")
+
+        assertFalse(mockRequest.isGzipped)
     }
 }

@@ -5,9 +5,11 @@ package com.chuckerteam.chucker.internal.support
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import java.net.HttpURLConnection.HTTP_OK
+import okhttp3.Headers
+import okhttp3.Request
 import okhttp3.Response
 
-const val HTTP_CONTINUE = 100
+private const val HTTP_CONTINUE = 100
 
 /** Returns true if the response must have a (possibly 0-length) body. See RFC 7231.  */
 internal fun Response.hasBody(): Boolean {
@@ -42,4 +44,21 @@ internal val Response.isChunked: Boolean
 internal val Response.contentType: String?
     get() {
         return this.header("Content-Type")
+    }
+
+/** Checks if the OkHttp response uses gzip encoding. */
+internal val Response.isGzipped: Boolean
+    get() {
+        return this.headers().containsGzip
+    }
+
+/** Checks if the OkHttp response uses gzip encoding. */
+internal val Request.isGzipped: Boolean
+    get() {
+        return this.headers().containsGzip
+    }
+
+private val Headers.containsGzip: Boolean
+    get() {
+        return this["Content-Encoding"].equals("gzip", ignoreCase = true)
     }

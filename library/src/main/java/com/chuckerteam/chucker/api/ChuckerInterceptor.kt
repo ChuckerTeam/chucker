@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.contentLenght
 import com.chuckerteam.chucker.internal.support.contentType
+import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.IOException
 import java.nio.charset.Charset
 import okhttp3.Headers
@@ -85,7 +86,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
 
         if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), io.bodyIsGzipped(request.headers().get(CONTENT_ENCODING)))
+            val source = io.getNativeSource(Buffer(), request.isGzipped)
             val buffer = source.buffer()
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
@@ -181,9 +182,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
         return builder.build()
     }
-
-    /** Checks if the OkHttp response uses gzip encoding. */
-    private val Response.isGzipped get() = io.bodyIsGzipped(headers()[CONTENT_ENCODING])
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")

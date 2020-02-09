@@ -127,16 +127,6 @@ class IOUtilsTest {
         assertEquals(supported, result)
     }
 
-    @Test
-    fun bodyIsGzipped_withGzip_returnsTrue() {
-        assertTrue(ioUtils.bodyIsGzipped("gzip"))
-    }
-
-    @Test
-    fun bodyIsGzipped_withOtherEncoding_returnsFalse() {
-        assertFalse(ioUtils.bodyIsGzipped("other"))
-    }
-
     companion object {
         @JvmStatic
         fun supportedEncodingSource(): Stream<Arguments> {
