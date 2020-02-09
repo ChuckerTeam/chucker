@@ -10,4 +10,9 @@
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white"
         app:showAsAction="always" />
+    <item android:title="@string/chucker_encode_urls"
+        android:id="@+id/encode_urls"
+        android:checkable="true"
+        app:showAsAction="never|withText"
+        app:actionViewClass="androidx.appcompat.widget.AppCompatCheckBox" />
 </menu>

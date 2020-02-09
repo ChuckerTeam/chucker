@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 
-internal class TransactionViewModel(transactionId: Long) : ViewModel() {
+internal class TransactionViewModel(
+    transactionId: Long,
+    internal val encodeUrls: Boolean
+) : ViewModel() {
 
     val transactionTitle: LiveData<String> =
         Transformations.map(RepositoryProvider.transaction().getTransaction(transactionId)) {
-            if (it != null) "${it.method} ${it.path}" else ""
+            if (it != null) "${it.method} ${it.getFormattedPath(encodeUrls)}" else ""
         }
     val transaction: LiveData<HttpTransaction> =
         Transformations.map(RepositoryProvider.transaction().getTransaction(transactionId)) {
@@ -19,10 +22,13 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
         }
 }
 
-internal class TransactionViewModelFactory(private val transactionId: Long = 0L) :
+internal class TransactionViewModelFactory(
+    private val transactionId: Long = 0L,
+    private val encodeUrls: Boolean
+) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
-        return TransactionViewModel(transactionId) as T
+        return TransactionViewModel(transactionId, encodeUrls) as T
     }
 }

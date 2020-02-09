@@ -3,8 +3,8 @@ package com.chuckerteam.chucker.internal.ui
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
@@ -14,7 +14,7 @@ internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData<String>("")
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = Transformations.switchMap(currentFilter) { searchQuery ->
+    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
             when {
                 searchQuery.isNullOrBlank() -> {
@@ -30,15 +30,19 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    val errors: LiveData<List<RecordedThrowableTuple>> =
-        Transformations.map(
-            RepositoryProvider.throwable().getSortedThrowablesTuples()
-        ) {
-            it
-        }
+    val errors: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
+        .getSortedThrowablesTuples()
+
+    private val mutableEncodeUrls = MutableLiveData<Boolean>(false)
+
+    val encodeUrls: LiveData<Boolean> = mutableEncodeUrls
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
+    }
+
+    fun encodeUrls(encode: Boolean) {
+        mutableEncodeUrls.value = encode
     }
 
     fun clearTransactions() {

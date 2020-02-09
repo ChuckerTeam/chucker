@@ -20,6 +20,7 @@ internal class TransactionAdapter internal constructor(
     private val listener: TransactionClickListListener?
 ) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private var transactions: List<HttpTransactionTuple> = arrayListOf()
+    private var encodeUrls = false
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
@@ -40,7 +41,8 @@ internal class TransactionAdapter internal constructor(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(transactions[position])
 
-    fun setData(httpTransactions: List<HttpTransactionTuple>) {
+    fun setData(httpTransactions: List<HttpTransactionTuple>, encodeUrls: Boolean) {
+        this.encodeUrls = encodeUrls
         this.transactions = httpTransactions
         notifyDataSetChanged()
     }
@@ -56,7 +58,7 @@ internal class TransactionAdapter internal constructor(
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
-            path.text = "${transaction.method} ${transaction.path}"
+            path.text = "${transaction.method} ${transaction.getFormattedPath(encodeUrls)}"
             host.text = transaction.host
             start.text = DateFormat.getTimeInstance().format(transaction.requestDate)
             ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE

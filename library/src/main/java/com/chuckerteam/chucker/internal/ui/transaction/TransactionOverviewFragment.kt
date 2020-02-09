@@ -67,7 +67,7 @@ internal class TransactionOverviewFragment : Fragment() {
         viewModel.transaction.observe(
             viewLifecycleOwner,
             Observer { transaction ->
-                url.text = transaction.url
+                url.text = transaction.getFormattedUrl(viewModel.encodeUrls)
                 method.text = transaction.method
                 protocol.text = transaction.protocol
                 status.text = transaction.status.toString()
