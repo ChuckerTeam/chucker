@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/search"
+        android:title="@string/chucker_search"
+        android:icon="@drawable/chucker_ic_search_white"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item android:title="@string/chucker_clear"
+        android:id="@+id/clear"
+        android:icon="@drawable/chucker_ic_delete_white"
+        app:showAsAction="always" />
+</menu>
