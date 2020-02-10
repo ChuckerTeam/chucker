@@ -4,7 +4,7 @@ about: Suggest an idea for this project
 
 ---
 
-## :warning: Is your feature request related to a problem? Please describe.
+## :warning: Is your feature request related to a problem? Please describe
 <!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
 
 ## :bulb: Describe the solution you'd like
