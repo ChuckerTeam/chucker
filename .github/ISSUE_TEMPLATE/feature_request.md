@@ -18,4 +18,4 @@ about: Suggest an idea for this project
 
 ## :raising_hand: Do you want to develop this feature yourself?
 - [ ] Yes
-- [X] No
+- [ ] No
