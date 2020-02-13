@@ -17,5 +17,6 @@ about: Suggest an idea for this project
 <!-- Add any other context or screenshots about the feature request here. -->
 
 ## :raising_hand: Do you want to develop this feature yourself?
+<!-- Put an `x` symbol into braces of desired choise. -->
 - [ ] Yes
 - [ ] No
