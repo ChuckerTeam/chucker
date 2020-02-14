@@ -5,7 +5,7 @@
       android:supportsRtl="true">
         <activity
             android:name="com.chuckerteam.chucker.internal.ui.MainActivity"
-            android:label="@string/name"
+            android:label="@string/chucker_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.chuckerteam.chucker.task"
             android:theme="@style/Chucker.Theme" />

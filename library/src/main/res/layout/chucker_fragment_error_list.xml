@@ -11,13 +11,13 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/list_item_error" />
+        tools:listitem="@layout/chucker_list_item_error" />
 
     <LinearLayout
         android:id="@+id/tutorial"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/doub_grid"
+        android:layout_margin="@dimen/chucker_doub_grid"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:visibility="gone">
@@ -26,21 +26,21 @@
             style="@style/Chucker.TextAppearance.ListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setup" />
+            android:text="@string/chucker_setup" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/base_grid"
+            android:layout_marginTop="@dimen/chucker_base_grid"
             android:gravity="center_vertical"
-            android:text="@string/errors_tutorial" />
+            android:text="@string/chucker_errors_tutorial" />
 
         <TextView
             android:id="@+id/link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/base_grid"
+            android:layout_marginTop="@dimen/chucker_base_grid"
             android:gravity="center_vertical"
-            android:text="@string/check_readme" />
+            android:text="@string/chucker_check_readme" />
     </LinearLayout>
 </FrameLayout>

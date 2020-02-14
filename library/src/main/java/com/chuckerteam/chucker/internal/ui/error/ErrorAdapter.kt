@@ -18,7 +18,7 @@ internal class ErrorAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ErrorViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_error, parent, false)
+                .inflate(R.layout.chucker_list_item_error, parent, false)
         return ErrorViewHolder(view)
     }
 

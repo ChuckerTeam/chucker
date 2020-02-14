@@ -13,6 +13,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import java.text.DateFormat
+import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
@@ -20,19 +21,19 @@ internal class TransactionAdapter internal constructor(
 ) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private var transactions: List<HttpTransactionTuple> = arrayListOf()
 
-    private val colorDefault: Int = ContextCompat.getColor(context, R.color.status_default)
-    private val colorRequested: Int = ContextCompat.getColor(context, R.color.status_requested)
-    private val colorError: Int = ContextCompat.getColor(context, R.color.status_error)
-    private val color500: Int = ContextCompat.getColor(context, R.color.status_500)
-    private val color400: Int = ContextCompat.getColor(context, R.color.status_400)
-    private val color300: Int = ContextCompat.getColor(context, R.color.status_300)
+    private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
+    private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
+    private val colorError: Int = ContextCompat.getColor(context, R.color.chucker_status_error)
+    private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
+    private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
+    private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
 
     override fun getItemCount(): Int = transactions.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_transaction, parent, false)
+                .inflate(R.layout.chucker_list_item_transaction, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -79,12 +80,12 @@ internal class TransactionAdapter internal constructor(
 
         private fun setStatusColor(holder: ViewHolder, transaction: HttpTransactionTuple) {
             val color: Int = when {
-                transaction.status === HttpTransaction.Status.Failed -> colorError
-                transaction.status === HttpTransaction.Status.Requested -> colorRequested
-                transaction.responseCode == null -> colorDefault
-                transaction.responseCode!! >= SERVER_ERRORS -> color500
-                transaction.responseCode!! >= CLIENT_ERRORS -> color400
-                transaction.responseCode!! >= REDIRECTS -> color300
+                (transaction.status === HttpTransaction.Status.Failed) -> colorError
+                (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
+                (transaction.responseCode == null) -> colorDefault
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
                 else -> colorDefault
             }
             holder.code.setTextColor(color)
@@ -96,7 +97,3 @@ internal class TransactionAdapter internal constructor(
         fun onTransactionClick(transactionId: Long, position: Int)
     }
 }
-
-private const val SERVER_ERRORS = 500
-private const val CLIENT_ERRORS = 400
-private const val REDIRECTS = 300

@@ -6,5 +6,5 @@
     android:textIsSelectable="true"
     android:minLines="1"
     android:gravity="left|start"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="@dimen/chucker_doub_grid"
     android:typeface="monospace" />

@@ -1,5 +1,28 @@
 # Change Log
 
+## Version 3.1.2 *(2020-02-09)*
+
+This is hot-fix release to fix multiple issues introduced in `3.1.0`.
+
+### Summary of Changes
+* All Chucker screens now have their own `ViewModel`. Due to this change user can now open the transaction in progress and the content will appear as soon as transaction finishes. No need for reopening transaction anymore.
+
+### Bugfixes
+
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/225) introduced in 3.1.0 where image downloading fails if OkHttp was used for image loading in libraries like Glide, Picasso or Coil.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/214) with invalid CURL command generation.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/217) with crashes if ProGuard/R8 minification is applied to Chucker.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/221) with crash when user taps Save in a transaction, which is still in progress.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/222) with crash when user taps Clear from notification shade while the original app is already dead.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/223) with possible NPEs.
+
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@MiSikora
+@vbuberen
+
 ## Version 3.1.1 *(2020-01-25)*
 
 This is hot-fix release to fix issue introduced in `3.1.0`.
@@ -7,6 +30,12 @@ This is hot-fix release to fix issue introduced in `3.1.0`.
 ### Summary of Changes
 
 - Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/203) introduced in 3.1.0 where some of response bodies were shown as `null` and their sizes were 0 bytes.
+
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@cortinico
 
 ## Version 3.1.0 *(2020-01-24)*
 
@@ -81,7 +110,6 @@ This release was possible thanks to the contribution of: @redwarp
 
 
 ## Version 3.0.0 *(2019-08-12)*
-
 
 This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
