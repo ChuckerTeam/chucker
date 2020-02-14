@@ -40,10 +40,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/chucker_half_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/ssl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toTopOf="@+id/ssl"
+        app:layout_constraintTop_toBottomOf="@+id/path"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
@@ -56,7 +55,8 @@
         android:src="@drawable/chucker_ic_https_primary"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/path"
-        app:layout_constraintTop_toBottomOf="@+id/path"
+        app:layout_constraintTop_toTopOf="@+id/host"
+        app:layout_constraintBottom_toBottomOf="@id/host"
         tools:visibility="visible" />
 
     <TextView
