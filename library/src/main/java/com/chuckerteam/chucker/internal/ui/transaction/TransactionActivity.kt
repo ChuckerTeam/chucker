@@ -27,11 +27,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         setContentView(R.layout.chucker_activity_transaction)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
-        val encodeUrls = intent.getBooleanExtra(EXTRA_ENCODE_URLS, false)
 
         // Create the instance now, so it can be shared by the
         // various fragments in the view pager later.
-        viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId, encodeUrls))
+        viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
             .get(TransactionViewModel::class.java)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -56,14 +55,34 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chucker_transaction, menu)
+        setUpUrlEncoding(menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setUpUrlEncoding(menu: Menu) {
+        val encodeUrlMenuItem = menu.findItem(R.id.encode_url)
+        encodeUrlMenuItem.setOnMenuItemClickListener {
+            viewModel.switchUrlEncoding()
+            return@setOnMenuItemClickListener true
+        }
+        viewModel.encodeUrl.observe(
+            this,
+            Observer { encode ->
+                val icon = if (encode) {
+                    R.drawable.chucker_ic_encoded_url_white
+                } else {
+                    R.drawable.chucker_ic_decoded_url_white
+                }
+                encodeUrlMenuItem.setIcon(icon)
+            }
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.share_text -> {
                 viewModel.transaction.value?.let {
-                    share(getShareText(this, it, viewModel.encodeUrls))
+                    share(getShareText(this, it, viewModel.encodeUrl.value!!))
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
@@ -102,13 +121,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
     companion object {
         private const val MIME_TYPE = "text/plain"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
-        private const val EXTRA_ENCODE_URLS = "encode_ruls"
         private var selectedTabPosition = 0
 
-        fun start(context: Context, transactionId: Long, encodeUrls: Boolean) {
+        fun start(context: Context, transactionId: Long) {
             val intent = Intent(context, TransactionActivity::class.java)
             intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
-            intent.putExtra(EXTRA_ENCODE_URLS, encodeUrls)
             context.startActivity(intent)
         }
     }

@@ -33,16 +33,8 @@ internal class MainViewModel : ViewModel() {
     val errors: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
-    private val mutableEncodeUrls = MutableLiveData<Boolean>(false)
-
-    val encodeUrls: LiveData<Boolean> = mutableEncodeUrls
-
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
-    }
-
-    fun encodeUrls(encode: Boolean) {
-        mutableEncodeUrls.value = encode
     }
 
     fun clearTransactions() {

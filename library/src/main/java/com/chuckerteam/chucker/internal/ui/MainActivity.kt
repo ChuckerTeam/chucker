@@ -76,7 +76,7 @@ internal class MainActivity :
     }
 
     override fun onTransactionClick(transactionId: Long, position: Int) {
-        TransactionActivity.start(this, transactionId, viewModel.encodeUrls.value == true)
+        TransactionActivity.start(this, transactionId)
     }
 
     companion object {

@@ -1,34 +1,43 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.combineLatest
 
 internal class TransactionViewModel(
-    transactionId: Long,
-    internal val encodeUrls: Boolean
+    transactionId: Long
 ) : ViewModel() {
 
-    val transactionTitle: LiveData<String> =
-        Transformations.map(RepositoryProvider.transaction().getTransaction(transactionId)) {
-            if (it != null) "${it.method} ${it.getFormattedPath(encodeUrls)}" else ""
+    private val mutableEncodeUrl = MutableLiveData<Boolean>(false)
+
+    val encodeUrl: LiveData<Boolean> = mutableEncodeUrl
+
+    val transactionTitle: LiveData<String> = RepositoryProvider.transaction()
+        .getTransaction(transactionId)
+        .combineLatest(encodeUrl) { transaction, encodeUrl ->
+            if (transaction != null) "${transaction.method} ${transaction.getFormattedPath(encode = encodeUrl)}" else ""
         }
-    val transaction: LiveData<HttpTransaction> =
-        Transformations.map(RepositoryProvider.transaction().getTransaction(transactionId)) {
-            it
-        }
+
+    val transaction: LiveData<HttpTransaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
+
+    fun switchUrlEncoding() = encodeUrl(encodeUrl.value!!)
+
+    fun encodeUrl(encode: Boolean) {
+        mutableEncodeUrl.value = encode
+    }
 }
 
 internal class TransactionViewModelFactory(
-    private val transactionId: Long = 0L,
-    private val encodeUrls: Boolean
+    private val transactionId: Long = 0L
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
-        return TransactionViewModel(transactionId, encodeUrls) as T
+        @Suppress("UNCHECKED_CAST")
+        return TransactionViewModel(transactionId) as T
     }
 }

@@ -19,8 +19,9 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         return transcationDao.getFilteredTuples("$code%", pathQuery)
     }
 
-    override fun getTransaction(transactionId: Long): LiveData<HttpTransaction> {
-        return transcationDao.getById(transactionId).distinctUntilChanged { old, new -> old.hasTheSameContent(new) }
+    override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {
+        return transcationDao.getById(transactionId)
+            .distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }
 
     override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {

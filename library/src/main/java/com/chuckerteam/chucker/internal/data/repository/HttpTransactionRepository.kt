@@ -23,5 +23,5 @@ internal interface HttpTransactionRepository {
 
     fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>>
 
-    fun getTransaction(transactionId: Long): LiveData<HttpTransaction>
+    fun getTransaction(transactionId: Long): LiveData<HttpTransaction?>
 }

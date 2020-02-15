@@ -9,6 +9,13 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
     <item
+        android:icon="@drawable/chucker_ic_decoded_url_white"
+        android:title="@string/chucker_encode_url"
+        android:id="@+id/encode_url"
+        android:visible="false"
+        app:showAsAction="always">
+    </item>
+    <item
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_share"
         app:showAsAction="always">

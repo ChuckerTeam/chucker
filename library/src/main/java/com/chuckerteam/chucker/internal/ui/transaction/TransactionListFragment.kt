@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.support.combineLatest
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class TransactionListFragment :
@@ -57,11 +56,10 @@ internal class TransactionListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val transactionsWithEncoding = viewModel.transactions.combineLatest(viewModel.encodeUrls)
-        transactionsWithEncoding.observe(
+        viewModel.transactions.observe(
             viewLifecycleOwner,
-            Observer { (transactionTuples, encode) ->
-                adapter.setData(transactionTuples, encode)
+            Observer { transactionTuples ->
+                adapter.setData(transactionTuples)
                 tutorialView.visibility = if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )
@@ -70,7 +68,6 @@ internal class TransactionListFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chucker_transactions_list, menu)
         setUpSearch(menu)
-        setUpUrlEncoding(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -79,18 +76,6 @@ internal class TransactionListFragment :
         val searchView = searchMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
         searchView.setIconifiedByDefault(true)
-    }
-
-    private fun setUpUrlEncoding(menu: Menu) {
-        val encodeUrlsMenuItem = menu.findItem(R.id.encode_urls)
-        encodeUrlsMenuItem.setOnMenuItemClickListener { item ->
-            viewModel.encodeUrls(!item.isChecked)
-            return@setOnMenuItemClickListener true
-        }
-        viewModel.encodeUrls.observe(
-            viewLifecycleOwner,
-            Observer { encode -> encodeUrlsMenuItem.isChecked = encode }
-        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -119,7 +104,7 @@ internal class TransactionListFragment :
     }
 
     override fun onTransactionClick(transactionId: Long, position: Int) {
-        TransactionActivity.start(requireActivity(), transactionId, viewModel.encodeUrls.value == true)
+        TransactionActivity.start(requireActivity(), transactionId)
     }
 
     companion object {
