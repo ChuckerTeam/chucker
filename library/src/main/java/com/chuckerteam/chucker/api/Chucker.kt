@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.annotation.IntDef
 import com.chuckerteam.chucker.internal.support.ChuckerCrashHandler
 import com.chuckerteam.chucker.internal.support.NotificationHelper
@@ -69,11 +68,5 @@ object Chucker {
     @IntDef(value = [SCREEN_HTTP, SCREEN_ERROR])
     annotation class Screen
 
-    internal fun chuckerPreferences(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, 0)
-    }
-
     internal const val LOG_TAG = "Chucker"
-
-    private const val PREFS_NAME = "chucker_preferences"
 }
