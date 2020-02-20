@@ -222,35 +222,29 @@ internal class HttpTransaction(
         if (this === other) return true
         if (other == null) return false
 
-        if (id != other.id) return false
-        if (requestDate != other.requestDate) return false
-        if (responseDate != other.responseDate) return false
-        if (tookMs != other.tookMs) return false
-        if (protocol != other.protocol) return false
-        if (method != other.method) return false
-        if (url != other.url) return false
-        if (host != other.host) return false
-        if (path != other.path) return false
-        if (scheme != other.scheme) return false
-        if (requestContentLength != other.requestContentLength) return false
-        if (requestContentType != other.requestContentType) return false
-        if (requestHeaders != other.requestHeaders) return false
-        if (requestBody != other.requestBody) return false
-        if (isRequestBodyPlainText != other.isRequestBodyPlainText) return false
-        if (responseCode != other.responseCode) return false
-        if (responseMessage != other.responseMessage) return false
-        if (error != other.error) return false
-        if (responseContentLength != other.responseContentLength) return false
-        if (responseContentType != other.responseContentType) return false
-        if (responseHeaders != other.responseHeaders) return false
-        if (responseBody != other.responseBody) return false
-        if (isResponseBodyPlainText != other.isResponseBodyPlainText) return false
-        val thisImageData = responseImageData
-        if (thisImageData != null) {
-            val otherImageData = other.responseImageData ?: return false
-            if (!thisImageData.contentEquals(otherImageData)) return false
-        } else if (other.responseImageData != null) return false
-
-        return true
+        return id == other.id &&
+            requestDate == other.requestDate &&
+            responseDate == other.responseDate &&
+            tookMs == other.tookMs &&
+            protocol == other.protocol &&
+            method == other.method &&
+            url == other.url &&
+            host == other.host &&
+            path == other.path &&
+            scheme == other.scheme &&
+            requestContentLength == other.requestContentLength &&
+            requestContentType == other.requestContentType &&
+            requestHeaders == other.requestHeaders &&
+            requestBody == other.requestBody &&
+            isRequestBodyPlainText == other.isRequestBodyPlainText &&
+            responseCode == other.responseCode &&
+            responseMessage == other.responseMessage &&
+            error == other.error &&
+            responseContentLength == other.responseContentLength &&
+            responseContentType == other.responseContentType &&
+            responseHeaders == other.responseHeaders &&
+            responseBody == other.responseBody &&
+            isResponseBodyPlainText == other.isResponseBodyPlainText &&
+            responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) == true
     }
 }
