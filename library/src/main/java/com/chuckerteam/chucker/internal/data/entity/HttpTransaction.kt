@@ -214,4 +214,43 @@ internal class HttpTransaction(
         scheme = url.scheme()
         return this
     }
+
+    // Not relying on 'equals' because comparison be long due to request and response sizes
+    // and it would be unwise to do this every time 'equals' is called.
+    @Suppress("ComplexMethod")
+    fun hasTheSameContent(other: HttpTransaction?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+
+        if (id != other.id) return false
+        if (requestDate != other.requestDate) return false
+        if (responseDate != other.responseDate) return false
+        if (tookMs != other.tookMs) return false
+        if (protocol != other.protocol) return false
+        if (method != other.method) return false
+        if (url != other.url) return false
+        if (host != other.host) return false
+        if (path != other.path) return false
+        if (scheme != other.scheme) return false
+        if (requestContentLength != other.requestContentLength) return false
+        if (requestContentType != other.requestContentType) return false
+        if (requestHeaders != other.requestHeaders) return false
+        if (requestBody != other.requestBody) return false
+        if (isRequestBodyPlainText != other.isRequestBodyPlainText) return false
+        if (responseCode != other.responseCode) return false
+        if (responseMessage != other.responseMessage) return false
+        if (error != other.error) return false
+        if (responseContentLength != other.responseContentLength) return false
+        if (responseContentType != other.responseContentType) return false
+        if (responseHeaders != other.responseHeaders) return false
+        if (responseBody != other.responseBody) return false
+        if (isResponseBodyPlainText != other.isResponseBodyPlainText) return false
+        val thisImageData = responseImageData
+        if (thisImageData != null) {
+            val otherImageData = other.responseImageData ?: return false
+            if (!thisImageData.contentEquals(otherImageData)) return false
+        } else if (other.responseImageData != null) return false
+
+        return true
+    }
 }

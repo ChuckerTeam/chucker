@@ -75,6 +75,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
+    testImplementation "androidx.arch.core:core-testing:$androidXCore"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

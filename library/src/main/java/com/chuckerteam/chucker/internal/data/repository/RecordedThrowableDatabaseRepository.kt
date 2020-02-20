@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -14,7 +15,7 @@ internal class RecordedThrowableDatabaseRepository(
     private val executor: Executor = Executors.newSingleThreadExecutor()
 
     override fun getRecordedThrowable(id: Long): LiveData<RecordedThrowable> {
-        return database.throwableDao().getById(id)
+        return database.throwableDao().getById(id).distinctUntilChanged()
     }
 
     override fun deleteAllThrowables() {
