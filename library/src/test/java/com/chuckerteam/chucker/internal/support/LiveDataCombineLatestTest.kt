@@ -9,7 +9,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class LiveDataUtilsTest {
+class LiveDataCombineLatestTest {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private val liveDataA = MutableLiveData<Boolean>()
