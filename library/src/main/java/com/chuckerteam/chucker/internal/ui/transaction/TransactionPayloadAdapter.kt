@@ -96,7 +96,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(view: View) : TransactionPayloadViewHolder(view) {
-        private val headersView: TextView = view.findViewById(R.id.headers)
+        private val headersView: TextView = view.findViewById(R.id.chuckerTransactionResponseHeaders)
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
                 headersView.text = item.headers
@@ -105,7 +105,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class BodyLineViewHolder(view: View) : TransactionPayloadViewHolder(view) {
-        private val bodyLineView: TextView = view.findViewById(R.id.body_line)
+        private val bodyLineView: TextView = view.findViewById(R.id.chuckerTransactionResponseBodyLine)
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
                 bodyLineView.text = item.line
@@ -114,7 +114,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class ImageViewHolder(view: View) : TransactionPayloadViewHolder(view) {
-        private val binaryDataView: ImageView = view.findViewById(R.id.binary_data)
+        private val binaryDataView: ImageView = view.findViewById(R.id.chuckerTransactionResponseBinaryData)
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 binaryDataView.setImageBitmap(item.image)

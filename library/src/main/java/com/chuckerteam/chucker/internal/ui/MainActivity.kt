@@ -28,16 +28,16 @@ internal class MainActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chucker_activity_main)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.chuckerTransactionToolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = applicationName
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        viewPager = findViewById(R.id.viewPager)
+        viewPager = findViewById(R.id.chuckerMainViewPager)
         viewPager.adapter = HomePageAdapter(this, supportFragmentManager)
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        val tabLayout = findViewById<TabLayout>(R.id.chuckerMainTabLayout)
         tabLayout.setupWithViewPager(viewPager)
 
         viewPager.addOnPageChangeListener(object : TabLayout.TabLayoutOnPageChangeListener(tabLayout) {

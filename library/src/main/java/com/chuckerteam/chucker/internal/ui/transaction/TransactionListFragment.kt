@@ -40,10 +40,10 @@ internal class TransactionListFragment :
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false)
-        tutorialView = view.findViewById(R.id.tutorial)
-        view.findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
+        tutorialView = view.findViewById(R.id.chuckerTransactionsTutorialView)
+        view.findViewById<TextView>(R.id.chuckerTransactionsLink).movementMethod = LinkMovementMethod.getInstance()
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.chuckerTransactionsRecyclerView)
         val context = view.context
         recyclerView.addItemDecoration(
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL)

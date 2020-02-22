@@ -33,15 +33,15 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
             .get(TransactionViewModel::class.java)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.chuckerTransactionToolbar)
         setSupportActionBar(toolbar)
-        title = findViewById(R.id.toolbar_title)
+        title = findViewById(R.id.chuckerTransactionToolbarTitle)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        findViewById<ViewPager>(R.id.viewpager)?.let { viewPager ->
+        findViewById<ViewPager>(R.id.chuckerTransactionViewPager)?.let { viewPager ->
             setupViewPager(viewPager)
-            findViewById<TabLayout>(R.id.tabs).setupWithViewPager(viewPager)
+            findViewById<TabLayout>(R.id.chuckerTransactionTabLayout).setupWithViewPager(viewPager)
         }
     }
 

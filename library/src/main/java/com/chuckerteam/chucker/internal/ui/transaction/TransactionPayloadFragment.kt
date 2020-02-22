@@ -61,9 +61,9 @@ internal class TransactionPayloadFragment :
         savedInstanceState: Bundle?
     ): View? =
         inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
-            transactionContentList = findViewById(R.id.transaction_content)
+            transactionContentList = findViewById(R.id.chuckerTransactionResponseRecyclerView)
             transactionContentList.isNestedScrollingEnabled = false
-            progressLoading = findViewById(R.id.progress_loading_transaction)
+            progressLoading = findViewById(R.id.chuckerTransactionLoadingProgress)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -182,8 +182,8 @@ internal class TransactionPayloadFragment :
         AsyncTask<Pair<Int, HttpTransaction>, Unit, List<TransactionPayloadItem>>() {
 
         override fun onPreExecute() {
-            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.progress_loading_transaction)
-            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.transaction_content)
+            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.chuckerTransactionLoadingProgress)
+            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.chuckerTransactionResponseRecyclerView)
             progressBar?.visibility = View.VISIBLE
             recyclerView?.visibility = View.INVISIBLE
         }
@@ -233,8 +233,8 @@ internal class TransactionPayloadFragment :
         }
 
         override fun onPostExecute(result: List<TransactionPayloadItem>) {
-            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.progress_loading_transaction)
-            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.transaction_content)
+            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.chuckerTransactionLoadingProgress)
+            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.chuckerTransactionResponseRecyclerView)
             progressBar?.visibility = View.INVISIBLE
             recyclerView?.visibility = View.VISIBLE
             recyclerView?.adapter = TransactionBodyAdapter(result)
