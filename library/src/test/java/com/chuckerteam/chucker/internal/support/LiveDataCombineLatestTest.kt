@@ -2,74 +2,71 @@ package com.chuckerteam.chucker.internal.support
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import com.chuckerteam.chucker.test
 import junit.framework.TestCase.assertEquals
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class LiveDataCombineLatestTest {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val liveDataA = MutableLiveData<Boolean>()
-    private val liveDataB = MutableLiveData<Int>()
+    private val inputA = MutableLiveData<Boolean>()
+    private val inputB = MutableLiveData<Int>()
 
-    private val combinedData = liveDataA.combineLatest(liveDataB)
-    private val results = mutableListOf<Pair<Boolean, Int>>()
-    private val observer = Observer<Pair<Boolean, Int>> { results += it }
-
-    @Before
-    fun setUp() {
-        combinedData.observeForever(observer)
-    }
-
-    @After
-    fun tearDown() {
-        combinedData.removeObserver(observer)
-        results.clear()
-    }
+    private val upstream = inputA.combineLatest(inputB)
 
     @Test
     fun firstEmptyValue_preventsDownstreamEmissions() {
-        liveDataB.value = 1
-        liveDataB.value = 2
-        liveDataB.value = 3
+        upstream.test {
+            inputB.value = 1
+            inputB.value = 2
+            inputB.value = 3
 
-        assertEquals(emptyList<Pair<Boolean, Int>>(), results)
+            expectNoData()
+        }
     }
 
     @Test
     fun secondEmptyValue_preventsDownstreamEmissions() {
-        liveDataA.value = true
-        liveDataA.value = false
+        upstream.test {
+            inputA.value = true
+            inputA.value = false
 
-        assertEquals(emptyList<Pair<Boolean, Int>>(), results)
+            expectNoData()
+        }
     }
 
     @Test
     fun bothEmittedValues_areCombinedDownstream() {
-        liveDataA.value = true
-        liveDataB.value = 1
+        upstream.test {
+            inputA.value = true
+            inputB.value = 1
 
-        assertEquals(listOf(true to 1), results)
+            assertEquals(true to 1, expectData())
+        }
     }
 
     @Test
     fun lastFirstValue_isCombinedWithNewestSecondValues() {
-        liveDataA.value = true
-        liveDataB.value = 1
-        liveDataB.value = 2
+        upstream.test {
+            inputA.value = true
+            inputB.value = 1
+            assertEquals(true to 1, expectData())
 
-        assertEquals(listOf(true to 1, true to 2), results)
+            inputB.value = 2
+            assertEquals(true to 2, expectData())
+        }
     }
 
     @Test
     fun lastSecondValue_isCombinedWithNewestFirstValues() {
-        liveDataA.value = true
-        liveDataB.value = 1
-        liveDataA.value = false
+        upstream.test {
+            inputA.value = true
+            inputB.value = 1
+            assertEquals(true to 1, expectData())
 
-        assertEquals(listOf(true to 1, false to 1), results)
+            inputA.value = false
+            assertEquals(false to 1, expectData())
+        }
     }
 }
