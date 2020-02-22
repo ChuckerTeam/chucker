@@ -58,7 +58,10 @@ internal class TransactionOverviewFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.findItem(R.id.save_body).isVisible = false
-        menu.findItem(R.id.encode_url).isVisible = true
+        viewModel.doesUrlRequireEncoding.observe(
+            viewLifecycleOwner,
+            Observer { menu.findItem(R.id.encode_url).isVisible = it }
+        )
 
         super.onCreateOptionsMenu(menu, inflater)
     }
