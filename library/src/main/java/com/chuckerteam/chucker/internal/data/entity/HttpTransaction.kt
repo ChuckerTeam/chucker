@@ -222,29 +222,29 @@ internal class HttpTransaction(
         if (this === other) return true
         if (other == null) return false
 
-        return id == other.id &&
-            requestDate == other.requestDate &&
-            responseDate == other.responseDate &&
-            tookMs == other.tookMs &&
-            protocol == other.protocol &&
-            method == other.method &&
-            url == other.url &&
-            host == other.host &&
-            path == other.path &&
-            scheme == other.scheme &&
-            requestContentLength == other.requestContentLength &&
-            requestContentType == other.requestContentType &&
-            requestHeaders == other.requestHeaders &&
-            requestBody == other.requestBody &&
-            isRequestBodyPlainText == other.isRequestBodyPlainText &&
-            responseCode == other.responseCode &&
-            responseMessage == other.responseMessage &&
-            error == other.error &&
-            responseContentLength == other.responseContentLength &&
-            responseContentType == other.responseContentType &&
-            responseHeaders == other.responseHeaders &&
-            responseBody == other.responseBody &&
-            isResponseBodyPlainText == other.isResponseBodyPlainText &&
+        return (id == other.id) &&
+            (requestDate == other.requestDate) &&
+            (responseDate == other.responseDate) &&
+            (tookMs == other.tookMs) &&
+            (protocol == other.protocol) &&
+            (method == other.method) &&
+            (url == other.url) &&
+            (host == other.host) &&
+            (path == other.path) &&
+            (scheme == other.scheme) &&
+            (requestContentLength == other.requestContentLength) &&
+            (requestContentType == other.requestContentType) &&
+            (requestHeaders == other.requestHeaders) &&
+            (requestBody == other.requestBody) &&
+            (isRequestBodyPlainText == other.isRequestBodyPlainText) &&
+            (responseCode == other.responseCode) &&
+            (responseMessage == other.responseMessage) &&
+            (error == other.error) &&
+            (responseContentLength == other.responseContentLength) &&
+            (responseContentType == other.responseContentType) &&
+            (responseHeaders == other.responseHeaders) &&
+            (responseBody == other.responseBody) &&
+            (isResponseBodyPlainText == other.isResponseBodyPlainText) &&
             responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) == true
     }
 }
