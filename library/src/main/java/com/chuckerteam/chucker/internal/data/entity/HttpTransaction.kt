@@ -245,6 +245,6 @@ internal class HttpTransaction(
             (responseHeaders == other.responseHeaders) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyPlainText == other.isResponseBodyPlainText) &&
-            responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) == true
+            responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false
     }
 }
