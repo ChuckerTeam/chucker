@@ -24,7 +24,7 @@ internal class TransactionViewModel(
 
     val transaction: LiveData<HttpTransaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
 
-    fun switchUrlEncoding() = encodeUrl(encodeUrl.value!!)
+    fun switchUrlEncoding() = encodeUrl(!encodeUrl.value!!)
 
     fun encodeUrl(encode: Boolean) {
         mutableEncodeUrl.value = encode
