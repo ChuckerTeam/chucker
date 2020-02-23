@@ -9,6 +9,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
 import java.util.Date
@@ -46,7 +47,6 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
-
 ) {
 
     @Ignore
@@ -207,12 +207,23 @@ internal class HttpTransaction(
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }
 
-    fun populateUrl(url: HttpUrl): HttpTransaction {
-        this.url = url.toString()
-        host = url.host()
-        path = ("/${url.pathSegments().joinToString("/")}${url.query()?.let { "?$it" } ?: ""}")
-        scheme = url.scheme()
+    fun populateUrl(httpUrl: HttpUrl): HttpTransaction {
+        val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
+        url = formattedUrl.url
+        host = formattedUrl.host
+        path = formattedUrl.pathWithQuery
+        scheme = formattedUrl.scheme
         return this
+    }
+
+    fun getFormattedUrl(encode: Boolean): String {
+        val httpUrl = url?.let(HttpUrl::get) ?: return ""
+        return FormattedUrl.fromHttpUrl(httpUrl, encode).url
+    }
+
+    fun getFormattedPath(encode: Boolean): String {
+        val httpUrl = url?.let(HttpUrl::get) ?: return ""
+        return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 
     // Not relying on 'equals' because comparison be long due to request and response sizes

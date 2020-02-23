@@ -71,6 +71,7 @@ internal class TransactionPayloadFragment :
         viewModel.transaction.observe(
             viewLifecycleOwner,
             Observer { transaction ->
+                if (transaction == null) return@Observer
                 PayloadLoaderTask(this).execute(Pair(type, transaction))
             }
         )
@@ -103,6 +104,8 @@ internal class TransactionPayloadFragment :
                 }
             }
         }
+
+        menu.findItem(R.id.encode_url).isVisible = false
 
         super.onCreateOptionsMenu(menu, inflater)
     }

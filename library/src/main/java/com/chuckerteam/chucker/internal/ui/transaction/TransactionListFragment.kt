@@ -67,11 +67,15 @@ internal class TransactionListFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chucker_transactions_list, menu)
+        setUpSearch(menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun setUpSearch(menu: Menu) {
         val searchMenuItem = menu.findItem(R.id.search)
         val searchView = searchMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
         searchView.setIconifiedByDefault(true)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -99,8 +103,9 @@ internal class TransactionListFragment :
         return true
     }
 
-    override fun onTransactionClick(transactionId: Long, position: Int) =
+    override fun onTransactionClick(transactionId: Long, position: Int) {
         TransactionActivity.start(requireActivity(), transactionId)
+    }
 
     companion object {
         fun newInstance(): TransactionListFragment {

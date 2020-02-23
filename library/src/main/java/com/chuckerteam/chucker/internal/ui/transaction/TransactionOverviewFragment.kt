@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.support.combineLatest
 
 internal class TransactionOverviewFragment : Fragment() {
 
@@ -56,30 +57,36 @@ internal class TransactionOverviewFragment : Fragment() {
             }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val saveMenuItem = menu.findItem(R.id.save_body)
-        saveMenuItem.isVisible = false
+        menu.findItem(R.id.save_body).isVisible = false
+        viewModel.doesUrlRequireEncoding.observe(
+            viewLifecycleOwner,
+            Observer { menu.findItem(R.id.encode_url).isVisible = it }
+        )
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.transaction.observe(
-            viewLifecycleOwner,
-            Observer { transaction ->
-                url.text = transaction.url
-                method.text = transaction.method
-                protocol.text = transaction.protocol
-                status.text = transaction.status.toString()
-                response.text = transaction.responseSummaryText
-                ssl.setText(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)
-                requestTime.text = transaction.requestDateString
-                responseTime.text = transaction.responseDateString
-                duration.text = transaction.durationString
-                requestSize.text = transaction.requestSizeString
-                responseSize.text = transaction.responseSizeString
-                totalSize.text = transaction.totalSizeString
-            }
-        )
+
+        viewModel.transaction
+            .combineLatest(viewModel.encodeUrl)
+            .observe(
+                viewLifecycleOwner,
+                Observer { (transaction, encodeUrl) ->
+                    url.text = transaction?.getFormattedUrl(encodeUrl)
+                    method.text = transaction?.method
+                    protocol.text = transaction?.protocol
+                    status.text = transaction?.status?.toString()
+                    response.text = transaction?.responseSummaryText
+                    ssl.setText(if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no)
+                    requestTime.text = transaction?.requestDateString
+                    responseTime.text = transaction?.responseDateString
+                    duration.text = transaction?.durationString
+                    requestSize.text = transaction?.requestSizeString
+                    responseSize.text = transaction?.responseSizeString
+                    totalSize.text = transaction?.totalSizeString
+                }
+            )
     }
 }

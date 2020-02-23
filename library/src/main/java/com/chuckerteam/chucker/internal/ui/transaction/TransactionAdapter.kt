@@ -56,7 +56,7 @@ internal class TransactionAdapter internal constructor(
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
-            path.text = "${transaction.method} ${transaction.path}"
+            path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
             host.text = transaction.host
             start.text = DateFormat.getTimeInstance().format(transaction.requestDate)
             ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE

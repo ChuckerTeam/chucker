@@ -55,14 +55,34 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chucker_transaction, menu)
+        setUpUrlEncoding(menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setUpUrlEncoding(menu: Menu) {
+        val encodeUrlMenuItem = menu.findItem(R.id.encode_url)
+        encodeUrlMenuItem.setOnMenuItemClickListener {
+            viewModel.switchUrlEncoding()
+            return@setOnMenuItemClickListener true
+        }
+        viewModel.encodeUrl.observe(
+            this,
+            Observer { encode ->
+                val icon = if (encode) {
+                    R.drawable.chucker_ic_encoded_url_white
+                } else {
+                    R.drawable.chucker_ic_decoded_url_white
+                }
+                encodeUrlMenuItem.setIcon(icon)
+            }
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.share_text -> {
                 viewModel.transaction.value?.let {
-                    share(getShareText(this, it))
+                    share(getShareText(this, it, viewModel.encodeUrl.value!!))
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
