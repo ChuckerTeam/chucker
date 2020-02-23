@@ -29,7 +29,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_error)
+        setContentView(R.layout.chucker_activity_error)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -61,7 +61,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.error, menu)
+        inflater.inflate(R.menu.chucker_error, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -76,7 +76,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     private fun share(throwable: RecordedThrowable) {
         val throwableDetailsText = getString(
-            R.string.share_error_content,
+            R.string.chucker_share_error_content,
             throwable.formattedDate,
             throwable.clazz,
             throwable.tag,
@@ -86,8 +86,8 @@ internal class ErrorActivity : BaseChuckerActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.share_error_title))
-                .setSubject(getString(R.string.share_error_subject))
+                .setChooserTitle(getString(R.string.chucker_share_error_title))
+                .setSubject(getString(R.string.chucker_share_error_subject))
                 .setText(throwableDetailsText)
                 .createChooserIntent()
         )

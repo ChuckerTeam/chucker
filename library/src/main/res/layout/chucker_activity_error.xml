@@ -30,7 +30,7 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <include layout="@layout/list_item_error" />
+        <include layout="@layout/chucker_list_item_error" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,7 +43,7 @@
             android:id="@+id/stacktrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="@dimen/chucker_doub_grid"
             android:textSize="12sp"
             android:typeface="monospace"
             tools:text="java.lang.SecurityException: Package com.chuckerteam.chucker.sample is currently frozen!

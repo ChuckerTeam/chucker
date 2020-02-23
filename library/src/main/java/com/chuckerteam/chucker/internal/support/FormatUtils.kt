@@ -95,23 +95,23 @@ internal object FormatUtils {
     }
 
     fun getShareText(context: Context, transaction: HttpTransaction): String {
-        var text = "${context.getString(R.string.url)}: ${transaction.url}\n"
-        text += "${context.getString(R.string.method)}: ${transaction.method}\n"
-        text += "${context.getString(R.string.protocol)}: ${transaction.protocol}\n"
-        text += "${context.getString(R.string.status)}: ${transaction.status}\n"
-        text += "${context.getString(R.string.response)}: ${transaction.responseSummaryText}\n"
-        text += "${context.getString(R.string.ssl)}: " +
-            "${context.getString(if (transaction.isSsl) R.string.yes else R.string.no)}\n"
+        var text = "${context.getString(R.string.chucker_url)}: ${transaction.url}\n"
+        text += "${context.getString(R.string.chucker_method)}: ${transaction.method}\n"
+        text += "${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n"
+        text += "${context.getString(R.string.chucker_status)}: ${transaction.status}\n"
+        text += "${context.getString(R.string.chucker_response)}: ${transaction.responseSummaryText}\n"
+        text += "${context.getString(R.string.chucker_ssl)}: " +
+            "${context.getString(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)}\n"
         text += "\n"
-        text += "${context.getString(R.string.request_time)}: ${transaction.requestDateString}\n"
-        text += "${context.getString(R.string.response_time)}: ${transaction.responseDateString}\n"
-        text += "${context.getString(R.string.duration)}: ${transaction.durationString}\n"
+        text += "${context.getString(R.string.chucker_request_time)}: ${transaction.requestDateString}\n"
+        text += "${context.getString(R.string.chucker_response_time)}: ${transaction.responseDateString}\n"
+        text += "${context.getString(R.string.chucker_duration)}: ${transaction.durationString}\n"
         text += "\n"
-        text += "${context.getString(R.string.request_size)}: ${transaction.requestSizeString}\n"
-        text += "${context.getString(R.string.response_size)}: ${transaction.responseSizeString}\n"
-        text += "${context.getString(R.string.total_size)}: ${transaction.totalSizeString}\n"
+        text += "${context.getString(R.string.chucker_request_size)}: ${transaction.requestSizeString}\n"
+        text += "${context.getString(R.string.chucker_response_size)}: ${transaction.responseSizeString}\n"
+        text += "${context.getString(R.string.chucker_total_size)}: ${transaction.totalSizeString}\n"
         text += "\n"
-        text += "---------- ${context.getString(R.string.request)} ----------\n\n"
+        text += "---------- ${context.getString(R.string.chucker_request)} ----------\n\n"
 
         var headers = formatHeaders(transaction.getParsedRequestHeaders(), false)
 
@@ -122,11 +122,11 @@ internal object FormatUtils {
         text += if (transaction.isRequestBodyPlainText) {
             transaction.getFormattedRequestBody()
         } else {
-            context.getString(R.string.body_omitted)
+            context.getString(R.string.chucker_body_omitted)
         }
 
         text += "\n\n"
-        text += "---------- ${context.getString(R.string.response)} ----------\n\n"
+        text += "---------- ${context.getString(R.string.chucker_response)} ----------\n\n"
 
         headers = formatHeaders(transaction.getParsedResponseHeaders(), false)
 
@@ -137,7 +137,7 @@ internal object FormatUtils {
         text += if (transaction.isResponseBodyPlainText) {
             transaction.getFormattedResponseBody()
         } else {
-            context.getString(R.string.body_omitted)
+            context.getString(R.string.chucker_body_omitted)
         }
 
         return text

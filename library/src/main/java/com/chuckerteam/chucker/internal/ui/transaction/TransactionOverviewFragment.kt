@@ -39,7 +39,7 @@ internal class TransactionOverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? =
-        inflater.inflate(R.layout.fragment_transaction_overview, container, false)
+        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
             .also {
                 url = it.findViewById(R.id.url)
                 method = it.findViewById(R.id.method)
@@ -72,7 +72,7 @@ internal class TransactionOverviewFragment : Fragment() {
                 protocol.text = transaction.protocol
                 status.text = transaction.status.toString()
                 response.text = transaction.responseSummaryText
-                ssl.setText(if (transaction.isSsl) R.string.yes else R.string.no)
+                ssl.setText(if (transaction.isSsl) R.string.chucker_yes else R.string.chucker_no)
                 requestTime.text = transaction.requestDateString
                 responseTime.text = transaction.responseDateString
                 duration.text = transaction.durationString

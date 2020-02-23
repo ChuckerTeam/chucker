@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -19,7 +20,7 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction> {
-        return transcationDao.getById(transactionId)
+        return transcationDao.getById(transactionId).distinctUntilChanged { old, new -> old.hasTheSameContent(new) }
     }
 
     override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {

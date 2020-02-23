@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import io.mockk.every
 import io.mockk.mockk
+import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -61,61 +62,34 @@ class OkHttpUtilsTest {
     }
 
     @Test
-    fun hasBody_withHeadMethod() {
+    fun responseIsGzipped_withOtherEncoding_returnsTrue() {
         val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns "HEAD"
-        every { mockResponse.request() } returns mockRequest
+        every { mockResponse.headers() } returns Headers.of("Content-Encoding", "gzip")
 
-        assertFalse(mockResponse.hasBody())
+        assertTrue(mockResponse.isGzipped)
     }
 
     @Test
-    fun hasBody_with404_hasBody() {
+    fun responseIsGzipped_withOtherEncoding_returnsFalse() {
         val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 404
+        every { mockResponse.headers() } returns Headers.of("Content-Encoding", "identity")
 
-        assertTrue(mockResponse.hasBody())
+        assertFalse(mockResponse.isGzipped)
     }
 
     @Test
-    fun hasBody_with204NoContent_doesNotHaveBody() {
-        val mockResponse = mockk<Response>()
+    fun requestIsGzipped_withOtherEncoding_returnsTrue() {
         val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 204
-        every { mockResponse.header("Content-Length") } returns null
-        every { mockResponse.header("Transfer-Encoding") } returns null
+        every { mockRequest.headers() } returns Headers.of("Content-Encoding", "gzip")
 
-        assertFalse(mockResponse.hasBody())
+        assertTrue(mockRequest.isGzipped)
     }
 
     @Test
-    fun hasBody_with304NotModified_doesNotHaveBody() {
-        val mockResponse = mockk<Response>()
+    fun requestIsGzipped_withOtherEncoding_returnsFalse() {
         val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 304
-        every { mockResponse.header("Content-Length") } returns null
-        every { mockResponse.header("Transfer-Encoding") } returns null
+        every { mockRequest.headers() } returns Headers.of("Content-Encoding", "identity")
 
-        assertFalse(mockResponse.hasBody())
-    }
-
-    @Test
-    fun hasBody_withMalformedRequest_doesHaveBody() {
-        val mockResponse = mockk<Response>()
-        val mockRequest = mockk<Request>()
-        every { mockRequest.method() } returns ""
-        every { mockResponse.request() } returns mockRequest
-        every { mockResponse.code() } returns 304
-        every { mockResponse.header("Content-Length") } returns "42"
-
-        assertTrue(mockResponse.hasBody())
+        assertFalse(mockRequest.isGzipped)
     }
 }

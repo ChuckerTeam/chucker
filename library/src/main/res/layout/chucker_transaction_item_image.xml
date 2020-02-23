@@ -3,5 +3,5 @@
     android:id="@+id/binary_data"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:contentDescription="@string/binary_data" />
+    android:layout_margin="@dimen/chucker_doub_grid"
+    android:contentDescription="@string/chucker_binary_data" />

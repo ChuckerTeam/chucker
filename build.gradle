@@ -9,6 +9,7 @@ buildscript {
         materialComponentsVersion = '1.1.0-rc02'
         roomVersion = '2.2.3'
         lifecycleVersion = '2.2.0'
+        androidXCore = '2.1.0'
 
         // Publishing
         androidMavenGradleVersion = '2.1'

@@ -27,7 +27,7 @@ internal class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.chucker_activity_main)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -75,9 +75,9 @@ internal class MainActivity :
         val tabLayout = findViewById<TabLayout>(R.id.tabLayoutHome)
         TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
             currentTab.text = if (currentPosition == HomePageAdapter.NETWORK_SCREEN_POSITION) {
-                getString(R.string.tab_network)
+                getString(R.string.chucker_tab_network)
             } else {
-                getString(R.string.tab_errors)
+                getString(R.string.chucker_tab_errors)
             }
         }.attach()
     }

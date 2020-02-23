@@ -24,7 +24,7 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/doub_grid"
+                android:layout_marginEnd="@dimen/chucker_doub_grid"
                 style="@style/Chucker.TextAppearance.TransactionTitle"
                 tools:text="Title"/>
 
