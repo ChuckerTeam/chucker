@@ -207,9 +207,9 @@ internal class HttpTransaction(
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }
 
-    fun populateUrl(url: HttpUrl): HttpTransaction {
-        val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
-        this.url = formattedUrl.url
+    fun populateUrl(httpUrl: HttpUrl): HttpTransaction {
+        val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
+        url = formattedUrl.url
         host = formattedUrl.host
         path = formattedUrl.pathWithQuery
         scheme = formattedUrl.scheme
@@ -217,15 +217,12 @@ internal class HttpTransaction(
     }
 
     fun getFormattedUrl(encode: Boolean): String {
-        val url = this.url ?: return ""
-        val httpUrl = HttpUrl.get(url)
+        val httpUrl = url?.let(HttpUrl::get) ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).url
     }
 
     fun getFormattedPath(encode: Boolean): String {
-        val url = this.url ?: return ""
-
-        val httpUrl = HttpUrl.parse(url) ?: return ""
+        val httpUrl = url?.let(HttpUrl::get) ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 
