@@ -86,6 +86,8 @@ class HttpBinClient(
             deny().enqueue(cb)
             cache("Mon").enqueue(cb)
             cache(30).enqueue(cb)
+            redirectTo("https://ascii.cl?parameter=%22Click+on+%27URL+Encode%27%21%22").enqueue(cb)
+            redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(cb)
         }
     }
 
