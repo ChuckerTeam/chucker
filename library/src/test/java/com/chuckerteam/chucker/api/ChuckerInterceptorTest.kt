@@ -104,4 +104,32 @@ class ChuckerInterceptorTest {
 
         assertEquals("Hello, world!", responseBody.utf8())
     }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun regularBody_isAvailableForChucker(factory: ClientFactory) {
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        client.newCall(request).execute()
+
+        val transaction = chucker.expectTransaction()
+        assertTrue(transaction.isResponseBodyPlainText)
+        assertEquals("Hello, world!", transaction.responseBody)
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun regularBody_isAvailableForTheEndConsumer(factory: ClientFactory) {
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        val responseBody = client.newCall(request).execute().readByteStringBody()!!
+
+        assertEquals("Hello, world!", responseBody.utf8())
+    }
 }
