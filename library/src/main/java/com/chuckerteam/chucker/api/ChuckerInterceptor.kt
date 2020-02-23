@@ -14,6 +14,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
+import okio.GzipSink
 import okio.GzipSource
 
 /**
@@ -165,6 +166,14 @@ class ChuckerInterceptor @JvmOverloads constructor(
             if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
                 transaction.responseImageData = buffer.clone().readByteArray()
             }
+        }
+
+        val originalSource = if (response.isGzipped) {
+            Buffer().apply {
+                GzipSink(this).use { sink -> sink.write(buffer, buffer.size()) }
+            }
+        } else {
+            buffer
         }
 
         return response.newBuilder()
