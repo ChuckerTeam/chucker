@@ -37,8 +37,7 @@ class ChuckerInterceptorTest {
         abstract fun create(interceptor: Interceptor): OkHttpClient
     }
 
-    @get:Rule
-    val server = MockWebServer()
+    @get:Rule val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
 
     private val chucker = ChuckerInterceptorDelegate()
