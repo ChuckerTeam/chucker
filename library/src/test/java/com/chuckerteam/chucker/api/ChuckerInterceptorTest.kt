@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.EnumSource
 
 class ChuckerInterceptorTest {
     enum class ClientFactory {
-        REGULAR {
+        APPLICATION {
             override fun create(interceptor: Interceptor): OkHttpClient {
                 return OkHttpClient.Builder()
                     .addInterceptor(interceptor)
