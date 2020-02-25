@@ -52,12 +52,12 @@
         android:layout_width="@dimen/chucker_doub_grid"
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
+        android:src="@drawable/chucker_ic_https_primary"
         android:tint="@color/chucker_color_primary"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/chuckerTransactionItemPath"
         app:layout_constraintTop_toTopOf="@+id/chuckerTransactionItemHost"
         app:layout_constraintBottom_toBottomOf="@id/chuckerTransactionItemHost"
-        app:srcCompat="@drawable/chucker_ic_https_primary"
         tools:visibility="visible" />
 
     <TextView
