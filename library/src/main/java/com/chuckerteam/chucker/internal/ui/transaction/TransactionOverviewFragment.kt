@@ -42,18 +42,18 @@ internal class TransactionOverviewFragment : Fragment() {
     ): View? =
         inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
             .also {
-                url = it.findViewById(R.id.url)
-                method = it.findViewById(R.id.method)
-                protocol = it.findViewById(R.id.protocol)
-                status = it.findViewById(R.id.status)
-                response = it.findViewById(R.id.response)
-                ssl = it.findViewById(R.id.ssl)
-                requestTime = it.findViewById(R.id.request_time)
-                responseTime = it.findViewById(R.id.response_time)
-                duration = it.findViewById(R.id.duration)
-                requestSize = it.findViewById(R.id.request_size)
-                responseSize = it.findViewById(R.id.response_size)
-                totalSize = it.findViewById(R.id.total_size)
+                url = it.findViewById(R.id.chuckerTransactionOverviewUrl)
+                method = it.findViewById(R.id.chuckerTransactionOverviewMethod)
+                protocol = it.findViewById(R.id.chuckerTransactionOverviewProtocol)
+                status = it.findViewById(R.id.chuckerTransactionOverviewStatus)
+                response = it.findViewById(R.id.chuckerTransactionOverviewResponse)
+                ssl = it.findViewById(R.id.chuckerTransactionOverviewSsl)
+                requestTime = it.findViewById(R.id.chuckerTransactionOverviewRequestTime)
+                responseTime = it.findViewById(R.id.chuckerTransactionOverviewResponseTime)
+                duration = it.findViewById(R.id.chuckerTransactionOverviewDuration)
+                requestSize = it.findViewById(R.id.chuckerTransactionOverviewRequestSize)
+                responseSize = it.findViewById(R.id.chuckerTransactionOverviewResponseSize)
+                totalSize = it.findViewById(R.id.chuckerTransactionOverviewTotalSize)
             }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

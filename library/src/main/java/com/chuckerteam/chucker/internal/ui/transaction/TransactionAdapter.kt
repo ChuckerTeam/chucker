@@ -46,13 +46,13 @@ internal class TransactionAdapter internal constructor(
     }
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val code: TextView = view.findViewById(R.id.code)
-        private val path: TextView = view.findViewById(R.id.path)
-        private val host: TextView = view.findViewById(R.id.host)
-        private val start: TextView = view.findViewById(R.id.time_start)
-        private val duration: TextView = view.findViewById(R.id.duration)
-        private val size: TextView = view.findViewById(R.id.size)
-        private val ssl: ImageView = view.findViewById(R.id.ssl)
+        private val code: TextView = view.findViewById(R.id.chuckerTransactionItemCode)
+        private val path: TextView = view.findViewById(R.id.chuckerTransactionItemPath)
+        private val host: TextView = view.findViewById(R.id.chuckerTransactionItemHost)
+        private val start: TextView = view.findViewById(R.id.chuckerTransactionItemTimeStart)
+        private val duration: TextView = view.findViewById(R.id.chuckerTransactionItemDuration)
+        private val size: TextView = view.findViewById(R.id.chuckerTransactionItemSize)
+        private val ssl: ImageView = view.findViewById(R.id.chuckerTransactionItemSsl)
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {

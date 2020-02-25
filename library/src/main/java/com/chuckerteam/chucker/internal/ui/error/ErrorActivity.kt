@@ -30,15 +30,15 @@ internal class ErrorActivity : BaseChuckerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chucker_activity_error)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(findViewById(R.id.chuckerErrorToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = findViewById(R.id.toolbar_title)
-        tag = findViewById(R.id.tag)
-        clazz = findViewById(R.id.clazz)
-        message = findViewById(R.id.message)
-        date = findViewById(R.id.date)
-        stacktrace = findViewById(R.id.stacktrace)
+        title = findViewById(R.id.chuckerErrorToolbarTitle)
+        tag = findViewById(R.id.chuckerItemErrorTag)
+        clazz = findViewById(R.id.chuckerItemErrorClazz)
+        message = findViewById(R.id.chuckerItemErrorMessage)
+        date = findViewById(R.id.chuckerItemErrorDate)
+        stacktrace = findViewById(R.id.chuckerErrorStacktrace)
         date.visibility = View.GONE
 
         throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)

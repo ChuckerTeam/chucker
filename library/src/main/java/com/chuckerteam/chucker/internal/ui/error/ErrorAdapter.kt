@@ -40,10 +40,10 @@ internal class ErrorAdapter(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val tagView: TextView = itemView.findViewById(R.id.tag)
-        private val clazzView: TextView = itemView.findViewById(R.id.clazz)
-        private val messageView: TextView = itemView.findViewById(R.id.message)
-        private val dateView: TextView = itemView.findViewById(R.id.date)
+        private val tagView: TextView = itemView.findViewById(R.id.chuckerItemErrorTag)
+        private val clazzView: TextView = itemView.findViewById(R.id.chuckerItemErrorClazz)
+        private val messageView: TextView = itemView.findViewById(R.id.chuckerItemErrorMessage)
+        private val dateView: TextView = itemView.findViewById(R.id.chuckerItemErrorDate)
         private var throwableId: Long? = null
 
         init {

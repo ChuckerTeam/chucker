@@ -2,36 +2,33 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="ltr"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/chuckerTransactionToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/Chucker.Theme" >
 
             <TextView
-                android:id="@+id/toolbar_title"
+                android:id="@+id/chuckerTransactionToolbarTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/chucker_doub_grid"
                 style="@style/Chucker.TextAppearance.TransactionTitle"
                 tools:text="Title"/>
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
+            android:id="@+id/chuckerTransactionTabLayout"
             style="@style/Widget.MaterialComponents.TabLayout.PrimarySurface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -39,7 +36,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/chuckerTransactionViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

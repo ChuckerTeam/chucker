@@ -35,10 +35,10 @@ internal class ErrorListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.chucker_fragment_error_list, container, false).apply {
-            tutorialView = findViewById(R.id.tutorial)
-            findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
+            tutorialView = findViewById(R.id.chuckerErrorsTutorialView)
+            findViewById<TextView>(R.id.chuckerErrorsTutorialLink).movementMethod = LinkMovementMethod.getInstance()
 
-            val recyclerView = findViewById<RecyclerView>(R.id.list)
+            val recyclerView = findViewById<RecyclerView>(R.id.chuckerErrorsRecyclerView)
             recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
             adapter = ErrorAdapter(listener)
             recyclerView.adapter = adapter

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Chucker.Theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/chucker_color_primary</item>
-        <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
-        <item name="colorSecondary">@color/chucker_color_secondary</item>
-        <item name="android:colorBackground">@color/chucker_color_background</item>
-        <item name="colorSurface">@color/chucker_color_surface</item>
-        <item name="colorError">@color/chucker_status_error</item>
-        <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
-        <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
-        <item name="colorOnBackground">@color/chucker_color_on_background</item>
-        <item name="colorOnSurface">@color/chucker_color_on_surface</item>
-        <item name="colorOnError">@color/chucker_color_on_error</item>
+    <style name="Chucker.BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+      <item name="colorPrimary">@color/chucker_color_primary</item>
+      <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
+      <item name="colorSecondary">@color/chucker_color_secondary</item>
+      <item name="android:colorBackground">@color/chucker_color_background</item>
+      <item name="colorSurface">@color/chucker_color_surface</item>
+      <item name="colorError">@color/chucker_status_error</item>
+      <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
+      <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
+      <item name="colorOnBackground">@color/chucker_color_on_background</item>
+      <item name="colorOnSurface">@color/chucker_color_on_surface</item>
+      <item name="colorOnError">@color/chucker_color_on_error</item>
     </style>
+
+    <style name="Chucker.Theme" parent="Chucker.BaseTheme"/>
 
     <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">
         <item name="android:textStyle">bold</item>
@@ -25,13 +27,11 @@
 
     <style name="Chucker.TextAppearance.Value" parent="android:TextAppearance.Small">
         <item name="android:paddingLeft">16dp</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:textIsSelectable">true</item>
     </style>
 
     <style name="Chucker.TextAppearance.TransactionTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:gravity">top</item>
-        <item name="android:textSize" tools:ignore="SpUsage">16dp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:maxLines">2</item>
     </style>
 </resources>
