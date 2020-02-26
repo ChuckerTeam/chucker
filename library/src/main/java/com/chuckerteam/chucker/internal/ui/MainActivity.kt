@@ -2,11 +2,9 @@ package com.chuckerteam.chucker.internal.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
-import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
+import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
 import com.chuckerteam.chucker.internal.ui.error.ErrorActivity
 import com.chuckerteam.chucker.internal.ui.error.ErrorAdapter
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
@@ -19,37 +17,36 @@ internal class MainActivity :
     ErrorAdapter.ErrorClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var viewPager: ViewPager
+    private lateinit var binding: ChuckerActivityMainBinding
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_main)
-
-        val toolbar = findViewById<Toolbar>(R.id.chuckerTransactionToolbar)
-        setSupportActionBar(toolbar)
-        toolbar.subtitle = applicationName
-
+        binding = ChuckerActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        viewPager = findViewById(R.id.chuckerMainViewPager)
-        viewPager.adapter = HomePageAdapter(this, supportFragmentManager)
-
-        val tabLayout = findViewById<TabLayout>(R.id.chuckerMainTabLayout)
-        tabLayout.setupWithViewPager(viewPager)
-
-        viewPager.addOnPageChangeListener(object : TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == 0) {
-                    Chucker.dismissTransactionsNotification(this@MainActivity)
-                } else {
-                    Chucker.dismissErrorsNotification(this@MainActivity)
+        with(binding) {
+            setContentView(root)
+            setSupportActionBar(chuckerTransactionToolbar)
+            chuckerTransactionToolbar.subtitle = applicationName
+            chuckerMainViewPager.adapter = HomePageAdapter(this@MainActivity, supportFragmentManager)
+            chuckerMainTabLayout.setupWithViewPager(chuckerMainViewPager)
+            chuckerMainViewPager.addOnPageChangeListener(
+                object : TabLayout.TabLayoutOnPageChangeListener(chuckerMainTabLayout) {
+                    override fun onPageSelected(position: Int) {
+                        super.onPageSelected(position)
+                        if (position == 0) {
+                            Chucker.dismissTransactionsNotification(this@MainActivity)
+                        } else {
+                            Chucker.dismissErrorsNotification(this@MainActivity)
+                        }
+                    }
                 }
-            }
-        })
+            )
+        }
+
         consumeIntent(intent)
     }
 
@@ -64,10 +61,10 @@ internal class MainActivity :
     private fun consumeIntent(intent: Intent) {
         // Get the screen to show, by default => HTTP
         val screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP)
-        if (screenToShow == Chucker.SCREEN_HTTP) {
-            viewPager.currentItem = HomePageAdapter.SCREEN_HTTP_INDEX
+        binding.chuckerMainViewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
+            HomePageAdapter.SCREEN_HTTP_INDEX
         } else {
-            viewPager.currentItem = HomePageAdapter.SCREEN_ERROR_INDEX
+            HomePageAdapter.SCREEN_ERROR_INDEX
         }
     }
 

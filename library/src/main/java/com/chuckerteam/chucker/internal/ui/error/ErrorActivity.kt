@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerActivityErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
@@ -17,31 +17,23 @@ import java.text.DateFormat
 
 internal class ErrorActivity : BaseChuckerActivity() {
 
+    private lateinit var binding: ChuckerActivityErrorBinding
+
     private var throwableId: Long = 0
     private var throwable: RecordedThrowable? = null
 
-    private lateinit var title: TextView
-    private lateinit var tag: TextView
-    private lateinit var clazz: TextView
-    private lateinit var message: TextView
-    private lateinit var date: TextView
-    private lateinit var stacktrace: TextView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_error)
-        setSupportActionBar(findViewById(R.id.chuckerErrorToolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = findViewById(R.id.chuckerErrorToolbarTitle)
-        tag = findViewById(R.id.chuckerItemErrorTag)
-        clazz = findViewById(R.id.chuckerItemErrorClazz)
-        message = findViewById(R.id.chuckerItemErrorMessage)
-        date = findViewById(R.id.chuckerItemErrorDate)
-        stacktrace = findViewById(R.id.chuckerErrorStacktrace)
-        date.visibility = View.GONE
-
+        binding = ChuckerActivityErrorBinding.inflate(layoutInflater)
         throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)
+
+        with(binding) {
+            setContentView(root)
+            setSupportActionBar(chuckerErrorToolbar)
+            chuckerErrorActivityItem.chuckerItemErrorDate.visibility = View.GONE
+        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onResume() {
@@ -94,11 +86,13 @@ internal class ErrorActivity : BaseChuckerActivity() {
     }
 
     private fun populateUI(throwable: RecordedThrowable) {
-        title.text = throwable.formattedDate
-        tag.text = throwable.tag
-        clazz.text = throwable.clazz
-        message.text = throwable.message
-        stacktrace.text = throwable.content
+        binding.apply {
+            chuckerErrorToolbarTitle.text = throwable.formattedDate
+            chuckerErrorActivityItem.chuckerItemErrorTag.text = throwable.tag
+            chuckerErrorActivityItem.chuckerItemErrorClazz.text = throwable.clazz
+            chuckerErrorActivityItem.chuckerItemErrorMessage.text = throwable.message
+            chuckerErrorStacktrace.text = throwable.content
+        }
     }
 
     companion object {

@@ -27,7 +27,9 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <include layout="@layout/chucker_list_item_error" />
+        <include
+          android:id="@+id/chuckerErrorActivityItem"
+          layout="@layout/chucker_list_item_error" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
