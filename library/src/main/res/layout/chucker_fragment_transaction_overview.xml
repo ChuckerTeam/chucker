@@ -136,6 +136,7 @@
       tools:text="Yes" />
 
     <TextView
+      android:id="@+id/chuckerTransactionOverviewTlsVersion"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -145,7 +146,7 @@
       app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewSsl" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewTlsVersion"
+      android:id="@+id/chuckerTransactionOverviewTlsVersionValue"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -154,24 +155,45 @@
       app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewSsl"
       tools:text="TLS 1.2" />
 
+    <androidx.constraintlayout.widget.Group
+      android:id="@+id/chuckerTransactionOverviewTlsGroup"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:visibility="gone"
+      app:constraint_referenced_ids="chuckerTransactionOverviewTlsVersion,chuckerTransactionOverviewTlsVersionValue"
+      tools:visibility="visible" />
+
     <TextView
+      android:id="@+id/chuckerTransactionOverviewTlsChipherSuite"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_tls_cipher_suite"
+      android:visibility="gone"
       app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsVersion" />
+      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsVersion"
+      tools:visibility="visible" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewTlsChipherSuite"
+      android:id="@+id/chuckerTransactionOverviewTlsChipherSuiteValue"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
+      android:visibility="gone"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
       app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsVersion"
-      tools:text="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA" />
+      tools:text="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+      tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+      android:id="@+id/chuckerTransactionOverviewCipherSuiteGroup"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:visibility="gone"
+      app:constraint_referenced_ids="chuckerTransactionOverviewTlsChipherSuiteValue,chuckerTransactionOverviewTlsChipherSuite"
+      tools:visibility="visible" />
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
@@ -181,7 +203,7 @@
       android:text="@string/chucker_request_time"
       app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsChipherSuite" />
+      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsChipherSuiteValue" />
 
     <TextView
       android:id="@+id/chuckerTransactionOverviewRequestTime"
@@ -191,7 +213,7 @@
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsChipherSuite"
+      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewTlsChipherSuiteValue"
       tools:text="05/02/17 11:52:49" />
 
     <TextView
