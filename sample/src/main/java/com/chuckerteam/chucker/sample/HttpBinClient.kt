@@ -37,7 +37,7 @@ class HttpBinClient(
         OkHttpClient.Builder()
             // Add a ChuckerInterceptor instance to your OkHttp client
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .addInterceptor(chuckerInterceptor)
+            .addNetworkInterceptor(chuckerInterceptor)
             .build()
 
     private val api: HttpBinApi by lazy {

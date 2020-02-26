@@ -4,6 +4,7 @@ import com.chuckerteam.chucker.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.readByteStringBody
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -106,6 +107,31 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
+    fun gzippedBody_withNoContent_isTransparentForChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(204))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        client.newCall(request).execute()
+
+        val transaction = chucker.expectTransaction()
+        assertNull(transaction.responseBody)
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun gzippedBody_withNoContent_isTransparentForEndConsumer(factory: ClientFactory) {
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(204))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        val responseBody = client.newCall(request).execute().readByteStringBody()
+
+        assertNull(responseBody)
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
     fun regularBody_isAvailableForChucker(factory: ClientFactory) {
         val body = Buffer().apply { writeUtf8("Hello, world!") }
         server.enqueue(MockResponse().setBody(body))
@@ -130,5 +156,31 @@ class ChuckerInterceptorTest {
         val responseBody = client.newCall(request).execute().readByteStringBody()!!
 
         assertEquals("Hello, world!", responseBody.utf8())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun regularBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse().setResponseCode(204))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        client.newCall(request).execute()
+
+        val transaction = chucker.expectTransaction()
+        assertTrue(transaction.isResponseBodyPlainText)
+        assertNull(transaction.responseBody)
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun regularBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
+        server.enqueue(MockResponse().setResponseCode(204))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chucker)
+        val responseBody = client.newCall(request).execute().readByteStringBody()
+
+        assertEquals(ByteString.EMPTY, responseBody)
     }
 }

@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.contentLenght
 import com.chuckerteam.chucker.internal.support.contentType
+import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.IOException
 import java.nio.charset.Charset
@@ -136,11 +137,12 @@ class ChuckerInterceptor @JvmOverloads constructor(
      * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processResponseBody(response: Response, transaction: HttpTransaction) {
+        if (!response.hasBody()) return
         val responseBody = response.body() ?: return
+        if (responseBody.contentLength() == 0L) return
 
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8
-        val contentLength = responseBody.contentLength()
 
         val source = responseBody.source()
         source.request(Long.MAX_VALUE)
@@ -153,9 +155,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
         if (io.isPlaintext(buffer)) {
             transaction.isResponseBodyPlainText = true
-            if (contentLength != 0L) {
-                transaction.responseBody = buffer.clone().readString(charset)
-            }
+            transaction.responseBody = buffer.clone().readString(charset)
         } else {
             transaction.isResponseBodyPlainText = false
 

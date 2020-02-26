@@ -2,6 +2,7 @@ package com.chuckerteam.chucker
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.chuckerteam.chucker.internal.support.hasBody
 import java.io.File
 import okhttp3.Response
 import okio.Buffer
@@ -14,7 +15,7 @@ fun getResourceFile(file: String): Buffer {
     }
 }
 
-fun Response.readByteStringBody(): ByteString? = body()?.source()?.readByteString()
+fun Response.readByteStringBody(): ByteString? = if (hasBody()) body()?.source()?.readByteString() else null
 
 fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()
