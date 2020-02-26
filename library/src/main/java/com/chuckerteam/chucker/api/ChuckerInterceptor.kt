@@ -14,7 +14,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
-import okio.GzipSink
 import okio.GzipSource
 
 /**
@@ -61,10 +60,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             throw e
         }
 
-        val processedResponse = processResponse(response, transaction)
+        processResponse(response, transaction)
         collector.onResponseReceived(transaction)
 
-        return processedResponse
+        return response
     }
 
     /**
@@ -107,7 +106,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     /**
      * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponse(response: Response, transaction: HttpTransaction): Response {
+    private fun processResponse(response: Response, transaction: HttpTransaction) {
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         transaction.apply {
@@ -128,29 +127,29 @@ class ChuckerInterceptor @JvmOverloads constructor(
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
 
-        return if (responseEncodingIsSupported) {
+        if (responseEncodingIsSupported) {
             processResponseBody(response, transaction)
-        } else {
-            response
         }
     }
 
     /**
      * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponseBody(response: Response, transaction: HttpTransaction): Response {
-        val responseBody = response.body() ?: return response
+    private fun processResponseBody(response: Response, transaction: HttpTransaction) {
+        val responseBody = response.body() ?: return
 
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8
         val contentLength = responseBody.contentLength()
 
-        val responseSource = if (response.isGzipped) {
-            GzipSource(responseBody.source())
+        val source = responseBody.source()
+        source.request(Long.MAX_VALUE)
+        val buffer = if (response.isGzipped) {
+            val clonedSource = source.buffer().clone()
+            Buffer().apply { writeAll(GzipSource(clonedSource)) }
         } else {
-            responseBody.source()
+            source.buffer()
         }
-        val buffer = Buffer().apply { responseSource.use { writeAll(it) } }
 
         if (io.isPlaintext(buffer)) {
             transaction.isResponseBodyPlainText = true
@@ -167,18 +166,6 @@ class ChuckerInterceptor @JvmOverloads constructor(
                 transaction.responseImageData = buffer.clone().readByteArray()
             }
         }
-
-        val originalSource = if (response.isGzipped) {
-            Buffer().apply {
-                GzipSink(this).use { sink -> sink.write(buffer, buffer.size()) }
-            }
-        } else {
-            buffer
-        }
-
-        return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, originalSource))
-            .build()
     }
 
     /** Overrides all headers from [headersToRedact] with `**` */
