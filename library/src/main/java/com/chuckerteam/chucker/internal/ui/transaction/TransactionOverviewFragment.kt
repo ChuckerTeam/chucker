@@ -21,6 +21,8 @@ internal class TransactionOverviewFragment : Fragment() {
     private lateinit var status: TextView
     private lateinit var response: TextView
     private lateinit var ssl: TextView
+    private lateinit var tlsVersion: TextView
+    private lateinit var cipherSuiteVersion: TextView
     private lateinit var requestTime: TextView
     private lateinit var responseTime: TextView
     private lateinit var duration: TextView
@@ -48,6 +50,8 @@ internal class TransactionOverviewFragment : Fragment() {
                 status = it.findViewById(R.id.chuckerTransactionOverviewStatus)
                 response = it.findViewById(R.id.chuckerTransactionOverviewResponse)
                 ssl = it.findViewById(R.id.chuckerTransactionOverviewSsl)
+                tlsVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsVersion)
+                cipherSuiteVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsChipherSuite)
                 requestTime = it.findViewById(R.id.chuckerTransactionOverviewRequestTime)
                 responseTime = it.findViewById(R.id.chuckerTransactionOverviewResponseTime)
                 duration = it.findViewById(R.id.chuckerTransactionOverviewDuration)
