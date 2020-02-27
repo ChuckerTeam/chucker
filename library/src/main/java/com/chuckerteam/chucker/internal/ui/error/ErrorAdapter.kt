@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerListItemErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import java.text.DateFormat
 
@@ -16,10 +17,8 @@ internal class ErrorAdapter(
     private var data: List<RecordedThrowableTuple> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ErrorViewHolder {
-        val view =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.chucker_list_item_error, parent, false)
-        return ErrorViewHolder(view)
+        val viewBinding = ChuckerListItemErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ErrorViewHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: ErrorViewHolder, position: Int) {
@@ -37,25 +36,22 @@ internal class ErrorAdapter(
     }
 
     inner class ErrorViewHolder(
-        itemView: View
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private val itemBinding: ChuckerListItemErrorBinding
+    ) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener {
 
-        private val tagView: TextView = itemView.findViewById(R.id.chuckerItemErrorTag)
-        private val clazzView: TextView = itemView.findViewById(R.id.chuckerItemErrorClazz)
-        private val messageView: TextView = itemView.findViewById(R.id.chuckerItemErrorMessage)
-        private val dateView: TextView = itemView.findViewById(R.id.chuckerItemErrorDate)
         private var throwableId: Long? = null
 
         init {
             itemView.setOnClickListener(this)
         }
 
-        internal fun bind(throwable: RecordedThrowableTuple) = with(throwable) {
-            throwableId = id
-            tagView.text = tag
-            clazzView.text = clazz
-            messageView.text = message
-            dateView.text = formattedDate
+        internal fun bind(throwable: RecordedThrowableTuple) = with(itemBinding) {
+            throwableId = throwable.id
+
+            chuckerItemErrorTag.text = throwable.tag
+            chuckerItemErrorClazz.text = throwable.clazz
+            chuckerItemErrorMessage.text = throwable.message
+            chuckerItemErrorDate.text = throwable.formattedDate
         }
 
         override fun onClick(v: View) {
@@ -64,12 +60,6 @@ internal class ErrorAdapter(
             }
         }
     }
-
-    private val RecordedThrowableTuple.formattedDate: String
-        get() {
-            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
-                .format(this.date)
-        }
 
     interface ErrorClickListListener {
         fun onErrorClick(throwableId: Long, position: Int)

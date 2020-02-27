@@ -13,7 +13,6 @@ import com.chuckerteam.chucker.databinding.ChuckerActivityErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import java.text.DateFormat
 
 internal class ErrorActivity : BaseChuckerActivity() {
 
@@ -105,10 +104,4 @@ internal class ErrorActivity : BaseChuckerActivity() {
             context.startActivity(intent)
         }
     }
-
-    private val RecordedThrowable.formattedDate: String
-        get() {
-            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
-                .format(this.date)
-        }
 }
