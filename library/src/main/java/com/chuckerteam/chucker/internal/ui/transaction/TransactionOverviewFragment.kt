@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionOverviewBinding
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.combineLatest
 
 internal class TransactionOverviewFragment : Fragment() {
@@ -51,23 +52,27 @@ internal class TransactionOverviewFragment : Fragment() {
             .observe(
                 viewLifecycleOwner,
                 Observer { (transaction, encodeUrl) ->
-                    with(overviewBinding) {
-                        chuckerTransactionOverviewUrl.text = transaction?.getFormattedUrl(encodeUrl)
-                        chuckerTransactionOverviewMethod.text = transaction?.method
-                        chuckerTransactionOverviewProtocol.text = transaction?.protocol
-                        chuckerTransactionOverviewStatus.text = transaction?.status.toString()
-                        chuckerTransactionOverviewResponse.text = transaction?.responseSummaryText
-                        chuckerTransactionOverviewSsl.setText(
-                            if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no
-                        )
-                        chuckerTransactionOverviewRequestTime.text = transaction?.requestDateString
-                        chuckerTransactionOverviewResponseTime.text = transaction?.responseDateString
-                        chuckerTransactionOverviewDuration.text = transaction?.durationString
-                        chuckerTransactionOverviewRequestSize.text = transaction?.requestSizeString
-                        chuckerTransactionOverviewResponseSize.text = transaction?.responseSizeString
-                        chuckerTransactionOverviewTotalSize.text = transaction?.totalSizeString
-                    }
+                    populateUI(transaction, encodeUrl)
                 }
             )
+    }
+
+    private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
+        with(overviewBinding) {
+            chuckerTransactionOverviewUrl.text = transaction?.getFormattedUrl(encodeUrl)
+            chuckerTransactionOverviewMethod.text = transaction?.method
+            chuckerTransactionOverviewProtocol.text = transaction?.protocol
+            chuckerTransactionOverviewStatus.text = transaction?.status.toString()
+            chuckerTransactionOverviewResponse.text = transaction?.responseSummaryText
+            chuckerTransactionOverviewSsl.setText(
+                if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no
+            )
+            chuckerTransactionOverviewRequestTime.text = transaction?.requestDateString
+            chuckerTransactionOverviewResponseTime.text = transaction?.responseDateString
+            chuckerTransactionOverviewDuration.text = transaction?.durationString
+            chuckerTransactionOverviewRequestSize.text = transaction?.requestSizeString
+            chuckerTransactionOverviewResponseSize.text = transaction?.responseSizeString
+            chuckerTransactionOverviewTotalSize.text = transaction?.totalSizeString
+        }
     }
 }
