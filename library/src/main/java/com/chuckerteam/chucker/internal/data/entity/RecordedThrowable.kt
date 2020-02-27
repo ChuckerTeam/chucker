@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
-import java.text.DateFormat
 
 /**
  * Represent a Throwable that was fired from an App.
@@ -28,10 +27,4 @@ internal data class RecordedThrowable(
         this.message = throwable.message
         this.content = FormatUtils.formatThrowable(throwable)
     }
-
-    val formattedDate: String
-        get() {
-            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
-                .format(this.date)
-        }
 }

@@ -13,6 +13,7 @@ import com.chuckerteam.chucker.databinding.ChuckerActivityErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import java.text.DateFormat
 
 internal class ErrorActivity : BaseChuckerActivity() {
 
@@ -93,6 +94,12 @@ internal class ErrorActivity : BaseChuckerActivity() {
             chuckerErrorStacktrace.text = throwable.content
         }
     }
+
+    private val RecordedThrowable.formattedDate: String
+        get() {
+            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
+                .format(this.date)
+        }
 
     companion object {
         private const val MIME_TYPE = "text/plain"

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.databinding.ChuckerListItemErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
+import java.text.DateFormat
 
 internal class ErrorAdapter(
     val listener: ErrorClickListListener
@@ -48,7 +49,8 @@ internal class ErrorAdapter(
             chuckerItemErrorTag.text = throwable.tag
             chuckerItemErrorClazz.text = throwable.clazz
             chuckerItemErrorMessage.text = throwable.message
-            chuckerItemErrorDate.text = throwable.formattedDate
+            chuckerItemErrorDate.text = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
+                .format(throwable.date)
         }
 
         override fun onClick(v: View) {

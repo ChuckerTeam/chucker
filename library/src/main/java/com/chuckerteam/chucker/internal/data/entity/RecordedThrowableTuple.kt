@@ -1,7 +1,6 @@
 package com.chuckerteam.chucker.internal.data.entity
 
 import androidx.room.ColumnInfo
-import java.text.DateFormat
 
 /**
  * A subset of [RecordedThrowable] to perform faster Read operations on the Repository.
@@ -13,10 +12,4 @@ internal data class RecordedThrowableTuple(
     @ColumnInfo(name = "date") var date: Long?,
     @ColumnInfo(name = "clazz") var clazz: String?,
     @ColumnInfo(name = "message") var message: String?
-) {
-    val formattedDate: String
-        get() {
-            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
-                .format(this.date)
-        }
-}
+)
