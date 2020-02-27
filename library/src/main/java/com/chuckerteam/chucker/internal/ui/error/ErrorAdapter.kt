@@ -3,12 +3,9 @@ package com.chuckerteam.chucker.internal.ui.error
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemErrorBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
-import java.text.DateFormat
 
 internal class ErrorAdapter(
     val listener: ErrorClickListListener
