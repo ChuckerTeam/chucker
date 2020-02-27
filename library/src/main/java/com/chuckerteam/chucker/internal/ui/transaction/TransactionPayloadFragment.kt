@@ -15,7 +15,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
@@ -24,8 +23,8 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -36,8 +35,7 @@ private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
-    private lateinit var progressLoading: ProgressBar
-    private lateinit var transactionContentList: RecyclerView
+    private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -59,12 +57,10 @@ internal class TransactionPayloadFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.chucker_fragment_transaction_payload, container, false).apply {
-            transactionContentList = findViewById(R.id.chuckerTransactionResponseRecyclerView)
-            transactionContentList.isNestedScrollingEnabled = false
-            progressLoading = findViewById(R.id.chuckerTransactionLoadingProgress)
-        }
+    ): View? {
+        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(inflater, container, false)
+        return payloadBinding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -169,7 +165,7 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
-        val adapter = (transactionContentList.adapter as TransactionBodyAdapter)
+        val adapter = (payloadBinding.chuckerTransactionResponseRecyclerView.adapter as TransactionBodyAdapter)
         if (newText.isNotBlank()) {
             adapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
         } else {
@@ -185,10 +181,10 @@ internal class TransactionPayloadFragment :
         AsyncTask<Pair<Int, HttpTransaction>, Unit, List<TransactionPayloadItem>>() {
 
         override fun onPreExecute() {
-            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.chuckerTransactionLoadingProgress)
-            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.chuckerTransactionResponseRecyclerView)
-            progressBar?.visibility = View.VISIBLE
-            recyclerView?.visibility = View.INVISIBLE
+            fragment.payloadBinding.apply {
+                chuckerTransactionLoadingProgress.visibility = View.VISIBLE
+                chuckerTransactionResponseRecyclerView.visibility = View.INVISIBLE
+            }
         }
 
         @Suppress("ComplexMethod")
@@ -236,11 +232,11 @@ internal class TransactionPayloadFragment :
         }
 
         override fun onPostExecute(result: List<TransactionPayloadItem>) {
-            val progressBar: ProgressBar? = fragment.view?.findViewById(R.id.chuckerTransactionLoadingProgress)
-            val recyclerView: RecyclerView? = fragment.view?.findViewById(R.id.chuckerTransactionResponseRecyclerView)
-            progressBar?.visibility = View.INVISIBLE
-            recyclerView?.visibility = View.VISIBLE
-            recyclerView?.adapter = TransactionBodyAdapter(result)
+            fragment.payloadBinding.apply {
+                chuckerTransactionLoadingProgress.visibility = View.INVISIBLE
+                chuckerTransactionResponseRecyclerView.visibility = View.VISIBLE
+                chuckerTransactionResponseRecyclerView.adapter = TransactionBodyAdapter(result)
+            }
         }
     }
 
