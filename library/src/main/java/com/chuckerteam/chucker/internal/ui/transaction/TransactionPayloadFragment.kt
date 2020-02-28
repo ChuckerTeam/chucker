@@ -170,7 +170,7 @@ internal class TransactionPayloadFragment :
 
     override fun onQueryTextChange(newText: String): Boolean {
         val adapter = (transactionContentList.adapter as TransactionBodyAdapter)
-        if (newText.isNotBlank()) {
+        if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
             adapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
         } else {
             adapter.resetHighlight()
@@ -241,6 +241,7 @@ internal class TransactionPayloadFragment :
             progressBar?.visibility = View.INVISIBLE
             recyclerView?.visibility = View.VISIBLE
             recyclerView?.adapter = TransactionBodyAdapter(result)
+            fragment.requireActivity().invalidateOptionsMenu()
         }
     }
 
@@ -297,6 +298,8 @@ internal class TransactionPayloadFragment :
     companion object {
         private const val ARG_TYPE = "type"
         private const val TRANSACTION_EXCEPTION = "Transaction not ready"
+
+        private const val NUMBER_OF_IGNORED_SYMBOLS = 1
 
         const val TYPE_REQUEST = 0
         const val TYPE_RESPONSE = 1
