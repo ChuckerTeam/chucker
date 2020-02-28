@@ -241,6 +241,7 @@ internal class TransactionPayloadFragment :
             progressBar?.visibility = View.INVISIBLE
             recyclerView?.visibility = View.VISIBLE
             recyclerView?.adapter = TransactionBodyAdapter(result)
+            fragment.requireActivity().invalidateOptionsMenu()
         }
     }
 
