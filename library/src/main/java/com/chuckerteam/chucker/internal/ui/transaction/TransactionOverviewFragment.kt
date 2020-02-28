@@ -64,9 +64,15 @@ internal class TransactionOverviewFragment : Fragment() {
             protocol.text = transaction?.protocol
             status.text = transaction?.status.toString()
             response.text = transaction?.responseSummaryText
-            ssl.setText(
-                if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no
-            )
+            ssl.setText(if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no)
+            if (transaction?.responseTlsVersion != null) {
+                tlsVersionValue.text = transaction.responseTlsVersion
+                tlsGroup.visibility = View.VISIBLE
+            }
+            if (transaction?.responseCipherSuite != null) {
+                cipherSuiteValue.text = transaction.responseCipherSuite
+                cipherSuiteGroup.visibility = View.VISIBLE
+            }
             requestTime.text = transaction?.requestDateString
             responseTime.text = transaction?.responseDateString
             duration.text = transaction?.durationString
