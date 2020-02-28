@@ -123,6 +123,11 @@ class ChuckerInterceptor @JvmOverloads constructor(
             responseCode = response.code()
             responseMessage = response.message()
 
+            response.handshake()?.let { handshake ->
+                responseTlsVersion = handshake.tlsVersion().javaName()
+                responseCipherSuite = handshake.cipherSuite().javaName()
+            }
+
             responseContentType = response.contentType
             responseContentLength = response.contentLenght
 

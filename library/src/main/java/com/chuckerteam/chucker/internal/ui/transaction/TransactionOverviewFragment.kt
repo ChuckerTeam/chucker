@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,10 @@ internal class TransactionOverviewFragment : Fragment() {
     private lateinit var status: TextView
     private lateinit var response: TextView
     private lateinit var ssl: TextView
+    private lateinit var tlsVersionGroup: Group
+    private lateinit var tlsVersion: TextView
+    private lateinit var cipherSuiteGroup: Group
+    private lateinit var cipherSuiteVersion: TextView
     private lateinit var requestTime: TextView
     private lateinit var responseTime: TextView
     private lateinit var duration: TextView
@@ -48,6 +53,10 @@ internal class TransactionOverviewFragment : Fragment() {
                 status = it.findViewById(R.id.chuckerTransactionOverviewStatus)
                 response = it.findViewById(R.id.chuckerTransactionOverviewResponse)
                 ssl = it.findViewById(R.id.chuckerTransactionOverviewSsl)
+                tlsVersionGroup = it.findViewById(R.id.chuckerTransactionOverviewTlsGroup)
+                tlsVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsVersionValue)
+                cipherSuiteGroup = it.findViewById(R.id.chuckerTransactionOverviewCipherSuiteGroup)
+                cipherSuiteVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsChipherSuiteValue)
                 requestTime = it.findViewById(R.id.chuckerTransactionOverviewRequestTime)
                 responseTime = it.findViewById(R.id.chuckerTransactionOverviewResponseTime)
                 duration = it.findViewById(R.id.chuckerTransactionOverviewDuration)
@@ -79,7 +88,16 @@ internal class TransactionOverviewFragment : Fragment() {
                     protocol.text = transaction?.protocol
                     status.text = transaction?.status?.toString()
                     response.text = transaction?.responseSummaryText
-                    ssl.setText(if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no)
+                    if (transaction?.isSsl == true) {
+                        ssl.setText(R.string.chucker_yes)
+                        tlsVersionGroup.visibility = View.VISIBLE
+                        tlsVersion.text = transaction.responseTlsVersion
+
+                        cipherSuiteGroup.visibility = View.VISIBLE
+                        cipherSuiteVersion.text = transaction.responseCipherSuite
+                    } else {
+                        ssl.setText(R.string.chucker_no)
+                    }
                     requestTime.text = transaction?.requestDateString
                     responseTime.text = transaction?.responseDateString
                     duration.text = transaction?.durationString

@@ -33,6 +33,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "host") var host: String?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
+    @ColumnInfo(name = "responseTlsVersion") var responseTlsVersion: String?,
+    @ColumnInfo(name = "responseCipherSuite") var responseCipherSuite: String?,
     @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
@@ -60,6 +62,8 @@ internal class HttpTransaction(
         host = null,
         path = null,
         scheme = null,
+        responseTlsVersion = null,
+        responseCipherSuite = null,
         requestContentLength = null,
         requestContentType = null,
         requestHeaders = null,
@@ -243,6 +247,8 @@ internal class HttpTransaction(
             (host == other.host) &&
             (path == other.path) &&
             (scheme == other.scheme) &&
+            (responseTlsVersion == other.responseTlsVersion) &&
+            (responseCipherSuite == other.responseCipherSuite) &&
             (requestContentLength == other.requestContentLength) &&
             (requestContentType == other.requestContentType) &&
             (requestHeaders == other.requestHeaders) &&
@@ -256,6 +262,6 @@ internal class HttpTransaction(
             (responseHeaders == other.responseHeaders) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyPlainText == other.isResponseBodyPlainText) &&
-            responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false
+            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
     }
 }
