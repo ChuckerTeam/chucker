@@ -57,7 +57,7 @@ internal class TransactionBodyAdapter(
         bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
-                if (newText in item.line) {
+                if (item.line.contains(newText, ignoreCase = true)) {
                     item.line.clearSpans()
                     item.line = item.line.toString()
                         .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
