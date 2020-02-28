@@ -11,24 +11,24 @@ internal class MainActivity :
     BaseChuckerActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var binding: ChuckerActivityMainBinding
+    private lateinit var mainBinding: ChuckerActivityMainBinding
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ChuckerActivityMainBinding.inflate(layoutInflater)
+        mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        with(binding) {
+        with(mainBinding) {
             setContentView(root)
-            setSupportActionBar(chuckerTransactionToolbar)
-            chuckerTransactionToolbar.subtitle = applicationName
-            chuckerMainViewPager.adapter = HomePageAdapter(this@MainActivity, supportFragmentManager)
-            chuckerMainTabLayout.setupWithViewPager(chuckerMainViewPager)
-            chuckerMainViewPager.addOnPageChangeListener(
-                object : TabLayout.TabLayoutOnPageChangeListener(chuckerMainTabLayout) {
+            setSupportActionBar(toolbar)
+            toolbar.subtitle = applicationName
+            viewPager.adapter = HomePageAdapter(this@MainActivity, supportFragmentManager)
+            tabLayout.setupWithViewPager(viewPager)
+            viewPager.addOnPageChangeListener(
+                object : TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
                         if (position == 0) {
@@ -55,7 +55,7 @@ internal class MainActivity :
     private fun consumeIntent(intent: Intent) {
         // Get the screen to show, by default => HTTP
         val screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP)
-        binding.chuckerMainViewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
+        mainBinding.viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
             HomePageAdapter.SCREEN_HTTP_INDEX
         } else {
             HomePageAdapter.SCREEN_ERROR_INDEX

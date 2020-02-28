@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chuckerTransactionsRecyclerView"
+        android:id="@+id/transactionsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -15,7 +15,7 @@
         tools:listitem="@layout/chucker_list_item_transaction" />
 
     <LinearLayout
-        android:id="@+id/chuckerTransactionsTutorialView"
+        android:id="@+id/tutorialView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/chucker_doub_grid"
@@ -37,7 +37,7 @@
             android:text="@string/chucker_network_tutorial" />
 
         <TextView
-            android:id="@+id/chuckerTransactionsLink"
+            android:id="@+id/tutorialLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/chucker_base_grid"

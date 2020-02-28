@@ -35,8 +35,8 @@ internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListen
         errorsAdapter = ErrorAdapter(this)
 
         with(errorsBinding) {
-            chuckerErrorsTutorialLink.movementMethod = LinkMovementMethod.getInstance()
-            chuckerErrorsRecyclerView.apply {
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
+            errorsRecyclerView.apply {
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 adapter = errorsAdapter
             }
@@ -51,7 +51,7 @@ internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListen
             viewLifecycleOwner,
             Observer { errors ->
                 errorsAdapter.setData(errors)
-                errorsBinding.chuckerErrorsTutorialView.visibility = if (errors.isNullOrEmpty()) {
+                errorsBinding.tutorialView.visibility = if (errors.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE

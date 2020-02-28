@@ -42,8 +42,8 @@ internal class TransactionListFragment :
 
         transactionsAdapter = TransactionAdapter(requireContext(), this)
         with(transactionsBinding) {
-            chuckerTransactionsLink.movementMethod = LinkMovementMethod.getInstance()
-            chuckerTransactionsRecyclerView.apply {
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
+            transactionsRecyclerView.apply {
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
                 adapter = transactionsAdapter
             }
@@ -58,7 +58,7 @@ internal class TransactionListFragment :
             viewLifecycleOwner,
             Observer { transactionTuples ->
                 transactionsAdapter.setData(transactionTuples)
-                transactionsBinding.chuckerTransactionsTutorialView.visibility =
+                transactionsBinding.tutorialView.visibility =
                     if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )

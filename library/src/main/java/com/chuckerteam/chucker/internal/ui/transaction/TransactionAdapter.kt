@@ -57,23 +57,22 @@ internal class TransactionAdapter internal constructor(
             transactionId = transaction.id
 
             itemBinding.apply {
-                chuckerTransactionItemPath.text =
-                    "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
-                chuckerTransactionItemHost.text = transaction.host
-                chuckerTransactionItemTimeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
-                chuckerTransactionItemSsl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
+                path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
+                host.text = transaction.host
+                timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
+                ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
-                    chuckerTransactionItemCode.text = transaction.responseCode.toString()
-                    chuckerTransactionItemDuration.text = transaction.durationString
-                    chuckerTransactionItemSize.text = transaction.totalSizeString
+                    code.text = transaction.responseCode.toString()
+                    duration.text = transaction.durationString
+                    size.text = transaction.totalSizeString
                 } else {
-                    chuckerTransactionItemCode.text = ""
-                    chuckerTransactionItemDuration.text = ""
-                    chuckerTransactionItemSize.text = ""
+                    code.text = ""
+                    duration.text = ""
+                    size.text = ""
                 }
                 if (transaction.status === HttpTransaction.Status.Failed) {
-                    chuckerTransactionItemCode.text = "!!!"
+                    code.text = "!!!"
                 }
             }
 
@@ -96,8 +95,8 @@ internal class TransactionAdapter internal constructor(
                 (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
                 else -> colorDefault
             }
-            itemBinding.chuckerTransactionItemCode.setTextColor(color)
-            itemBinding.chuckerTransactionItemPath.setTextColor(color)
+            itemBinding.code.setTextColor(color)
+            itemBinding.path.setTextColor(color)
         }
     }
 

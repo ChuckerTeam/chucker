@@ -46,10 +46,10 @@ internal class ErrorAdapter(
         internal fun bind(throwable: RecordedThrowableTuple) = with(itemBinding) {
             throwableId = throwable.id
 
-            chuckerItemErrorTag.text = throwable.tag
-            chuckerItemErrorClazz.text = throwable.clazz
-            chuckerItemErrorMessage.text = throwable.message
-            chuckerItemErrorDate.text = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
+            tag.text = throwable.tag
+            clazz.text = throwable.clazz
+            message.text = throwable.message
+            date.text = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
                 .format(throwable.date)
         }
 

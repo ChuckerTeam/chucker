@@ -11,7 +11,7 @@
     android:padding="@dimen/chucker_doub_grid">
 
     <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/chuckerTransactionOverviewGuideline"
+      android:id="@+id/overviewGuideline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="vertical"
@@ -23,18 +23,18 @@
       android:layout_height="wrap_content"
       android:gravity="start"
       android:text="@string/chucker_url"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewUrl"
+      android:id="@+id/url"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:gravity="start"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
       app:layout_constraintTop_toTopOf="parent"
       tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
 
@@ -43,18 +43,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_method"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewUrl" />
+      app:layout_constraintTop_toBottomOf="@id/url" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewMethod"
+      android:id="@+id/method"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@+id/chuckerTransactionOverviewUrl"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@+id/url"
       tools:text="GET" />
 
     <TextView
@@ -62,18 +62,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_protocol"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewMethod" />
+      app:layout_constraintTop_toBottomOf="@id/method" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewProtocol"
+      android:id="@+id/protocol"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewMethod"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/method"
       tools:text="HTTP/1.1" />
 
     <TextView
@@ -81,18 +81,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_status"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewProtocol" />
+      app:layout_constraintTop_toBottomOf="@id/protocol" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewStatus"
+      android:id="@+id/status"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewProtocol"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/protocol"
       tools:text="Complete" />
 
     <TextView
@@ -100,18 +100,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewStatus" />
+      app:layout_constraintTop_toBottomOf="@id/status" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewResponse"
+      android:id="@+id/response"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewStatus"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/status"
       tools:text="200 OK" />
 
     <TextView
@@ -119,18 +119,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_ssl"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponse" />
+      app:layout_constraintTop_toBottomOf="@id/response" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewSsl"
+      android:id="@+id/ssl"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponse"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/response"
       tools:text="Yes" />
 
     <TextView
@@ -139,19 +139,19 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       android:text="@string/chucker_request_time"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewSsl" />
+      app:layout_constraintTop_toBottomOf="@id/ssl" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewRequestTime"
+      android:id="@+id/requestTime"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewSsl"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/ssl"
       tools:text="05/02/17 11:52:49" />
 
     <TextView
@@ -159,18 +159,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_time"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewRequestTime" />
+      app:layout_constraintTop_toBottomOf="@id/requestTime" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewResponseTime"
+      android:id="@+id/responseTime"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewRequestTime"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/requestTime"
       tools:text="05/02/17 11:52:49" />
 
     <TextView
@@ -178,18 +178,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_duration"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponseTime" />
+      app:layout_constraintTop_toBottomOf="@id/responseTime" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewDuration"
+      android:id="@+id/duration"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponseTime"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/responseTime"
       tools:text="405 ms" />
 
     <TextView
@@ -198,19 +198,19 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       android:text="@string/chucker_request_size"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewDuration" />
+      app:layout_constraintTop_toBottomOf="@id/duration" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewRequestSize"
+      android:id="@+id/requestSize"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewDuration"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/duration"
       tools:text="53 KB" />
 
     <TextView
@@ -218,18 +218,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_size"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewRequestSize" />
+      app:layout_constraintTop_toBottomOf="@id/requestSize" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewResponseSize"
+      android:id="@+id/responseSize"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewRequestSize"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/requestSize"
       tools:text="148 KB" />
 
     <TextView
@@ -237,18 +237,18 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_total_size"
-      app:layout_constraintEnd_toStartOf="@id/chuckerTransactionOverviewGuideline"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponseSize" />
+      app:layout_constraintTop_toBottomOf="@id/responseSize" />
 
     <TextView
-      android:id="@+id/chuckerTransactionOverviewTotalSize"
+      android:id="@+id/totalSize"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/chuckerTransactionOverviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/chuckerTransactionOverviewResponseSize"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/responseSize"
       tools:text="201 KB" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

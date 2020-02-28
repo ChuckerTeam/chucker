@@ -18,11 +18,11 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 internal class TransactionActivity : BaseChuckerActivity() {
 
     private lateinit var viewModel: TransactionViewModel
-    private lateinit var binding: ChuckerActivityTransactionBinding
+    private lateinit var transactionBinding: ChuckerActivityTransactionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ChuckerActivityTransactionBinding.inflate(layoutInflater)
+        transactionBinding = ChuckerActivityTransactionBinding.inflate(layoutInflater)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
 
@@ -31,11 +31,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
             .get(TransactionViewModel::class.java)
 
-        with(binding) {
+        with(transactionBinding) {
             setContentView(root)
-            setSupportActionBar(chuckerTransactionToolbar)
-            setupViewPager(chuckerTransactionViewPager)
-            chuckerTransactionTabLayout.setupWithViewPager(chuckerTransactionViewPager)
+            setSupportActionBar(toolbar)
+            setupViewPager(viewPager)
+            tabLayout.setupWithViewPager(viewPager)
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -45,7 +45,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         super.onResume()
         viewModel.transactionTitle.observe(
             this,
-            Observer { binding.chuckerTransactionToolbarTitle.text = it }
+            Observer { transactionBinding.toolbarTitle.text = it }
         )
     }
 

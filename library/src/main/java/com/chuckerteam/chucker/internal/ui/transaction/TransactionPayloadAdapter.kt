@@ -96,31 +96,31 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(
-        private val itemBinding: ChuckerTransactionItemHeadersBinding
-    ) : TransactionPayloadViewHolder(itemBinding.root) {
+        private val headerBinding: ChuckerTransactionItemHeadersBinding
+    ) : TransactionPayloadViewHolder(headerBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
-                itemBinding.chuckerTransactionResponseHeaders.text = item.headers
+                headerBinding.responseHeaders.text = item.headers
             }
         }
     }
 
     internal class BodyLineViewHolder(
-        private val itemBinding: ChuckerTransactionItemBodyLineBinding
-    ) : TransactionPayloadViewHolder(itemBinding.root) {
+        private val bodyBinding: ChuckerTransactionItemBodyLineBinding
+    ) : TransactionPayloadViewHolder(bodyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
-                itemBinding.chuckerTransactionResponseBodyLine.text = item.line
+                bodyBinding.bodyLine.text = item.line
             }
         }
     }
 
     internal class ImageViewHolder(
-        private val itemBinding: ChuckerTransactionItemImageBinding
-    ) : TransactionPayloadViewHolder(itemBinding.root) {
+        private val imageBinding: ChuckerTransactionItemImageBinding
+    ) : TransactionPayloadViewHolder(imageBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
-                itemBinding.chuckerTransactionResponseBinaryData.setImageBitmap(item.image)
+                imageBinding.binaryData.setImageBitmap(item.image)
             }
         }
     }

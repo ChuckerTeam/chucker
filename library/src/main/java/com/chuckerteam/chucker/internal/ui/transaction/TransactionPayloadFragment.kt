@@ -165,7 +165,7 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
-        val adapter = (payloadBinding.chuckerTransactionResponseRecyclerView.adapter as TransactionBodyAdapter)
+        val adapter = (payloadBinding.responseRecyclerView.adapter as TransactionBodyAdapter)
         if (newText.isNotBlank()) {
             adapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
         } else {
@@ -182,8 +182,8 @@ internal class TransactionPayloadFragment :
 
         override fun onPreExecute() {
             fragment.payloadBinding.apply {
-                chuckerTransactionLoadingProgress.visibility = View.VISIBLE
-                chuckerTransactionResponseRecyclerView.visibility = View.INVISIBLE
+                loadingProgress.visibility = View.VISIBLE
+                responseRecyclerView.visibility = View.INVISIBLE
             }
         }
 
@@ -233,9 +233,9 @@ internal class TransactionPayloadFragment :
 
         override fun onPostExecute(result: List<TransactionPayloadItem>) {
             fragment.payloadBinding.apply {
-                chuckerTransactionLoadingProgress.visibility = View.INVISIBLE
-                chuckerTransactionResponseRecyclerView.visibility = View.VISIBLE
-                chuckerTransactionResponseRecyclerView.adapter = TransactionBodyAdapter(result)
+                loadingProgress.visibility = View.INVISIBLE
+                responseRecyclerView.visibility = View.VISIBLE
+                responseRecyclerView.adapter = TransactionBodyAdapter(result)
             }
         }
     }

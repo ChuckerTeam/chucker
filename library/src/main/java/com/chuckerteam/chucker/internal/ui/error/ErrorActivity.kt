@@ -17,7 +17,7 @@ import java.text.DateFormat
 
 internal class ErrorActivity : BaseChuckerActivity() {
 
-    private lateinit var binding: ChuckerActivityErrorBinding
+    private lateinit var errorBinding: ChuckerActivityErrorBinding
 
     private var throwableId: Long = 0
     private var throwable: RecordedThrowable? = null
@@ -25,13 +25,13 @@ internal class ErrorActivity : BaseChuckerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ChuckerActivityErrorBinding.inflate(layoutInflater)
+        errorBinding = ChuckerActivityErrorBinding.inflate(layoutInflater)
         throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)
 
-        with(binding) {
+        with(errorBinding) {
             setContentView(root)
-            setSupportActionBar(chuckerErrorToolbar)
-            chuckerErrorActivityItem.chuckerItemErrorDate.visibility = View.GONE
+            setSupportActionBar(toolbar)
+            errorItem.date.visibility = View.GONE
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -86,12 +86,12 @@ internal class ErrorActivity : BaseChuckerActivity() {
     }
 
     private fun populateUI(throwable: RecordedThrowable) {
-        binding.apply {
-            chuckerErrorToolbarTitle.text = throwable.formattedDate
-            chuckerErrorActivityItem.chuckerItemErrorTag.text = throwable.tag
-            chuckerErrorActivityItem.chuckerItemErrorClazz.text = throwable.clazz
-            chuckerErrorActivityItem.chuckerItemErrorMessage.text = throwable.message
-            chuckerErrorStacktrace.text = throwable.content
+        errorBinding.apply {
+            toolbarTitle.text = throwable.formattedDate
+            errorItem.tag.text = throwable.tag
+            errorItem.clazz.text = throwable.clazz
+            errorItem.message.text = throwable.message
+            errorStacktrace.text = throwable.content
         }
     }
 

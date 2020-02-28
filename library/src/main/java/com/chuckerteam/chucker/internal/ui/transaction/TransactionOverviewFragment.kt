@@ -59,20 +59,20 @@ internal class TransactionOverviewFragment : Fragment() {
 
     private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
         with(overviewBinding) {
-            chuckerTransactionOverviewUrl.text = transaction?.getFormattedUrl(encodeUrl)
-            chuckerTransactionOverviewMethod.text = transaction?.method
-            chuckerTransactionOverviewProtocol.text = transaction?.protocol
-            chuckerTransactionOverviewStatus.text = transaction?.status.toString()
-            chuckerTransactionOverviewResponse.text = transaction?.responseSummaryText
-            chuckerTransactionOverviewSsl.setText(
+            url.text = transaction?.getFormattedUrl(encodeUrl)
+            method.text = transaction?.method
+            protocol.text = transaction?.protocol
+            status.text = transaction?.status.toString()
+            response.text = transaction?.responseSummaryText
+            ssl.setText(
                 if (transaction?.isSsl == true) R.string.chucker_yes else R.string.chucker_no
             )
-            chuckerTransactionOverviewRequestTime.text = transaction?.requestDateString
-            chuckerTransactionOverviewResponseTime.text = transaction?.responseDateString
-            chuckerTransactionOverviewDuration.text = transaction?.durationString
-            chuckerTransactionOverviewRequestSize.text = transaction?.requestSizeString
-            chuckerTransactionOverviewResponseSize.text = transaction?.responseSizeString
-            chuckerTransactionOverviewTotalSize.text = transaction?.totalSizeString
+            requestTime.text = transaction?.requestDateString
+            responseTime.text = transaction?.responseDateString
+            duration.text = transaction?.durationString
+            requestSize.text = transaction?.requestSizeString
+            responseSize.text = transaction?.responseSizeString
+            totalSize.text = transaction?.totalSizeString
         }
     }
 }
