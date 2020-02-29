@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import com.chuckerteam.chucker.test
-import junit.framework.TestCase.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -16,7 +16,7 @@ class LiveDataDistinctUntilChangedTest {
         val upstream = MutableLiveData<Any?>(null)
 
         upstream.distinctUntilChanged().test {
-            assertEquals(null, expectData())
+            assertThat(expectData()).isEqualTo(null)
         }
     }
 
@@ -35,16 +35,16 @@ class LiveDataDistinctUntilChangedTest {
 
         upstream.distinctUntilChanged().test {
             upstream.value = 1
-            assertEquals(1, expectData())
+            assertThat(expectData()).isEqualTo(1)
 
             upstream.value = 2
-            assertEquals(2, expectData())
+            assertThat(expectData()).isEqualTo(2)
 
             upstream.value = null
-            assertEquals(null, expectData())
+            assertThat(expectData()).isEqualTo(null)
 
             upstream.value = 2
-            assertEquals(2, expectData())
+            assertThat(expectData()).isEqualTo(2)
         }
     }
 
@@ -54,13 +54,13 @@ class LiveDataDistinctUntilChangedTest {
 
         upstream.distinctUntilChanged().test {
             upstream.value = null
-            assertEquals(null, expectData())
+            assertThat(expectData()).isEqualTo(null)
 
             upstream.value = null
             expectNoData()
 
             upstream.value = ""
-            assertEquals("", expectData())
+            assertThat(expectData()).isEqualTo("")
 
             upstream.value = ""
             expectNoData()
@@ -73,16 +73,16 @@ class LiveDataDistinctUntilChangedTest {
 
         upstream.distinctUntilChanged { old, new -> old.first == new.first }.test {
             upstream.value = 1 to ""
-            assertEquals(1 to "", expectData())
+            assertThat(expectData()).isEqualTo(1 to "")
 
             upstream.value = 1 to "a"
             expectNoData()
 
             upstream.value = 2 to "b"
-            assertEquals(2 to "b", expectData())
+            assertThat(expectData()).isEqualTo(2 to "b")
 
             upstream.value = 3 to "b"
-            assertEquals(3 to "b", expectData())
+            assertThat(expectData()).isEqualTo(3 to "b")
         }
     }
 }
