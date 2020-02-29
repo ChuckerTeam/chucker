@@ -43,10 +43,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
             setupViewPager(viewPager)
             findViewById<TabLayout>(R.id.chuckerTransactionTabLayout).setupWithViewPager(viewPager)
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         viewModel.transactionTitle.observe(
             this,
             Observer { title.text = it }

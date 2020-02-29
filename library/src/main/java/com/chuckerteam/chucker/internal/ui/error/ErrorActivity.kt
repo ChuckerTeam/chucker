@@ -9,16 +9,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.text.DateFormat
 
 internal class ErrorActivity : BaseChuckerActivity() {
 
+    private lateinit var viewModel: ErrorViewModel
+
     private var throwableId: Long = 0
-    private var throwable: RecordedThrowable? = null
 
     private lateinit var title: TextView
     private lateinit var tag: TextView
@@ -42,21 +43,16 @@ internal class ErrorActivity : BaseChuckerActivity() {
         date.visibility = View.GONE
 
         throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)
-    }
 
-    override fun onResume() {
-        super.onResume()
-        RepositoryProvider.throwable()
-            .getRecordedThrowable(throwableId)
-            .observe(
-                this,
-                Observer { recordedThrowable ->
-                    recordedThrowable?.let {
-                        throwable = it
-                        populateUI(it)
-                    }
-                }
-            )
+        viewModel = ViewModelProvider(this, ErrorViewModelFactory(throwableId))
+            .get(ErrorViewModel::class.java)
+
+        viewModel.throwable.observe(
+            this,
+            Observer {
+                populateUI(it)
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,7 +63,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.share_text) {
-            throwable?.let { share(it) }
+            viewModel.throwable.value?.let { share(it) }
             true
         } else {
             super.onOptionsItemSelected(item)
