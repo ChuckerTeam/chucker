@@ -19,7 +19,7 @@
             app:popupTheme="@style/Chucker.Theme">
 
             <TextView
-                android:id="@+id/chuckerErrorToolbarTitle"
+                android:id="@+id/chuckerThrowableToolbarTitle"
                 style="@style/Chucker.TextAppearance.TransactionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

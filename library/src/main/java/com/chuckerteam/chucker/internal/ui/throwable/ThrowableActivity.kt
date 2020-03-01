@@ -34,7 +34,7 @@ internal class ThrowableActivity : BaseChuckerActivity() {
         setSupportActionBar(findViewById(R.id.chuckerThrowableToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = findViewById(R.id.chuckerErrorToolbarTitle)
+        title = findViewById(R.id.chuckerThrowableToolbarTitle)
         tag = findViewById(R.id.chuckerItemThrowableTag)
         clazz = findViewById(R.id.chuckerItemThrowableClazz)
         message = findViewById(R.id.chuckerItemThrowableMessage)

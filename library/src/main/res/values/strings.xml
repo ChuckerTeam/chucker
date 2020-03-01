@@ -37,7 +37,7 @@
     <string name="chucker_tab_network">Network</string>
     <string name="chucker_tab_errors">Errors</string>
     <string name="chucker_network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
-    <string name="chucker_throwable_tutorial">This tab displays error recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
+    <string name="chucker_throwable_tutorial">This tab displays throwables recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
     <string name="chucker_network_notification_category">Chucker network requests</string>
     <string name="chucker_throwable_notification_category">Chucker throwables</string>
     <string name="chucker_share_throwable_title">Share throwable details</string>
