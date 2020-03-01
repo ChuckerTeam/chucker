@@ -1,9 +1,10 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
 import java.text.DateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import org.junit.jupiter.api.Test
 
 class JsonConverterTest {
 
