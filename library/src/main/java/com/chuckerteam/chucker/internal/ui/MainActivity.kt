@@ -31,7 +31,7 @@ internal class MainActivity :
                 object : TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
-                        if (position == 0) {
+                        if (position == HomePageAdapter.SCREEN_HTTP_INDEX) {
                             Chucker.dismissTransactionsNotification(this@MainActivity)
                         } else {
                             Chucker.dismissErrorsNotification(this@MainActivity)

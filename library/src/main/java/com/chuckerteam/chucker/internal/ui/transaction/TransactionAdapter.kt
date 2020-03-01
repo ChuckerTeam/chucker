@@ -76,7 +76,7 @@ internal class TransactionAdapter internal constructor(
                 }
             }
 
-            setStatusColor(this.itemBinding, transaction)
+            setStatusColor(transaction)
         }
 
         override fun onClick(v: View?) {
@@ -85,7 +85,7 @@ internal class TransactionAdapter internal constructor(
             }
         }
 
-        private fun setStatusColor(itemBinding: ChuckerListItemTransactionBinding, transaction: HttpTransactionTuple) {
+        private fun setStatusColor(transaction: HttpTransactionTuple) {
             val color: Int = when {
                 (transaction.status === HttpTransaction.Status.Failed) -> colorError
                 (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
