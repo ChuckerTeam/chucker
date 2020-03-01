@@ -1,6 +1,5 @@
 package com.chuckerteam.chucker.internal.ui.throwable
 
-import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -9,23 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
-internal class ThrowableListFragment : Fragment() {
+internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: ThrowableAdapter
-    private lateinit var listener: ThrowableAdapter.ThrowableClickListListener
-    private lateinit var tutorialView: View
+    private lateinit var errorsBinding: ChuckerFragmentThrowableListBinding
+    private lateinit var errorsAdapter: ThrowableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +30,18 @@ internal class ThrowableListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.chucker_fragment_throwable_list, container, false).apply {
-            tutorialView = findViewById(R.id.chuckerThrowableTutorialView)
-            findViewById<TextView>(R.id.chuckerThrowableTutorialLink).movementMethod = LinkMovementMethod.getInstance()
+        errorsBinding = ChuckerFragmentThrowableListBinding.inflate(inflater, container, false)
+        errorsAdapter = ThrowableAdapter(this)
 
-            val recyclerView = findViewById<RecyclerView>(R.id.chuckerThrowableRecyclerView)
-            recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
-            adapter = ThrowableAdapter(listener)
-            recyclerView.adapter = adapter
+        with(errorsBinding) {
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
+            errorsRecyclerView.apply {
+                addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                adapter = errorsAdapter
+            }
         }
+
+        return errorsBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,23 +49,14 @@ internal class ThrowableListFragment : Fragment() {
         viewModel.throwables.observe(
             viewLifecycleOwner,
             Observer { throwables ->
-                adapter.setData(throwables)
-                tutorialView.visibility = if (throwables.isNullOrEmpty()) {
+                errorsAdapter.setData(throwables)
+                errorsBinding.tutorialView.visibility = if (throwables.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
                 }
             }
         )
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        require(context is ThrowableAdapter.ThrowableClickListListener) {
-            "Context must implement the listener."
-        }
-        listener = context
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -92,6 +82,10 @@ internal class ThrowableListFragment : Fragment() {
             }
             .setNegativeButton(R.string.chucker_cancel, null)
             .show()
+    }
+
+    override fun onThrowableClick(throwableId: Long, position: Int) {
+        ThrowableActivity.start(requireActivity(), throwableId)
     }
 
     companion object {

@@ -6,32 +6,17 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionOverviewBinding
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.combineLatest
 
 internal class TransactionOverviewFragment : Fragment() {
 
-    private lateinit var url: TextView
-    private lateinit var method: TextView
-    private lateinit var protocol: TextView
-    private lateinit var status: TextView
-    private lateinit var response: TextView
-    private lateinit var ssl: TextView
-    private lateinit var tlsVersionGroup: Group
-    private lateinit var tlsVersion: TextView
-    private lateinit var cipherSuiteGroup: Group
-    private lateinit var cipherSuiteVersion: TextView
-    private lateinit var requestTime: TextView
-    private lateinit var responseTime: TextView
-    private lateinit var duration: TextView
-    private lateinit var requestSize: TextView
-    private lateinit var responseSize: TextView
-    private lateinit var totalSize: TextView
+    private lateinit var overviewBinding: ChuckerFragmentTransactionOverviewBinding
     private lateinit var viewModel: TransactionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,26 +29,10 @@ internal class TransactionOverviewFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.chucker_fragment_transaction_overview, container, false)
-            .also {
-                url = it.findViewById(R.id.chuckerTransactionOverviewUrl)
-                method = it.findViewById(R.id.chuckerTransactionOverviewMethod)
-                protocol = it.findViewById(R.id.chuckerTransactionOverviewProtocol)
-                status = it.findViewById(R.id.chuckerTransactionOverviewStatus)
-                response = it.findViewById(R.id.chuckerTransactionOverviewResponse)
-                ssl = it.findViewById(R.id.chuckerTransactionOverviewSsl)
-                tlsVersionGroup = it.findViewById(R.id.chuckerTransactionOverviewTlsGroup)
-                tlsVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsVersionValue)
-                cipherSuiteGroup = it.findViewById(R.id.chuckerTransactionOverviewCipherSuiteGroup)
-                cipherSuiteVersion = it.findViewById(R.id.chuckerTransactionOverviewTlsChipherSuiteValue)
-                requestTime = it.findViewById(R.id.chuckerTransactionOverviewRequestTime)
-                responseTime = it.findViewById(R.id.chuckerTransactionOverviewResponseTime)
-                duration = it.findViewById(R.id.chuckerTransactionOverviewDuration)
-                requestSize = it.findViewById(R.id.chuckerTransactionOverviewRequestSize)
-                responseSize = it.findViewById(R.id.chuckerTransactionOverviewResponseSize)
-                totalSize = it.findViewById(R.id.chuckerTransactionOverviewTotalSize)
-            }
+    ): View? {
+        overviewBinding = ChuckerFragmentTransactionOverviewBinding.inflate(inflater, container, false)
+        return overviewBinding.root
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.findItem(R.id.save_body).isVisible = false
@@ -83,28 +52,45 @@ internal class TransactionOverviewFragment : Fragment() {
             .observe(
                 viewLifecycleOwner,
                 Observer { (transaction, encodeUrl) ->
-                    url.text = transaction?.getFormattedUrl(encodeUrl)
-                    method.text = transaction?.method
-                    protocol.text = transaction?.protocol
-                    status.text = transaction?.status?.toString()
-                    response.text = transaction?.responseSummaryText
-                    if (transaction?.isSsl == true) {
-                        ssl.setText(R.string.chucker_yes)
-                        tlsVersionGroup.visibility = View.VISIBLE
-                        tlsVersion.text = transaction.responseTlsVersion
-
-                        cipherSuiteGroup.visibility = View.VISIBLE
-                        cipherSuiteVersion.text = transaction.responseCipherSuite
-                    } else {
-                        ssl.setText(R.string.chucker_no)
-                    }
-                    requestTime.text = transaction?.requestDateString
-                    responseTime.text = transaction?.responseDateString
-                    duration.text = transaction?.durationString
-                    requestSize.text = transaction?.requestSizeString
-                    responseSize.text = transaction?.responseSizeString
-                    totalSize.text = transaction?.totalSizeString
+                    populateUI(transaction, encodeUrl)
                 }
             )
+    }
+
+    private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
+        with(overviewBinding) {
+            url.text = transaction?.getFormattedUrl(encodeUrl)
+            method.text = transaction?.method
+            protocol.text = transaction?.protocol
+            status.text = transaction?.status.toString()
+            response.text = transaction?.responseSummaryText
+            when (transaction?.isSsl) {
+                null -> {
+                    sslGroup.visibility = View.GONE
+                }
+                true -> {
+                    sslGroup.visibility = View.VISIBLE
+                    sslValue.setText(R.string.chucker_yes)
+                }
+                else -> {
+                    sslGroup.visibility = View.VISIBLE
+                    sslValue.setText(R.string.chucker_no)
+                }
+            }
+            if (transaction?.responseTlsVersion != null) {
+                tlsVersionValue.text = transaction.responseTlsVersion
+                tlsGroup.visibility = View.VISIBLE
+            }
+            if (transaction?.responseCipherSuite != null) {
+                cipherSuiteValue.text = transaction.responseCipherSuite
+                cipherSuiteGroup.visibility = View.VISIBLE
+            }
+            requestTime.text = transaction?.requestDateString
+            responseTime.text = transaction?.responseDateString
+            duration.text = transaction?.durationString
+            requestSize.text = transaction?.requestSizeString
+            responseSize.text = transaction?.responseSizeString
+            totalSize.text = transaction?.totalSizeString
+        }
     }
 }

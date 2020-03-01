@@ -12,14 +12,14 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/chuckerThrowableToolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/Chucker.Theme">
 
             <TextView
-                android:id="@+id/chuckerThrowableToolbarTitle"
+                android:id="@+id/toolbarTitle"
                 style="@style/Chucker.TextAppearance.TransactionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,7 +27,9 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <include layout="@layout/chucker_list_item_throwable" />
+        <include
+          android:id="@+id/throwableItem"
+          layout="@layout/chucker_list_item_throwable" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,7 +39,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/chuckerThrowableStacktrace"
+            android:id="@+id/throwableStacktrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/chucker_doub_grid"

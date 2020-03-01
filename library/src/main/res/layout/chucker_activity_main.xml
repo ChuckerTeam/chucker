@@ -11,13 +11,13 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/chuckerTransactionToolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/Chucker.Theme" />
 
         <com.google.android.material.tabs.TabLayout
-                android:id="@+id/chuckerMainTabLayout"
+                android:id="@+id/tabLayout"
                 style="@style/Widget.MaterialComponents.TabLayout.PrimarySurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -25,7 +25,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/chuckerMainViewPager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

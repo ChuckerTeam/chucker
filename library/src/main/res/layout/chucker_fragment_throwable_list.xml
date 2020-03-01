@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chuckerThrowableRecyclerView"
+        android:id="@+id/errorsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -14,7 +14,7 @@
         tools:listitem="@layout/chucker_list_item_throwable" />
 
     <LinearLayout
-        android:id="@+id/chuckerThrowableTutorialView"
+        android:id="@+id/tutorialView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/chucker_doub_grid"
@@ -36,7 +36,7 @@
             android:text="@string/chucker_throwable_tutorial" />
 
         <TextView
-            android:id="@+id/chuckerThrowableTutorialLink"
+            android:id="@+id/tutorialLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/chucker_base_grid"
