@@ -20,10 +20,10 @@ buildscript {
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        detektVersion = '1.4.0'
-        dokkaVersion = '0.10.0'
-        ktLintVersion = '9.1.1'
-        leakcanaryVersion = '2.1'
+        detektVersion = '1.6.0'
+        dokkaVersion = '0.10.1'
+        ktLintVersion = '9.2.1'
+        leakcanaryVersion = '2.2'
 
         // Testing
         junitGradlePluignVersion = '1.3.1.1'
