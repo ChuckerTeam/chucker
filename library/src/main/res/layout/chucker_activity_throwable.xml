@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chuckerteam.chucker.internal.ui.error.ErrorActivity">
+    tools:context="com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/chuckerErrorToolbar"
+            android:id="@+id/chuckerThrowableToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
@@ -27,7 +27,7 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <include layout="@layout/chucker_list_item_error" />
+        <include layout="@layout/chucker_list_item_throwable" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,7 +37,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/chuckerErrorStacktrace"
+            android:id="@+id/chuckerThrowableStacktrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/chucker_doub_grid"

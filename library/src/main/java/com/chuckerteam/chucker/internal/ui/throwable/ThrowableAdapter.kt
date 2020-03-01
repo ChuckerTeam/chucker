@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +9,20 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import java.text.DateFormat
 
-internal class ErrorAdapter(
-    val listener: ErrorClickListListener
-) : RecyclerView.Adapter<ErrorAdapter.ErrorViewHolder>() {
+internal class ThrowableAdapter(
+    val listener: ThrowableClickListListener
+) : RecyclerView.Adapter<ThrowableAdapter.ThrowableViewHolder>() {
 
     private var data: List<RecordedThrowableTuple> = listOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ErrorViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThrowableViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.chucker_list_item_error, parent, false)
-        return ErrorViewHolder(view)
+                .inflate(R.layout.chucker_list_item_throwable, parent, false)
+        return ThrowableViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ErrorViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ThrowableViewHolder, position: Int) {
         val throwable = data[position]
         holder.bind(throwable)
     }
@@ -36,14 +36,14 @@ internal class ErrorAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ErrorViewHolder(
+    inner class ThrowableViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val tagView: TextView = itemView.findViewById(R.id.chuckerItemErrorTag)
-        private val clazzView: TextView = itemView.findViewById(R.id.chuckerItemErrorClazz)
-        private val messageView: TextView = itemView.findViewById(R.id.chuckerItemErrorMessage)
-        private val dateView: TextView = itemView.findViewById(R.id.chuckerItemErrorDate)
+        private val tagView: TextView = itemView.findViewById(R.id.chuckerItemThrowableTag)
+        private val clazzView: TextView = itemView.findViewById(R.id.chuckerItemThrowableClazz)
+        private val messageView: TextView = itemView.findViewById(R.id.chuckerItemThrowableMessage)
+        private val dateView: TextView = itemView.findViewById(R.id.chuckerItemThrowableDate)
         private var throwableId: Long? = null
 
         init {
@@ -60,7 +60,7 @@ internal class ErrorAdapter(
 
         override fun onClick(v: View) {
             throwableId?.let {
-                listener.onErrorClick(it, adapterPosition)
+                listener.onThrowableClick(it, adapterPosition)
             }
         }
     }
@@ -71,7 +71,7 @@ internal class ErrorAdapter(
                 .format(this.date)
         }
 
-    interface ErrorClickListListener {
-        fun onErrorClick(throwableId: Long, position: Int)
+    interface ThrowableClickListListener {
+        fun onThrowableClick(throwableId: Long, position: Int)
     }
 }

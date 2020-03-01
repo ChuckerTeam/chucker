@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
 import android.content.Context
 import android.content.Intent
@@ -15,9 +15,9 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.text.DateFormat
 
-internal class ErrorActivity : BaseChuckerActivity() {
+internal class ThrowableActivity : BaseChuckerActivity() {
 
-    private lateinit var viewModel: ErrorViewModel
+    private lateinit var viewModel: ThrowableViewModel
 
     private var throwableId: Long = 0
 
@@ -30,22 +30,22 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_error)
-        setSupportActionBar(findViewById(R.id.chuckerErrorToolbar))
+        setContentView(R.layout.chucker_activity_throwable)
+        setSupportActionBar(findViewById(R.id.chuckerThrowableToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = findViewById(R.id.chuckerErrorToolbarTitle)
-        tag = findViewById(R.id.chuckerItemErrorTag)
-        clazz = findViewById(R.id.chuckerItemErrorClazz)
-        message = findViewById(R.id.chuckerItemErrorMessage)
-        date = findViewById(R.id.chuckerItemErrorDate)
-        stacktrace = findViewById(R.id.chuckerErrorStacktrace)
+        tag = findViewById(R.id.chuckerItemThrowableTag)
+        clazz = findViewById(R.id.chuckerItemThrowableClazz)
+        message = findViewById(R.id.chuckerItemThrowableMessage)
+        date = findViewById(R.id.chuckerItemThrowableDate)
+        stacktrace = findViewById(R.id.chuckerThrowableStacktrace)
         date.visibility = View.GONE
 
         throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)
 
-        viewModel = ViewModelProvider(this, ErrorViewModelFactory(throwableId))
-            .get(ErrorViewModel::class.java)
+        viewModel = ViewModelProvider(this, ThrowableViewModelFactory(throwableId))
+            .get(ThrowableViewModel::class.java)
 
         viewModel.throwable.observe(
             this,
@@ -57,7 +57,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.chucker_error, menu)
+        inflater.inflate(R.menu.chucker_throwable, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -72,7 +72,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
 
     private fun share(throwable: RecordedThrowable) {
         val throwableDetailsText = getString(
-            R.string.chucker_share_error_content,
+            R.string.chucker_share_throwable_content,
             throwable.formattedDate,
             throwable.clazz,
             throwable.tag,
@@ -82,8 +82,8 @@ internal class ErrorActivity : BaseChuckerActivity() {
         startActivity(
             ShareCompat.IntentBuilder.from(this)
                 .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.chucker_share_error_title))
-                .setSubject(getString(R.string.chucker_share_error_subject))
+                .setChooserTitle(getString(R.string.chucker_share_throwable_title))
+                .setSubject(getString(R.string.chucker_share_throwable_subject))
                 .setText(throwableDetailsText)
                 .createChooserIntent()
         )
@@ -102,7 +102,7 @@ internal class ErrorActivity : BaseChuckerActivity() {
         private const val EXTRA_THROWABLE_ID = "transaction_id"
 
         fun start(context: Context, throwableId: Long) {
-            val intent = Intent(context, ErrorActivity::class.java)
+            val intent = Intent(context, ThrowableActivity::class.java)
             intent.putExtra(EXTRA_THROWABLE_ID, throwableId)
             context.startActivity(intent)
         }

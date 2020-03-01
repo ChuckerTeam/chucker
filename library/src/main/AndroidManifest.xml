@@ -13,7 +13,7 @@
             android:theme="@style/Chucker.Theme"
             android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity"/>
 
-        <activity android:name="com.chuckerteam.chucker.internal.ui.error.ErrorActivity"
+        <activity android:name="com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity"
             android:theme="@style/Chucker.Theme"
             android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity" />
 

@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
-import com.chuckerteam.chucker.internal.ui.error.ErrorActivity
-import com.chuckerteam.chucker.internal.ui.error.ErrorAdapter
+import com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity
+import com.chuckerteam.chucker.internal.ui.throwable.ThrowableAdapter
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import com.google.android.material.tabs.TabLayout
@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout
 internal class MainActivity :
     BaseChuckerActivity(),
     TransactionAdapter.TransactionClickListListener,
-    ErrorAdapter.ErrorClickListListener {
+    ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var viewPager: ViewPager
@@ -67,12 +67,12 @@ internal class MainActivity :
         if (screenToShow == Chucker.SCREEN_HTTP) {
             viewPager.currentItem = HomePageAdapter.SCREEN_HTTP_INDEX
         } else {
-            viewPager.currentItem = HomePageAdapter.SCREEN_ERROR_INDEX
+            viewPager.currentItem = HomePageAdapter.SCREEN_THROWABLE_INDEX
         }
     }
 
-    override fun onErrorClick(throwableId: Long, position: Int) {
-        ErrorActivity.start(this, throwableId)
+    override fun onThrowableClick(throwableId: Long, position: Int) {
+        ThrowableActivity.start(this, throwableId)
     }
 
     override fun onTransactionClick(transactionId: Long, position: Int) {

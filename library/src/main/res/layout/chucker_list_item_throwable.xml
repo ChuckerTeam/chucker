@@ -8,7 +8,7 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/chuckerItemErrorClazz"
+        android:id="@+id/chuckerItemThrowableClazz"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
@@ -16,20 +16,20 @@
         tools:text="java.lang.RuntimeException" />
 
     <TextView
-        android:id="@+id/chuckerItemErrorTag"
+        android:id="@+id/chuckerItemThrowableTag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Chucker.TextAppearance.Label"
         tools:text="A given tag" />
 
     <TextView
-        android:id="@+id/chuckerItemErrorMessage"
+        android:id="@+id/chuckerItemThrowableMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Something gone wrong!" />
 
     <TextView
-        android:id="@+id/chuckerItemErrorDate"
+        android:id="@+id/chuckerItemThrowableDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right|end"

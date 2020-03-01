@@ -30,7 +30,7 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    val errors: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
+    val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
     fun updateItemsFilter(searchQuery: String) {
@@ -42,7 +42,7 @@ internal class MainViewModel : ViewModel() {
         NotificationHelper.clearBuffer()
     }
 
-    fun clearErrors() {
+    fun clearThrowables() {
         RepositoryProvider.throwable().deleteAllThrowables()
     }
 }

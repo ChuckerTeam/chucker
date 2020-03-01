@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
 import android.content.Context
 import android.os.Bundle
@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
-internal class ErrorListFragment : Fragment() {
+internal class ThrowableListFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: ErrorAdapter
-    private lateinit var listener: ErrorAdapter.ErrorClickListListener
+    private lateinit var adapter: ThrowableAdapter
+    private lateinit var listener: ThrowableAdapter.ThrowableClickListListener
     private lateinit var tutorialView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,24 +34,24 @@ internal class ErrorListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.chucker_fragment_error_list, container, false).apply {
-            tutorialView = findViewById(R.id.chuckerErrorsTutorialView)
-            findViewById<TextView>(R.id.chuckerErrorsTutorialLink).movementMethod = LinkMovementMethod.getInstance()
+        return inflater.inflate(R.layout.chucker_fragment_throwable_list, container, false).apply {
+            tutorialView = findViewById(R.id.chuckerThrowableTutorialView)
+            findViewById<TextView>(R.id.chuckerThrowableTutorialLink).movementMethod = LinkMovementMethod.getInstance()
 
-            val recyclerView = findViewById<RecyclerView>(R.id.chuckerErrorsRecyclerView)
+            val recyclerView = findViewById<RecyclerView>(R.id.chuckerThrowableRecyclerView)
             recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
-            adapter = ErrorAdapter(listener)
+            adapter = ThrowableAdapter(listener)
             recyclerView.adapter = adapter
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.errors.observe(
+        viewModel.throwables.observe(
             viewLifecycleOwner,
-            Observer { errors ->
-                adapter.setData(errors)
-                tutorialView.visibility = if (errors.isNullOrEmpty()) {
+            Observer { throwables ->
+                adapter.setData(throwables)
+                tutorialView.visibility = if (throwables.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -63,14 +63,14 @@ internal class ErrorListFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        require(context is ErrorAdapter.ErrorClickListListener) {
+        require(context is ThrowableAdapter.ThrowableClickListListener) {
             "Context must implement the listener."
         }
         listener = context
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_errors_list, menu)
+        inflater.inflate(R.menu.chucker_throwables_list, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -86,15 +86,15 @@ internal class ErrorListFragment : Fragment() {
     private fun askForConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.chucker_clear)
-            .setMessage(R.string.chucker_clear_error_confirmation)
+            .setMessage(R.string.chucker_clear_throwable_confirmation)
             .setPositiveButton(R.string.chucker_clear) { _, _ ->
-                viewModel.clearErrors()
+                viewModel.clearThrowables()
             }
             .setNegativeButton(R.string.chucker_cancel, null)
             .show()
     }
 
     companion object {
-        fun newInstance() = ErrorListFragment()
+        fun newInstance() = ThrowableListFragment()
     }
 }
