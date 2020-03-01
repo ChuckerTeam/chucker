@@ -3,6 +3,7 @@
     <string name="chucker_name">Chucker</string>
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
     <string name="chucker_clear">Clear</string>
+    <string name="chucker_encode_url">Encode URL</string>
     <string name="chucker_cancel">Cancel</string>
     <string name="chucker_overview">Overview</string>
     <string name="chucker_request">Request</string>
@@ -12,6 +13,8 @@
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>
     <string name="chucker_ssl">SSL</string>
+    <string name="chucker_tls_version">TLS version</string>
+    <string name="chucker_tls_cipher_suite">Cipher Suite</string>
     <string name="chucker_request_time">Request time</string>
     <string name="chucker_response_time">Response time</string>
     <string name="chucker_duration">Duration</string>
@@ -44,7 +47,7 @@
     <string name="chucker_share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>
-    <string name="chucker_check_readme"><a href="chucker_https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
+    <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="chucker_setup">Setup</string>
     <string name="chucker_binary_data">binary data</string>
     <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>

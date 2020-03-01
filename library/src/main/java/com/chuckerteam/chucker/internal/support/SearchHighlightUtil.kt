@@ -7,7 +7,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 
 /**
- * Hightlight parts of the String when it matches the search.
+ * Highlight parts of the String when it matches the search.
  *
  * @param search the text to highlight
  */

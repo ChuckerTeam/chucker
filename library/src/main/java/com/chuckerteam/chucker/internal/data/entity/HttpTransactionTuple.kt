@@ -2,6 +2,8 @@ package com.chuckerteam.chucker.internal.data.entity
 
 import androidx.room.ColumnInfo
 import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.FormattedUrl
+import okhttp3.HttpUrl
 
 /**
  * A subset of [HttpTransaction] to perform faster Read operations on the Repository.
@@ -41,5 +43,16 @@ internal class HttpTransactionTuple(
 
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
+    }
+
+    fun getFormattedPath(encode: Boolean): String {
+        val path = this.path ?: return ""
+
+        // Create dummy URL since there is no data in this class to get it from
+        // and we are only interested in a formatted path with query.
+        val dummyUrl = "https://www.example.com$path"
+
+        val httpUrl = HttpUrl.parse(dummyUrl) ?: return ""
+        return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 }

@@ -2,40 +2,34 @@ package com.chuckerteam.chucker.internal.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
-import com.chuckerteam.chucker.internal.ui.error.ErrorActivity
-import com.chuckerteam.chucker.internal.ui.error.ErrorAdapter
-import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
-import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
-import com.google.android.material.tabs.TabLayout
+import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 internal class MainActivity :
-    BaseChuckerActivity(),
-    TransactionAdapter.TransactionClickListListener,
-    ErrorAdapter.ErrorClickListListener {
+    BaseChuckerActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var viewPager: ViewPager2
+    private lateinit var mainBinding: ChuckerActivityMainBinding
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_main)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        toolbar.subtitle = applicationName
-
+        mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        setupViewPager()
 
+        with(mainBinding) {
+            setContentView(root)
+            setSupportActionBar(toolbar)
+            toolbar.subtitle = applicationName
+        }
+
+        setupViewPager()
         consumeIntent(intent)
     }
 
@@ -50,7 +44,7 @@ internal class MainActivity :
     private fun consumeIntent(intent: Intent) {
         // Get the screen to show, by default => HTTP
         val screenToShow = intent.getIntExtra(EXTRA_SCREEN, Chucker.SCREEN_HTTP)
-        viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
+        mainBinding.viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
             HomePageAdapter.NETWORK_SCREEN_POSITION
         } else {
             HomePageAdapter.ERROR_SCREEN_POSITION
@@ -58,36 +52,27 @@ internal class MainActivity :
     }
 
     private fun setupViewPager() {
-        viewPager = findViewById(R.id.viewPagerHome)
-
-        viewPager.adapter = HomePageAdapter(this)
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                if (position == HomePageAdapter.NETWORK_SCREEN_POSITION) {
-                    Chucker.dismissTransactionsNotification(this@MainActivity)
-                } else {
-                    Chucker.dismissErrorsNotification(this@MainActivity)
+        mainBinding.viewPager.apply {
+            adapter = HomePageAdapter(this@MainActivity)
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == HomePageAdapter.NETWORK_SCREEN_POSITION) {
+                        Chucker.dismissTransactionsNotification(this@MainActivity)
+                    } else {
+                        Chucker.dismissErrorsNotification(this@MainActivity)
+                    }
                 }
-            }
-        })
+            })
+        }
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayoutHome)
-        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
+        TabLayoutMediator(mainBinding.tabLayout, mainBinding.viewPager) { currentTab, currentPosition ->
             currentTab.text = if (currentPosition == HomePageAdapter.NETWORK_SCREEN_POSITION) {
                 getString(R.string.chucker_tab_network)
             } else {
                 getString(R.string.chucker_tab_errors)
             }
         }.attach()
-    }
-
-    override fun onErrorClick(throwableId: Long, position: Int) {
-        ErrorActivity.start(this, throwableId)
-    }
-
-    override fun onTransactionClick(transactionId: Long, position: Int) {
-        TransactionActivity.start(this, transactionId)
     }
 
     companion object {

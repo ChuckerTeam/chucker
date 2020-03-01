@@ -8,15 +8,14 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class TransactionListFragment :
@@ -25,8 +24,8 @@ internal class TransactionListFragment :
     TransactionAdapter.TransactionClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: TransactionAdapter
-    private lateinit var tutorialView: View
+    private lateinit var transactionsBinding: ChuckerFragmentTransactionListBinding
+    private lateinit var transactionsAdapter: TransactionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,19 +38,18 @@ internal class TransactionListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.chucker_fragment_transaction_list, container, false)
-        tutorialView = view.findViewById(R.id.tutorial)
-        view.findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
+        transactionsBinding = ChuckerFragmentTransactionListBinding.inflate(inflater, container, false)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        val context = view.context
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        )
-        adapter = TransactionAdapter(context, this)
-        recyclerView.adapter = adapter
+        transactionsAdapter = TransactionAdapter(requireContext(), this)
+        with(transactionsBinding) {
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
+            transactionsRecyclerView.apply {
+                addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                adapter = transactionsAdapter
+            }
+        }
 
-        return view
+        return transactionsBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,19 +57,24 @@ internal class TransactionListFragment :
         viewModel.transactions.observe(
             viewLifecycleOwner,
             Observer { transactionTuples ->
-                adapter.setData(transactionTuples)
-                tutorialView.visibility = if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
+                transactionsAdapter.setData(transactionTuples)
+                transactionsBinding.tutorialView.visibility =
+                    if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chucker_transactions_list, menu)
+        setUpSearch(menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun setUpSearch(menu: Menu) {
         val searchMenuItem = menu.findItem(R.id.search)
         val searchView = searchMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
         searchView.setIconifiedByDefault(true)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -99,8 +102,9 @@ internal class TransactionListFragment :
         return true
     }
 
-    override fun onTransactionClick(transactionId: Long, position: Int) =
+    override fun onTransactionClick(transactionId: Long, position: Int) {
         TransactionActivity.start(requireActivity(), transactionId)
+    }
 
     companion object {
         fun newInstance(): TransactionListFragment {

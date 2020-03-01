@@ -5,28 +5,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.support.FormatUtils.getShareCurlCommand
 import com.chuckerteam.chucker.internal.support.FormatUtils.getShareText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
-    private lateinit var title: TextView
-    private lateinit var viewPagerAdapter: TransactionPagerAdapter
     private lateinit var viewModel: TransactionViewModel
+    private lateinit var transactionBinding: ChuckerActivityTransactionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_transaction)
+        transactionBinding = ChuckerActivityTransactionBinding.inflate(layoutInflater)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
 
@@ -35,9 +32,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
             .get(TransactionViewModel::class.java)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        title = findViewById(R.id.toolbar_title)
+        with(transactionBinding) {
+            setContentView(root)
+            setSupportActionBar(toolbar)
+        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -48,20 +46,40 @@ internal class TransactionActivity : BaseChuckerActivity() {
         super.onResume()
         viewModel.transactionTitle.observe(
             this,
-            Observer { title.text = it }
+            Observer { transactionBinding.toolbarTitle.text = it }
         )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chucker_transaction, menu)
+        setUpUrlEncoding(menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setUpUrlEncoding(menu: Menu) {
+        val encodeUrlMenuItem = menu.findItem(R.id.encode_url)
+        encodeUrlMenuItem.setOnMenuItemClickListener {
+            viewModel.switchUrlEncoding()
+            return@setOnMenuItemClickListener true
+        }
+        viewModel.encodeUrl.observe(
+            this,
+            Observer { encode ->
+                val icon = if (encode) {
+                    R.drawable.chucker_ic_encoded_url_white
+                } else {
+                    R.drawable.chucker_ic_decoded_url_white
+                }
+                encodeUrlMenuItem.setIcon(icon)
+            }
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.share_text -> {
                 viewModel.transaction.value?.let {
-                    share(getShareText(this, it))
+                    share(getShareText(this, it, viewModel.encodeUrl.value!!))
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
@@ -77,11 +95,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
 
     private fun setupViewPager() {
-        val viewPager: ViewPager2 = findViewById(R.id.viewPagerTransaction)
-
-        viewPagerAdapter = TransactionPagerAdapter(this)
-        viewPager.apply {
-            adapter = viewPagerAdapter
+        transactionBinding.viewPager.apply {
+            adapter = TransactionPagerAdapter(this@TransactionActivity)
             offscreenPageLimit = TransactionPagerAdapter.TRANSACTION_SCREEN_OFFSCREEN_LIMIT as Int
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -91,8 +106,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
             currentItem = selectedTabPosition
         }
 
-        val tabLayout: TabLayout = findViewById(R.id.tabLayoutTransaction)
-        TabLayoutMediator(tabLayout, viewPager) { currentTab, currentPosition ->
+        TabLayoutMediator(transactionBinding.tabLayout, transactionBinding.viewPager) { currentTab, currentPosition ->
             currentTab.text = when (currentPosition) {
                 TransactionPagerAdapter.OVERVIEW_SCREEN_POSITION -> getString(R.string.chucker_overview)
                 TransactionPagerAdapter.REQUEST_SCREEN_POSITION -> getString(R.string.chucker_request)

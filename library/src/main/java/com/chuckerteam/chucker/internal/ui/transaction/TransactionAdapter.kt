@@ -5,11 +5,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import java.text.DateFormat
@@ -18,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection
 internal class TransactionAdapter internal constructor(
     context: Context,
     private val listener: TransactionClickListListener?
-) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
     private var transactions: List<HttpTransactionTuple> = arrayListOf()
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -30,14 +29,12 @@ internal class TransactionAdapter internal constructor(
 
     override fun getItemCount(): Int = transactions.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.chucker_list_item_transaction, parent, false)
-        return ViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
+        val viewBinding = ChuckerListItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TransactionViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) =
         holder.bind(transactions[position])
 
     fun setData(httpTransactions: List<HttpTransactionTuple>) {
@@ -45,40 +42,50 @@ internal class TransactionAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val code: TextView = view.findViewById(R.id.code)
-        private val path: TextView = view.findViewById(R.id.path)
-        private val host: TextView = view.findViewById(R.id.host)
-        private val start: TextView = view.findViewById(R.id.time_start)
-        private val duration: TextView = view.findViewById(R.id.duration)
-        private val size: TextView = view.findViewById(R.id.size)
-        private val ssl: ImageView = view.findViewById(R.id.ssl)
+    inner class TransactionViewHolder(
+        private val itemBinding: ChuckerListItemTransactionBinding
+    ) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener {
+
+        private var transactionId: Long? = null
+
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
-            path.text = "${transaction.method} ${transaction.path}"
-            host.text = transaction.host
-            start.text = DateFormat.getTimeInstance().format(transaction.requestDate)
-            ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
-            if (transaction.status === HttpTransaction.Status.Complete) {
-                code.text = transaction.responseCode.toString()
-                duration.text = transaction.durationString
-                size.text = transaction.totalSizeString
-            } else {
-                code.text = ""
-                duration.text = ""
-                size.text = ""
+            transactionId = transaction.id
+
+            itemBinding.apply {
+                path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
+                host.text = transaction.host
+                timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
+                ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
+
+                if (transaction.status === HttpTransaction.Status.Complete) {
+                    code.text = transaction.responseCode.toString()
+                    duration.text = transaction.durationString
+                    size.text = transaction.totalSizeString
+                } else {
+                    code.text = ""
+                    duration.text = ""
+                    size.text = ""
+                }
+                if (transaction.status === HttpTransaction.Status.Failed) {
+                    code.text = "!!!"
+                }
             }
-            if (transaction.status === HttpTransaction.Status.Failed) {
-                code.text = "!!!"
-            }
-            setStatusColor(this, transaction)
-            view.setOnClickListener {
-                listener?.onTransactionClick(transaction.id, adapterPosition)
+
+            setStatusColor(transaction)
+        }
+
+        override fun onClick(v: View?) {
+            transactionId?.let {
+                listener?.onTransactionClick(it, adapterPosition)
             }
         }
 
-        private fun setStatusColor(holder: ViewHolder, transaction: HttpTransactionTuple) {
+        private fun setStatusColor(transaction: HttpTransactionTuple) {
             val color: Int = when {
                 (transaction.status === HttpTransaction.Status.Failed) -> colorError
                 (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
@@ -88,8 +95,8 @@ internal class TransactionAdapter internal constructor(
                 (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
                 else -> colorDefault
             }
-            holder.code.setTextColor(color)
-            holder.path.setTextColor(color)
+            itemBinding.code.setTextColor(color)
+            itemBinding.path.setTextColor(color)
         }
     }
 
