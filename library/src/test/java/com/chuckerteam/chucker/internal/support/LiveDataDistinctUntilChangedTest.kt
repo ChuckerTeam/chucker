@@ -16,7 +16,7 @@ class LiveDataDistinctUntilChangedTest {
         val upstream = MutableLiveData<Any?>(null)
 
         upstream.distinctUntilChanged().test {
-            assertThat(expectData()).isEqualTo(null)
+            assertThat(expectData()).isNull()
         }
     }
 
@@ -41,7 +41,7 @@ class LiveDataDistinctUntilChangedTest {
             assertThat(expectData()).isEqualTo(2)
 
             upstream.value = null
-            assertThat(expectData()).isEqualTo(null)
+            assertThat(expectData()).isNull()
 
             upstream.value = 2
             assertThat(expectData()).isEqualTo(2)
@@ -54,13 +54,13 @@ class LiveDataDistinctUntilChangedTest {
 
         upstream.distinctUntilChanged().test {
             upstream.value = null
-            assertThat(expectData()).isEqualTo(null)
+            assertThat(expectData()).isNull()
 
             upstream.value = null
             expectNoData()
 
             upstream.value = ""
-            assertThat(expectData()).isEqualTo("")
+            assertThat(expectData()).isEmpty()
 
             upstream.value = ""
             expectNoData()

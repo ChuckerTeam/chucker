@@ -27,7 +27,7 @@ class FormattedUrlTest {
 
         assertThat(formattedUrl.scheme).isEqualTo("https")
         assertThat(formattedUrl.host).isEqualTo("www.example.com")
-        assertThat(formattedUrl.path).isEqualTo("")
+        assertThat(formattedUrl.path).isEmpty()
         assertThat(formattedUrl.query).isEqualTo("q=%22Hello,%20world!%22")
         assertThat(formattedUrl.pathWithQuery).isEqualTo("?q=%22Hello,%20world!%22")
         assertThat(formattedUrl.url).isEqualTo("https://www.example.com?q=%22Hello,%20world!%22")
@@ -42,7 +42,7 @@ class FormattedUrlTest {
         assertThat(formattedUrl.scheme).isEqualTo("https")
         assertThat(formattedUrl.host).isEqualTo("www.example.com")
         assertThat(formattedUrl.path).isEqualTo("/path/to%20some/resource")
-        assertThat(formattedUrl.query).isEqualTo("")
+        assertThat(formattedUrl.query).isEmpty()
         assertThat(formattedUrl.pathWithQuery).isEqualTo("/path/to%20some/resource")
         assertThat(formattedUrl.url).isEqualTo("https://www.example.com/path/to%20some/resource")
     }
@@ -69,7 +69,7 @@ class FormattedUrlTest {
 
         assertThat(formattedUrl.scheme).isEqualTo("https")
         assertThat(formattedUrl.host).isEqualTo("www.example.com")
-        assertThat(formattedUrl.path).isEqualTo("")
+        assertThat(formattedUrl.path).isEmpty()
         assertThat(formattedUrl.query).isEqualTo("q=\"Hello, world!\"")
         assertThat(formattedUrl.pathWithQuery).isEqualTo("?q=\"Hello, world!\"")
         assertThat(formattedUrl.url).isEqualTo("https://www.example.com?q=\"Hello, world!\"")
@@ -84,7 +84,7 @@ class FormattedUrlTest {
         assertThat(formattedUrl.scheme).isEqualTo("https")
         assertThat(formattedUrl.host).isEqualTo("www.example.com")
         assertThat(formattedUrl.path).isEqualTo("/path/to some/resource")
-        assertThat(formattedUrl.query).isEqualTo("")
+        assertThat(formattedUrl.query).isEmpty()
         assertThat(formattedUrl.pathWithQuery).isEqualTo("/path/to some/resource")
         assertThat(formattedUrl.url).isEqualTo("https://www.example.com/path/to some/resource")
     }
