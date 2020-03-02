@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chuckerteam.chucker.internal.ui.error.ErrorActivity">
+    tools:context="com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -28,8 +28,8 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
         <include
-          android:id="@+id/errorItem"
-          layout="@layout/chucker_list_item_error" />
+          android:id="@+id/throwableItem"
+          layout="@layout/chucker_list_item_throwable" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,7 +39,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/errorStacktrace"
+            android:id="@+id/throwableStacktrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/chucker_doub_grid"

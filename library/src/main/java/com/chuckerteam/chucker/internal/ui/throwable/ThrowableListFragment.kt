@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -14,14 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.databinding.ChuckerFragmentErrorListBinding
+import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
-internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListener {
+internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var errorsBinding: ChuckerFragmentErrorListBinding
-    private lateinit var errorsAdapter: ErrorAdapter
+    private lateinit var throwablesBinding: ChuckerFragmentThrowableListBinding
+    private lateinit var throwablesAdapter: ThrowableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,28 +30,27 @@ internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListen
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        errorsBinding = ChuckerFragmentErrorListBinding.inflate(inflater, container, false)
+        throwablesBinding = ChuckerFragmentThrowableListBinding.inflate(inflater, container, false)
+        throwablesAdapter = ThrowableAdapter(this)
 
-        errorsAdapter = ErrorAdapter(this)
-
-        with(errorsBinding) {
+        with(throwablesBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
-            errorsRecyclerView.apply {
+            throwablesRecyclerView.apply {
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-                adapter = errorsAdapter
+                adapter = throwablesAdapter
             }
         }
 
-        return errorsBinding.root
+        return throwablesBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.errors.observe(
+        viewModel.throwables.observe(
             viewLifecycleOwner,
-            Observer { errors ->
-                errorsAdapter.setData(errors)
-                errorsBinding.tutorialView.visibility = if (errors.isNullOrEmpty()) {
+            Observer { throwables ->
+                throwablesAdapter.setData(throwables)
+                throwablesBinding.tutorialView.visibility = if (throwables.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -61,7 +60,7 @@ internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListen
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_errors_list, menu)
+        inflater.inflate(R.menu.chucker_throwables_list, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -77,19 +76,19 @@ internal class ErrorListFragment : Fragment(), ErrorAdapter.ErrorClickListListen
     private fun askForConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.chucker_clear)
-            .setMessage(R.string.chucker_clear_error_confirmation)
+            .setMessage(R.string.chucker_clear_throwable_confirmation)
             .setPositiveButton(R.string.chucker_clear) { _, _ ->
-                viewModel.clearErrors()
+                viewModel.clearThrowables()
             }
             .setNegativeButton(R.string.chucker_cancel, null)
             .show()
     }
 
-    companion object {
-        fun newInstance() = ErrorListFragment()
+    override fun onThrowableClick(throwableId: Long, position: Int) {
+        ThrowableActivity.start(requireActivity(), throwableId)
     }
 
-    override fun onErrorClick(throwableId: Long, position: Int) {
-        ErrorActivity.start(requireActivity(), throwableId)
+    companion object {
+        fun newInstance() = ThrowableListFragment()
     }
 }

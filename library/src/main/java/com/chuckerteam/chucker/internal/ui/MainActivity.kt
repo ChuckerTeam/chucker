@@ -47,7 +47,7 @@ internal class MainActivity :
         mainBinding.viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
             HomePageAdapter.NETWORK_SCREEN_POSITION
         } else {
-            HomePageAdapter.ERROR_SCREEN_POSITION
+            HomePageAdapter.THROWABLE_SCREEN_POSITION
         }
     }
 
