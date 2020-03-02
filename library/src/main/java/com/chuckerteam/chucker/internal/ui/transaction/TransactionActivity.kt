@@ -39,10 +39,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
 
-    override fun onResume() {
-        super.onResume()
         viewModel.transactionTitle.observe(
             this,
             Observer { transactionBinding.toolbarTitle.text = it }

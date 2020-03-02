@@ -63,12 +63,12 @@ internal class NotificationHelper(val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val transactionsChannel = NotificationChannel(
                 TRANSACTIONS_CHANNEL_ID,
-                context.getString(R.string.chucker_networks_notification_category),
+                context.getString(R.string.chucker_network_notification_category),
                 NotificationManager.IMPORTANCE_LOW
             )
             val errorsChannel = NotificationChannel(
                 ERRORS_CHANNEL_ID,
-                context.getString(R.string.chucker_errors_notification_category),
+                context.getString(R.string.chucker_throwable_notification_category),
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannels(listOf(transactionsChannel, errorsChannel))

@@ -5,10 +5,16 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
+import com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity
+import com.chuckerteam.chucker.internal.ui.throwable.ThrowableAdapter
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import com.google.android.material.tabs.TabLayout
 
 internal class MainActivity :
-    BaseChuckerActivity() {
+    BaseChuckerActivity(),
+    TransactionAdapter.TransactionClickListListener,
+    ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var mainBinding: ChuckerActivityMainBinding
@@ -18,8 +24,8 @@ internal class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
 
         with(mainBinding) {
             setContentView(root)
@@ -58,8 +64,16 @@ internal class MainActivity :
         mainBinding.viewPager.currentItem = if (screenToShow == Chucker.SCREEN_HTTP) {
             HomePageAdapter.SCREEN_HTTP_INDEX
         } else {
-            HomePageAdapter.SCREEN_ERROR_INDEX
+            HomePageAdapter.SCREEN_THROWABLE_INDEX
         }
+    }
+
+    override fun onThrowableClick(throwableId: Long, position: Int) {
+        ThrowableActivity.start(this, throwableId)
+    }
+
+    override fun onTransactionClick(transactionId: Long, position: Int) {
+        TransactionActivity.start(this, transactionId)
     }
 
     companion object {

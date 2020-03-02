@@ -1,25 +1,25 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.chuckerteam.chucker.databinding.ChuckerListItemErrorBinding
+import com.chuckerteam.chucker.databinding.ChuckerListItemThrowableBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import java.text.DateFormat
 
-internal class ErrorAdapter(
-    val listener: ErrorClickListListener
-) : RecyclerView.Adapter<ErrorAdapter.ErrorViewHolder>() {
+internal class ThrowableAdapter(
+    val listener: ThrowableClickListListener
+) : RecyclerView.Adapter<ThrowableAdapter.ThrowableViewHolder>() {
 
     private var data: List<RecordedThrowableTuple> = listOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ErrorViewHolder {
-        val viewBinding = ChuckerListItemErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ErrorViewHolder(viewBinding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThrowableViewHolder {
+        val viewBinding = ChuckerListItemThrowableBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ThrowableViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(holder: ErrorViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ThrowableViewHolder, position: Int) {
         val throwable = data[position]
         holder.bind(throwable)
     }
@@ -33,8 +33,8 @@ internal class ErrorAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ErrorViewHolder(
-        private val itemBinding: ChuckerListItemErrorBinding
+    inner class ThrowableViewHolder(
+        private val itemBinding: ChuckerListItemThrowableBinding
     ) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener {
 
         private var throwableId: Long? = null
@@ -55,12 +55,12 @@ internal class ErrorAdapter(
 
         override fun onClick(v: View) {
             throwableId?.let {
-                listener.onErrorClick(it, adapterPosition)
+                listener.onThrowableClick(it, adapterPosition)
             }
         }
     }
 
-    interface ErrorClickListListener {
-        fun onErrorClick(throwableId: Long, position: Int)
+    interface ThrowableClickListListener {
+        fun onThrowableClick(throwableId: Long, position: Int)
     }
 }
