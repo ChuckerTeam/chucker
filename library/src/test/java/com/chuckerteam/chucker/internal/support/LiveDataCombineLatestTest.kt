@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.chuckerteam.chucker.test
-import junit.framework.TestCase.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,7 +42,7 @@ class LiveDataCombineLatestTest {
             inputA.value = true
             inputB.value = 1
 
-            assertEquals(true to 1, expectData())
+            assertThat(expectData()).isEqualTo(true to 1)
         }
     }
 
@@ -51,10 +51,10 @@ class LiveDataCombineLatestTest {
         upstream.test {
             inputA.value = true
             inputB.value = 1
-            assertEquals(true to 1, expectData())
+            assertThat(expectData()).isEqualTo(true to 1)
 
             inputB.value = 2
-            assertEquals(true to 2, expectData())
+            assertThat(expectData()).isEqualTo(true to 2)
         }
     }
 
@@ -63,10 +63,10 @@ class LiveDataCombineLatestTest {
         upstream.test {
             inputA.value = true
             inputB.value = 1
-            assertEquals(true to 1, expectData())
+            assertThat(expectData()).isEqualTo(true to 1)
 
             inputA.value = false
-            assertEquals(false to 1, expectData())
+            assertThat(expectData()).isEqualTo(false to 1)
         }
     }
 }
