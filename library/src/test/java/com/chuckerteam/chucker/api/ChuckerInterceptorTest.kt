@@ -3,9 +3,7 @@ package com.chuckerteam.chucker.api
 import com.chuckerteam.chucker.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.readByteStringBody
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertTrue
+import com.google.common.truth.Truth.assertThat
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -38,7 +36,8 @@ class ChuckerInterceptorTest {
         abstract fun create(interceptor: Interceptor): OkHttpClient
     }
 
-    @get:Rule val server = MockWebServer()
+    @get:Rule
+    val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
 
     private val chucker = ChuckerInterceptorDelegate()
@@ -53,8 +52,9 @@ class ChuckerInterceptorTest {
 
         val client = factory.create(chucker)
         client.newCall(request).execute()
+        val responseBody = ByteString.of(*chucker.expectTransaction().responseImageData!!)
 
-        assertEquals(expectedBody, ByteString.of(*chucker.expectTransaction().responseImageData!!))
+        assertThat(responseBody).isEqualTo(expectedBody)
     }
 
     @ParameterizedTest
@@ -68,7 +68,7 @@ class ChuckerInterceptorTest {
         val client = factory.create(chucker)
         val responseBody = client.newCall(request).execute().readByteStringBody()!!
 
-        assertEquals(expectedBody, responseBody)
+        assertThat(responseBody).isEqualTo(expectedBody)
     }
 
     @ParameterizedTest
@@ -83,10 +83,10 @@ class ChuckerInterceptorTest {
 
         val client = factory.create(chucker)
         client.newCall(request).execute()
-
         val transaction = chucker.expectTransaction()
-        assertTrue(transaction.isResponseBodyPlainText)
-        assertEquals("Hello, world!", transaction.responseBody)
+
+        assertThat(transaction.isResponseBodyPlainText).isTrue()
+        assertThat(transaction.responseBody).isEqualTo("Hello, world!")
     }
 
     @ParameterizedTest
@@ -102,7 +102,7 @@ class ChuckerInterceptorTest {
         val client = factory.create(chucker)
         val responseBody = client.newCall(request).execute().readByteStringBody()!!
 
-        assertEquals("Hello, world!", responseBody.utf8())
+        assertThat(responseBody.utf8()).isEqualTo("Hello, world!")
     }
 
     @ParameterizedTest
@@ -113,9 +113,9 @@ class ChuckerInterceptorTest {
 
         val client = factory.create(chucker)
         client.newCall(request).execute()
-
         val transaction = chucker.expectTransaction()
-        assertNull(transaction.responseBody)
+
+        assertThat(transaction.responseBody).isNull()
     }
 
     @ParameterizedTest
@@ -127,7 +127,7 @@ class ChuckerInterceptorTest {
         val client = factory.create(chucker)
         val responseBody = client.newCall(request).execute().readByteStringBody()
 
-        assertNull(responseBody)
+        assertThat(responseBody).isNull()
     }
 
     @ParameterizedTest
@@ -139,10 +139,10 @@ class ChuckerInterceptorTest {
 
         val client = factory.create(chucker)
         client.newCall(request).execute()
-
         val transaction = chucker.expectTransaction()
-        assertTrue(transaction.isResponseBodyPlainText)
-        assertEquals("Hello, world!", transaction.responseBody)
+
+        assertThat(transaction.isResponseBodyPlainText).isTrue()
+        assertThat(transaction.responseBody).isEqualTo("Hello, world!")
     }
 
     @ParameterizedTest
@@ -155,7 +155,7 @@ class ChuckerInterceptorTest {
         val client = factory.create(chucker)
         val responseBody = client.newCall(request).execute().readByteStringBody()!!
 
-        assertEquals("Hello, world!", responseBody.utf8())
+        assertThat(responseBody.utf8()).isEqualTo("Hello, world!")
     }
 
     @ParameterizedTest
@@ -166,10 +166,10 @@ class ChuckerInterceptorTest {
 
         val client = factory.create(chucker)
         client.newCall(request).execute()
-
         val transaction = chucker.expectTransaction()
-        assertTrue(transaction.isResponseBodyPlainText)
-        assertNull(transaction.responseBody)
+
+        assertThat(transaction.isResponseBodyPlainText).isTrue()
+        assertThat(transaction.responseBody).isNull()
     }
 
     @ParameterizedTest
@@ -181,6 +181,6 @@ class ChuckerInterceptorTest {
         val client = factory.create(chucker)
         val responseBody = client.newCall(request).execute().readByteStringBody()
 
-        assertEquals(ByteString.EMPTY, responseBody)
+        assertThat(responseBody).isEqualTo(ByteString.EMPTY)
     }
 }
