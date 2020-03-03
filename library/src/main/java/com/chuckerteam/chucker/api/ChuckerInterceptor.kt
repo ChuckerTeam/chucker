@@ -144,7 +144,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
     private fun processResponseBody(response: Response, transaction: HttpTransaction) {
         if (!response.hasBody()) return
         val responseBody = response.body() ?: return
-        if (responseBody.contentLength() == 0L) return
+        if (response.isGzipped && responseBody.contentLength() == 0L) return
 
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8

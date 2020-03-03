@@ -169,7 +169,7 @@ class ChuckerInterceptorTest {
         val transaction = chucker.expectTransaction()
 
         assertThat(transaction.isResponseBodyPlainText).isTrue()
-        assertThat(transaction.responseBody).isNull()
+        assertThat(transaction.responseBody).isEqualTo("")
     }
 
     @ParameterizedTest
