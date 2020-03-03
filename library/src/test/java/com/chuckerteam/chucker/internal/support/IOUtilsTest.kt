@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.R
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -9,10 +10,6 @@ import java.io.EOFException
 import java.nio.charset.Charset
 import java.util.stream.Stream
 import okio.Buffer
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -28,7 +25,7 @@ class IOUtilsTest {
     fun isPlaintext_withEmptyBuffer_returnsTrue() {
         val buffer = Buffer()
 
-        assertTrue(ioUtils.isPlaintext(buffer))
+        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
     }
 
     @Test
@@ -36,7 +33,7 @@ class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeString(" ", Charset.defaultCharset())
 
-        assertTrue(ioUtils.isPlaintext(buffer))
+        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
     }
 
     @Test
@@ -44,7 +41,7 @@ class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeString("just a string", Charset.defaultCharset())
 
-        assertTrue(ioUtils.isPlaintext(buffer))
+        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
     }
 
     @Test
@@ -52,7 +49,7 @@ class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeByte(0x11000000)
 
-        assertFalse(ioUtils.isPlaintext(buffer))
+        assertThat(ioUtils.isPlaintext(buffer)).isFalse()
     }
 
     @Test
@@ -61,9 +58,10 @@ class IOUtilsTest {
         every { mockBuffer.size() } returns 100L
         every { mockBuffer.copyTo(any<Buffer>(), any(), any()) } throws EOFException()
 
-        assertFalse(ioUtils.isPlaintext(mockBuffer))
+        assertThat(ioUtils.isPlaintext(mockBuffer)).isFalse()
     }
 
+    @Test
     fun readFromBuffer_contentNotTruncated() {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size() } returns 100L
@@ -71,7 +69,7 @@ class IOUtilsTest {
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 200L)
 
-        assertEquals("{ \"message\": \"just a mock body\"}", result)
+        assertThat(result).isEqualTo("{ \"message\": \"just a mock body\"}")
         verify { mockBuffer.readString(100L, Charset.defaultCharset()) }
     }
 
@@ -84,7 +82,7 @@ class IOUtilsTest {
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 50L)
 
-        assertEquals("{ \"message\": \"just a mock body\"}\\n\\n--- Content truncated ---", result)
+        assertThat(result).isEqualTo("{ \"message\": \"just a mock body\"}\\n\\n--- Content truncated ---")
         verify { mockBuffer.readString(50L, Charset.defaultCharset()) }
     }
 
@@ -97,7 +95,7 @@ class IOUtilsTest {
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 200L)
 
-        assertEquals("\\n\\n--- Unexpected end of content ---", result)
+        assertThat(result).isEqualTo("\\n\\n--- Unexpected end of content ---")
     }
 
     @Test
@@ -106,7 +104,7 @@ class IOUtilsTest {
 
         val nativeSource = ioUtils.getNativeSource(mockBuffer, false)
 
-        assertEquals(mockBuffer, nativeSource)
+        assertThat(nativeSource).isEqualTo(mockBuffer)
     }
 
     @Test
@@ -114,17 +112,16 @@ class IOUtilsTest {
         val mockBuffer = mockk<Buffer>()
 
         val nativeSource = ioUtils.getNativeSource(mockBuffer, true)
-
-        assertNotEquals(mockBuffer, nativeSource)
+        assertThat(nativeSource).isNotEqualTo(mockBuffer)
     }
 
     @ParameterizedTest(name = "{0} must be supported? {1}")
     @MethodSource("supportedEncodingSource")
     @DisplayName("Check if body encoding is supported")
-    fun bodyHasSupportedEncoding(encoding: String?, supported: Boolean) {
+    fun bodyHasSupportedEncoding(encoding: String?, isSupported: Boolean) {
         val result = ioUtils.bodyHasSupportedEncoding(encoding)
 
-        assertEquals(supported, result)
+        assertThat(result).isEqualTo(isSupported)
     }
 
     companion object {

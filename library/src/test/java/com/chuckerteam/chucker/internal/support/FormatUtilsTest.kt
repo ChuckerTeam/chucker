@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class FormatUtilsTest {
@@ -15,13 +15,12 @@ class FormatUtilsTest {
             """.trimIndent()
         )
 
-        assertEquals(
+        assertThat(parsedJson).isEqualTo(
             """
             {
               "field": null
             }
-            """.trimIndent(),
-            parsedJson
+            """.trimIndent()
         )
     }
 
@@ -35,13 +34,12 @@ class FormatUtilsTest {
             """.trimIndent()
         )
 
-        assertEquals(
+        assertThat(parsedJson).isEqualTo(
             """
             {
               "field": ""
             }
-            """.trimIndent(),
-            parsedJson
+            """.trimIndent()
         )
     }
 
@@ -51,14 +49,13 @@ class FormatUtilsTest {
             """{ "field1": "something", "field2": "else" }"""
         )
 
-        assertEquals(
+        assertThat(parsedJson).isEqualTo(
             """
             {
               "field1": "something",
               "field2": "else"
             }
-            """.trimIndent(),
-            parsedJson
+            """.trimIndent()
         )
     }
 }

@@ -5,26 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.support.FormatUtils.getShareCurlCommand
 import com.chuckerteam.chucker.internal.support.FormatUtils.getShareText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import com.google.android.material.tabs.TabLayout
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
-    private lateinit var title: TextView
     private lateinit var viewModel: TransactionViewModel
+    private lateinit var transactionBinding: ChuckerActivityTransactionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chucker_activity_transaction)
+        transactionBinding = ChuckerActivityTransactionBinding.inflate(layoutInflater)
 
         val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
 
@@ -33,23 +31,18 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
             .get(TransactionViewModel::class.java)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        title = findViewById(R.id.toolbar_title)
+        with(transactionBinding) {
+            setContentView(root)
+            setSupportActionBar(toolbar)
+            setupViewPager(viewPager)
+            tabLayout.setupWithViewPager(viewPager)
+        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        findViewById<ViewPager>(R.id.viewpager)?.let { viewPager ->
-            setupViewPager(viewPager)
-            findViewById<TabLayout>(R.id.tabs).setupWithViewPager(viewPager)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
         viewModel.transactionTitle.observe(
             this,
-            Observer { title.text = it }
+            Observer { transactionBinding.toolbarTitle.text = it }
         )
     }
 
