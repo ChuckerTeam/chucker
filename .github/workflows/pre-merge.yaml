@@ -1,0 +1,16 @@
+name: Pre Merge Checks
+on: [push, pull_request]
+
+jobs:
+  gradle:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Run Gradle preMerge task
+      uses: Raul6469/android-gradle-action@2.0.0
+      with:
+        script: clean ktlintCheck lint detekt build test
