@@ -21,7 +21,7 @@ class ChuckerInterceptorDelegate(
     private val mockContext = mockk<Context> {
         every { getString(any()) } returns ""
     }
-    private val mockCollector = mockk<ChuckerCollector>() {
+    private val mockCollector = mockk<ChuckerCollector> {
         every { onRequestSent(any()) } returns Unit
         every { onResponseReceived(any()) } answers {
             val transaction = (args[0] as HttpTransaction)
