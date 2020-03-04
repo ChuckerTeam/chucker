@@ -21,7 +21,7 @@ internal fun Response.hasBody(): Boolean {
     val responseCode = code()
     if ((responseCode < HTTP_CONTINUE || responseCode >= HTTP_OK) &&
         responseCode != HTTP_NO_CONTENT &&
-        responseCode != HTTP_NOT_MODIFIED
+        (responseCode != HTTP_NOT_MODIFIED)
     ) {
         return true
     }
