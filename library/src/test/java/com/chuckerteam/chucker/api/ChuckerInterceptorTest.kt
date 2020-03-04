@@ -4,6 +4,7 @@ import com.chuckerteam.chucker.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.readByteStringBody
 import com.google.common.truth.Truth.assertThat
+import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -108,7 +109,7 @@ class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun gzippedBody_withNoContent_isTransparentForChucker(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(204))
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chucker)
@@ -121,7 +122,7 @@ class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun gzippedBody_withNoContent_isTransparentForEndConsumer(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(204))
+        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chucker)
@@ -161,7 +162,7 @@ class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun regularBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
-        server.enqueue(MockResponse().setResponseCode(204))
+        server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chucker)
@@ -169,13 +170,13 @@ class ChuckerInterceptorTest {
         val transaction = chucker.expectTransaction()
 
         assertThat(transaction.isResponseBodyPlainText).isTrue()
-        assertThat(transaction.responseBody).isEqualTo("")
+        assertThat(transaction.responseBody).isEmpty()
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun regularBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
-        server.enqueue(MockResponse().setResponseCode(204))
+        server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chucker)
