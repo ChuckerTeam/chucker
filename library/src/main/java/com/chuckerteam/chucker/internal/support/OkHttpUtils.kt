@@ -28,7 +28,7 @@ internal fun Response.hasBody(): Boolean {
 
     // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
     // response is malformed. For best compatibility, we honor the headers.
-    return contentLenght != -1L || isChunked
+    return ((contentLenght != -1L) || isChunked)
 }
 
 internal val Response.contentLenght: Long
