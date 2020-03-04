@@ -15,9 +15,12 @@ android:
     - platform-tools
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
-    - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
+
+before_install:
+  - yes | sdkmanager "platforms;android-29"
+  - yes | sdkmanager "build-tools;29.0.3"
 
 script:
    - ./gradlew clean ktlintCheck lint detekt build test
