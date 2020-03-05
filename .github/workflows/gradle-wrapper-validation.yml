@@ -6,5 +6,10 @@ jobs:
     name: Validation
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: gradle/wrapper-validation-action@v1
+    - name: Checkout latest code
+      uses: actions/checkout@v2
+    - name: Stale run canceller
+      uses: yellowmegaman/gh-build-canceller@master
+    - name: Validate Gradle Wrapper
+      uses: gradle/wrapper-validation-action@v1
+      
