@@ -11,7 +11,7 @@ jobs:
     - name: Stale run canceller
       uses: yellowmegaman/gh-build-canceller@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Validate Gradle Wrapper
       uses: gradle/wrapper-validation-action@v1
       
