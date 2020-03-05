@@ -7,5 +7,9 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+    - name: Stale run canceller
+      uses: yellowmegaman/gh-build-canceller@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run Gradle preMerge task
       run: ./gradlew clean ktlintCheck lint detekt build test
