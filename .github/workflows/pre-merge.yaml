@@ -8,6 +8,4 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Run Gradle preMerge task
-      uses: Raul6469/android-gradle-action@2.0.0
-      with:
-        script: clean ktlintCheck lint detekt build test
+      run: ./gradlew clean ktlintCheck lint detekt build test
