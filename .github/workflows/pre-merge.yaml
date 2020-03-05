@@ -1,5 +1,12 @@
 name: Pre Merge Checks
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - develop 
+      - release
+  pull_request:
+    branches: 
+      - '*'
 
 jobs:
   gradle:
@@ -7,5 +14,5 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-    - name: Run Gradle preMerge task
+    - name: Run Gradle tasks
       run: ./gradlew clean ktlintCheck lint detekt build test
