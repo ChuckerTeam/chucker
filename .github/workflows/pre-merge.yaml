@@ -1,0 +1,11 @@
+name: Pre Merge Checks
+on: [push, pull_request]
+
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Run Gradle preMerge task
+      run: ./gradlew clean ktlintCheck lint detekt build test
