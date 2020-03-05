@@ -1,5 +1,5 @@
 name: Validate Gradle Wrapper
-on: [push, pull_request]
+on: pull_request
 
 jobs:
   validation:
@@ -8,11 +8,6 @@ jobs:
     steps:
     - name: Checkout latest code
       uses: actions/checkout@v2
-    - name: Stale run canceller
-      uses: yellowmegaman/gh-build-canceller@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        workflows_filter: "Validate Gradle Wrapper|Pre Merge Checks"
     - name: Validate Gradle Wrapper
       uses: gradle/wrapper-validation-action@v1
       
