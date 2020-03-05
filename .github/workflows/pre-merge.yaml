@@ -11,5 +11,6 @@ jobs:
       uses: yellowmegaman/gh-build-canceller@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        workflows_filter: "Validate Gradle Wrapper|Pre Merge Checks"
     - name: Run Gradle preMerge task
       run: ./gradlew clean ktlintCheck lint detekt build test
