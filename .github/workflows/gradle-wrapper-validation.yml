@@ -12,6 +12,7 @@ jobs:
       uses: yellowmegaman/gh-build-canceller@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        workflows_filter: "Validate Gradle Wrapper|Pre Merge Checks"
     - name: Validate Gradle Wrapper
       uses: gradle/wrapper-validation-action@v1
       
