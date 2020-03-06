@@ -76,12 +76,16 @@ class ChuckerInterceptor internal constructor(
             throw e
         }
 
-        return processResponseMetadata(response, transaction) { file ->
+        val responseWithProcessIntent = processResponseMetadata(response, transaction) { file ->
             val buffer = readResponseBuffer(file, response.isGzipped)
             file.delete()
             if (buffer != null) processResponseBody(buffer, response, transaction)
             collector.onResponseReceived(transaction)
         }
+        if (!responseWithProcessIntent.willProcess) {
+            collector.onResponseReceived(transaction)
+        }
+        return responseWithProcessIntent.response
     }
 
     /**
@@ -128,7 +132,7 @@ class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction,
         onResponseBodyReady: (File) -> Unit
-    ): Response {
+    ): ResponseWithProcessIntent {
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         transaction.apply {
@@ -157,7 +161,7 @@ class ChuckerInterceptor internal constructor(
         return if (responseEncodingIsSupported) {
             multiCastResponseBody(response, onResponseBodyReady)
         } else {
-            response
+            return ResponseWithProcessIntent(response, false)
         }
     }
 
@@ -168,8 +172,8 @@ class ChuckerInterceptor internal constructor(
     private fun multiCastResponseBody(
         response: Response,
         onResponseBodyReady: (File) -> Unit
-    ): Response {
-        val responseBody = response.body() ?: return response
+    ): ResponseWithProcessIntent {
+        val responseBody = response.body() ?: return ResponseWithProcessIntent(response, false)
 
         val contentType = responseBody.contentType()
         val contentLength = responseBody.contentLength()
@@ -181,9 +185,10 @@ class ChuckerInterceptor internal constructor(
             maxContentLength
         )
 
-        return response.newBuilder()
+        val multiCastResponse = response.newBuilder()
             .body(ResponseBody.create(contentType, contentLength, Okio.buffer(teeSource)))
             .build()
+        return ResponseWithProcessIntent(multiCastResponse, true)
     }
 
     private fun processResponseBody(
@@ -237,6 +242,11 @@ class ChuckerInterceptor internal constructor(
             writeAll(source)
         }
     }
+
+    private class ResponseWithProcessIntent(
+        val response: Response,
+        val willProcess: Boolean
+    )
 
     companion object {
         private val UTF8 = Charset.forName("UTF-8")
