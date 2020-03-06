@@ -79,7 +79,7 @@ class ChuckerInterceptor internal constructor(
         return processResponseMetadata(response, transaction) { file ->
             val buffer = readResponseBuffer(file, response.isGzipped)
             file.delete()
-            processResponseBody(buffer, response, transaction)
+            if (buffer != null) processResponseBody(buffer, response, transaction)
             collector.onResponseReceived(transaction)
         }
     }
@@ -191,7 +191,6 @@ class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction
     ) {
-        if (responseBodyBuffer.readUtf8Line() != TeeSource.PREFIX_OK) return
         val responseBody = response.body() ?: return
 
         val contentType = responseBody.contentType()
@@ -225,11 +224,14 @@ class ChuckerInterceptor internal constructor(
         return builder.build()
     }
 
-    private fun readResponseBuffer(responseBody: File, isGizipped: Boolean): Buffer {
+    private fun readResponseBuffer(responseBody: File, isGizipped: Boolean): Buffer? {
+        val bufferedSource = Okio.buffer(Okio.source(responseBody))
+        if (bufferedSource.readUtf8Line() != TeeSource.PREFIX_OK) return null
+
         val source = if (isGizipped) {
-            GzipSource(Okio.source(responseBody))
+            GzipSource(bufferedSource)
         } else {
-            Okio.source(responseBody)
+            bufferedSource
         }
         return Buffer().apply {
             writeAll(source)
