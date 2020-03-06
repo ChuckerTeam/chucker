@@ -2,10 +2,14 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
+import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentLenght
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.isGzipped
+import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
 import okhttp3.Headers
@@ -15,6 +19,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
+import okio.Okio
 
 private const val MAX_BLOB_SIZE = 1000_000L
 
@@ -30,12 +35,21 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
-class ChuckerInterceptor @JvmOverloads constructor(
+class ChuckerInterceptor internal constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
+    private val fileFactory: FileFactory,
     headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
+
+    @JvmOverloads
+    constructor(
+        context: Context,
+        collector: ChuckerCollector = ChuckerCollector(context),
+        maxContentLength: Long = 250000L,
+        headersToRedact: Set<String> = emptySet()
+    ) : this(context, collector, maxContentLength, AndroidCacheFileFactory(context), headersToRedact)
 
     private val io: IOUtils = IOUtils(context)
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
@@ -62,10 +76,12 @@ class ChuckerInterceptor @JvmOverloads constructor(
             throw e
         }
 
-        val processedResponse = processResponse(response, transaction)
-        collector.onResponseReceived(transaction)
-
-        return processedResponse
+        return processResponseMetadata(response, transaction) { file ->
+            val buffer = readResponseBuffer(file, response.isGzipped)
+            file.delete()
+            processResponseBody(buffer, response, transaction)
+            collector.onResponseReceived(transaction)
+        }
     }
 
     /**
@@ -106,9 +122,13 @@ class ChuckerInterceptor @JvmOverloads constructor(
     }
 
     /**
-     * Processes a [Response] and populates corresponding fields of a [HttpTransaction].
+     * Processes [Response] metadata and populates corresponding fields of a [HttpTransaction].
      */
-    private fun processResponse(response: Response, transaction: HttpTransaction): Response {
+    private fun processResponseMetadata(
+        response: Response,
+        transaction: HttpTransaction,
+        onResponseBodyReady: (File) -> Unit
+    ): Response {
         val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
 
         transaction.apply {
@@ -135,33 +155,52 @@ class ChuckerInterceptor @JvmOverloads constructor(
         }
 
         return if (responseEncodingIsSupported) {
-            processResponseBody(response, transaction)
+            multiCastResponseBody(response, onResponseBodyReady)
         } else {
             response
         }
     }
 
     /**
-     * Processes a [ResponseBody] and populates corresponding fields of a [HttpTransaction].
+     * Multi casts a [Response] body if it is available downstream and to a file which will
+     * be available in [onResponseBodyReady] callback once end user consumes the downstream.
      */
-    private fun processResponseBody(response: Response, transaction: HttpTransaction): Response {
+    private fun multiCastResponseBody(
+        response: Response,
+        onResponseBodyReady: (File) -> Unit
+    ): Response {
         val responseBody = response.body() ?: return response
 
         val contentType = responseBody.contentType()
-        val charset = contentType?.charset(UTF8) ?: UTF8
         val contentLength = responseBody.contentLength()
 
-        val responseSource = if (response.isGzipped) {
-            GzipSource(responseBody.source())
-        } else {
-            responseBody.source()
-        }
-        val buffer = Buffer().apply { responseSource.use { writeAll(it) } }
+        val teeSource = TeeSource(
+            responseBody.source(),
+            fileFactory.create(),
+            onResponseBodyReady,
+            maxContentLength
+        )
 
-        if (io.isPlaintext(buffer)) {
+        return response.newBuilder()
+            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(teeSource)))
+            .build()
+    }
+
+    private fun processResponseBody(
+        responseBodyBuffer: Buffer,
+        response: Response,
+        transaction: HttpTransaction
+    ) {
+        if (responseBodyBuffer.readUtf8Line() != TeeSource.PREFIX_OK) return
+        val responseBody = response.body() ?: return
+
+        val contentType = responseBody.contentType()
+        val charset = contentType?.charset(UTF8) ?: UTF8
+
+        if (io.isPlaintext(responseBodyBuffer)) {
             transaction.isResponseBodyPlainText = true
-            if (contentLength != 0L) {
-                transaction.responseBody = buffer.clone().readString(charset)
+            if (responseBodyBuffer.size() != 0L) {
+                transaction.responseBody = responseBodyBuffer.readString(charset)
             }
         } else {
             transaction.isResponseBodyPlainText = false
@@ -169,14 +208,10 @@ class ChuckerInterceptor @JvmOverloads constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && buffer.size() < MAX_BLOB_SIZE) {
-                transaction.responseImageData = buffer.clone().readByteArray()
+            if (isImageContentType && responseBodyBuffer.size() < MAX_BLOB_SIZE) {
+                transaction.responseImageData = responseBodyBuffer.readByteArray()
             }
         }
-
-        return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, buffer))
-            .build()
     }
 
     /** Overrides all headers from [headersToRedact] with `**` */
@@ -188,6 +223,17 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
         }
         return builder.build()
+    }
+
+    private fun readResponseBuffer(responseBody: File, isGizipped: Boolean): Buffer {
+        val source = if (isGizipped) {
+            GzipSource(Okio.source(responseBody))
+        } else {
+            Okio.source(responseBody)
+        }
+        return Buffer().apply {
+            writeAll(source)
+        }
     }
 
     companion object {

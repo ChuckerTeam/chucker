@@ -3,8 +3,10 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FileFactory
 import io.mockk.every
 import io.mockk.mockk
+import java.io.File
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import okhttp3.OkHttpClient
@@ -15,7 +17,9 @@ import okio.Buffer
 import okio.ByteString
 import okio.GzipSink
 import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 class ChuckerInterceptorTest {
     @get:Rule val server = MockWebServer()
@@ -32,9 +36,19 @@ class ChuckerInterceptorTest {
         }
     }
 
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(ChuckerInterceptor(mockContext, mockCollector))
-        .build()
+    private lateinit var client: OkHttpClient
+
+    @BeforeEach
+    fun setUp(@TempDir tempDir: File) {
+        val fileFactory = object : FileFactory {
+            override fun create(): File {
+                return File(tempDir, "testFile")
+            }
+        }
+        client = OkHttpClient.Builder()
+            .addInterceptor(ChuckerInterceptor(mockContext, mockCollector, fileFactory = fileFactory))
+            .build()
+    }
 
     @Test
     fun imageResponse_isAvailableToChucker() {
@@ -43,7 +57,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
         val expectedBody = image.snapshot()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertEquals(expectedBody, ByteString.of(*transaction!!.responseImageData!!))
     }
@@ -69,7 +83,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertTrue(transaction!!.isResponseBodyPlainText)
         assertEquals("Hello, world!", transaction!!.responseBody)
