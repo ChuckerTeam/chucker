@@ -65,7 +65,7 @@ class TeeSourceTest {
         val teeSource = TeeSource(testSource, testFile)
         Okio.buffer(teeSource).use { source ->
             repeat(repetitions) { index ->
-                source.readByteString(8192)
+                source.readByteString(8_192)
 
                 val subContent = testSource.content.substring(0, (index + 1) * 8_192)
                 Okio.buffer(Okio.source(testFile)).use {
