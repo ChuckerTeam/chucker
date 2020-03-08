@@ -222,11 +222,11 @@ class ChuckerInterceptor internal constructor(
         return builder.build()
     }
 
-    private fun readResponseBuffer(responseBody: File, isGizipped: Boolean): Buffer? {
+    private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer? {
         val bufferedSource = Okio.buffer(Okio.source(responseBody))
         if (bufferedSource.readUtf8Line() != TeeSource.PREFIX_OK) return null
 
-        val source = if (isGizipped) {
+        val source = if (isGzipped) {
             GzipSource(bufferedSource)
         } else {
             bufferedSource
