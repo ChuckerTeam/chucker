@@ -11,8 +11,8 @@ import okio.Timeout
 internal class TeeSource(
     private val upstream: Source,
     private val sideChannel: File,
-    private val onSideChannelReady: (File) -> Unit = {},
-    private val readBytesLimit: Long = Long.MAX_VALUE
+    private val readBytesLimit: Long = Long.MAX_VALUE,
+    private val onSideChannelReady: (File) -> Unit = {}
 ) : Source {
     init {
         Okio.buffer(Okio.sink(sideChannel)).use {
@@ -29,13 +29,11 @@ internal class TeeSource(
             upstream.read(sink, byteCount)
         } catch (e: IOException) {
             writeFailureHeader()
-            onSideChannelReady(sideChannel)
             throw e
         }
 
         if (bytesRead == -1L) {
             sideStream.close()
-            onSideChannelReady(sideChannel)
             return -1L
         }
 
@@ -54,6 +52,7 @@ internal class TeeSource(
     }
 
     override fun close() {
+        onSideChannelReady(sideChannel)
         sideStream.close()
         upstream.close()
     }
