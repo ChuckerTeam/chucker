@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.contentLenght
+import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.IOException
@@ -129,7 +129,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
 
             responseContentType = response.contentType
-            responseContentLength = response.contentLenght
+            responseContentLength = response.contentLength
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
