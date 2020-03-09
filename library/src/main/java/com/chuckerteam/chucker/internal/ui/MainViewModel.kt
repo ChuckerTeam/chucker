@@ -9,10 +9,16 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData<String>("")
+    private val backgroundScope = CoroutineScope(Dispatchers.IO) + Job()
 
     val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
@@ -38,11 +44,15 @@ internal class MainViewModel : ViewModel() {
     }
 
     fun clearTransactions() {
-        RepositoryProvider.transaction().deleteAllTransactions()
+        backgroundScope.launch {
+            RepositoryProvider.transaction().deleteAllTransactions()
+        }
         NotificationHelper.clearBuffer()
     }
 
     fun clearThrowables() {
-        RepositoryProvider.throwable().deleteAllThrowables()
+        backgroundScope.launch {
+            RepositoryProvider.throwable().deleteAllThrowables()
+        }
     }
 }

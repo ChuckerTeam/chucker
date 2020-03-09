@@ -5,6 +5,9 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and
@@ -36,7 +39,9 @@ class ChuckerCollector @JvmOverloads constructor(
      */
     fun onError(tag: String, throwable: Throwable) {
         val recordedThrowable = RecordedThrowable(tag, throwable)
-        RepositoryProvider.throwable().saveThrowable(recordedThrowable)
+        CoroutineScope(Dispatchers.IO).launch {
+            RepositoryProvider.throwable().saveThrowable(recordedThrowable)
+        }
         if (showNotification) {
             notificationHelper.show(recordedThrowable)
         }
@@ -48,7 +53,9 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The HTTP transaction sent
      */
     internal fun onRequestSent(transaction: HttpTransaction) {
-        RepositoryProvider.transaction().insertTransaction(transaction)
+        CoroutineScope(Dispatchers.IO).launch {
+            RepositoryProvider.transaction().insertTransaction(transaction)
+        }
         if (showNotification) {
             notificationHelper.show(transaction)
         }

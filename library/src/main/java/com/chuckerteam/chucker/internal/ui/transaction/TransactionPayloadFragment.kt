@@ -25,14 +25,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.withContext
 
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
@@ -47,6 +50,8 @@ internal class TransactionPayloadFragment :
     private var type: Int = 0
 
     private lateinit var viewModel: TransactionViewModel
+
+    private val uiScope = CoroutineScope(Dispatchers.Main) + Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +78,7 @@ internal class TransactionPayloadFragment :
             viewLifecycleOwner,
             Observer { transaction ->
                 if (transaction == null) return@Observer
-                CoroutineScope(Dispatchers.Main).launch {
+                uiScope.launch {
                     showProgress()
                     val result = processPayload(type, transaction)
                     responseRecyclerView.adapter = TransactionBodyAdapter(result)
@@ -81,6 +86,11 @@ internal class TransactionPayloadFragment :
                 }
             }
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        uiScope.cancel()
     }
 
     @SuppressLint("NewApi")
@@ -159,7 +169,7 @@ internal class TransactionPayloadFragment :
             val uri = resultData?.data
             val transaction = viewModel.transaction.value
             if (uri != null && transaction != null) {
-                CoroutineScope(Dispatchers.Main).launch {
+                uiScope.launch {
                     val result = saveToFile(type, uri, transaction)
                     val toastMessageId = if (result) {
                         R.string.chucker_file_saved

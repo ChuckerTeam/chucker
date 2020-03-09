@@ -8,7 +8,7 @@ buildscript {
         appCompatVersion = '1.1.0'
         constraintLayoutVersion = '1.1.3'
         materialComponentsVersion = '1.1.0'
-        roomVersion = '2.2.3'
+        roomVersion = '2.2.5'
         lifecycleVersion = '2.2.0'
         androidXCoreVersion = '2.1.0'
 

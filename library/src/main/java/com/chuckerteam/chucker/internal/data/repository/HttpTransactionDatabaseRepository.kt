@@ -5,13 +5,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
-
-    private val backgroundScope = CoroutineScope(Dispatchers.IO)
 
     private val transactionDao get() = database.transactionDao()
 
@@ -29,22 +24,20 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         return transactionDao.getSortedTuples()
     }
 
-    override fun deleteAllTransactions() {
-        backgroundScope.launch { transactionDao.deleteAll() }
+    override suspend fun deleteAllTransactions() {
+        transactionDao.deleteAll()
     }
 
-    override fun insertTransaction(transaction: HttpTransaction) {
-        backgroundScope.launch {
-            val id = transactionDao.insert(transaction)
-            transaction.id = id ?: 0
-        }
+    override suspend fun insertTransaction(transaction: HttpTransaction) {
+        val id = transactionDao.insert(transaction)
+        transaction.id = id ?: 0
     }
 
     override fun updateTransaction(transaction: HttpTransaction): Int {
         return transactionDao.update(transaction)
     }
 
-    override fun deleteOldTransactions(threshold: Long) {
-        backgroundScope.launch { transactionDao.deleteBefore(threshold) }
+    override suspend fun deleteOldTransactions(threshold: Long) {
+        transactionDao.deleteBefore(threshold)
     }
 }
