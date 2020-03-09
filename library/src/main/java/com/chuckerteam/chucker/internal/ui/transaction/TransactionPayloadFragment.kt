@@ -28,7 +28,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -79,7 +78,7 @@ internal class TransactionPayloadFragment :
                 uiScope.launch {
                     showProgress()
                     val result = processPayload(type, transaction)
-                    responseRecyclerView.adapter = TransactionBodyAdapter(result)
+                    payloadBinding.responseRecyclerView.adapter = TransactionBodyAdapter(result)
                     hideProgress()
                 }
             }
@@ -240,7 +239,7 @@ internal class TransactionPayloadFragment :
             if (type == TYPE_RESPONSE && responseBitmap != null) {
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap))
             } else if (!isBodyPlainText) {
-                context?.getString(R.string.chucker_body_omitted)?.let {
+                requireContext().getString(R.string.chucker_body_omitted)?.let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
@@ -252,12 +251,11 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    @Suppress("NestedBlockDepth", "ThrowsCount")
+    @Suppress("ThrowsCount")
     private suspend fun saveToFile(type: Int, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val context = context ?: return@withContext false
-                context.contentResolver.openFileDescriptor(uri, "w")?.use {
+                requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
                             TYPE_REQUEST -> {
