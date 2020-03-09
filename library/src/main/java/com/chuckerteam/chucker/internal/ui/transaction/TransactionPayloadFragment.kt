@@ -30,11 +30,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
