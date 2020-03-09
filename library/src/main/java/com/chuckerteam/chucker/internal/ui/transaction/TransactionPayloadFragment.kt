@@ -51,7 +51,7 @@ internal class TransactionPayloadFragment :
 
     private lateinit var viewModel: TransactionViewModel
 
-    private val uiScope = MainScope() + Job()
+    private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
