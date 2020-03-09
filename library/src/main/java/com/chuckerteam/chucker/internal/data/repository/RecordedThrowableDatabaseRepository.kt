@@ -5,6 +5,9 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -12,14 +15,14 @@ internal class RecordedThrowableDatabaseRepository(
     private val database: ChuckerDatabase
 ) : RecordedThrowableRepository {
 
-    private val executor: Executor = Executors.newSingleThreadExecutor()
+    private val backgroundScope = CoroutineScope(Dispatchers.IO)
 
     override fun getRecordedThrowable(id: Long): LiveData<RecordedThrowable> {
         return database.throwableDao().getById(id).distinctUntilChanged()
     }
 
     override fun deleteAllThrowables() {
-        executor.execute { database.throwableDao().deleteAll() }
+        backgroundScope.launch { database.throwableDao().deleteAll() }
     }
 
     override fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>> {
@@ -27,10 +30,10 @@ internal class RecordedThrowableDatabaseRepository(
     }
 
     override fun saveThrowable(throwable: RecordedThrowable) {
-        executor.execute { database.throwableDao().insert(throwable) }
+        backgroundScope.launch { database.throwableDao().insert(throwable) }
     }
 
     override fun deleteOldThrowables(threshold: Long) {
-        executor.execute { database.throwableDao().deleteBefore(threshold) }
+        backgroundScope.launch { database.throwableDao().deleteBefore(threshold) }
     }
 }
