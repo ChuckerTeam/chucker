@@ -6,7 +6,7 @@ import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.TeeSource
-import com.chuckerteam.chucker.internal.support.contentLenght
+import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.File
@@ -149,15 +149,15 @@ class ChuckerInterceptor internal constructor(
             }
 
             responseContentType = response.contentType
-            responseContentLength = response.contentLenght
+            responseContentLength = response.contentLength
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
     }
 
     /**
-     * Multi casts a [Response] body if it is available downstream and to a file which will
-     * be available in [onResponseBodyReady] callback once end user consumes the downstream.
+     * Multi casts a [Response] body if it is available and downstreams it to a file which will
+     * be available in [onResponseBodyReady] callback once end user consumes the body.
      */
     private fun multiCastResponseBody(
         response: Response,

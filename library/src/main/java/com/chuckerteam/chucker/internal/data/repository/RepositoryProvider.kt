@@ -5,8 +5,8 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider.initi
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 
 /**
- * A singleton to hold the [ChuckerRepository] instance. Make sure you call [initialize] before
- * accessing the stored instance.
+ * A singleton to hold the [HttpTransactionRepository] and [RecordedThrowableRepository] instances.
+ * Make sure you call [initialize] before accessing the stored instance.
  */
 internal object RepositoryProvider {
 
