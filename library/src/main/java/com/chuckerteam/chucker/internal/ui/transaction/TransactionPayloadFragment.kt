@@ -29,9 +29,9 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlinx.android.synthetic.main.chucker_fragment_transaction_payload.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -51,7 +51,7 @@ internal class TransactionPayloadFragment :
 
     private lateinit var viewModel: TransactionViewModel
 
-    private val uiScope = CoroutineScope(Dispatchers.Main) + Job()
+    private val uiScope = MainScope() + Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
