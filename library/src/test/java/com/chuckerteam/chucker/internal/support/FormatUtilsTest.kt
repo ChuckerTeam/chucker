@@ -11,7 +11,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withNullValues() {
         val parsedJson = FormatUtils.formatJson(
-            """{ "field" : null }""".trimIndent()
+            """{ "field" : null }"""
         )
 
         assertThat(parsedJson).isEqualTo(
@@ -26,7 +26,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withEmptyValues() {
         val parsedJson = FormatUtils.formatJson(
-            """ { "field" : "" } """.trimIndent()
+            """{ "field" : "" }"""
         )
 
         assertThat(parsedJson).isEqualTo(
