@@ -17,10 +17,10 @@ class JsonConverterTest {
     }
 
     @Test
-    fun testGsonConfiguration_willParseDateTime() {
+    fun testMoshiConfiguration_willParseDateTime() {
         val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
         val expectedDateString = dateFormat.format(Date(0))
-        val json = JsonConverter.instance.toJson(DateTestClass(Date(0)))
+        val json = JsonConverter.instance.adapter(DateTestClass::class.java).addConvenienceMethods().toJson(DateTestClass(Date(0)))
         assertThat(json).isEqualTo(
             """
             {
@@ -31,20 +31,8 @@ class JsonConverterTest {
     }
 
     @Test
-    fun testGsonConfiguration_willUseLowerCaseWithUnderscores() {
-        val json = JsonConverter.instance.toJson(NamingTestClass("aCamelCaseString"))
-        assertThat(json).isEqualTo(
-            """
-            {
-              "a_long_name_with_camel_case": "aCamelCaseString"
-            }
-            """.trimIndent()
-        )
-    }
-
-    @Test
-    fun testGsonConfiguration_willSerializeNulls() {
-        val json = JsonConverter.instance.toJson(NullTestClass(null))
+    fun testMoshiConfiguration_willSerializeNulls() {
+        val json = JsonConverter.instance.adapter(NullTestClass::class.java).addConvenienceMethods().toJson(NullTestClass(null))
         assertThat(json).isEqualTo(
             """
             {
@@ -54,7 +42,6 @@ class JsonConverterTest {
         )
     }
 
-    inner class DateTestClass(var date: Date)
-    inner class NullTestClass(var string: String?)
-    inner class NamingTestClass(var aLongNameWithCamelCase: String)
+    private class DateTestClass(var date: Date)
+    private class NullTestClass(var string: String?)
 }

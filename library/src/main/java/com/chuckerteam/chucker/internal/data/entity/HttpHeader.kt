@@ -1,8 +1,8 @@
 package com.chuckerteam.chucker.internal.data.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 internal data class HttpHeader(
-    @SerializedName("name") val name: String,
-    @SerializedName("value") val value: String
+    @Json(name = "name") val name: String,
+    @Json(name = "value") val value: String
 )

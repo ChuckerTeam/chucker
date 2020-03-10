@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
-import com.google.gson.reflect.TypeToken
+import com.chuckerteam.chucker.internal.support.getHttpHeaderListJsonAdapter
 import java.util.Date
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -146,23 +146,15 @@ internal class HttpTransaction(
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
-        requestHeaders = JsonConverter.instance.toJson(headers)
+        requestHeaders = JsonConverter.instance.getHttpHeaderListJsonAdapter().toJson(headers)
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return JsonConverter.instance.fromJson<List<HttpHeader>>(
-            requestHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
-        )
+        return requestHeaders?.let { JsonConverter.instance.getHttpHeaderListJsonAdapter().fromJson(it) }
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
-        return JsonConverter.instance.fromJson<List<HttpHeader>>(
-            responseHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
-        )
+        return responseHeaders?.let { JsonConverter.instance.getHttpHeaderListJsonAdapter().fromJson(it) }
     }
 
     fun getRequestHeadersString(withMarkup: Boolean): String {
@@ -174,7 +166,7 @@ internal class HttpTransaction(
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {
-        responseHeaders = JsonConverter.instance.toJson(headers)
+        responseHeaders = JsonConverter.instance.getHttpHeaderListJsonAdapter().toJson(headers)
     }
 
     fun getResponseHeadersString(withMarkup: Boolean): String {

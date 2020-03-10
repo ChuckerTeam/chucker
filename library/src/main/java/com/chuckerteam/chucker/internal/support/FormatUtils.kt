@@ -4,8 +4,9 @@ import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.google.gson.JsonParseException
-import com.google.gson.JsonParser
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.PrintWriter
@@ -56,10 +57,13 @@ internal object FormatUtils {
 
     fun formatJson(json: String): String {
         return try {
-            val je = JsonParser.parseString(json)
-            JsonConverter.instance.toJson(je)
-        } catch (e: JsonParseException) {
-            json
+            JSONObject(json).toString(2)
+        } catch (e: JSONException) {
+            try {
+                JSONArray(json).toString(2)
+            } catch (e: JSONException) {
+                json
+            }
         }
     }
 

@@ -22,6 +22,12 @@ android {
         jvmTarget = "1.8"
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     viewBinding {
         enabled = true
     }
@@ -71,7 +77,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
 
-    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
@@ -81,6 +88,7 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

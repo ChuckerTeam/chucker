@@ -15,7 +15,7 @@ buildscript {
         androidMavenGradleVersion = '2.1'
 
         // Networking
-        gsonVersion = '2.8.6'
+        moshiVersion = '1.9.2'
         okhttp3Version = '3.12.6'
         retrofitVersion = '2.6.4'
 
@@ -30,6 +30,7 @@ buildscript {
         junitVersion = '5.6.0'
         mockkVersion = '1.9.3'
         truthVersion = '1.0.1'
+        robolectricVersion = '4.3'
     }
 
     repositories {
