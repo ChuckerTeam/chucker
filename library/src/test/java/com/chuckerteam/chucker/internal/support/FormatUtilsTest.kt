@@ -57,7 +57,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJsonArray_willPrettyPrint() {
         val parsedJson = FormatUtils.formatJson(
-                """[{"field1":"something1","field2":"else1"},{"field1":"something2","field2":"else2"}]"""
+            """[{"field1":"something1","field2":"else1"},{"field1":"something2","field2":"else2"}]"""
         )
 
         assertThat(parsedJson).isEqualTo(
