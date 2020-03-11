@@ -7,9 +7,8 @@ internal object JsonConverter {
 
     val instance: Moshi by lazy {
         Moshi.Builder()
-                .add(DateJsonAdapter())
-                .add(KotlinJsonAdapterFactory())
-                .build()
+            .add(DateJsonAdapter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
     }
-
 }
