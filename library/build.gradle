@@ -78,7 +78,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
@@ -89,6 +89,7 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    kaptTest "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

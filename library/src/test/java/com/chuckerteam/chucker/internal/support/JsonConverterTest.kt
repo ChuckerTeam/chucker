@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.JsonClass
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
@@ -42,6 +43,9 @@ class JsonConverterTest {
         )
     }
 
-    private class DateTestClass(var date: Date)
-    private class NullTestClass(var string: String?)
+    @JsonClass(generateAdapter = true)
+    internal class DateTestClass(var date: Date)
+
+    @JsonClass(generateAdapter = true)
+    internal class NullTestClass(var string: String?)
 }
