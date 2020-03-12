@@ -1,11 +1,8 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import org.junit.jupiter.api.Test
 
-@RunWith(RobolectricTestRunner::class)
 class FormatUtilsTest {
 
     @Test

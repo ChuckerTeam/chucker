@@ -22,12 +22,6 @@ android {
         jvmTarget = "1.8"
     }
 
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
-
     viewBinding {
         enabled = true
     }
@@ -88,7 +82,6 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
-    testImplementation "org.robolectric:robolectric:$robolectricVersion"
     kaptTest "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 }
 

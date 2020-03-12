@@ -4,6 +4,9 @@ import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.Moshi
+import okio.Buffer
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.PrintWriter
@@ -20,9 +23,6 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.math.ln
 import kotlin.math.pow
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import org.xml.sax.SAXParseException
@@ -58,15 +58,11 @@ internal object FormatUtils {
     }
 
     fun formatJson(json: String): String {
-        return try {
-            JSONObject(json).toString(JSON_INDENT_SPACES)
-        } catch (e: JSONException) {
-            try {
-                JSONArray(json).toString(JSON_INDENT_SPACES)
-            } catch (e: JSONException) {
-                json
-            }
-        }
+        val buffer = Buffer().writeUtf8(json)
+        val jsonReader = JsonReader.of(buffer)
+        val jsonValue = jsonReader.readJsonValue()
+        val adapter = JsonConverter.instance.adapter(Any::class.java).addConvenienceMethods()
+        return adapter.toJson(jsonValue)
     }
 
     fun formatXml(xml: String): String {
