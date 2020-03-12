@@ -31,8 +31,6 @@ internal object FormatUtils {
     private const val SI_MULTIPLE = 1000
     private const val BASE_TWO_MULTIPLE = 1024
 
-    private const val JSON_INDENT_SPACES = 2
-
     fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
         return httpHeaders?.joinToString(separator = "") { header ->
             if (withMarkup) {
