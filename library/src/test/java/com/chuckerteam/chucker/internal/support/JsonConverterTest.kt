@@ -18,17 +18,19 @@ class JsonConverterTest {
     }
 
     @Test
-    fun testMoshiConfiguration_willParseDateTime() {
+    fun testMoshiConfiguration_willSerializeDateTime() {
         val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
-        val expectedDateString = dateFormat.format(Date(0))
-        val json = JsonConverter.instance.adapter(DateTestClass::class.java).addConvenienceMethods().toJson(DateTestClass(Date(0)))
-        assertThat(json).isEqualTo(
-            """
-            {
-              "date": "$expectedDateString"
-            }
-            """.trimIndent()
-        )
+        val dateTestJson = JsonConverter.instance.adapter(DateTestClass::class.java)
+            .toJson(DateTestClass(Date(0)))
+        assertThat(dateTestJson).isEqualTo("""{"date":"${dateFormat.format(Date(0))}"}""")
+    }
+
+    @Test
+    fun testMoshiConfiguration_willDeserializeDateTime() {
+        val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
+        val dateTestClass = JsonConverter.instance.adapter(DateTestClass::class.java)
+            .fromJson("""{"date":"${dateFormat.format(Date(0))}"}""")
+        assertThat(dateTestClass).isEqualTo(DateTestClass(Date(0)))
     }
 
     @Test
@@ -44,8 +46,8 @@ class JsonConverterTest {
     }
 
     @JsonClass(generateAdapter = true)
-    internal class DateTestClass(var date: Date)
+    internal data class DateTestClass(val date: Date)
 
     @JsonClass(generateAdapter = true)
-    internal class NullTestClass(var string: String?)
+    internal data class NullTestClass(val string: String?)
 }

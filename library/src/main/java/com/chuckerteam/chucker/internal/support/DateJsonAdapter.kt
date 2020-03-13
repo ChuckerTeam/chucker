@@ -8,15 +8,11 @@ import java.util.Locale
 
 class DateJsonAdapter {
 
+    private val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
+
     @ToJson
-    fun toJson(date: Date): String {
-        val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
-        return dateFormat.format(date)
-    }
+    fun toJson(date: Date): String = dateFormat.format(date)
 
     @FromJson
-    fun fromJson(date: String): Date {
-        val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
-        return dateFormat.parse(date)!!
-    }
+    fun fromJson(date: String): Date = dateFormat.parse(date)!!
 }
