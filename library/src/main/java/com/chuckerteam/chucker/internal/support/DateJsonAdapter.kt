@@ -11,8 +11,8 @@ class DateJsonAdapter {
     private val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
 
     @ToJson
-    fun toJson(date: Date): String = dateFormat.format(date)
+    fun toJson(date: Date?): String? = date?.let { dateFormat.format(it) }
 
     @FromJson
-    fun fromJson(date: String): Date = dateFormat.parse(date)!!
+    fun fromJson(dateString: String?): Date? = dateString?.let { dateFormat.parse(it) }
 }

@@ -2,10 +2,11 @@ package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonDataException
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
 class JsonConverterTest {
 
@@ -32,6 +33,27 @@ class JsonConverterTest {
         assertThat(dateTestClass).isEqualTo(DateTestClass(Date(0)))
     }
 
+    @Test
+    fun testMoshiConfiguration_willSerialize_null_DateTime() {
+        val dateTestJson = JsonConverter.instance.adapter(DateTestClass::class.java)
+            .toJson(DateTestClass(null))
+        assertThat(dateTestJson).isEqualTo("{}")
+    }
+
+    @Test
+    fun testMoshiConfiguration_willDeserialize_null_DateTime() {
+        val dateTestClass = JsonConverter.instance.adapter(DateTestClass::class.java)
+            .fromJson("""{"date":null}""")
+        assertThat(dateTestClass).isEqualTo(DateTestClass(null))
+    }
+
+    @Test(expected = JsonDataException::class)
+    fun testMoshiConfiguration_willDeserialize_Invalid_DateTime() {
+        val dateTestClass = JsonConverter.instance.adapter(DateTestClass::class.java)
+            .fromJson("""{"date":"abcd"}""")
+        assertThat(dateTestClass).isEqualTo(DateTestClass(null))
+    }
+
     @JsonClass(generateAdapter = true)
-    internal data class DateTestClass(val date: Date)
+    internal data class DateTestClass(val date: Date?)
 }
