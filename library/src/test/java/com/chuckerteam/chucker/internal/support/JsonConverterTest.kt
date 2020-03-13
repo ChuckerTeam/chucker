@@ -13,7 +13,6 @@ class JsonConverterTest {
     fun testInstance_sameInstance() {
         val instance1 = JsonConverter.instance
         val instance2 = JsonConverter.instance
-
         assertThat(instance1).isEqualTo(instance2)
     }
 
@@ -33,21 +32,6 @@ class JsonConverterTest {
         assertThat(dateTestClass).isEqualTo(DateTestClass(Date(0)))
     }
 
-    @Test
-    fun testMoshiConfiguration_willSerializeNulls() {
-        val json = JsonConverter.instance.adapter(NullTestClass::class.java).addConvenienceMethods().toJson(NullTestClass(null))
-        assertThat(json).isEqualTo(
-            """
-            {
-              "string": null
-            }
-            """.trimIndent()
-        )
-    }
-
     @JsonClass(generateAdapter = true)
     internal data class DateTestClass(val date: Date)
-
-    @JsonClass(generateAdapter = true)
-    internal data class NullTestClass(val string: String?)
 }
