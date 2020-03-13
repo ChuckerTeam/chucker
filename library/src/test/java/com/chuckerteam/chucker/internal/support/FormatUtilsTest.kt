@@ -36,6 +36,17 @@ class FormatUtilsTest {
     }
 
     @Test
+    fun testFormatJson_withInvalidJson() {
+        val parsedJson = FormatUtils.formatJson(
+            """[{ "field" : null }"""
+        )
+
+        assertThat(parsedJson).isEqualTo(
+            """[{ "field" : null }"""
+        )
+    }
+
+    @Test
     fun testFormatJson_willPrettyPrint() {
         val parsedJson = FormatUtils.formatJson(
             """{ "field1": "something", "field2": "else" }"""

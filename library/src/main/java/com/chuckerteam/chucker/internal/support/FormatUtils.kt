@@ -6,6 +6,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.squareup.moshi.JsonReader
 import java.io.ByteArrayInputStream
+import java.io.EOFException
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -55,11 +56,15 @@ internal object FormatUtils {
     }
 
     fun formatJson(json: String): String {
-        val buffer = Buffer().writeUtf8(json)
-        val jsonReader = JsonReader.of(buffer)
-        val jsonValue = jsonReader.readJsonValue()
-        val adapter = JsonConverter.instance.adapter(Any::class.java).addConvenienceMethods()
-        return adapter.toJson(jsonValue)
+        return try {
+            val buffer = Buffer().writeUtf8(json)
+            val jsonReader = JsonReader.of(buffer)
+            val jsonValue = jsonReader.readJsonValue()
+            val adapter = JsonConverter.instance.adapter(Any::class.java).addConvenienceMethods()
+            adapter.toJson(jsonValue)
+        } catch (e: EOFException) {
+            json
+        }
     }
 
     fun formatXml(xml: String): String {
