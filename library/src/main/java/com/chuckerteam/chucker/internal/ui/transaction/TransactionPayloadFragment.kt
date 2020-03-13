@@ -37,7 +37,7 @@ import java.io.IOException
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
 internal class TransactionPayloadFragment :
-        Fragment(), SearchView.OnQueryTextListener {
+    Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
 
@@ -56,27 +56,30 @@ internal class TransactionPayloadFragment :
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(inflater, container, false)
+        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
+            inflater, container,
+            false
+        )
         return payloadBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.transaction.observe(
-                viewLifecycleOwner,
-                Observer { transaction ->
-                    if (transaction == null) return@Observer
-                    CoroutineScope(Dispatchers.Main).launch {
-                        showProgress()
-                        val result = processPayload(type, transaction)
-                        responseRecyclerView.adapter = TransactionBodyAdapter(result)
-                        hideProgress()
-                    }
+            viewLifecycleOwner,
+            Observer { transaction ->
+                if (transaction == null) return@Observer
+                CoroutineScope(Dispatchers.Main).launch {
+                    showProgress()
+                    val result = processPayload(type, transaction)
+                    responseRecyclerView.adapter = TransactionBodyAdapter(result)
+                    hideProgress()
                 }
+            }
         )
     }
 
@@ -144,8 +147,8 @@ internal class TransactionPayloadFragment :
                 startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
             } else {
                 Toast.makeText(
-                        requireContext(), R.string.chucker_save_failed_to_open_document,
-                        Toast.LENGTH_SHORT
+                    requireContext(), R.string.chucker_save_failed_to_open_document,
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -180,7 +183,6 @@ internal class TransactionPayloadFragment :
         }
         return true
     }
-
 
     private fun showProgress() {
         payloadBinding.apply {
@@ -217,9 +219,11 @@ internal class TransactionPayloadFragment :
 
             if (headersString.isNotBlank()) {
                 result.add(
-                        TransactionPayloadItem.HeaderItem(
-                                HtmlCompat.fromHtml(headersString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    TransactionPayloadItem.HeaderItem(
+                        HtmlCompat.fromHtml(
+                            headersString, HtmlCompat.FROM_HTML_MODE_LEGACY
                         )
+                    )
                 )
             }
 
@@ -240,7 +244,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-
+    @Suppress("NestedBlockDepth", "ThrowsCount")
     private suspend fun saveToFile(type: Int, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -250,11 +254,11 @@ internal class TransactionPayloadFragment :
                         when (type) {
                             TYPE_REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                                        ?: throw IOException(TRANSACTION_EXCEPTION)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             TYPE_RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                                        ?: throw IOException(TRANSACTION_EXCEPTION)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             else -> {
                                 if (transaction.responseImageData != null) {
@@ -289,10 +293,10 @@ internal class TransactionPayloadFragment :
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
         fun newInstance(type: Int): TransactionPayloadFragment =
-                TransactionPayloadFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(ARG_TYPE, type)
-                    }
+            TransactionPayloadFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_TYPE, type)
                 }
+            }
     }
 }

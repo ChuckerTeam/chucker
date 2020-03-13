@@ -5,7 +5,9 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
 
@@ -32,10 +34,10 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     }
 
     override fun insertTransaction(transaction: HttpTransaction) {
-       backgroundScope.launch {
-           val id = transactionDao.insert(transaction)
-           transaction.id = id ?: 0
-       }
+        backgroundScope.launch {
+            val id = transactionDao.insert(transaction)
+            transaction.id = id ?: 0
+        }
     }
 
     override fun updateTransaction(transaction: HttpTransaction): Int {
@@ -43,6 +45,6 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     }
 
     override fun deleteOldTransactions(threshold: Long) {
-         backgroundScope.launch { transactionDao.deleteBefore(threshold) }
+        backgroundScope.launch { transactionDao.deleteBefore(threshold) }
     }
 }

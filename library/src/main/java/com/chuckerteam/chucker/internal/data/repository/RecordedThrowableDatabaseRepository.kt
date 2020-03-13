@@ -8,8 +8,6 @@ import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 internal class RecordedThrowableDatabaseRepository(
     private val database: ChuckerDatabase
