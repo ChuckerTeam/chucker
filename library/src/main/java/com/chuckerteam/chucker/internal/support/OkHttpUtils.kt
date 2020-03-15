@@ -1,5 +1,3 @@
-@file:JvmName("OkHttpUtils")
-
 package com.chuckerteam.chucker.internal.support
 
 import okhttp3.Headers
