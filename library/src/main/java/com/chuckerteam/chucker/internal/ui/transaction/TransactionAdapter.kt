@@ -75,7 +75,10 @@ internal class TransactionAdapter internal constructor(
                     R.color.chucker_color_error
                 }
                 ssl.setImageDrawable(AppCompatResources.getDrawable(itemView.context, sslDrawableRes))
-                ImageViewCompat.setImageTintList(ssl, ColorStateList.valueOf(ContextCompat.getColor(itemView.context, sslDrawableColorRes)))
+                ImageViewCompat.setImageTintList(
+                    ssl,
+                    ColorStateList.valueOf(ContextCompat.getColor(itemView.context, sslDrawableColorRes))
+                )
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()
