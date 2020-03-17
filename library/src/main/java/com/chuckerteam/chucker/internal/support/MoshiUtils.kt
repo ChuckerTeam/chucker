@@ -1,5 +1,3 @@
-@file:JvmName("MoshiUtils")
-
 package com.chuckerteam.chucker.internal.support
 
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
