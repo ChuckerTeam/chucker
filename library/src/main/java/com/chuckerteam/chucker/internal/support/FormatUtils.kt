@@ -60,8 +60,8 @@ internal object FormatUtils {
             val buffer = Buffer().writeUtf8(json)
             val jsonReader = JsonReader.of(buffer)
             val jsonValue = jsonReader.readJsonValue()
-            val adapter = JsonConverter.instance.adapter(Any::class.java).addConvenienceMethods()
-            adapter.toJson(jsonValue)
+            val jsonAdapter = JsonConverter.instance.adapter(Any::class.java).addConvenienceMethods()
+            jsonAdapter.toJson(jsonValue)
         } catch (e: EOFException) {
             json
         }
