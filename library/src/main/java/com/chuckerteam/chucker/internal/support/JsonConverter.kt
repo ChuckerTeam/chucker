@@ -6,7 +6,6 @@ internal object JsonConverter {
 
     val instance: Moshi by lazy {
         Moshi.Builder()
-            .add(DateJsonAdapter())
             .build()
     }
 }
