@@ -11,8 +11,4 @@ internal fun Moshi.getHttpHeaderListJsonAdapter(): JsonAdapter<List<HttpHeader>>
     return jsonAdapter.addConvenienceMethods()
 }
 
-internal fun <T> JsonAdapter<T>.addConvenienceMethods(): JsonAdapter<T> {
-    return this
-        .serializeNulls()
-        .indent("  ")
-}
+internal fun <T> JsonAdapter<T>.addConvenienceMethods() = serializeNulls().indent("  ")
