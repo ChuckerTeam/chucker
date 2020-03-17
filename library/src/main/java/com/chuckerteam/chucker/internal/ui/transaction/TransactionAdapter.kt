@@ -2,10 +2,13 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
@@ -60,7 +63,19 @@ internal class TransactionAdapter internal constructor(
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
-                ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
+
+                val sslDrawableRes = if (transaction.isSsl) {
+                    R.drawable.chucker_ic_https
+                } else {
+                    R.drawable.chucker_ic_http
+                }
+                val sslDrawableColorRes = if (transaction.isSsl) {
+                    R.color.chucker_color_primary
+                } else {
+                    R.color.chucker_color_error
+                }
+                ssl.setImageDrawable(AppCompatResources.getDrawable(itemView.context, sslDrawableRes))
+                ImageViewCompat.setImageTintList(ssl, ColorStateList.valueOf(ContextCompat.getColor(itemView.context, sslDrawableColorRes)))
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()
