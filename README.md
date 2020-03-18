@@ -119,7 +119,7 @@ try {
 
 ### Redact-Header 👮‍♂️
 
-**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. 
+**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies.
 
 It is intended for **use during development**, and not in release builds or other production deployments.
 
@@ -131,7 +131,7 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 
 ### Skip Chucker inspection 🙅‍♀️🕵️
 
-If you need to selectively skip Chucker inspection on some endpoints or on particular requests you can a special header - `Skip-ChuckerInterceptor: true`. This will inform Chucker to not process this request. Chucker will also strip this header from any request before sending it to a server.
+If you need to selectively skip Chucker inspection on some endpoints or on particular requests you can add a special header - `Skip-ChuckerInterceptor: true`. This will inform Chucker to not process this request. Chucker will also strip this header from any request before sending it to a server.
 
 If you use `OkHttp` directly, create requests like below.
 
