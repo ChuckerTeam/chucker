@@ -5,7 +5,6 @@ import com.squareup.moshi.Moshi
 internal object JsonConverter {
 
     val instance: Moshi by lazy {
-        Moshi.Builder()
-            .build()
+        Moshi.Builder().build()
     }
 }
