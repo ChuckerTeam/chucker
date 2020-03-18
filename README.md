@@ -129,7 +129,7 @@ You can redact headers that contain sensitive information by calling `redactHead
 interceptor.redactHeader("Auth-Token", "User-Session");
 ```
 
-### Skip Chucker inspection 🙅‍♀️🕵️
+### Skip-Inspection 🙅‍♀️🕵️
 
 If you need to selectively skip Chucker inspection on some endpoints or on particular requests you can add a special header - `Skip-ChuckerInterceptor: true`. This will inform Chucker to not process this request. Chucker will also strip this header from any request before sending it to a server.
 
