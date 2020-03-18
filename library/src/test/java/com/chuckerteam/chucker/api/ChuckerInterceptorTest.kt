@@ -3,10 +3,9 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
@@ -15,7 +14,7 @@ import okio.Buffer
 import okio.ByteString
 import okio.GzipSink
 import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ChuckerInterceptorTest {
     @get:Rule val server = MockWebServer()
@@ -45,7 +44,7 @@ class ChuckerInterceptorTest {
 
         client.newCall(request).execute()
 
-        assertEquals(expectedBody, ByteString.of(*transaction!!.responseImageData!!))
+        assertThat(expectedBody).isEqualTo(ByteString.of(*transaction!!.responseImageData!!))
     }
 
     @Test
@@ -57,7 +56,7 @@ class ChuckerInterceptorTest {
 
         val responseBody = client.newCall(request).execute().body()!!.source().readByteString()
 
-        assertEquals(expectedBody, responseBody)
+        assertThat(expectedBody).isEqualTo(responseBody)
     }
 
     @Test
@@ -71,8 +70,8 @@ class ChuckerInterceptorTest {
 
         client.newCall(request).execute()
 
-        assertTrue(transaction!!.isResponseBodyPlainText)
-        assertEquals("Hello, world!", transaction!!.responseBody)
+        assertThat(transaction!!.isResponseBodyPlainText).isTrue()
+        assertThat(transaction!!.responseBody).isEqualTo("Hello, world!")
     }
 
     @Test
@@ -86,6 +85,78 @@ class ChuckerInterceptorTest {
 
         val responseBody = client.newCall(request).execute().body()!!.source().readByteString()
 
-        assertEquals("Hello, world!", responseBody.utf8())
+        assertThat(responseBody.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @Test
+    fun requestThatShouldBeSkipped_isNotProcessedByChucker() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "true")
+            .build()
+
+        client.newCall(request).execute()
+
+        assertThat(transaction).isNull()
+    }
+
+    @Test
+    fun requestThatShouldBeSkipped_isDeliveredToTheEndConsumer() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "true")
+            .build()
+
+        val body = client.newCall(request).execute().body()!!.string()
+
+        assertThat(body).isEqualTo("Hello, world!")
+    }
+
+    @Test
+    fun requestThatShouldNotBeSkipped_isProcessedByChucker() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "false")
+            .build()
+
+        client.newCall(request).execute()
+
+        assertThat(transaction!!.responseBody).isEqualTo("Hello, world!")
+    }
+
+    @Test
+    fun requestThatShouldNotBeSkipped_isDeliveredToTheEndConsumer() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "false")
+            .build()
+
+        val body = client.newCall(request).execute().body()!!.string()
+
+        assertThat(body).isEqualTo("Hello, world!")
+    }
+
+    @Test
+    fun skipChuckerHeader_isNotAvailableForTheServerRequest() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "true")
+            .build()
+
+        val response = client.newCall(request).execute()
+
+        assertThat(response.request().header(Chucker.SKIP_INTERCEPTOR_HEADER_NAME)).isNull()
+    }
+
+    @Test
+    fun doNotskipChuckerHeader_isNotAvailableForTheServerRequest() {
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(serverUrl)
+            .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "false")
+            .build()
+
+        val response = client.newCall(request).execute()
+
+        assertThat(response.request().header(Chucker.SKIP_INTERCEPTOR_HEADER_NAME)).isNull()
     }
 }
