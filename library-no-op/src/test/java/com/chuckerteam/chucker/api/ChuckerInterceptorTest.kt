@@ -34,7 +34,7 @@ class ChuckerInterceptorTest {
     }
 
     @Test
-    fun doNotskipChuckerHeader_isNotAvailableForTheServerRequest() {
+    fun doNotSkipChuckerHeader_isNotAvailableForTheServerRequest() {
         server.enqueue(MockResponse().setBody("Hello, world!"))
         val request = Request.Builder().url(serverUrl)
             .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "false")
