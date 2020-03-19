@@ -212,7 +212,7 @@ class ChuckerInterceptor internal constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && responseBodyBuffer.size() < MAX_BLOB_SIZE) {
+            if (isImageContentType && (responseBodyBuffer.size() < MAX_BLOB_SIZE)) {
                 transaction.responseImageData = responseBodyBuffer.readByteArray()
             }
         }
