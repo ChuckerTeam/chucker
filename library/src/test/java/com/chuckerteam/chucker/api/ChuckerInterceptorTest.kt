@@ -3,8 +3,8 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.google.common.truth.Truth.assertThat
 import com.chuckerteam.chucker.internal.support.FileFactory
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import java.io.File
@@ -21,7 +21,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
 class ChuckerInterceptorTest {
-    @get:Rule val server = MockWebServer()
+    @get:Rule
+    val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
 
     private var transaction: HttpTransaction? = null
