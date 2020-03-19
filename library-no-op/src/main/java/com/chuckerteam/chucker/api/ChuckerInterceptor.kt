@@ -21,7 +21,9 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
+        val request = chain.request().newBuilder()
+            .removeHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME)
+            .build()
         return chain.proceed(request)
     }
 }
