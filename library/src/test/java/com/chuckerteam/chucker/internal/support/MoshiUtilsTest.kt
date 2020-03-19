@@ -13,7 +13,7 @@ class MoshiUtilsTest {
             HttpHeader("name1", "value1"),
             HttpHeader("name2", "value2")
         )
-        val adapter = JsonConverter.instance.getHttpHeaderListJsonAdapter()
+        val adapter = moshi.getHttpHeaderListJsonAdapter()
         assertThat(adapter.toJson(httpHeaderList)).isEqualTo(
             """
             [
@@ -45,7 +45,7 @@ class MoshiUtilsTest {
               }
             ]
             """.trimIndent()
-        val adapter = JsonConverter.instance.getHttpHeaderListJsonAdapter()
+        val adapter = moshi.getHttpHeaderListJsonAdapter()
         assertThat(adapter.fromJson(httpHeaderListJson)).isEqualTo(
             listOf(
                 HttpHeader("name1", "value1"),
@@ -56,7 +56,7 @@ class MoshiUtilsTest {
 
     @Test
     fun testMoshiConvenienceMethods_willSerializeNulls_and_willPrettyPrint() {
-        val json = JsonConverter.instance.adapter(NullTestClass::class.java)
+        val json = moshi.adapter(NullTestClass::class.java)
             .addConvenienceMethods()
             .toJson(NullTestClass(null))
         assertThat(json).isEqualTo(

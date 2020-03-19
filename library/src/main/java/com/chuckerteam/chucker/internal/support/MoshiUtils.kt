@@ -5,6 +5,10 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
+internal val moshi: Moshi by lazy {
+    Moshi.Builder().build()
+}
+
 internal fun Moshi.getHttpHeaderListJsonAdapter(): JsonAdapter<List<HttpHeader>> {
     val type = Types.newParameterizedType(List::class.java, HttpHeader::class.java)
     val jsonAdapter = this.adapter<List<HttpHeader>>(type)

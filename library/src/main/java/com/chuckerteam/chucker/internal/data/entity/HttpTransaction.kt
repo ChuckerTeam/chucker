@@ -10,8 +10,8 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
-import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.getHttpHeaderListJsonAdapter
+import com.chuckerteam.chucker.internal.support.moshi
 import java.util.Date
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -146,15 +146,15 @@ internal class HttpTransaction(
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
-        requestHeaders = JsonConverter.instance.getHttpHeaderListJsonAdapter().toJson(headers)
+        requestHeaders = moshi.getHttpHeaderListJsonAdapter().toJson(headers)
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return requestHeaders?.let { JsonConverter.instance.getHttpHeaderListJsonAdapter().fromJson(it) }
+        return requestHeaders?.let { moshi.getHttpHeaderListJsonAdapter().fromJson(it) }
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
-        return responseHeaders?.let { JsonConverter.instance.getHttpHeaderListJsonAdapter().fromJson(it) }
+        return responseHeaders?.let { moshi.getHttpHeaderListJsonAdapter().fromJson(it) }
     }
 
     fun getRequestHeadersString(withMarkup: Boolean): String {
@@ -166,7 +166,7 @@ internal class HttpTransaction(
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {
-        responseHeaders = JsonConverter.instance.getHttpHeaderListJsonAdapter().toJson(headers)
+        responseHeaders = moshi.getHttpHeaderListJsonAdapter().toJson(headers)
     }
 
     fun getResponseHeadersString(withMarkup: Boolean): String {
