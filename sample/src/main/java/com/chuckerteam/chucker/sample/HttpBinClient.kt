@@ -30,7 +30,8 @@ class HttpBinClient(
         context = context,
         collector = collector,
         maxContentLength = 250000L,
-        headersToRedact = emptySet<String>()
+        headersToRedact = emptySet<String>(),
+        normalAPIDuration = 1000L
     )
 
     private val httpClient =

@@ -48,7 +48,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
-    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
+    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
+    @ColumnInfo(name = "isSlowApiCall") var isSlowApiCall: Boolean = false
 ) {
 
     @Ignore
@@ -262,6 +263,7 @@ internal class HttpTransaction(
             (responseHeaders == other.responseHeaders) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyPlainText == other.isResponseBodyPlainText) &&
-            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
+            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
+            (isSlowApiCall == other.isSlowApiCall)
     }
 }

@@ -29,12 +29,15 @@ private const val MAX_BLOB_SIZE = 1000_000L
  * results.
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
+ * @param normalAPIDuration normal expected duration of api calls in millisecond, exceeding which it
+ * will be marked as slow api call.
  */
 class ChuckerInterceptor @JvmOverloads constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    headersToRedact: Set<String> = emptySet()
+    headersToRedact: Set<String> = emptySet(),
+    private val normalAPIDuration: Long = -1L
 ) : Interceptor {
 
     private val io: IOUtils = IOUtils(context)
@@ -139,6 +142,12 @@ class ChuckerInterceptor @JvmOverloads constructor(
             responseContentLength = response.contentLength
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
+
+            tookMs?.let { tookMs ->
+                if (normalAPIDuration > -1L && tookMs > normalAPIDuration) {
+                    isSlowApiCall = true
+                }
+            }
         }
 
         return if (responseEncodingIsSupported) {

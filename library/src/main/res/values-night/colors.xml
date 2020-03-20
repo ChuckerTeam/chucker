@@ -21,4 +21,6 @@
 
     <color name="chucker_background_span_color">#ffe082</color>
     <color name="chucker_foreground_span_color">#ef5350</color>
+    
+    <color name="chucker_slow_api_call">#AF8DEC</color>
 </resources>

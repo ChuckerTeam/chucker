@@ -29,6 +29,7 @@ internal class TransactionAdapter internal constructor(
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
+    private val colorSlow: Int = ContextCompat.getColor(context, R.color.chucker_slow_api_call)
 
     override fun getItemCount(): Int = transactions.size
 
@@ -84,6 +85,7 @@ internal class TransactionAdapter internal constructor(
                 if (transaction.status === HttpTransaction.Status.Failed) {
                     code.text = "!!!"
                 }
+                duration.setTextColor(if (transaction.isSlowApiCall) colorSlow else size.currentTextColor)
             }
 
             setStatusColor(transaction)
@@ -105,6 +107,7 @@ internal class TransactionAdapter internal constructor(
                 (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
                 (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
                 (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
+                transaction.isSlowApiCall -> colorSlow
                 else -> colorDefault
             }
             itemBinding.code.setTextColor(color)

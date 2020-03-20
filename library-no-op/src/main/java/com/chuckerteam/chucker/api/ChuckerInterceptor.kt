@@ -12,7 +12,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
     context: Context,
     collector: Any? = null,
     maxContentLength: Any? = null,
-    headersToRedact: Any? = null
+    headersToRedact: Any? = null,
+    normalAPIDuration: Any? = null
 ) : Interceptor {
 
     fun redactHeaders(vararg names: String): ChuckerInterceptor {
