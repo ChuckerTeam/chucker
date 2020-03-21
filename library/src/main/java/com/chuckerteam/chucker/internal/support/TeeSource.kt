@@ -58,9 +58,7 @@ internal class TeeSource(
         upstream.close()
     }
 
-    override fun timeout(): Timeout {
-        return upstream.timeout()
-    }
+    override fun timeout(): Timeout = upstream.timeout()
 
     private fun writeFailureHeader() {
         sideStream.close()
