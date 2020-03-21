@@ -1,8 +1,8 @@
 package com.chuckerteam.chucker.internal.support
 
-import TestTransactionFactory
 import android.content.Context
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.TestTransactionFactory
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.mockk

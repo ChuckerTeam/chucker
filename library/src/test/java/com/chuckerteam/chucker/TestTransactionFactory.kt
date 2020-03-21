@@ -1,3 +1,5 @@
+package com.chuckerteam.chucker
+
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date
 
@@ -28,7 +30,8 @@ object TestTransactionFactory {
             responseContentLength = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
-            responseBody = """{"field": "value"}""",
+            responseBody =
+                """{"field": "value"}""",
             isResponseBodyPlainText = true,
             responseImageData = null
         )
