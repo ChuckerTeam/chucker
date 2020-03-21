@@ -39,7 +39,8 @@ internal class TeeSource(
 
         totalBytesRead += bytesRead
         if (!reachedLimit && (totalBytesRead <= readBytesLimit)) {
-            sink.copyTo(sideStream.buffer(), sink.size() - bytesRead, bytesRead)
+            val offset = sink.size() - bytesRead
+            sink.copyTo(sideStream.buffer(), offset, bytesRead)
             sideStream.emitCompleteSegments()
             return bytesRead
         }
