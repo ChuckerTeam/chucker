@@ -1,12 +1,7 @@
 package com.chuckerteam.chucker.internal.support
 
-import MockTransactionFactory
-import android.content.Context
-import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.jupiter.api.Test
 
 class FormatUtilsTest {
@@ -15,25 +10,6 @@ class FormatUtilsTest {
         HttpHeader("Accept", "text/html"),
         HttpHeader("Authorization", "exampleToken")
     )
-
-    private val contextMock = mockk<Context> {
-        every { getString(R.string.chucker_url) } returns "URL"
-        every { getString(R.string.chucker_method) } returns "Method"
-        every { getString(R.string.chucker_protocol) } returns "Protocol"
-        every { getString(R.string.chucker_status) } returns "Status"
-        every { getString(R.string.chucker_response) } returns "Response"
-        every { getString(R.string.chucker_ssl) } returns "SSL"
-        every { getString(R.string.chucker_yes) } returns "Yes"
-        every { getString(R.string.chucker_no) } returns "No"
-        every { getString(R.string.chucker_request_time) } returns "Request time"
-        every { getString(R.string.chucker_response_time) } returns "Response time"
-        every { getString(R.string.chucker_duration) } returns "Duration"
-        every { getString(R.string.chucker_request_size) } returns "Request size"
-        every { getString(R.string.chucker_response_size) } returns "Response size"
-        every { getString(R.string.chucker_total_size) } returns "Total size"
-        every { getString(R.string.chucker_request) } returns "Request"
-        every { getString(R.string.chucker_body_omitted) } returns "(encoded or binary body omitted)"
-    }
 
     @Test
     fun testFormatJson_withNullValues() {
@@ -126,11 +102,21 @@ class FormatUtilsTest {
 
     @Test
     fun testFormatByteCount_oneKiloByte() {
-        val oneKb = 1024L
-        val resultNonSi = FormatUtils.formatByteCount(oneKb, false)
-        val resultSi = FormatUtils.formatByteCount(oneKb, true)
-        val expectedNonSi = "1.0 KiB"
-        val expectedSi = "1.0 kB"
+        testFormatByteCount(1024L, "1.0 kB", "1.0 KiB")
+    }
+
+    @Test
+    fun testFormatByteCount_oneKiloByteSi() {
+        testFormatByteCount(1023L, "1.0 kB", "1023 B")
+    }
+
+    private fun testFormatByteCount(
+        byteCountToTest: Long,
+        expectedSi: String,
+        expectedNonSi: String
+    ) {
+        val resultNonSi = FormatUtils.formatByteCount(byteCountToTest, false)
+        val resultSi = FormatUtils.formatByteCount(byteCountToTest, true)
         assertThat(resultNonSi).isEqualTo(expectedNonSi)
         assertThat(resultSi).isEqualTo(expectedSi)
     }
@@ -143,24 +129,15 @@ class FormatUtilsTest {
     @Test
     fun formatXml_properXml() {
         val xml =
-            """<example>value</example>"""
-        val expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<example>value</example>\n"
+            """
+            <example>value</example>
+            """.trimIndent()
+        val expected =
+            """
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <example>value</example>
+            
+            """.trimIndent()
         assertThat(FormatUtils.formatXml(xml)).isEqualTo(expected)
-    }
-
-    @Test
-    fun getShareTextForGetTransaction() {
-        assertThat(
-            FormatUtils.getShareText(contextMock, MockTransactionFactory.createTransaction("GET"), false)
-        )
-            .isEqualTo(MockTransactionFactory.expectedGetHttpTransaction)
-    }
-
-    @Test
-    fun getShareTextForPostTransaction() {
-        assertThat(
-            FormatUtils.getShareText(contextMock, MockTransactionFactory.createTransaction("POST"), false)
-        )
-            .isEqualTo(MockTransactionFactory.expectedHttpPostTransaction)
     }
 }
