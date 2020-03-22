@@ -171,7 +171,7 @@ class ChuckerInterceptor internal constructor(
 
     /**
      * Multi casts a [Response] body if it is available and downstreams it to a file which will
-     * be available for Chucker to consume and save in the [transaction]] at some point in the future
+     * be available for Chucker to consume and save in the [transaction] at some point in the future
      * when the end user reads bytes form the [response].
      */
     private fun multiCastResponseBody(
