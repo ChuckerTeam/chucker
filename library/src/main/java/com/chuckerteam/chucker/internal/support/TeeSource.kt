@@ -3,7 +3,6 @@ package com.chuckerteam.chucker.internal.support
 import java.io.File
 import java.io.IOException
 import okio.Buffer
-import okio.ByteString
 import okio.Okio
 import okio.Source
 import okio.Timeout
@@ -11,24 +10,19 @@ import okio.Timeout
 internal class TeeSource(
     private val upstream: Source,
     private val sideChannel: File,
-    private val readBytesLimit: Long = Long.MAX_VALUE,
-    private val onSideChannelReady: (File) -> Unit = {}
+    private val callback: Callback,
+    private val readBytesLimit: Long = Long.MAX_VALUE
 ) : Source {
-    init {
-        Okio.buffer(Okio.sink(sideChannel)).use {
-            it.write(PREFIX_OK_BYTES)
-        }
-    }
-
-    private val sideStream = Okio.buffer(Okio.appendingSink(sideChannel))
+    private val sideStream = Okio.buffer(Okio.sink(sideChannel))
     private var totalBytesRead = 0L
     private var reachedLimit = false
+    private var upstreamFailed = false
 
     override fun read(sink: Buffer, byteCount: Long): Long {
         val bytesRead = try {
             upstream.read(sink, byteCount)
         } catch (e: IOException) {
-            writeFailureHeader()
+            callSideChannelFailure(e)
             throw e
         }
 
@@ -46,31 +40,40 @@ internal class TeeSource(
         }
         if (!reachedLimit) {
             reachedLimit = true
-            writeFailureHeader()
+            callSideChannelFailure(IOException("Capacity of $readBytesLimit bytes exceeded"))
         }
 
         return bytesRead
     }
 
     override fun close() {
-        onSideChannelReady(sideChannel)
         sideStream.close()
         upstream.close()
+        if (!upstreamFailed) {
+            callback.onSuccess(sideChannel)
+        }
     }
 
     override fun timeout(): Timeout = upstream.timeout()
 
-    private fun writeFailureHeader() {
-        sideStream.close()
-        Okio.buffer(Okio.sink(sideChannel)).use {
-            it.write(PREFIX_FAILURE_BYTES)
+    private fun callSideChannelFailure(exception: IOException) {
+        if (!upstreamFailed) {
+            upstreamFailed = true
+            callback.onFailure(exception, sideChannel)
         }
     }
 
-    companion object {
-        const val PREFIX_OK = "Chucker ok"
-        private val PREFIX_OK_BYTES = ByteString.encodeUtf8(PREFIX_OK + "\n")
-        const val PREFIX_FAILURE = "Chucker failure"
-        private val PREFIX_FAILURE_BYTES = ByteString.encodeUtf8(PREFIX_FAILURE + "\n")
+    interface Callback {
+        /**
+         * Called when the upstream was successfully copied to the [file].
+         */
+        fun onSuccess(file: File)
+
+        /**
+         * Called when there was an issue while copying bytes to the [file].
+         *
+         * It might occur due to an exception thrown while reading bytes or due to exceeding capacity limit.
+         */
+        fun onFailure(exception: IOException, file: File)
     }
 }

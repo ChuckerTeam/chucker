@@ -30,6 +30,8 @@ import okio.Okio
  * @param maxContentLength The maximum length for request and response content
  * before their truncation. Warning: setting this value too high may cause unexpected
  * results.
+ * @param fileFactory Provider for [File]s where Chucker will save temporary responses before
+ * processing them.
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
@@ -41,6 +43,18 @@ class ChuckerInterceptor internal constructor(
     headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
 
+    /**
+     * An OkHttp Interceptor which persists and displays HTTP activity
+     * in your application for later inspection.
+     *
+     * @param context An Android [Context]
+     * @param collector A [ChuckerCollector] to customize data retention
+     * @param maxContentLength The maximum length for request and response content
+     * before their truncation. Warning: setting this value too high may cause unexpected
+     * results.
+     * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
+     * with a `**` in the Chucker UI.
+     */
     @JvmOverloads
     constructor(
         context: Context,
@@ -82,12 +96,7 @@ class ChuckerInterceptor internal constructor(
         }
 
         processResponseMetadata(response, transaction)
-        return multiCastResponseBody(response) { cachedResponseFile ->
-            val buffer = cachedResponseFile?.let { readResponseBuffer(it, response.isGzipped) }
-            cachedResponseFile?.delete()
-            if (buffer != null) processResponseBody(response, buffer, transaction)
-            collector.onResponseReceived(transaction)
-        }
+        return multiCastResponseBody(response, transaction)
     }
 
     /**
@@ -162,15 +171,16 @@ class ChuckerInterceptor internal constructor(
 
     /**
      * Multi casts a [Response] body if it is available and downstreams it to a file which will
-     * be available in [onResponseBodyReady] callback once end user consumes the body.
+     * be available for Chucker to consume and save in the [transaction]] at some point in the future
+     * when the end user reads bytes form the [response].
      */
     private fun multiCastResponseBody(
         response: Response,
-        onResponseBodyReady: (File?) -> Unit
+        transaction: HttpTransaction
     ): Response {
         val responseBody = response.body()
         if (responseBody == null) {
-            onResponseBodyReady(null)
+            collector.onResponseReceived(transaction)
             return response
         }
 
@@ -180,8 +190,8 @@ class ChuckerInterceptor internal constructor(
         val teeSource = TeeSource(
             responseBody.source(),
             fileFactory.create(),
-            maxContentLength,
-            onResponseBodyReady
+            ChuckerTransactionTeeCallback(response, transaction),
+            maxContentLength
         )
 
         return response.newBuilder()
@@ -227,17 +237,32 @@ class ChuckerInterceptor internal constructor(
         return builder.build()
     }
 
-    private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer? {
-        val bufferedSource = Okio.buffer(Okio.source(responseBody))
-        if (bufferedSource.readUtf8Line() != TeeSource.PREFIX_OK) return null
-
-        val source = if (isGzipped) {
-            GzipSource(bufferedSource)
-        } else {
-            bufferedSource
+    private inner class ChuckerTransactionTeeCallback(
+        private val response: Response,
+        private val transaction: HttpTransaction
+    ) : TeeSource.Callback {
+        override fun onSuccess(file: File) {
+            val buffer = readResponseBuffer(file, response.isGzipped)
+            file.delete()
+            processResponseBody(response, buffer, transaction)
+            collector.onResponseReceived(transaction)
         }
-        return Buffer().apply {
-            writeAll(source)
+
+        override fun onFailure(exception: IOException, file: File) {
+            file.delete()
+            collector.onResponseReceived(transaction)
+        }
+
+        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
+            val bufferedSource = Okio.buffer(Okio.source(responseBody))
+            val source = if (isGzipped) {
+                GzipSource(bufferedSource)
+            } else {
+                bufferedSource
+            }
+            return Buffer().apply {
+                writeAll(source)
+            }
         }
     }
 
