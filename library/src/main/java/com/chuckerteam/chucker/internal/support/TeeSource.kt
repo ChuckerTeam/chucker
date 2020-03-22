@@ -7,6 +7,16 @@ import okio.Okio
 import okio.Source
 import okio.Timeout
 
+/**
+ * A source that acts as a tee operator - https://en.wikipedia.org/wiki/Tee_(command).
+ *
+ * It takes the input [upstream] and reads from it serving the bytes to the end consumer
+ * like a regular [Source]. While bytes are read from the [upstream] the are also copied
+ * to a [sideChannel] file. After the [upstream] is depleted or when a failure occurs
+ * an appropriate [callback] method is called.
+ *
+ * Failure is considered any [IOException] during reading the bytes or exceeding [readBytesLimit] length.
+ */
 internal class TeeSource(
     private val upstream: Source,
     private val sideChannel: File,
