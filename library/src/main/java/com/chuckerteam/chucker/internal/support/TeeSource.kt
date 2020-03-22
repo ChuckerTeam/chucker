@@ -50,6 +50,7 @@ internal class TeeSource(
         }
         if (!reachedLimit) {
             reachedLimit = true
+            sideStream.close()
             callSideChannelFailure(IOException("Capacity of $readBytesLimit bytes exceeded"))
         }
 
