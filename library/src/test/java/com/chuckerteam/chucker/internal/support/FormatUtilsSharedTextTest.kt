@@ -31,17 +31,20 @@ class FormatUtilsSharedTextTest {
 
     @Test
     fun getShareTextForGetTransaction() {
-        Truth.assertThat(
-            FormatUtils.getShareText(contextMock, TestTransactionFactory.createTransaction("GET"), false)
-        )
-            .isEqualTo(TestTransactionFactory.expectedGetHttpTransaction)
+        testSharedText(TestTransactionFactory.expectedGetHttpTransaction, "GET")
     }
 
     @Test
     fun getShareTextForPostTransaction() {
-        Truth.assertThat(
-            FormatUtils.getShareText(contextMock, TestTransactionFactory.createTransaction("POST"), false)
+        testSharedText(TestTransactionFactory.expectedHttpPostTransaction, "POST")
+    }
+
+    private fun testSharedText(expected: String, method: String) {
+        val sharedText = FormatUtils.getShareText(
+            contextMock,
+            TestTransactionFactory.createTransaction(method),
+            false
         )
-            .isEqualTo(TestTransactionFactory.expectedHttpPostTransaction)
+        Truth.assertThat(sharedText).isEqualTo(expected)
     }
 }
