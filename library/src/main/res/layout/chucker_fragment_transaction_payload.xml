@@ -23,7 +23,9 @@
         android:scrollbars="vertical"
         android:visibility="invisible"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/chucker_octa_grid"
+        android:paddingVertical="@dimen/chucker_doub_grid"
+        tools:listitem="@layout/chucker_transaction_item_body_line"
+        tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </FrameLayout>

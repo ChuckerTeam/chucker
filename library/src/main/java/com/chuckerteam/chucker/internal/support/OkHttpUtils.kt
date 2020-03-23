@@ -1,12 +1,10 @@
-@file:JvmName("OkHttpUtils")
-
 package com.chuckerteam.chucker.internal.support
 
 import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
 
-internal val Response.contentLenght: Long
+internal val Response.contentLength: Long
     get() {
         return this.header("Content-Length")?.toLongOrNull() ?: -1
     }

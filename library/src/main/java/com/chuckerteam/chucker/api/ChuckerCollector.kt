@@ -14,7 +14,7 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
  * @param context An Android Context
  * @param showNotification Control whether a notification is shown while HTTP activity
  * is recorded.
- * @param retentionManager Set the retention period for HTTP transaction data captured
+ * @param retentionPeriod Set the retention period for HTTP transaction data captured
  * by this collector. The default is one week.
  */
 class ChuckerCollector @JvmOverloads constructor(

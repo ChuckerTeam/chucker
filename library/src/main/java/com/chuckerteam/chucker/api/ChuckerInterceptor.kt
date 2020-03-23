@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.contentLenght
+import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.IOException
@@ -47,7 +47,14 @@ class ChuckerInterceptor @JvmOverloads constructor(
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
+        val request = chain.request().newBuilder()
+            .removeHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME)
+            .build()
+
+        if (chain.request().header(Chucker.SKIP_INTERCEPTOR_HEADER_NAME)?.toBoolean() == true) {
+            return chain.proceed(request)
+        }
+
         val response: Response
         val transaction = HttpTransaction()
 
@@ -129,7 +136,7 @@ class ChuckerInterceptor @JvmOverloads constructor(
             }
 
             responseContentType = response.contentType
-            responseContentLength = response.contentLenght
+            responseContentLength = response.contentLength
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
