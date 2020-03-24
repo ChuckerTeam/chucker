@@ -28,17 +28,17 @@ internal interface HttpTransactionDao {
     fun getFilteredTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
 
     @Insert
-    fun insert(transaction: HttpTransaction): Long?
+    suspend fun insert(transaction: HttpTransaction): Long?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(transaction: HttpTransaction): Int
 
     @Query("DELETE FROM transactions")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     fun getById(id: Long): LiveData<HttpTransaction?>
 
     @Query("DELETE FROM transactions WHERE requestDate <= :threshold")
-    fun deleteBefore(threshold: Long)
+    suspend fun deleteBefore(threshold: Long)
 }

@@ -11,11 +11,11 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
  */
 internal interface RecordedThrowableRepository {
 
-    fun saveThrowable(throwable: RecordedThrowable)
+    suspend fun saveThrowable(throwable: RecordedThrowable)
 
-    fun deleteOldThrowables(threshold: Long)
+    suspend fun deleteOldThrowables(threshold: Long)
 
-    fun deleteAllThrowables()
+    suspend fun deleteAllThrowables()
 
     fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>>
 

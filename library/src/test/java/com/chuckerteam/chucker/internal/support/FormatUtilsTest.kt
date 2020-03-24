@@ -147,12 +147,12 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun formatXml_emptyString() {
+    fun testFormatXml_emptyString() {
         assertThat(FormatUtils.formatXml("")).isEmpty()
     }
 
     @Test
-    fun formatXml_properXml() {
+    fun testFormatXml_properXml() {
         val xml =
             """
             <example>value</example>
