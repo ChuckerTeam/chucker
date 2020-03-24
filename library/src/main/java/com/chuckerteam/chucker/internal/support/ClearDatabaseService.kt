@@ -4,6 +4,9 @@ import android.app.IntentService
 import android.content.Intent
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import java.io.Serializable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME) {
 
@@ -11,13 +14,17 @@ internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME)
         when (intent?.getSerializableExtra(EXTRA_ITEM_TO_CLEAR)) {
             is ClearAction.Transaction -> {
                 RepositoryProvider.initialize(applicationContext)
-                RepositoryProvider.transaction().deleteAllTransactions()
+                CoroutineScope(Dispatchers.IO).launch {
+                    RepositoryProvider.transaction().deleteAllTransactions()
+                }
                 NotificationHelper.clearBuffer()
                 NotificationHelper(this).dismissTransactionsNotification()
             }
             is ClearAction.Error -> {
                 RepositoryProvider.initialize(applicationContext)
-                RepositoryProvider.throwable().deleteAllThrowables()
+                CoroutineScope(Dispatchers.IO).launch {
+                    RepositoryProvider.throwable().deleteAllThrowables()
+                }
                 NotificationHelper(this).dismissErrorsNotification()
             }
         }
