@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FileFactory
 import io.mockk.every
 import io.mockk.mockk
 import java.util.concurrent.CopyOnWriteArrayList
@@ -11,7 +12,8 @@ import java.util.concurrent.atomic.AtomicLong
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class ChuckerInterceptorDelegate(
+internal class ChuckerInterceptorDelegate(
+    fileFactory: FileFactory,
     maxContentLength: Long = 250000L,
     headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
@@ -30,13 +32,25 @@ class ChuckerInterceptorDelegate(
         }
     }
 
-    private val chucker = ChuckerInterceptor(mockContext, mockCollector, maxContentLength, headersToRedact)
+    private val chucker = ChuckerInterceptor(
+        context = mockContext,
+        collector = mockCollector,
+        maxContentLength = maxContentLength,
+        headersToRedact = headersToRedact,
+        fileFactory = fileFactory
+    )
 
     internal fun expectTransaction(): HttpTransaction {
         if (transactions.isEmpty()) {
             throw AssertionError("Expected transaction but was empty.")
         }
         return transactions.removeAt(0)
+    }
+
+    internal fun expectNoTransactions() {
+        if (transactions.isNotEmpty()) {
+            throw AssertionError("Expected no transactions but found ${transactions.size}")
+        }
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {

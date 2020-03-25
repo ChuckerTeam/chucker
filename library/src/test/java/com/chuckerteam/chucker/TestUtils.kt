@@ -15,7 +15,13 @@ fun getResourceFile(file: String): Buffer {
     }
 }
 
-fun Response.readByteStringBody(): ByteString? = if (hasBody()) body()?.source()?.readByteString() else null
+fun Response.readByteStringBody(): ByteString? {
+    return if (hasBody()) {
+        body()?.source()?.use { it.readByteString() }
+    } else {
+        null
+    }
+}
 
 fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()

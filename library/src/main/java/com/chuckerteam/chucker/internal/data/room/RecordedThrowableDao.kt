@@ -13,15 +13,15 @@ internal interface RecordedThrowableDao {
     @Query("SELECT id,tag,date,clazz,message FROM throwables ORDER BY date DESC")
     fun getTuples(): LiveData<List<RecordedThrowableTuple>>
 
-    @Insert()
-    fun insert(throwable: RecordedThrowable): Long?
+    @Insert
+    suspend fun insert(throwable: RecordedThrowable): Long?
 
     @Query("DELETE FROM throwables")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM throwables WHERE id = :id")
     fun getById(id: Long): LiveData<RecordedThrowable>
 
     @Query("DELETE FROM throwables WHERE date <= :threshold")
-    fun deleteBefore(threshold: Long)
+    suspend fun deleteBefore(threshold: Long)
 }

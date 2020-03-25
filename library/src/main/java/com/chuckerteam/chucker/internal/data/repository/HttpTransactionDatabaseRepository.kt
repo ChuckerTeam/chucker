@@ -5,45 +5,39 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
 
-    private val executor: Executor = Executors.newSingleThreadExecutor()
-
-    private val transcationDao get() = database.transactionDao()
+    private val transactionDao get() = database.transactionDao()
 
     override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
-        return transcationDao.getFilteredTuples("$code%", pathQuery)
+        return transactionDao.getFilteredTuples("$code%", pathQuery)
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {
-        return transcationDao.getById(transactionId)
+        return transactionDao.getById(transactionId)
             .distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }
 
     override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {
-        return transcationDao.getSortedTuples()
+        return transactionDao.getSortedTuples()
     }
 
-    override fun deleteAllTransactions() {
-        executor.execute { transcationDao.deleteAll() }
+    override suspend fun deleteAllTransactions() {
+        transactionDao.deleteAll()
     }
 
-    override fun insertTransaction(transaction: HttpTransaction) {
-        executor.execute {
-            val id = transcationDao.insert(transaction)
-            transaction.id = id ?: 0
-        }
+    override suspend fun insertTransaction(transaction: HttpTransaction) {
+        val id = transactionDao.insert(transaction)
+        transaction.id = id ?: 0
     }
 
     override fun updateTransaction(transaction: HttpTransaction): Int {
-        return transcationDao.update(transaction)
+        return transactionDao.update(transaction)
     }
 
-    override fun deleteOldTransactions(threshold: Long) {
-        executor.execute { transcationDao.deleteBefore(threshold) }
+    override suspend fun deleteOldTransactions(threshold: Long) {
+        transactionDao.deleteBefore(threshold)
     }
 }

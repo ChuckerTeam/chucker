@@ -1,5 +1,3 @@
-@file:JvmName("OkHttpUtils")
-
 package com.chuckerteam.chucker.internal.support
 
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
@@ -28,12 +26,12 @@ internal fun Response.hasBody(): Boolean {
 
     // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
     // response is malformed. For best compatibility, we honor the headers.
-    return ((contentLenght != -1L) || isChunked)
+    return ((contentLength > 0) || isChunked)
 }
 
-internal val Response.contentLenght: Long
+internal val Response.contentLength: Long
     get() {
-        return this.header("Content-Length")?.toLongOrNull() ?: -1
+        return this.header("Content-Length")?.toLongOrNull() ?: -1L
     }
 
 internal val Response.isChunked: Boolean
