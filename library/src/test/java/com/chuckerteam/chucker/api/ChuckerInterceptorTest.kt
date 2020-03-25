@@ -3,9 +3,11 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FileFactory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import java.io.File
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
@@ -14,10 +16,13 @@ import okio.Buffer
 import okio.ByteString
 import okio.GzipSink
 import org.junit.Rule
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 class ChuckerInterceptorTest {
-    @get:Rule val server = MockWebServer()
+    @get:Rule
+    val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
 
     private var transaction: HttpTransaction? = null
@@ -31,9 +36,19 @@ class ChuckerInterceptorTest {
         }
     }
 
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(ChuckerInterceptor(mockContext, mockCollector))
-        .build()
+    private lateinit var client: OkHttpClient
+
+    @BeforeEach
+    fun setUp(@TempDir tempDir: File) {
+        val fileFactory = object : FileFactory {
+            override fun create(): File {
+                return File(tempDir, "testFile")
+            }
+        }
+        client = OkHttpClient.Builder()
+            .addInterceptor(ChuckerInterceptor(mockContext, mockCollector, fileFactory = fileFactory))
+            .build()
+    }
 
     @Test
     fun imageResponse_isAvailableToChucker() {
@@ -42,7 +57,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
         val expectedBody = image.snapshot()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertThat(expectedBody).isEqualTo(ByteString.of(*transaction!!.responseImageData!!))
     }
@@ -68,7 +83,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertThat(transaction!!.isResponseBodyPlainText).isTrue()
         assertThat(transaction!!.responseBody).isEqualTo("Hello, world!")
@@ -95,7 +110,7 @@ class ChuckerInterceptorTest {
             .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "true")
             .build()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertThat(transaction).isNull()
     }
@@ -119,7 +134,7 @@ class ChuckerInterceptorTest {
             .addHeader(Chucker.SKIP_INTERCEPTOR_HEADER_NAME, "false")
             .build()
 
-        client.newCall(request).execute()
+        client.newCall(request).execute().body()?.bytes()
 
         assertThat(transaction!!.responseBody).isEqualTo("Hello, world!")
     }
