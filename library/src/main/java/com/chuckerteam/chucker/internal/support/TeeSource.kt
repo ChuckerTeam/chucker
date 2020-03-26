@@ -27,6 +27,7 @@ internal class TeeSource(
     private var totalBytesRead = 0L
     private var reachedLimit = false
     private var upstreamFailed = false
+    private var upstreamConsumed = false
 
     override fun read(sink: Buffer, byteCount: Long): Long {
         val bytesRead = try {
@@ -37,6 +38,7 @@ internal class TeeSource(
         }
 
         if (bytesRead == -1L) {
+            upstreamConsumed = true
             sideStream.close()
             return -1L
         }
@@ -60,8 +62,10 @@ internal class TeeSource(
     override fun close() {
         sideStream.close()
         upstream.close()
-        if (!upstreamFailed) {
+        if (upstreamConsumed) {
             callback.onSuccess(sideChannel)
+        } else {
+            callSideChannelFailure(IOException("Upstream was not fully consumed"))
         }
     }
 
@@ -83,7 +87,10 @@ internal class TeeSource(
         /**
          * Called when there was an issue while copying bytes to the [file].
          *
-         * It might occur due to an exception thrown while reading bytes or due to exceeding capacity limit.
+         * It might occur due to one of the following reasons:
+         * - an exception was thrown while reading bytes
+         * - capacity limit was exceeded
+         * - upstream was not fully consumed
          */
         fun onFailure(exception: IOException, file: File)
     }
