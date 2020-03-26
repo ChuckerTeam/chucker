@@ -1,7 +1,9 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.TestTransactionFactory
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
+import java.lang.NullPointerException
 import org.junit.jupiter.api.Test
 
 class FormatUtilsTest {
@@ -139,5 +141,26 @@ class FormatUtilsTest {
             
             """.trimIndent()
         assertThat(FormatUtils.formatXml(xml)).isEqualTo(expected)
+    }
+
+    @Test
+    fun testGetShareCurlCommand_getMethod() {
+        val actual = FormatUtils.getShareCurlCommand(TestTransactionFactory.createTransaction("GET"))
+        val expected = "curl -X GET http://localhost/getUsers"
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun testGetShareCurlCommand_postMethod() {
+        val actual = FormatUtils.getShareCurlCommand(TestTransactionFactory.createTransaction("POST"))
+        val expected = "curl -X POST http://localhost/getUsers"
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun testFormatThrowable_containsExceptionAndMessage() {
+        val actual = FormatUtils.formatThrowable(NullPointerException("NPE Test message"))
+        val expected = "java.lang.NullPointerException: NPE Test message"
+        assertThat(actual).contains(expected)
     }
 }
