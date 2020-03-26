@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
 import io.mockk.mockk
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,9 +13,7 @@ import org.junit.jupiter.api.Test
 class ChuckerInterceptorTest {
     @get:Rule val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
-    private val mockContext = mockk<Context> {
-        every { getString(any()) } returns ""
-    }
+    private val mockContext = mockk<Context>()
     private val client = OkHttpClient.Builder()
         .addInterceptor(ChuckerInterceptor(mockContext))
         .build()
