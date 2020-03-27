@@ -12,7 +12,7 @@ class FormatUtilsTest {
     )
 
     @Test
-    fun testFormatJson_withNullValues() {
+    fun `test Format Json with Null Values`() {
         val parsedJson = FormatUtils.formatJson(
             """
             {
@@ -31,7 +31,7 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun testFormatJson_withEmptyValues() {
+    fun `test Format Json with Empty Values`() {
         val parsedJson = FormatUtils.formatJson(
             """
             {
@@ -50,7 +50,7 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun testFormatJson_willPrettyPrint() {
+    fun `test Format Json will Pretty Print`() {
         val parsedJson = FormatUtils.formatJson(
             """{ "field1": "something", "field2": "else" }"""
         )
@@ -66,33 +66,33 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun testFormatHeaders_withNullValues() {
+    fun `test Format Headers with Null Values`() {
         val result = FormatUtils.formatHeaders(null, false)
         assertThat(result).isEmpty()
     }
 
     @Test
-    fun testFormatHeaders_withEmptyValues() {
+    fun `test Format Headers with Empty Values`() {
         val result = FormatUtils.formatHeaders(listOf(), false)
         assertThat(result).isEmpty()
     }
 
     @Test
-    fun testFormatHeaders_withoutMarkup() {
+    fun `test Format Headers without Markup`() {
         val result = FormatUtils.formatHeaders(exampleHeadersList, false)
         val expected = "Accept: text/html\nAuthorization: exampleToken\n"
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun testFormatHeaders_withMarkup() {
+    fun `test Format Headers with Markup`() {
         val result = FormatUtils.formatHeaders(exampleHeadersList, true)
         val expected = "<b> Accept: </b>text/html <br /><b> Authorization: </b>exampleToken <br />"
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun testFormatByteCount_zeroBytes() {
+    fun `test Format ByteCount zero Bytes`() {
         val resultNonSi = FormatUtils.formatByteCount(0, false)
         val resultSi = FormatUtils.formatByteCount(0, true)
         val expected = "0 B"
@@ -101,12 +101,12 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun testFormatByteCount_oneKiloByte() {
+    fun `test Format ByteCount oneKiloByte`() {
         testFormatByteCount(1024L, "1.0 kB", "1.0 KiB")
     }
 
     @Test
-    fun testFormatByteCount_oneKiloByteSi() {
+    fun `test Format ByteCount oneKiloByte Si`() {
         testFormatByteCount(1023L, "1.0 kB", "1023 B")
     }
 
@@ -122,12 +122,12 @@ class FormatUtilsTest {
     }
 
     @Test
-    fun testFormatXml_emptyString() {
+    fun `test Format Xml empty String`() {
         assertThat(FormatUtils.formatXml("")).isEmpty()
     }
 
     @Test
-    fun testFormatXml_properXml() {
+    fun `test Format Xml proper Xml`() {
         val xml =
             """
             <example>value</example>
