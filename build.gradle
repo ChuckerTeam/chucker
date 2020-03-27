@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        kotlinVersion = '1.3.70'
-        androidGradleVersion = '3.6.0'
-        coroutineVersion = '1.3.4'
+        kotlinVersion = '1.3.71'
+        androidGradleVersion = '3.6.1'
+        coroutineVersion = '1.3.5'
 
         // Google libraries
         appCompatVersion = '1.1.0'
@@ -21,7 +21,7 @@ buildscript {
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        detektVersion = '1.6.0'
+        detektVersion = '1.7.1'
         dokkaVersion = '0.10.1'
         ktLintVersion = '9.2.1'
         leakcanaryVersion = '2.2'
