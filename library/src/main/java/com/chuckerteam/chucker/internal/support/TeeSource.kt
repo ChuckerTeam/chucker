@@ -15,7 +15,8 @@ import okio.Timeout
  * to a [sideChannel] file. After the [upstream] is depleted or when a failure occurs
  * an appropriate [callback] method is called.
  *
- * Failure is considered any [IOException] during reading the bytes or exceeding [readBytesLimit] length.
+ * Failure is considered any [IOException] during reading the bytes,
+ * exceeding [readBytesLimit] length or not reading the whole upstream.
  */
 internal class TeeSource(
     private val upstream: Source,
@@ -25,9 +26,9 @@ internal class TeeSource(
 ) : Source {
     private val sideStream = Okio.buffer(Okio.sink(sideChannel))
     private var totalBytesRead = 0L
-    private var reachedLimit = false
-    private var upstreamFailed = false
-    private var upstreamConsumed = false
+    private var isReadLimitExceeded = false
+    private var isUpstreamExhausted = false
+    private var isFailure = false
 
     override fun read(sink: Buffer, byteCount: Long): Long {
         val bytesRead = try {
@@ -38,20 +39,20 @@ internal class TeeSource(
         }
 
         if (bytesRead == -1L) {
-            upstreamConsumed = true
+            isUpstreamExhausted = true
             sideStream.close()
             return -1L
         }
 
         totalBytesRead += bytesRead
-        if (!reachedLimit && (totalBytesRead <= readBytesLimit)) {
+        if (!isReadLimitExceeded && (totalBytesRead <= readBytesLimit)) {
             val offset = sink.size() - bytesRead
             sink.copyTo(sideStream.buffer(), offset, bytesRead)
             sideStream.emitCompleteSegments()
             return bytesRead
         }
-        if (!reachedLimit) {
-            reachedLimit = true
+        if (!isReadLimitExceeded) {
+            isReadLimitExceeded = true
             sideStream.close()
             callSideChannelFailure(IOException("Capacity of $readBytesLimit bytes exceeded"))
         }
@@ -62,7 +63,7 @@ internal class TeeSource(
     override fun close() {
         sideStream.close()
         upstream.close()
-        if (upstreamConsumed) {
+        if (isUpstreamExhausted) {
             callback.onSuccess(sideChannel)
         } else {
             callSideChannelFailure(IOException("Upstream was not fully consumed"))
@@ -72,8 +73,8 @@ internal class TeeSource(
     override fun timeout(): Timeout = upstream.timeout()
 
     private fun callSideChannelFailure(exception: IOException) {
-        if (!upstreamFailed) {
-            upstreamFailed = true
+        if (!isFailure) {
+            isFailure = true
             callback.onFailure(exception, sideChannel)
         }
     }
