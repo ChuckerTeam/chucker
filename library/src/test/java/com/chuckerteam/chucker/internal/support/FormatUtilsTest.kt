@@ -15,11 +15,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withNullValues() {
         val parsedJson = FormatUtils.formatJson(
-            """
-            {
-              "field": null
-            }
-            """.trimIndent()
+            """{ "field": null }"""
         )
 
         assertThat(parsedJson).isEqualTo(
@@ -34,11 +30,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withEmptyValues() {
         val parsedJson = FormatUtils.formatJson(
-            """
-            {
-              "field": ""
-            }
-            """.trimIndent()
+            """{ "field": "" }"""
         )
 
         assertThat(parsedJson).isEqualTo(
@@ -47,6 +39,17 @@ class FormatUtilsTest {
               "field": ""
             }
             """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testFormatJson_withInvalidJson() {
+        val parsedJson = FormatUtils.formatJson(
+            """[{ "field": null }"""
+        )
+
+        assertThat(parsedJson).isEqualTo(
+            """[{ "field": null }"""
         )
     }
 
@@ -62,6 +65,28 @@ class FormatUtilsTest {
               "field1": "something",
               "field2": "else"
             }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testFormatJsonArray_willPrettyPrint() {
+        val parsedJson = FormatUtils.formatJson(
+            """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
+        )
+
+        assertThat(parsedJson).isEqualTo(
+            """
+            [
+              {
+                "field1": "something1",
+                "field2": "else1"
+              },
+              {
+                "field1": "something2",
+                "field2": "else2"
+              }
+            ]
             """.trimIndent()
         )
     }
