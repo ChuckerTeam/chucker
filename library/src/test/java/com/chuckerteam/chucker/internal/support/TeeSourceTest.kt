@@ -102,6 +102,36 @@ class TeeSourceTest {
             .isEqualTo("Hello there!")
     }
 
+    @Test
+    fun notConsumedUpstream_isNotConsideredSuccess(@TempDir tempDir: File) {
+        val testFile = File(tempDir, "testFile")
+        // Okio uses 8KiB as a single size read.
+        val testSource = TestSource(8_192 * 2)
+
+        val teeSource = TeeSource(testSource, testFile, teeCallback)
+        Okio.buffer(teeSource).use { source ->
+            source.readByteString(8_192)
+        }
+
+        assertThat(teeCallback.exception)
+            .hasMessageThat()
+            .isEqualTo("Upstream was not fully consumed")
+    }
+
+    @Test
+    fun partiallyReadBytesFromUpstream_areAvailableToSideChannel(@TempDir tempDir: File) {
+        val testFile = File(tempDir, "testFile")
+        // Okio uses 8KiB as a single size read.
+        val testSource = TestSource(8_192 * 2)
+
+        val teeSource = TeeSource(testSource, testFile, teeCallback)
+        Okio.buffer(teeSource).use { source ->
+            source.readByteString(8_192)
+        }
+
+        assertThat(teeCallback.fileContent).isEqualTo(testSource.content.substring(0, 8_192))
+    }
+
     private class TestSource(contentLength: Int = 1_000) : Source {
         val content: ByteString = ByteString.of(*Random.nextBytes(contentLength))
         private val buffer = Buffer().apply { write(content) }
