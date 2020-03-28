@@ -17,7 +17,7 @@ buildscript {
 
         // Networking
         gsonVersion = '2.8.6'
-        okhttp3Version = '3.12.6'
+        okhttp3Version = '3.12.10'
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
