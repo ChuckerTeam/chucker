@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.TestTransactionFactory
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -14,11 +15,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withNullValues() {
         val parsedJson = FormatUtils.formatJson(
-            """
-            {
-              "field": null
-            }
-            """.trimIndent()
+            """{ "field": null }"""
         )
 
         assertThat(parsedJson).isEqualTo(
@@ -33,11 +30,7 @@ class FormatUtilsTest {
     @Test
     fun testFormatJson_withEmptyValues() {
         val parsedJson = FormatUtils.formatJson(
-            """
-            {
-              "field": ""
-            }
-            """.trimIndent()
+            """{ "field": "" }"""
         )
 
         assertThat(parsedJson).isEqualTo(
@@ -46,6 +39,17 @@ class FormatUtilsTest {
               "field": ""
             }
             """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testFormatJson_withInvalidJson() {
+        val parsedJson = FormatUtils.formatJson(
+            """[{ "field": null }"""
+        )
+
+        assertThat(parsedJson).isEqualTo(
+            """[{ "field": null }"""
         )
     }
 
@@ -61,6 +65,28 @@ class FormatUtilsTest {
               "field1": "something",
               "field2": "else"
             }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testFormatJsonArray_willPrettyPrint() {
+        val parsedJson = FormatUtils.formatJson(
+            """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
+        )
+
+        assertThat(parsedJson).isEqualTo(
+            """
+            [
+              {
+                "field1": "something1",
+                "field2": "else1"
+              },
+              {
+                "field1": "something2",
+                "field2": "else2"
+              }
+            ]
             """.trimIndent()
         )
     }
@@ -140,4 +166,51 @@ class FormatUtilsTest {
             """.trimIndent()
         assertThat(FormatUtils.formatXml(xml)).isEqualTo(expected)
     }
+
+    @Test
+    fun testCurlCommandWithoutHeaders() {
+        getRequestMethods().forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method)
+            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
+            val expectedCurlCommand = "curl -X $method http://localhost/getUsers"
+            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun testCurlCommandWithHeaders() {
+        val httpHeaders = ArrayList<HttpHeader>()
+        for (i in 0 until 5) {
+            httpHeaders.add(HttpHeader("name$i", "value$i"))
+        }
+        val dummyHeaders = JsonConverter.instance.toJson(httpHeaders)
+
+        getRequestMethods().forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method)
+            transaction.requestHeaders = dummyHeaders
+            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
+            var expectedCurlCommand = "curl -X $method"
+            httpHeaders.forEach { header ->
+                expectedCurlCommand += " -H \"${header.name}: ${header.value}\""
+            }
+            expectedCurlCommand += " http://localhost/getUsers"
+            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun testCurlPostAndPutCommandWithRequestBody() {
+        getRequestMethods().filter { method ->
+            method == "POST" || method == "PUT"
+        }.forEach { method ->
+            val dummyRequestBody = "{thing:put}"
+            val transaction = TestTransactionFactory.createTransaction(method)
+            transaction.requestBody = dummyRequestBody
+            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
+            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
+            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    private fun getRequestMethods() = arrayOf("GET", "POST", "PUT", "DELETE")
 }

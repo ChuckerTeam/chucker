@@ -245,7 +245,7 @@ class ChuckerInterceptor internal constructor(
         override fun onSuccess(file: File) {
             val buffer = readResponseBuffer(file, response.isGzipped)
             file.delete()
-            processResponseBody(response, buffer, transaction)
+            if (buffer != null) processResponseBody(response, buffer, transaction)
             collector.onResponseReceived(transaction)
         }
 
@@ -254,15 +254,17 @@ class ChuckerInterceptor internal constructor(
             collector.onResponseReceived(transaction)
         }
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
+        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer? {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
                 bufferedSource
             }
-            return Buffer().apply {
-                writeAll(source)
+            return try {
+                Buffer().apply { writeAll(source) }
+            } catch (_: IOException) {
+                null
             }
         }
     }
