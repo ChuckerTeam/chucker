@@ -8,6 +8,7 @@ import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
+import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.isGzipped
 import java.io.File
 import java.io.IOException
@@ -179,7 +180,7 @@ class ChuckerInterceptor internal constructor(
         transaction: HttpTransaction
     ): Response {
         val responseBody = response.body()
-        if (responseBody == null) {
+        if (!response.hasBody() || responseBody == null) {
             collector.onResponseReceived(transaction)
             return response
         }

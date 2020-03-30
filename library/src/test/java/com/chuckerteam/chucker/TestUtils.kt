@@ -2,13 +2,24 @@ package com.chuckerteam.chucker
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.chuckerteam.chucker.internal.support.hasBody
 import java.io.File
+import okhttp3.Response
 import okio.Buffer
+import okio.ByteString
 import okio.Okio
 
 fun getResourceFile(file: String): Buffer {
     return Buffer().apply {
         writeAll(Okio.buffer(Okio.source(File("./src/test/resources/$file"))))
+    }
+}
+
+fun Response.readByteStringBody(): ByteString? {
+    return if (hasBody()) {
+        body()?.source()?.use { it.readByteString() }
+    } else {
+        null
     }
 }
 
