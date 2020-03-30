@@ -64,7 +64,10 @@ internal class TeeSource(
         sideStream.close()
         upstream.close()
         if (isUpstreamExhausted) {
-            callback.onSuccess(sideChannel)
+            // Failure might have occurred due to exceeding limit.
+            if (!isFailure) {
+                callback.onSuccess(sideChannel)
+            }
         } else {
             callSideChannelFailure(IOException("Upstream was not fully consumed"))
         }

@@ -43,7 +43,7 @@ class TeeSourceTest {
     @Test
     fun bytesPulledFromUpstream_arePulledToSideChannel_alongTheDownstream(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
-        val repetitions = Random.nextInt(0, 100)
+        val repetitions = Random.nextInt(1, 100)
         // Okio uses 8KiB as a single size read.
         val testSource = TestSource(8_192 * repetitions)
 
@@ -72,6 +72,18 @@ class TeeSourceTest {
         assertThat(teeCallback.exception)
             .hasMessageThat()
             .isEqualTo("Capacity of 9999 bytes exceeded")
+    }
+
+    @Test
+    fun tooBigSources_doNotResultInSuccess_ifTheUpstreamIsExhausted(@TempDir tempDir: File) {
+        val testFile = File(tempDir, "testFile")
+        val testSource = TestSource(10_000)
+        val downstream = Buffer()
+
+        val teeSource = TeeSource(testSource, testFile, teeCallback, readBytesLimit = 9_999)
+        Okio.buffer(teeSource).use { it.readAll(downstream) }
+
+        assertThat(teeCallback.isSuccess).isFalse()
     }
 
     @Test
@@ -157,8 +169,11 @@ class TeeSourceTest {
         private var file: File? = null
         val fileContent get() = file?.let { Okio.buffer(Okio.source(it)).readByteString() }
         var exception: IOException? = null
+        var isSuccess = false
+            private set
 
         override fun onSuccess(file: File) {
+            isSuccess = true
             this.file = file
         }
 
