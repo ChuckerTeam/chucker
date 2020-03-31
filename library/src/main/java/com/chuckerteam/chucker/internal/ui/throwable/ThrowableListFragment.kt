@@ -36,6 +36,7 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
         with(errorsBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             errorsRecyclerView.apply {
+                setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 adapter = errorsAdapter
             }

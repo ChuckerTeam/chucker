@@ -44,6 +44,7 @@ internal class TransactionListFragment :
         with(transactionsBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             transactionsRecyclerView.apply {
+                setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
                 adapter = transactionsAdapter
             }
