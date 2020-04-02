@@ -1,5 +1,56 @@
 # Change Log
 
+## Version 3.2.0 *(2020-04-02)*
+
+This is a new minor release with numerous internal changes.
+
+### Summary of changes
+
+* Chucker won't load the whole response into memory anymore, but will mutlicast it with the help of temporary files. It allows to avoid issues with OOM, like in this [issue](https://github.com/ChuckerTeam/chucker/issues/218).
+This change also allows to avoid problems with Chucker consuming responses, like reported in this [issue](https://github.com/ChuckerTeam/chucker/issues/242).
+* Added a red open padlock icon to clearly indicate HTTP requests in transactions list.
+* Added TLS info (version and cipher suite) into `Overview` tab.
+* Added ability to encode/decode URLs.
+* Added RTL support.
+* Switched from AsyncTasks to Kotlin coroutines.
+* Switched from Travis CI to Github Actions.
+* Switched to ViewBinding.
+* Bumped targetSDK to 29.
+* Greatly increased test coverage (we will add exact numbers and reports pretty soon).
+
+### Bugfixes
+
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/218) with OOM exceptions on big responses.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/242) with Chucker throwing exception when used as `networkInterceptor()`.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/240) with exception when DexGuard is used.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/254) with response search being case-sensitive.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/255) with missing search icon on Response tab.
+* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/241) with overlapping texts.
+
+### Dependency updates
+
+* Updated Kotlin to 1.3.71
+* Updated Android Gradle plugin to 3.6.1
+* Updated Room to 2.2.5
+* Updated OkHttp to 3.12.10
+* Updated Detekt to 1.7.1
+* Updated Dokka to 0.10.1
+* Updated KtLint to 9.2.1
+* Updated MaterialComponents to 1.1.0
+* Updated Gradle wrapper to 6.3
+
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@adammasyk
+@cortinico
+@CuriousNikhil
+@hitanshu-dhawan
+@MiSikora
+@technoir42
+@vbuberen
+
 ## Version 3.1.2 *(2020-02-09)*
 
 This is hot-fix release to fix multiple issues introduced in `3.1.0`.
