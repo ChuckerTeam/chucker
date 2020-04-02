@@ -79,6 +79,7 @@ internal class TransactionPayloadFragment :
                     showProgress()
                     val result = processPayload(type, transaction)
                     payloadBinding.responseRecyclerView.adapter = TransactionBodyAdapter(result)
+                    payloadBinding.responseRecyclerView.setHasFixedSize(true)
                     hideProgress()
                 }
             }
