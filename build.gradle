@@ -21,9 +21,10 @@ buildscript {
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        detektVersion = '1.7.1'
+        detektVersion = '1.7.4'
         dokkaVersion = '0.10.1'
-        ktLintVersion = '9.2.1'
+        ktLintVersion = '0.36.0'
+        ktLintGradleVersion = '9.2.1'
         leakcanaryVersion = '2.2'
 
         // Testing
@@ -46,7 +47,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintVersion"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
     }
 }
 
