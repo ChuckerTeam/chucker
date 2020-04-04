@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.1.2"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.1.2"
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
+  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
 }
 ```
 
