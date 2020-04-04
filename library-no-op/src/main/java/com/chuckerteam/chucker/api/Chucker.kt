@@ -11,9 +11,6 @@ object Chucker {
     const val SCREEN_HTTP = 1
     const val SCREEN_ERROR = 2
 
-    const val SKIP_INTERCEPTOR_HEADER_NAME = "Skip-Chucker-Interceptor"
-    const val SKIP_INTERCEPTOR_HEADER = "$SKIP_INTERCEPTOR_HEADER_NAME: true"
-
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     val isOp = false
 
