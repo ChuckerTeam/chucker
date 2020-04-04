@@ -11,6 +11,11 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
 }
 
 task sourcesJar(type: Jar) {

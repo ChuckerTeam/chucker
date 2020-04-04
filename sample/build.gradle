@@ -34,6 +34,11 @@ android {
             storePassword 'android'
         }
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
 }
 
 dependencies {
