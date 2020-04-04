@@ -240,7 +240,7 @@ internal class TransactionPayloadFragment :
             if (type == TYPE_RESPONSE && responseBitmap != null) {
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap))
             } else if (!isBodyPlainText) {
-                requireContext().getString(R.string.chucker_body_omitted)?.let {
+                requireContext().getString(R.string.chucker_body_omitted).let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
