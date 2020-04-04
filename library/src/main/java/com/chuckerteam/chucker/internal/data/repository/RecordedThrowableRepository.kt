@@ -6,16 +6,16 @@ import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 
 /**
  * Repository Interface representing all the operations that are needed to let Chucker work
- * with [RecordedThrowable] and [RecordedThrowableTuple]. Please use [ChuckerDatabaseRepository]
+ * with [RecordedThrowable] and [RecordedThrowableTuple]. Please use [RecordedThrowableDatabaseRepository]
  * that uses Room and SqLite to run those operations.
  */
 internal interface RecordedThrowableRepository {
 
-    fun saveThrowable(throwable: RecordedThrowable)
+    suspend fun saveThrowable(throwable: RecordedThrowable)
 
-    fun deleteOldThrowables(threshold: Long)
+    suspend fun deleteOldThrowables(threshold: Long)
 
-    fun deleteAllThrowables()
+    suspend fun deleteAllThrowables()
 
     fun getSortedThrowablesTuples(): LiveData<List<RecordedThrowableTuple>>
 

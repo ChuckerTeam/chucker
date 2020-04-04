@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:layoutDirection="ltr"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionPayloadFragment">
 
     <ProgressBar
-        android:id="@+id/progress_loading_transaction"
+        android:id="@+id/loadingProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
@@ -18,13 +17,15 @@
         android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/transaction_content"
+        android:id="@+id/responseRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:visibility="invisible"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/chucker_octa_grid"
+        android:paddingVertical="@dimen/chucker_doub_grid"
+        tools:listitem="@layout/chucker_transaction_item_body_line"
+        tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </FrameLayout>

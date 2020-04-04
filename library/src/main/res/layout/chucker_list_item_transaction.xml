@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:layoutDirection="ltr"
     android:padding="@dimen/chucker_base_grid">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/time_guideline"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -41,10 +40,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/chucker_half_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/ssl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toTopOf="@+id/ssl"
+        app:layout_constraintTop_toBottomOf="@+id/path"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
@@ -54,15 +52,13 @@
         android:layout_width="@dimen/chucker_doub_grid"
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
-        android:src="@drawable/chucker_ic_https_grey"
-        android:tint="@color/chucker_color_primary"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/path"
-        app:layout_constraintTop_toBottomOf="@+id/path"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="@+id/host"
+        app:layout_constraintBottom_toBottomOf="@id/host"
+        tools:src="@drawable/chucker_ic_https" />
 
     <TextView
-        android:id="@+id/time_start"
+        android:id="@+id/timeStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/duration"
@@ -76,8 +72,8 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         app:layout_constraintEnd_toStartOf="@+id/size"
-        app:layout_constraintStart_toEndOf="@+id/time_guideline"
-        app:layout_constraintTop_toTopOf="@+id/time_start"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/timeStart"
         tools:text="8023 ms" />
 
     <TextView

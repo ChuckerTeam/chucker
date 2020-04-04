@@ -1,13 +1,11 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class OkHttpUtilsTest {
@@ -17,23 +15,23 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns null
 
-        assertEquals(-1, mockResponse.contentLenght)
+        assertThat(mockResponse.contentLength).isEqualTo(-1)
     }
 
     @Test
-    fun contentLength_withZeroLenght_returnsZero() {
+    fun contentLength_withZeroLength_returnsZero() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns "0"
 
-        assertEquals(0L, mockResponse.contentLenght)
+        assertThat(mockResponse.contentLength).isEqualTo(0L)
     }
 
     @Test
-    fun contentLength_withRealLenght_returnsValue() {
+    fun contentLength_withRealLength_returnsValue() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns "42"
 
-        assertEquals(42L, mockResponse.contentLenght)
+        assertThat(mockResponse.contentLength).isEqualTo(42L)
     }
 
     @Test
@@ -41,7 +39,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Transfer-Encoding") } returns "gzip"
 
-        assertFalse(mockResponse.isChunked)
+        assertThat(mockResponse.isChunked).isFalse()
     }
 
     @Test
@@ -50,7 +48,7 @@ class OkHttpUtilsTest {
         every { mockResponse.header("Content-Length") } returns null
         every { mockResponse.header("Transfer-Encoding") } returns null
 
-        assertFalse(mockResponse.isChunked)
+        assertThat(mockResponse.isChunked).isFalse()
     }
 
     @Test
@@ -58,7 +56,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Transfer-Encoding") } returns "chunked"
 
-        assertTrue(mockResponse.isChunked)
+        assertThat(mockResponse.isChunked).isTrue()
     }
 
     @Test
@@ -66,7 +64,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.headers() } returns Headers.of("Content-Encoding", "gzip")
 
-        assertTrue(mockResponse.isGzipped)
+        assertThat(mockResponse.isGzipped).isTrue()
     }
 
     @Test
@@ -74,7 +72,7 @@ class OkHttpUtilsTest {
         val mockResponse = mockk<Response>()
         every { mockResponse.headers() } returns Headers.of("Content-Encoding", "identity")
 
-        assertFalse(mockResponse.isGzipped)
+        assertThat(mockResponse.isGzipped).isFalse()
     }
 
     @Test
@@ -82,7 +80,7 @@ class OkHttpUtilsTest {
         val mockRequest = mockk<Request>()
         every { mockRequest.headers() } returns Headers.of("Content-Encoding", "gzip")
 
-        assertTrue(mockRequest.isGzipped)
+        assertThat(mockRequest.isGzipped).isTrue()
     }
 
     @Test
@@ -90,6 +88,6 @@ class OkHttpUtilsTest {
         val mockRequest = mockk<Request>()
         every { mockRequest.headers() } returns Headers.of("Content-Encoding", "identity")
 
-        assertFalse(mockRequest.isGzipped)
+        assertThat(mockRequest.isGzipped).isFalse()
     }
 }

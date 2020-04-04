@@ -1,5 +1,5 @@
 # Chucker
-[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
+[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) ![Pre Merge Checks](https://github.com/ChuckerTeam/chucker/workflows/Pre%20Merge%20Checks/badge.svg?branch=develop)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
 
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -20,7 +20,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Acknowledgments](#acknowledgments-)
 * [License](#license-)
 
-Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as a **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
+Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
 Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.1.2"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.1.2"
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
+  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
 }
 ```
 
@@ -119,7 +119,7 @@ try {
 
 ### Redact-Header 👮‍♂️
 
-**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. 
+**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies.
 
 It is intended for **use during development**, and not in release builds or other production deployments.
 
@@ -163,13 +163,13 @@ If you're looking for the **latest stable version**, you can always find it on t
 * Why are retries and redirects not being captured discretely?
 * Why are my encoded request/response bodies not appearing as plain text?
 
-Please refer to [this section of the OkHttp wiki](https://github.com/square/okhttp/wiki/Interceptors#choosing-between-application-and-network-interceptors). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
+Please refer to [this section of the OkHttp documentation](https://square.github.io/okhttp/interceptors/). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
 
 ## Contributing 🤝
 
-We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.com/archives/CRWD6370R) channel on [kotlinlang.slack.com](https://kotlinlang.slack.com/). Come and joing the conversation over there.
+We're offering support for Chucker on the [#chucker](https://kotlinlang.slack.com/archives/CRWD6370R) channel on [kotlinlang.slack.com](https://kotlinlang.slack.com/). Come and join the conversation over there.
 
-**We're looking for contributors! Don't be shy.** 😁 Feel free to open issues/pull requests to help me improve this project.
+**We're looking for contributors! Don't be shy.** 😁 Feel free to open issues/pull requests to help us improve this project.
 
 * When reporting a new Issue, make sure to attach **Screenshots**, **Videos** or **GIFs** of the problem you are reporting.
 * When submitting a new PR, make sure tests are all green. Write new tests if necessary.
