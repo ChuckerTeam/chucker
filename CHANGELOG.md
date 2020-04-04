@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 3.2.0 *(2020-04-02)*
+## Version 3.2.0 *(2020-04-04)*
 
 This is a new minor release with numerous internal changes.
 
@@ -362,3 +362,9 @@ Initial release.
 [#196]: https://github.com/ChuckerTeam/chucker/pull/196
 [#198]: https://github.com/ChuckerTeam/chucker/pull/198
 [#201]: https://github.com/ChuckerTeam/chucker/pull/201
+[#218]: https://github.com/ChuckerTeam/chucker/issues/218
+[#242]: https://github.com/ChuckerTeam/chucker/issues/242
+[#240]: https://github.com/ChuckerTeam/chucker/pull/240
+[#254]: https://github.com/ChuckerTeam/chucker/issues/254
+[#255]: https://github.com/ChuckerTeam/chucker/issues/255
+[#241]: https://github.com/ChuckerTeam/chucker/issues/241
