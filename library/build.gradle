@@ -25,6 +25,11 @@ android {
     viewBinding {
         enabled = true
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
 }
 
 dokka {
