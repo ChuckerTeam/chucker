@@ -4,4 +4,5 @@ import java.io.File
 
 internal interface FileFactory {
     fun create(): File
+    fun createExportFile(): File
 }

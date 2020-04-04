@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -9,14 +10,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
+import com.chuckerteam.chucker.internal.support.FileFactory
+import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 internal class TransactionListFragment :
     Fragment(),
@@ -26,6 +34,10 @@ internal class TransactionListFragment :
     private lateinit var viewModel: MainViewModel
     private lateinit var transactionsBinding: ChuckerFragmentTransactionListBinding
     private lateinit var transactionsAdapter: TransactionAdapter
+    private lateinit var transactions: List<HttpTransaction>
+    private val cacheFileFactory: FileFactory by lazy {
+        AndroidCacheFileFactory(requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +75,12 @@ internal class TransactionListFragment :
                     if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )
+        RepositoryProvider.transaction().getAllTransactions().observe(
+            viewLifecycleOwner,
+            Observer {
+                transactions = it
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,20 +97,27 @@ internal class TransactionListFragment :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.clear) {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.chucker_clear)
-                .setMessage(R.string.chucker_clear_http_confirmation)
-                .setPositiveButton(
-                    R.string.chucker_clear
-                ) { _, _ ->
-                    viewModel.clearTransactions()
-                }
-                .setNegativeButton(R.string.chucker_cancel, null)
-                .show()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.clear -> {
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.chucker_clear)
+                        .setMessage(R.string.chucker_clear_http_confirmation)
+                        .setPositiveButton(
+                                R.string.chucker_clear
+                        ) { _, _ ->
+                            viewModel.clearTransactions()
+                        }
+                        .setNegativeButton(R.string.chucker_cancel, null)
+                        .show()
+                true
+            }
+            R.id.export -> {
+
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 

@@ -10,7 +10,14 @@ internal class AndroidCacheFileFactory(
     private val fileDir = context.cacheDir
     private val uniqueIdGenerator = AtomicLong()
 
-    override fun create(): File {
-        return File(fileDir, "chucker-${uniqueIdGenerator.getAndIncrement()}")
+    override fun create(): File = File(fileDir, "chucker-${uniqueIdGenerator.getAndIncrement()}")
+
+    override fun createExportFile(): File {
+        val file = File(fileDir, "transactions")
+        if (file.exists()) {
+            file.delete()
+        }
+        file.createNewFile()
+        return file
     }
 }

@@ -51,6 +51,10 @@ class ChuckerInterceptorTest {
             override fun create(): File {
                 return File(tempDir, "testFile")
             }
+
+            override fun createExportFile(): File {
+                return File(tempDir, "exportFile")
+            }
         }
         chuckerInterceptor = ChuckerInterceptorDelegate(fileFactory)
     }

@@ -24,6 +24,8 @@
     <string name="chucker_yes">Yes</string>
     <string name="chucker_no">No</string>
     <string name="chucker_share">Share</string>
+    <string name="chucker_export">Export</string>
+    <string name="chucker_export_empty_text">Nothing to export</string>
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
     <string name="chucker_save">Save body to file</string>
@@ -48,10 +50,15 @@
     <string name="chucker_share_throwable_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_clear_throwable_confirmation">Do you want to clear complete throwables history?</string>
+    <string name="chucker_export_http_confirmation">Export all http calls</string>
+    <string name="chucker_export_separator">==================</string>
+    <string name="chucker_export_prefix">/* Export Start */</string>
+    <string name="chucker_export_postfix">/*  Export End  */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="chucker_setup">Setup</string>
     <string name="chucker_binary_data">binary data</string>
     <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
+    <string name="chucker_provider_authority">com.chuckerteam.chucker.provider</string>
 </resources>
