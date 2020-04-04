@@ -3,6 +3,7 @@
     <string name="chucker_name">Chucker</string>
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
     <string name="chucker_clear">Clear</string>
+    <string name="chucker_encode_url">Encode URL</string>
     <string name="chucker_cancel">Cancel</string>
     <string name="chucker_overview">Overview</string>
     <string name="chucker_request">Request</string>
@@ -12,6 +13,8 @@
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>
     <string name="chucker_ssl">SSL</string>
+    <string name="chucker_tls_version">TLS version</string>
+    <string name="chucker_tls_cipher_suite">Cipher Suite</string>
     <string name="chucker_request_time">Request time</string>
     <string name="chucker_response_time">Response time</string>
     <string name="chucker_duration">Duration</string>
@@ -34,17 +37,17 @@
     <string name="chucker_tab_network">Network</string>
     <string name="chucker_tab_errors">Errors</string>
     <string name="chucker_network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
-    <string name="chucker_errors_tutorial">This tab displays error recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
-    <string name="chucker_networks_notification_category">Chucker network requests</string>
-    <string name="chucker_errors_notification_category">Chucker throwables</string>
-    <string name="chucker_share_error_title">Share error details</string>
+    <string name="chucker_throwable_tutorial">This tab displays throwables recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
+    <string name="chucker_network_notification_category">Chucker network requests</string>
+    <string name="chucker_throwable_notification_category">Chucker throwables</string>
+    <string name="chucker_share_throwable_title">Share throwable details</string>
     <string name="chucker_share_transaction_title">Share transaction details</string>
-    <string name="chucker_share_error_subject">Error details</string>
+    <string name="chucker_share_throwable_subject">Throwable details</string>
     <string name="chucker_share_transaction_subject">Transaction details</string>
-    <string name="chucker_share_error_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
+    <string name="chucker_share_throwable_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
-    <string name="chucker_clear_error_confirmation">Do you want to clear complete errors history?</string>
-    <string name="chucker_check_readme"><a href="chucker_https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
+    <string name="chucker_clear_throwable_confirmation">Do you want to clear complete throwables history?</string>
+    <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Check the setup instructions on GitHub</a></string>
     <string name="chucker_setup">Setup</string>
     <string name="chucker_binary_data">binary data</string>
     <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>

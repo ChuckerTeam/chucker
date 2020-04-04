@@ -5,6 +5,9 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and
@@ -14,7 +17,7 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
  * @param context An Android Context
  * @param showNotification Control whether a notification is shown while HTTP activity
  * is recorded.
- * @param retentionManager Set the retention period for HTTP transaction data captured
+ * @param retentionPeriod Set the retention period for HTTP transaction data captured
  * by this collector. The default is one week.
  */
 class ChuckerCollector @JvmOverloads constructor(
@@ -36,7 +39,9 @@ class ChuckerCollector @JvmOverloads constructor(
      */
     fun onError(tag: String, throwable: Throwable) {
         val recordedThrowable = RecordedThrowable(tag, throwable)
-        RepositoryProvider.throwable().saveThrowable(recordedThrowable)
+        CoroutineScope(Dispatchers.IO).launch {
+            RepositoryProvider.throwable().saveThrowable(recordedThrowable)
+        }
         if (showNotification) {
             notificationHelper.show(recordedThrowable)
         }
@@ -48,7 +53,9 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The HTTP transaction sent
      */
     internal fun onRequestSent(transaction: HttpTransaction) {
-        RepositoryProvider.transaction().insertTransaction(transaction)
+        CoroutineScope(Dispatchers.IO).launch {
+            RepositoryProvider.transaction().insertTransaction(transaction)
+        }
         if (showNotification) {
             notificationHelper.show(transaction)
         }

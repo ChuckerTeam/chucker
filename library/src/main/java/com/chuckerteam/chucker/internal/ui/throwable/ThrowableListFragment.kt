@@ -1,6 +1,5 @@
-package com.chuckerteam.chucker.internal.ui.error
+package com.chuckerteam.chucker.internal.ui.throwable
 
-import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -9,23 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
-internal class ErrorListFragment : Fragment() {
+internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: ErrorAdapter
-    private lateinit var listener: ErrorAdapter.ErrorClickListListener
-    private lateinit var tutorialView: View
+    private lateinit var errorsBinding: ChuckerFragmentThrowableListBinding
+    private lateinit var errorsAdapter: ThrowableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,24 +30,28 @@ internal class ErrorListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.chucker_fragment_error_list, container, false).apply {
-            tutorialView = findViewById(R.id.tutorial)
-            findViewById<TextView>(R.id.link).movementMethod = LinkMovementMethod.getInstance()
+        errorsBinding = ChuckerFragmentThrowableListBinding.inflate(inflater, container, false)
+        errorsAdapter = ThrowableAdapter(this)
 
-            val recyclerView = findViewById<RecyclerView>(R.id.list)
-            recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
-            adapter = ErrorAdapter(listener)
-            recyclerView.adapter = adapter
+        with(errorsBinding) {
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
+            errorsRecyclerView.apply {
+                setHasFixedSize(true)
+                addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                adapter = errorsAdapter
+            }
         }
+
+        return errorsBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.errors.observe(
+        viewModel.throwables.observe(
             viewLifecycleOwner,
-            Observer { errors ->
-                adapter.setData(errors)
-                tutorialView.visibility = if (errors.isNullOrEmpty()) {
+            Observer { throwables ->
+                errorsAdapter.setData(throwables)
+                errorsBinding.tutorialView.visibility = if (throwables.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -60,17 +60,8 @@ internal class ErrorListFragment : Fragment() {
         )
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        require(context is ErrorAdapter.ErrorClickListListener) {
-            "Context must implement the listener."
-        }
-        listener = context
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chucker_errors_list, menu)
+        inflater.inflate(R.menu.chucker_throwables_list, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -86,15 +77,19 @@ internal class ErrorListFragment : Fragment() {
     private fun askForConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.chucker_clear)
-            .setMessage(R.string.chucker_clear_error_confirmation)
+            .setMessage(R.string.chucker_clear_throwable_confirmation)
             .setPositiveButton(R.string.chucker_clear) { _, _ ->
-                viewModel.clearErrors()
+                viewModel.clearThrowables()
             }
             .setNegativeButton(R.string.chucker_cancel, null)
             .show()
     }
 
+    override fun onThrowableClick(throwableId: Long, position: Int) {
+        ThrowableActivity.start(requireActivity(), throwableId)
+    }
+
     companion object {
-        fun newInstance() = ErrorListFragment()
+        fun newInstance() = ThrowableListFragment()
     }
 }
