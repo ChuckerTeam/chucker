@@ -1,7 +1,7 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_dark_color</item>
-        <item name="colorAccent">@color/secondary_color</item>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/chucker_sample_color_primary</item>
+        <item name="colorPrimaryDark">@color/chucker_sample_color_primary_variant</item>
     </style>
 </resources>

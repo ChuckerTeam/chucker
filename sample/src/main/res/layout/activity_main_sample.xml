@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,34 +10,37 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/norm_grid_size"
         android:gravity="center"
-        android:layout_margin="@dimen/norm_grid_size"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:text="@string/intro_title"/>
+        android:text="@string/intro_title"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/doub_grid_size"
         android:gravity="center"
-        android:layout_margin="@dimen/norm_grid_size"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="@string/intro_body"/>
+        android:text="@string/intro_body"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/do_http"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/doub_grid_size"
         android:text="@string/do_http_activity" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/trigger_exception"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/doub_grid_size"
         android:text="@string/trigger_exception" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/launch_chucker_directly"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/doub_grid_size"
         android:text="@string/launch_chucker_directly" />
 </LinearLayout>
