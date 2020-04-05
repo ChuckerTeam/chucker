@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/toolbarTitle"
-                style="@style/Chucker.TextAppearance.TransactionTitle"
+                style="@style/Chucker.TextAppearance.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Title" />

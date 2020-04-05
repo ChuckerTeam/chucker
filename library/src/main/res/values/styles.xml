@@ -30,7 +30,7 @@
         <item name="android:textIsSelectable">true</item>
     </style>
 
-    <style name="Chucker.TextAppearance.TransactionTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="Chucker.TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
         <item name="android:maxLines">2</item>
     </style>

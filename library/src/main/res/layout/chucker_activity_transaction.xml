@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/chucker_doub_grid"
-                style="@style/Chucker.TextAppearance.TransactionTitle"
+                style="@style/Chucker.TextAppearance.Title"
                 tools:text="Title"/>
 
         </com.google.android.material.appbar.MaterialToolbar>
