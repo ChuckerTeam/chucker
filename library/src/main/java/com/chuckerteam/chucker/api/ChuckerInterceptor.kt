@@ -255,7 +255,7 @@ class ChuckerInterceptor internal constructor(
                 bufferedSource
             }
             return try {
-                Buffer().apply { writeAll(source) }
+                Buffer().apply { source.use { writeAll(it) } }
             } catch (_: IOException) {
                 null
             }
