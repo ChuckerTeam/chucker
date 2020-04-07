@@ -11,6 +11,7 @@ buildscript {
         roomVersion = '2.2.5'
         lifecycleVersion = '2.2.0'
         androidXCoreVersion = '2.1.0'
+        paletteKtxVersion = '1.0.0'
 
         // Publishing
         androidMavenGradleVersion = '2.1'
