@@ -145,6 +145,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
         private fun setContrastingBackground(item: TransactionPayloadItem.ImageItem) {
             val replaceColor = Color.MAGENTA
+            contrastTask?.cancel(true)
             contrastTask = Palette.from(item.image.replaceTransparentWithColor(Color.MAGENTA))
                 .clearFilters()
                 .addFilter { rgb, _ -> rgb != replaceColor }
