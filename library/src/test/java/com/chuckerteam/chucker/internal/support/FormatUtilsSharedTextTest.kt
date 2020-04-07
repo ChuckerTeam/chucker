@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.TestTransactionFactory
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -27,18 +27,19 @@ class FormatUtilsSharedTextTest {
         every { getString(R.string.chucker_total_size) } returns "Total size"
         every { getString(R.string.chucker_request) } returns "Request"
         every { getString(R.string.chucker_body_omitted) } returns "(encoded or binary body omitted)"
+        every { getString(R.string.chucker_body_empty) } returns "(body is empty)"
     }
 
     @Test
     fun getShareTextForGetTransaction() {
         val shareText = getShareText("GET")
-        Truth.assertThat(shareText).isEqualTo(TestTransactionFactory.expectedGetHttpTransaction)
+        assertThat(shareText).isEqualTo(TestTransactionFactory.expectedGetHttpTransaction)
     }
 
     @Test
     fun getShareTextForPostTransaction() {
         val shareText = getShareText("POST")
-        Truth.assertThat(shareText).isEqualTo(TestTransactionFactory.expectedHttpPostTransaction)
+        assertThat(shareText).isEqualTo(TestTransactionFactory.expectedHttpPostTransaction)
     }
 
     private fun getShareText(method: String): String {

@@ -56,7 +56,7 @@ object TestTransactionFactory {
         
         ---------- Request ----------
         
-        
+        (body is empty)
         
         ---------- Response ----------
         
@@ -84,7 +84,7 @@ object TestTransactionFactory {
         
         ---------- Request ----------
         
-        
+        (body is empty)
         
         ---------- Response ----------
         
