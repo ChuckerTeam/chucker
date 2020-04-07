@@ -6,8 +6,10 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
-import okhttp3.OkHttpClient
+import java.io.IOException
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,10 +54,11 @@ class HttpBinClient(
     @Suppress("MagicNumber")
     internal fun doHttpActivity() {
         val cb = object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                // no-op
+            override fun onResponse(call: Call<Void>, response: Response<Void>) = Unit
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                t.printStackTrace()
             }
-            override fun onFailure(call: Call<Void>, t: Throwable) { t.printStackTrace() }
         }
 
         with(api) {
@@ -89,6 +92,8 @@ class HttpBinClient(
             redirectTo("https://ascii.cl?parameter=%22Click+on+%27URL+Encode%27%21%22").enqueue(cb)
             redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(cb)
         }
+        downloadSampleImage(colorHex = "fff")
+        downloadSampleImage(colorHex = "000")
     }
 
     internal fun initializeCrashHandler() {
@@ -99,5 +104,19 @@ class HttpBinClient(
         collector.onError("Example button pressed", RuntimeException("User triggered the button"))
         // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHandler"
         // throw new RuntimeException("User triggered the button");
+    }
+
+    private fun downloadSampleImage(colorHex: String) {
+        val request = Request.Builder()
+            .url("https://dummyimage.com/200x200/$colorHex/$colorHex.png")
+            .get()
+            .build()
+        httpClient.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.body()?.source()?.use { it.readByteString() }
+            }
+        })
     }
 }
