@@ -128,9 +128,9 @@
     <TextView
       android:id="@+id/sslValue"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_marginTop="@dimen/chucker_base_grid"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
       app:layout_constraintTop_toBottomOf="@id/response"
@@ -190,8 +190,8 @@
       android:id="@+id/cipherSuiteValue"
       style="@style/Chucker.TextAppearance.Value"
       android:layout_width="0dp"
-      android:visibility="gone"
       android:layout_height="wrap_content"
+      android:visibility="gone"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
       app:layout_constraintTop_toBottomOf="@id/tlsVersion"
@@ -209,6 +209,7 @@
       tools:visibility="visible" />
 
     <TextView
+      android:id="@+id/requestTimeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -229,14 +230,22 @@
       app:layout_constraintTop_toBottomOf="@id/cipherSuiteValue"
       tools:text="05/02/17 11:52:49" />
 
+    <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrierRequestTime"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="bottom"
+      app:constraint_referenced_ids="requestTimeLabel,requestTime" />
+
     <TextView
+      android:id="@+id/responseTimeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_time"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/requestTime" />
+      app:layout_constraintTop_toBottomOf="@id/barrierRequestTime" />
 
     <TextView
       android:id="@+id/responseTime"
@@ -245,8 +254,15 @@
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/requestTime"
+      app:layout_constraintTop_toBottomOf="@id/barrierRequestTime"
       tools:text="05/02/17 11:52:49" />
+
+    <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrierResponseTime"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="bottom"
+      app:constraint_referenced_ids="responseTimeLabel,responseTime" />
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
@@ -255,7 +271,7 @@
       android:text="@string/chucker_duration"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/responseTime" />
+      app:layout_constraintTop_toBottomOf="@id/barrierResponseTime" />
 
     <TextView
       android:id="@+id/duration"
@@ -264,10 +280,11 @@
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/responseTime"
+      app:layout_constraintTop_toBottomOf="@id/barrierResponseTime"
       tools:text="405 ms" />
 
     <TextView
+      android:id="@+id/requestSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -288,14 +305,22 @@
       app:layout_constraintTop_toBottomOf="@id/duration"
       tools:text="53 KB" />
 
+    <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrierRequestSize"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="bottom"
+      app:constraint_referenced_ids="requestSizeLabel,requestSize" />
+
     <TextView
+      android:id="@+id/responseSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_size"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/requestSize" />
+      app:layout_constraintTop_toBottomOf="@id/barrierRequestSize" />
 
     <TextView
       android:id="@+id/responseSize"
@@ -304,8 +329,15 @@
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/requestSize"
+      app:layout_constraintTop_toBottomOf="@id/barrierRequestSize"
       tools:text="148 KB" />
+
+    <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrierResponseSize"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="bottom"
+      app:constraint_referenced_ids="responseSizeLabel,responseSize" />
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
@@ -314,7 +346,7 @@
       android:text="@string/chucker_total_size"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/responseSize" />
+      app:layout_constraintTop_toBottomOf="@id/barrierResponseSize" />
 
     <TextView
       android:id="@+id/totalSize"
@@ -323,7 +355,7 @@
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/responseSize"
+      app:layout_constraintTop_toBottomOf="@id/barrierResponseSize"
       tools:text="201 KB" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
