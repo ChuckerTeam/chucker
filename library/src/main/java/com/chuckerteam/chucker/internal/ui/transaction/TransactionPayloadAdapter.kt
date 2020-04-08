@@ -1,20 +1,12 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.os.AsyncTask
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
@@ -60,12 +52,6 @@ internal class TransactionBodyAdapter(
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
-        }
-    }
-
-    override fun onViewRecycled(holder: TransactionPayloadViewHolder) {
-        if (holder is TransactionPayloadViewHolder.ImageViewHolder) {
-            holder.cancelContrastTask()
         }
     }
 
@@ -134,54 +120,31 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     internal class ImageViewHolder(
         private val imageBinding: ChuckerTransactionItemImageBinding
     ) : TransactionPayloadViewHolder(imageBinding.root) {
-        private var contrastTask: AsyncTask<Bitmap, Void, Palette>? = null
 
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
-                setContrastingBackground(item)
+                setContrastingBackground(item.luminance)
             }
         }
 
-        private fun setContrastingBackground(item: TransactionPayloadItem.ImageItem) {
-            val replaceColor = Color.MAGENTA
-            contrastTask?.cancel(true)
-            contrastTask = Palette.from(item.image.replaceTransparentWithColor(Color.MAGENTA))
-                .clearFilters()
-                .addFilter { rgb, _ -> rgb != replaceColor }
-                .generate { palette ->
-                    val dominantSwatch = palette?.dominantSwatch
-                    if (dominantSwatch == null) {
-                        imageBinding.binaryData.background = null
-                        return@generate
-                    }
-                    val isSwatchDark = ColorUtils.calculateLuminance(dominantSwatch.rgb) < LUMINANCE_THRESHOLD
-                    val colorId = if (isSwatchDark) {
-                        R.color.chucker_image_contrast_dark
-                    } else {
-                        R.color.chucker_image_contrast_light
-                    }
-                    val color = ContextCompat.getColor(itemView.context, colorId)
-                    imageBinding.binaryData.setBackgroundColor(color)
-                }
-        }
-
-        private fun Bitmap.replaceTransparentWithColor(@ColorInt color: Int): Bitmap {
-            val result = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
-            result.eraseColor(color)
-            Canvas(result).apply {
-                drawBitmap(this@replaceTransparentWithColor, Matrix(), BITMAP_PAINT)
+        private fun setContrastingBackground(luminance: Double?) {
+            if (luminance == null) {
+                imageBinding.binaryData.background = null
+                return
             }
-            return result
-        }
-
-        internal fun cancelContrastTask() {
-            contrastTask?.cancel(true)
+            val isDark = luminance < LUMINANCE_THRESHOLD
+            val colorId = if (isDark) {
+                R.color.chucker_image_contrast_dark
+            } else {
+                R.color.chucker_image_contrast_light
+            }
+            val color = ContextCompat.getColor(itemView.context, colorId)
+            imageBinding.binaryData.setBackgroundColor(color)
         }
 
         private companion object {
             const val LUMINANCE_THRESHOLD = 0.25
-            val BITMAP_PAINT = Paint(Paint.FILTER_BITMAP_FLAG)
         }
     }
 }
@@ -189,5 +152,5 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
-    internal class ImageItem(val image: Bitmap) : TransactionPayloadItem()
+    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }
