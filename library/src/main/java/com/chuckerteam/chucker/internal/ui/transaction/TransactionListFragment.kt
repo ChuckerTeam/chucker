@@ -20,19 +20,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
 import com.chuckerteam.chucker.internal.support.DialogUtils
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.ui.MainViewModel
-import com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 
 internal class TransactionListFragment :
     Fragment(),
@@ -100,15 +93,25 @@ internal class TransactionListFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.clear -> {
-                DialogUtils.showDialog(requireContext(),getClearDialogData(),{
-                    viewModel.clearTransactions()
-                },null)
+                DialogUtils.showDialog(
+                    requireContext(),
+                    getClearDialogData(),
+                    {
+                        viewModel.clearTransactions()
+                    },
+                    null
+                )
                 true
             }
             R.id.export -> {
-                DialogUtils.showDialog(requireContext(),getExportDialogData(),{
-                    exportTransactions()
-                },null)
+                DialogUtils.showDialog(
+                    requireContext(),
+                    getExportDialogData(),
+                    {
+                        exportTransactions()
+                    },
+                    null
+                )
                 true
             }
             else -> {
@@ -129,15 +132,15 @@ internal class TransactionListFragment :
     }
 
     private fun exportTransactions() {
-        viewModel.getAllTransactions { transactions->
+        viewModel.getAllTransactions { transactions ->
             if (transactions.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
             } else {
-                val filecontent = ShareUtils.getStringFromTransactions(transactions,requireContext())
-                viewModel.createExportFile(filecontent,cacheFileFactory) { file ->
+                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+                viewModel.createExportFile(filecontent, cacheFileFactory) { file ->
                     val uri = FileProvider.getUriForFile(
-                            requireContext(),
-                            getString(R.string.chucker_provider_authority), file
+                        requireContext(),
+                        getString(R.string.chucker_provider_authority), file
                     )
                     shareFile(uri)
                 }
@@ -146,7 +149,8 @@ internal class TransactionListFragment :
     }
 
     private fun shareFile(uri: Uri) {
-        startActivity(ShareCompat.IntentBuilder.from(requireActivity())
+        startActivity(
+            ShareCompat.IntentBuilder.from(requireActivity())
                 .setType(MIME_TYPE)
                 .setChooserTitle(getString(R.string.chucker_share_all_transactions_title))
                 .setSubject(getString(R.string.chucker_share_all_transactions_subject))
@@ -156,15 +160,19 @@ internal class TransactionListFragment :
         )
     }
 
-    private fun getClearDialogData(): DialogData = DialogData(title = getString(R.string.chucker_clear),
-            message = getString(R.string.chucker_clear_http_confirmation),
-            postiveButtonText = getString(R.string.chucker_clear),
-            negativeButtonText = getString(R.string.chucker_cancel))
+    private fun getClearDialogData(): DialogData = DialogData(
+        title = getString(R.string.chucker_clear),
+        message = getString(R.string.chucker_clear_http_confirmation),
+        postiveButtonText = getString(R.string.chucker_clear),
+        negativeButtonText = getString(R.string.chucker_cancel)
+    )
 
-    private fun getExportDialogData(): DialogData = DialogData(title = getString(R.string.chucker_export),
-            message = getString(R.string.chucker_export_http_confirmation),
-            postiveButtonText = getString(R.string.chucker_export),
-            negativeButtonText = getString(R.string.chucker_cancel))
+    private fun getExportDialogData(): DialogData = DialogData(
+        title = getString(R.string.chucker_export),
+        message = getString(R.string.chucker_export_http_confirmation),
+        postiveButtonText = getString(R.string.chucker_export),
+        negativeButtonText = getString(R.string.chucker_cancel)
+    )
 
     companion object {
         private const val MIME_TYPE = "text/plain"

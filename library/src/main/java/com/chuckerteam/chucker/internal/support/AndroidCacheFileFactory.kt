@@ -12,7 +12,7 @@ internal class AndroidCacheFileFactory(
 
     override fun createFileForResponseBody(): File = File(fileDir, "chucker-${uniqueIdGenerator.getAndIncrement()}")
 
-    override fun createFileForExport(): File  = File(fileDir, "transactions.txt").apply {
+    override fun createFileForExport(): File = File(fileDir, "transactions.txt").apply {
         if (exists()) {
             delete()
         }
