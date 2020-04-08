@@ -31,6 +31,7 @@ class ShareUtilsTest {
         every { getString(R.string.chucker_export_separator) } returns "=================="
         every { getString(R.string.chucker_export_prefix) } returns "/* Export Start */"
         every { getString(R.string.chucker_export_postfix) } returns "/*  Export End  */"
+        every { getString(R.string.chucker_body_empty) } returns "(body is empty)"
     }
 
     @Test
