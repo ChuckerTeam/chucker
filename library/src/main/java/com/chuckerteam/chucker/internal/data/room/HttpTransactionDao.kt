@@ -43,5 +43,5 @@ internal interface HttpTransactionDao {
     suspend fun deleteBefore(threshold: Long)
 
     @Query("SELECT * FROM transactions")
-    fun getAll(): LiveData<List<HttpTransaction>>
+    suspend fun getAll(): List<HttpTransaction>
 }

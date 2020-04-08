@@ -41,5 +41,5 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         transactionDao.deleteBefore(threshold)
     }
 
-    override fun getAllTransactions(): LiveData<List<HttpTransaction>> = transactionDao.getAll()
+    override suspend fun getAllTransactions(): List<HttpTransaction> = transactionDao.getAll()
 }

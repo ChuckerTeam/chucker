@@ -48,11 +48,11 @@ class ChuckerInterceptorTest {
     @BeforeEach
     fun setUp(@TempDir tempDir: File) {
         val fileFactory = object : FileFactory {
-            override fun create(): File {
+            override fun createFileForResponseBody(): File {
                 return File(tempDir, "testFile")
             }
 
-            override fun createExportFile(): File {
+            override fun createFileForExport(): File {
                 return File(tempDir, "exportFile")
             }
         }

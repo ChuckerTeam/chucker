@@ -37,16 +37,17 @@ class ShareUtilsTest {
     fun isStringFromTransactionsListValid() {
         val transactionList = ArrayList<HttpTransaction>()
 
-        for (i in 0 until 10)
+        repeat(10) {
             transactionList.add(TestTransactionFactory.createTransaction(getRandomHttpMethod()))
+        }
 
         val actualStringFromTransactions = ShareUtils.getStringFromTransactions(transactionList, contextMock)
         val expectedStringFromTransactions = transactionList.joinToString(
-            separator = "\n${contextMock.getString(R.string.chucker_export_separator)}\n",
-            prefix = "${contextMock.getString(R.string.chucker_export_prefix)}\n",
-            postfix = "\n${contextMock.getString(R.string.chucker_export_postfix)}\n"
+            separator = "\n==================\n",
+            prefix = "/* Export Start */\n",
+            postfix = "\n/*  Export End  */\n"
         ) {
-            "\n${FormatUtils.getShareText(contextMock, it, false)}\n"
+            FormatUtils.getShareText(contextMock, it, false)
         }
 
         assert(actualStringFromTransactions == expectedStringFromTransactions)

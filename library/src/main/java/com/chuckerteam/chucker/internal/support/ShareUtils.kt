@@ -10,6 +10,6 @@ internal object ShareUtils {
             separator = "\n${context.getString(R.string.chucker_export_separator)}\n",
             prefix = "${context.getString(R.string.chucker_export_prefix)}\n",
             postfix = "\n${context.getString(R.string.chucker_export_postfix)}\n"
-        ) { "\n${FormatUtils.getShareText(context, it, false)}\n" }
+        ) { FormatUtils.getShareText(context, it, false) }
     }
 }

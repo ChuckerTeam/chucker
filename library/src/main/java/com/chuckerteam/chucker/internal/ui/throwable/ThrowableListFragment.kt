@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
+import com.chuckerteam.chucker.internal.data.model.DialogData
+import com.chuckerteam.chucker.internal.support.DialogUtils
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -75,14 +77,12 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
     }
 
     private fun askForConfirmation() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.chucker_clear)
-            .setMessage(R.string.chucker_clear_throwable_confirmation)
-            .setPositiveButton(R.string.chucker_clear) { _, _ ->
-                viewModel.clearThrowables()
-            }
-            .setNegativeButton(R.string.chucker_cancel, null)
-            .show()
+        val confirmationDialogData = DialogData(title = getString(R.string.chucker_clear),
+                message = getString(R.string.chucker_clear_throwable_confirmation),
+                postiveButtonText = getString(R.string.chucker_clear),negativeButtonText = getString(R.string.chucker_cancel))
+        DialogUtils.showDialog(requireContext(),confirmationDialogData,{
+            viewModel.clearThrowables()
+        },null)
     }
 
     override fun onThrowableClick(throwableId: Long, position: Int) {
