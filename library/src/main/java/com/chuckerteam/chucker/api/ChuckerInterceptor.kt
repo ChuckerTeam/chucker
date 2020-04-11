@@ -183,7 +183,7 @@ class ChuckerInterceptor internal constructor(
 
         val teeSource = TeeSource(
             responseBody.source(),
-            fileFactory.createFileForResponseBody(),
+            fileFactory.create(),
             ChuckerTransactionTeeCallback(response, transaction),
             maxContentLength
         )

@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData<String>("")
+    private val exportFileName = "transactions.txt"
 
     val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
@@ -73,7 +74,7 @@ internal class MainViewModel : ViewModel() {
 
     private suspend fun createFileForExport(content: String, cacheFileFactory: FileFactory): File {
         return withContext(Dispatchers.IO) {
-            val file = cacheFileFactory.createFileForExport()
+            val file = cacheFileFactory.create(exportFileName)
             file.writeText(content)
             return@withContext file
         }
