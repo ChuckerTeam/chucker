@@ -7,6 +7,7 @@ internal object JsonConverter {
 
     val instance: Gson by lazy {
         GsonBuilder()
+            .disableHtmlEscaping()
             .serializeNulls()
             .setPrettyPrinting()
             .create()
