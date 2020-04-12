@@ -3,6 +3,8 @@ package com.chuckerteam.chucker.sample
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -95,6 +97,10 @@ internal interface HttpBinApi {
 
     @GET("/cache/{seconds}")
     fun cache(@Path("seconds") seconds: Int): Call<Void>
+
+    @FormUrlEncoded
+    @POST("/post")
+    fun postForm(@Field("key1") value1: String, @Field("key2") value2: String): Call<Void>
 
     class Data(val thing: String)
 }
