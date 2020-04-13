@@ -22,6 +22,8 @@
     <color name="chucker_background_span_color">#ffffff00</color>
     <color name="chucker_foreground_span_color">#ffff0000</color>
 
-    <color name="chucker_image_contrast_light">#121212</color>
-    <color name="chucker_image_contrast_dark">#ffffff</color>
+    <color name="chucker_chessboard_even_square_light">#F8FAFC</color>
+    <color name="chucker_chessboard_odd_square_light">#D2DADF</color>
+    <color name="chucker_chessboard_even_square_dark">#182531</color>
+    <color name="chucker_chessboard_odd_square_dark">#01101D</color>
 </resources>

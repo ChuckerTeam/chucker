@@ -1,17 +1,18 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
+import com.chuckerteam.chucker.internal.support.ChessboardDrawable
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 /**
@@ -124,23 +125,28 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
-                setContrastingBackground(item.luminance)
+                imageBinding.root.background = createContrastingBackground(item.luminance)
             }
         }
 
-        private fun setContrastingBackground(luminance: Double?) {
-            if (luminance == null) {
-                imageBinding.binaryData.background = null
-                return
-            }
-            val isDark = luminance < LUMINANCE_THRESHOLD
-            val colorId = if (isDark) {
-                R.color.chucker_image_contrast_dark
+        private fun createContrastingBackground(luminance: Double?): Drawable? {
+            if (luminance == null) return null
+
+            return if (luminance < LUMINANCE_THRESHOLD) {
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_light,
+                    R.color.chucker_chessboard_odd_square_light,
+                    R.dimen.chucker_half_grid
+                )
             } else {
-                R.color.chucker_image_contrast_light
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_dark,
+                    R.color.chucker_chessboard_odd_square_dark,
+                    R.dimen.chucker_half_grid
+                )
             }
-            val color = ContextCompat.getColor(itemView.context, colorId)
-            imageBinding.binaryData.setBackgroundColor(color)
         }
 
         private companion object {
