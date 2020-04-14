@@ -1,15 +1,18 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
+import com.chuckerteam.chucker.internal.support.ChessboardDrawable
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 /**
@@ -118,10 +121,36 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     internal class ImageViewHolder(
         private val imageBinding: ChuckerTransactionItemImageBinding
     ) : TransactionPayloadViewHolder(imageBinding.root) {
+
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
+                imageBinding.root.background = createContrastingBackground(item.luminance)
             }
+        }
+
+        private fun createContrastingBackground(luminance: Double?): Drawable? {
+            if (luminance == null) return null
+
+            return if (luminance < LUMINANCE_THRESHOLD) {
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_light,
+                    R.color.chucker_chessboard_odd_square_light,
+                    R.dimen.chucker_half_grid
+                )
+            } else {
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_dark,
+                    R.color.chucker_chessboard_odd_square_dark,
+                    R.dimen.chucker_half_grid
+                )
+            }
+        }
+
+        private companion object {
+            const val LUMINANCE_THRESHOLD = 0.25
         }
     }
 }
@@ -129,5 +158,5 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
-    internal class ImageItem(val image: Bitmap) : TransactionPayloadItem()
+    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }

@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.calculateLuminance
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -207,7 +208,10 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun processPayload(type: Int, transaction: HttpTransaction): MutableList<TransactionPayloadItem> {
+    private suspend fun processPayload(
+        type: Int,
+        transaction: HttpTransaction
+    ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
 
@@ -238,7 +242,8 @@ internal class TransactionPayloadFragment :
             // The body could either be an image, binary encoded or plain text.
             val responseBitmap = transaction.responseImageBitmap
             if (type == TYPE_RESPONSE && responseBitmap != null) {
-                result.add(TransactionPayloadItem.ImageItem(responseBitmap))
+                val bitmapLuminance = responseBitmap.calculateLuminance()
+                result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
             } else if (!isBodyPlainText) {
                 requireContext().getString(R.string.chucker_body_omitted).let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
