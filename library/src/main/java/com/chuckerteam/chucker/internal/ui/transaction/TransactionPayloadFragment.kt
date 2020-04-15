@@ -267,7 +267,7 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
-                if (!bodyString.isBlank()) {
+                if (bodyString.isNotBlank()) {
                     bodyString.lines().forEach {
                         result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                     }
