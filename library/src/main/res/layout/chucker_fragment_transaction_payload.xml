@@ -26,6 +26,7 @@
         android:layout_height="@dimen/chucker_octa_grid"
         android:tint="@color/chucker_color_primary"
         android:layout_marginBottom="@dimen/chucker_quad_grid"
+        android:contentDescription="@string/chucker_body_empty"
         android:src="@drawable/chucker_empty_payload"
         app:layout_constraintBottom_toTopOf="@id/emptyPayloadTextView"
         app:layout_constraintEnd_toEndOf="parent"
