@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 internal class TransactionListFragment :
     Fragment(),
@@ -44,6 +44,7 @@ internal class TransactionListFragment :
         with(transactionsBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             transactionsRecyclerView.apply {
+                setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
                 adapter = transactionsAdapter
             }
@@ -79,7 +80,7 @@ internal class TransactionListFragment :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.clear) {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.chucker_clear)
                 .setMessage(R.string.chucker_clear_http_confirmation)
                 .setPositiveButton(

@@ -120,7 +120,11 @@ internal object FormatUtils {
         }
 
         text += if (transaction.isRequestBodyPlainText) {
-            transaction.getFormattedRequestBody()
+            if (transaction.requestBody.isNullOrBlank()) {
+                context.getString(R.string.chucker_body_empty)
+            } else {
+                transaction.getFormattedRequestBody()
+            }
         } else {
             context.getString(R.string.chucker_body_omitted)
         }
@@ -135,7 +139,11 @@ internal object FormatUtils {
         }
 
         text += if (transaction.isResponseBodyPlainText) {
-            transaction.getFormattedResponseBody()
+            if (transaction.responseBody.isNullOrBlank()) {
+                context.getString(R.string.chucker_body_empty)
+            } else {
+                transaction.getFormattedResponseBody()
+            }
         } else {
             context.getString(R.string.chucker_body_omitted)
         }

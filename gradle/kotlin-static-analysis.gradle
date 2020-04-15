@@ -2,7 +2,7 @@ apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 ktlint {
-    version = "0.36.0"
+    version = rootProject.ext.ktLintVersion
     debug = false
     verbose = true
     android = false
@@ -19,7 +19,6 @@ ktlint {
 }
 
 detekt {
-    toolVersion = "1.4.0"
     config = files("../detekt-config.yml")
     buildUponDefaultConfig = true
 }

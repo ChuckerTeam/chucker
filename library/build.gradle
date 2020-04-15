@@ -25,6 +25,11 @@ android {
     viewBinding {
         enabled = true
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
 }
 
 dokka {
@@ -65,11 +70,16 @@ dependencies {
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.palette:palette-ktx:$paletteKtxVersion"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"

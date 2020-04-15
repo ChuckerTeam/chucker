@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -26,9 +25,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.calculateLuminance
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
@@ -43,8 +48,8 @@ internal class TransactionPayloadFragment :
     private var type: Int = 0
 
     private lateinit var viewModel: TransactionViewModel
-    private var payloadLoaderTask: PayloadLoaderTask? = null
-    private var fileSaverTask: FileSaverTask? = null
+
+    private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +63,10 @@ internal class TransactionPayloadFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(inflater, container, false)
+        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
+            inflater, container,
+            false
+        )
         return payloadBinding.root
     }
 
@@ -68,15 +76,20 @@ internal class TransactionPayloadFragment :
             viewLifecycleOwner,
             Observer { transaction ->
                 if (transaction == null) return@Observer
-                PayloadLoaderTask(this).execute(Pair(type, transaction))
+                uiScope.launch {
+                    showProgress()
+                    val result = processPayload(type, transaction)
+                    payloadBinding.responseRecyclerView.adapter = TransactionBodyAdapter(result)
+                    payloadBinding.responseRecyclerView.setHasFixedSize(true)
+                    hideProgress()
+                }
             }
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        payloadLoaderTask?.cancel(true)
-        fileSaverTask?.cancel(true)
+    override fun onDestroy() {
+        super.onDestroy()
+        uiScope.cancel()
     }
 
     @SuppressLint("NewApi")
@@ -155,8 +168,14 @@ internal class TransactionPayloadFragment :
             val uri = resultData?.data
             val transaction = viewModel.transaction.value
             if (uri != null && transaction != null) {
-                fileSaverTask = FileSaverTask(this).apply {
-                    execute(Triple(type, uri, transaction))
+                uiScope.launch {
+                    val result = saveToFile(type, uri, transaction)
+                    val toastMessageId = if (result) {
+                        R.string.chucker_file_saved
+                    } else {
+                        R.string.chucker_file_not_saved
+                    }
+                    Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -174,22 +193,26 @@ internal class TransactionPayloadFragment :
         return true
     }
 
-    /**
-     * Async task responsible of loading in the background the content of the HTTP request/response.
-     */
-    class PayloadLoaderTask(private val fragment: TransactionPayloadFragment) :
-        AsyncTask<Pair<Int, HttpTransaction>, Unit, List<TransactionPayloadItem>>() {
-
-        override fun onPreExecute() {
-            fragment.payloadBinding.apply {
-                loadingProgress.visibility = View.VISIBLE
-                responseRecyclerView.visibility = View.INVISIBLE
-            }
+    private fun showProgress() {
+        payloadBinding.apply {
+            loadingProgress.visibility = View.VISIBLE
+            responseRecyclerView.visibility = View.INVISIBLE
         }
+    }
 
-        @Suppress("ComplexMethod")
-        override fun doInBackground(vararg params: Pair<Int, HttpTransaction>): List<TransactionPayloadItem> {
-            val (type, transaction) = params[0]
+    private fun hideProgress() {
+        payloadBinding.apply {
+            loadingProgress.visibility = View.INVISIBLE
+            responseRecyclerView.visibility = View.VISIBLE
+            requireActivity().invalidateOptionsMenu()
+        }
+    }
+
+    private suspend fun processPayload(
+        type: Int,
+        transaction: HttpTransaction
+    ): MutableList<TransactionPayloadItem> {
+        return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
 
             val headersString: String
@@ -209,7 +232,9 @@ internal class TransactionPayloadFragment :
             if (headersString.isNotBlank()) {
                 result.add(
                     TransactionPayloadItem.HeaderItem(
-                        HtmlCompat.fromHtml(headersString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                        HtmlCompat.fromHtml(
+                            headersString, HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
                     )
                 )
             }
@@ -217,9 +242,10 @@ internal class TransactionPayloadFragment :
             // The body could either be an image, binary encoded or plain text.
             val responseBitmap = transaction.responseImageBitmap
             if (type == TYPE_RESPONSE && responseBitmap != null) {
-                result.add(TransactionPayloadItem.ImageItem(responseBitmap))
+                val bitmapLuminance = responseBitmap.calculateLuminance()
+                result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
             } else if (!isBodyPlainText) {
-                fragment.context?.getString(R.string.chucker_body_omitted)?.let {
+                requireContext().getString(R.string.chucker_body_omitted).let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
@@ -227,29 +253,15 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             }
-
-            return result
-        }
-
-        override fun onPostExecute(result: List<TransactionPayloadItem>) {
-            fragment.payloadBinding.apply {
-                loadingProgress.visibility = View.INVISIBLE
-                responseRecyclerView.visibility = View.VISIBLE
-                responseRecyclerView.adapter = TransactionBodyAdapter(result)
-            }
-            fragment.requireActivity().invalidateOptionsMenu()
+            return@withContext result
         }
     }
 
-    class FileSaverTask(private val fragment: TransactionPayloadFragment) :
-        AsyncTask<Triple<Int, Uri, HttpTransaction>, Unit, Boolean>() {
-
-        @Suppress("NestedBlockDepth")
-        override fun doInBackground(vararg params: Triple<Int, Uri, HttpTransaction>): Boolean {
-            val (type, uri, transaction) = params[0]
+    @Suppress("ThrowsCount")
+    private suspend fun saveToFile(type: Int, uri: Uri, transaction: HttpTransaction): Boolean {
+        return withContext(Dispatchers.IO) {
             try {
-                val context = fragment.context ?: return false
-                context.contentResolver.openFileDescriptor(uri, "w")?.use {
+                requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
                             TYPE_REQUEST -> {
@@ -272,22 +284,12 @@ internal class TransactionPayloadFragment :
                 }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                return false
+                return@withContext false
             } catch (e: IOException) {
                 e.printStackTrace()
-                return false
+                return@withContext false
             }
-            return true
-        }
-
-        override fun onPostExecute(isSuccessful: Boolean) {
-            fragment.fileSaverTask = null
-            val toastMessageId = if (isSuccessful) {
-                R.string.chucker_file_saved
-            } else {
-                R.string.chucker_file_not_saved
-            }
-            Toast.makeText(fragment.context, toastMessageId, Toast.LENGTH_SHORT).show()
+            return@withContext true
         }
     }
 

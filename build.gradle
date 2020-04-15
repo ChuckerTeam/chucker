@@ -1,28 +1,31 @@
 buildscript {
     ext {
-        kotlinVersion = '1.3.70'
-        androidGradleVersion = '3.6.0'
+        kotlinVersion = '1.3.71'
+        androidGradleVersion = '3.6.1'
+        coroutineVersion = '1.3.5'
 
         // Google libraries
         appCompatVersion = '1.1.0'
         constraintLayoutVersion = '1.1.3'
         materialComponentsVersion = '1.1.0'
-        roomVersion = '2.2.3'
+        roomVersion = '2.2.5'
         lifecycleVersion = '2.2.0'
         androidXCoreVersion = '2.1.0'
+        paletteKtxVersion = '1.0.0'
 
         // Publishing
         androidMavenGradleVersion = '2.1'
 
         // Networking
         gsonVersion = '2.8.6'
-        okhttp3Version = '3.12.6'
+        okhttp3Version = '3.12.10'
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        detektVersion = '1.6.0'
+        detektVersion = '1.7.4'
         dokkaVersion = '0.10.1'
-        ktLintVersion = '9.2.1'
+        ktLintVersion = '0.36.0'
+        ktLintGradleVersion = '9.2.1'
         leakcanaryVersion = '2.2'
 
         // Testing
@@ -45,7 +48,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintVersion"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
     }
 }
 

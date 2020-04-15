@@ -20,6 +20,7 @@ import okhttp3.HttpUrl
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
  * should be populated as soon as the library receives data from OkHttp.
  */
+@Suppress("LongParameterList")
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")

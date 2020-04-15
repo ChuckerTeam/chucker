@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.1.2"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.1.2"
+  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
+  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
 }
 ```
 
@@ -119,7 +119,7 @@ try {
 
 ### Redact-Header 👮‍♂️
 
-**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. 
+**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies.
 
 It is intended for **use during development**, and not in release builds or other production deployments.
 

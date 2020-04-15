@@ -5,5 +5,5 @@
         android:id="@+id/share_text"
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_share"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

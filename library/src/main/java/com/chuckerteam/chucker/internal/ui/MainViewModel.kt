@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
 
@@ -38,11 +40,15 @@ internal class MainViewModel : ViewModel() {
     }
 
     fun clearTransactions() {
-        RepositoryProvider.transaction().deleteAllTransactions()
+        viewModelScope.launch {
+            RepositoryProvider.transaction().deleteAllTransactions()
+        }
         NotificationHelper.clearBuffer()
     }
 
     fun clearThrowables() {
-        RepositoryProvider.throwable().deleteAllThrowables()
+        viewModelScope.launch {
+            RepositoryProvider.throwable().deleteAllThrowables()
+        }
     }
 }

@@ -29,6 +29,8 @@
         android:id="@+id/path"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="4"
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/code"
@@ -40,6 +42,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/chucker_half_grid"
+        android:ellipsize="end"
+        android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toBottomOf="@+id/path"
@@ -52,13 +56,10 @@
         android:layout_width="@dimen/chucker_doub_grid"
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
-        android:src="@drawable/chucker_ic_https_primary"
-        android:tint="@color/chucker_color_primary"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/path"
         app:layout_constraintTop_toTopOf="@+id/host"
         app:layout_constraintBottom_toBottomOf="@id/host"
-        tools:visibility="visible" />
+        tools:src="@drawable/chucker_ic_https" />
 
     <TextView
         android:id="@+id/timeStart"

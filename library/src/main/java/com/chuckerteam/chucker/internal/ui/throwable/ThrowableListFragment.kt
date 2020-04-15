@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
 import com.chuckerteam.chucker.internal.ui.MainViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
 
@@ -36,6 +36,7 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
         with(errorsBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             errorsRecyclerView.apply {
+                setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
                 adapter = errorsAdapter
             }
@@ -74,7 +75,7 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
     }
 
     private fun askForConfirmation() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.chucker_clear)
             .setMessage(R.string.chucker_clear_throwable_confirmation)
             .setPositiveButton(R.string.chucker_clear) { _, _ ->

@@ -9,6 +9,7 @@ import okhttp3.HttpUrl
  * A subset of [HttpTransaction] to perform faster Read operations on the Repository.
  * This Tuple is good to be used on List or Preview interfaces.
  */
+@Suppress("LongParameterList")
 internal class HttpTransactionTuple(
     @ColumnInfo(name = "id") var id: Long,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,

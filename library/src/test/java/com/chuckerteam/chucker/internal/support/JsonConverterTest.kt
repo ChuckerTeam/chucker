@@ -1,9 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
-import java.text.DateFormat
-import java.util.Date
-import java.util.Locale
 import org.junit.jupiter.api.Test
 
 class JsonConverterTest {
@@ -14,32 +11,6 @@ class JsonConverterTest {
         val instance2 = JsonConverter.instance
 
         assertThat(instance1).isEqualTo(instance2)
-    }
-
-    @Test
-    fun testGsonConfiguration_willParseDateTime() {
-        val dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US)
-        val expectedDateString = dateFormat.format(Date(0))
-        val json = JsonConverter.instance.toJson(DateTestClass(Date(0)))
-        assertThat(json).isEqualTo(
-            """
-            {
-              "date": "$expectedDateString"
-            }
-            """.trimIndent()
-        )
-    }
-
-    @Test
-    fun testGsonConfiguration_willUseLowerCaseWithUnderscores() {
-        val json = JsonConverter.instance.toJson(NamingTestClass("aCamelCaseString"))
-        assertThat(json).isEqualTo(
-            """
-            {
-              "a_long_name_with_camel_case": "aCamelCaseString"
-            }
-            """.trimIndent()
-        )
     }
 
     @Test
@@ -54,7 +25,5 @@ class JsonConverterTest {
         )
     }
 
-    inner class DateTestClass(var date: Date)
     inner class NullTestClass(var string: String?)
-    inner class NamingTestClass(var aLongNameWithCamelCase: String)
 }
