@@ -27,11 +27,11 @@
         android:tint="@color/chucker_color_primary"
         android:layout_marginBottom="@dimen/chucker_quad_grid"
         android:src="@drawable/chucker_empty_payload"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/emptyPayloadTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="1" />
 
     <TextView
         android:id="@+id/emptyPayloadTextView"
@@ -41,11 +41,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/responseRecyclerView"
-        android:text="@string/chucker_payload_empty" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/chucker_response_is_empty" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/responseRecyclerView"
+        android:id="@+id/payloadRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"

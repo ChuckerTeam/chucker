@@ -41,6 +41,7 @@ internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
+    private val payloadAdapter = TransactionBodyAdapter()
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -72,19 +73,52 @@ internal class TransactionPayloadFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        payloadBinding.payloadRecyclerView.apply {
+            setHasFixedSize(true)
+            adapter = payloadAdapter
+        }
+
         viewModel.transaction.observe(
             viewLifecycleOwner,
             Observer { transaction ->
                 if (transaction == null) return@Observer
                 uiScope.launch {
-                    showProgress()
+                    payloadBinding.loadingProgress.visibility = View.VISIBLE
+
                     val result = processPayload(type, transaction)
-                    payloadBinding.responseRecyclerView.adapter = TransactionBodyAdapter(result)
-                    payloadBinding.responseRecyclerView.setHasFixedSize(true)
-                    hideProgress()
+                    if (result.isEmpty()) {
+                        showEmptyState()
+                    } else {
+                        payloadAdapter.setItems(result)
+                        showPayloadState()
+                    }
+                    // Invalidating menu, because we need to hide menu items for empty payloads
+                    requireActivity().invalidateOptionsMenu()
+
+                    payloadBinding.loadingProgress.visibility = View.GONE
                 }
             }
         )
+    }
+
+    private fun showEmptyState() {
+        payloadBinding.apply {
+            emptyPayloadTextView.text = if (type == TYPE_RESPONSE) {
+                getString(R.string.chucker_response_is_empty)
+            } else {
+                getString(R.string.chucker_request_is_empty)
+            }
+            emptyStateGroup.visibility = View.VISIBLE
+            payloadRecyclerView.visibility = View.GONE
+        }
+    }
+
+    private fun showPayloadState() {
+        payloadBinding.apply {
+            emptyStateGroup.visibility = View.GONE
+            payloadRecyclerView.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroy() {
@@ -184,28 +218,12 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
-        val adapter = (payloadBinding.responseRecyclerView.adapter as TransactionBodyAdapter)
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            adapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+            payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
         } else {
-            adapter.resetHighlight()
+            payloadAdapter.resetHighlight()
         }
         return true
-    }
-
-    private fun showProgress() {
-        payloadBinding.apply {
-            loadingProgress.visibility = View.VISIBLE
-            responseRecyclerView.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun hideProgress() {
-        payloadBinding.apply {
-            loadingProgress.visibility = View.INVISIBLE
-            responseRecyclerView.visibility = View.VISIBLE
-            requireActivity().invalidateOptionsMenu()
-        }
     }
 
     private suspend fun processPayload(
@@ -249,8 +267,10 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
-                bodyString.lines().forEach {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                if (!bodyString.isBlank()) {
+                    bodyString.lines().forEach {
+                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                    }
                 }
             }
             return@withContext result

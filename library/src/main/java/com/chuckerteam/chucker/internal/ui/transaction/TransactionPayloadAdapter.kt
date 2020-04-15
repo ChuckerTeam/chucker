@@ -20,12 +20,18 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter(
-    private val bodyItems: List<TransactionPayloadItem>
-) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+
+    private val items = arrayListOf<TransactionPayloadItem>()
+
+    fun setItems(bodyItems: List<TransactionPayloadItem>) {
+        items.clear()
+        items.addAll(bodyItems)
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {
-        holder.bind(bodyItems[position])
+        holder.bind(items[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
@@ -46,10 +52,10 @@ internal class TransactionBodyAdapter(
         }
     }
 
-    override fun getItemCount() = bodyItems.size
+    override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (bodyItems[position]) {
+        return when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
@@ -57,7 +63,7 @@ internal class TransactionBodyAdapter(
     }
 
     internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
-        bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 if (item.line.contains(newText, ignoreCase = true)) {
@@ -77,7 +83,7 @@ internal class TransactionBodyAdapter(
     }
 
     internal fun resetHighlight() {
-        bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
