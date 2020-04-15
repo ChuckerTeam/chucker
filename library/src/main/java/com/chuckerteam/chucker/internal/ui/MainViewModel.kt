@@ -13,15 +13,13 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import java.io.File
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 
 internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData<String>("")
-    private val exportFileName = "transactions.txt"
 
     val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
@@ -42,17 +40,18 @@ internal class MainViewModel : ViewModel() {
     val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
-    fun getAllTransactions(resultHandler: (List<HttpTransaction>?) -> Unit) {
-        viewModelScope.launch {
-            val transactions = async { RepositoryProvider.transaction().getAllTransactions() }
-            resultHandler(transactions.await())
-        }
+    fun getAllTransactions(): List<HttpTransaction>? = runBlocking {
+        val transactions = async { RepositoryProvider.transaction().getAllTransactions() }
+        transactions.await()
     }
 
-    fun createExportFile(content: String, fileFactory: FileFactory, fileHandler: (File) -> Unit) {
-        viewModelScope.launch {
-            fileHandler(createFileForExport(content, fileFactory))
+    fun createExportFile(content: String, fileFactory: FileFactory): File = runBlocking {
+        val file = async {
+            val file = fileFactory.create(fileFactory.exportFileName)
+            file.writeText(content)
+            return@async file
         }
+        file.await()
     }
 
     fun updateItemsFilter(searchQuery: String) {
@@ -69,14 +68,6 @@ internal class MainViewModel : ViewModel() {
     fun clearThrowables() {
         viewModelScope.launch {
             RepositoryProvider.throwable().deleteAllThrowables()
-        }
-    }
-
-    private suspend fun createFileForExport(content: String, cacheFileFactory: FileFactory): File {
-        return withContext(Dispatchers.IO) {
-            val file = cacheFileFactory.create(exportFileName)
-            file.writeText(content)
-            return@withContext file
         }
     }
 }

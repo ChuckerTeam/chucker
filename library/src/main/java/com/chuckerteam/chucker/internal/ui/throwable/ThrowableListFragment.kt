@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
 import com.chuckerteam.chucker.internal.data.model.DialogData
-import com.chuckerteam.chucker.internal.support.DialogUtils
+import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
@@ -82,13 +82,12 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
             postiveButtonText = getString(R.string.chucker_clear),
             negativeButtonText = getString(R.string.chucker_cancel)
         )
-        DialogUtils.showDialog(
-            requireContext(),
+        requireContext().showDialog(
             confirmationDialogData,
-            {
+            onPositiveClick = {
                 viewModel.clearThrowables()
             },
-            null
+            onNegativeClick = null
         )
     }
 

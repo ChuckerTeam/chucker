@@ -22,9 +22,9 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
-import com.chuckerteam.chucker.internal.support.DialogUtils
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
+import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class TransactionListFragment :
@@ -93,24 +93,22 @@ internal class TransactionListFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.clear -> {
-                DialogUtils.showDialog(
-                    requireContext(),
+                requireContext().showDialog(
                     getClearDialogData(),
-                    {
+                    onPositiveClick = {
                         viewModel.clearTransactions()
                     },
-                    null
+                    onNegativeClick = null
                 )
                 true
             }
             R.id.export -> {
-                DialogUtils.showDialog(
-                    requireContext(),
+                requireContext().showDialog(
                     getExportDialogData(),
-                    {
+                    onPositiveClick = {
                         exportTransactions()
                     },
-                    null
+                    onNegativeClick = null
                 )
                 true
             }
@@ -132,19 +130,18 @@ internal class TransactionListFragment :
     }
 
     private fun exportTransactions() {
-        viewModel.getAllTransactions { transactions ->
-            if (transactions.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
-            } else {
-                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
-                viewModel.createExportFile(filecontent, cacheFileFactory) { file ->
-                    val uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        getString(R.string.chucker_provider_authority), file
-                    )
-                    shareFile(uri)
-                }
-            }
+        val transactions = viewModel.getAllTransactions()
+        if (transactions.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
+        } else {
+            val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+            val file = viewModel.createExportFile(filecontent, cacheFileFactory)
+            val uri = FileProvider.getUriForFile(
+                requireContext(),
+                getString(R.string.chucker_provider_authority),
+                file
+            )
+            shareFile(uri)
         }
     }
 

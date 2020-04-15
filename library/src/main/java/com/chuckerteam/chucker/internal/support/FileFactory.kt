@@ -3,5 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import java.io.File
 
 internal interface FileFactory {
-    fun create(filename: String = ""): File
+    val exportFileName: String get() = "transactions.txt"
+    fun create(): File
+    fun create(filename: String): File
 }
