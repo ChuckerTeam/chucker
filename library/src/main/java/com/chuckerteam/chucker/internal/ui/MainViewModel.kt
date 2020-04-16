@@ -10,9 +10,11 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.EXPORT_FILENAME
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import java.io.File
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -41,13 +43,15 @@ internal class MainViewModel : ViewModel() {
         .getSortedThrowablesTuples()
 
     fun getAllTransactions(): List<HttpTransaction>? = runBlocking {
-        val transactions = async { RepositoryProvider.transaction().getAllTransactions() }
+        val transactions = viewModelScope.async(Dispatchers.Default) {
+            RepositoryProvider.transaction().getAllTransactions()
+        }
         transactions.await()
     }
 
     fun createExportFile(content: String, fileFactory: FileFactory): File = runBlocking {
-        val file = async {
-            val file = fileFactory.create(fileFactory.exportFileName)
+        val file = viewModelScope.async(Dispatchers.IO) {
+            val file = fileFactory.create(EXPORT_FILENAME)
             file.writeText(content)
             return@async file
         }
