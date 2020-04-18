@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
@@ -26,6 +27,7 @@ import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
+import kotlinx.coroutines.launch
 
 internal class TransactionListFragment :
     Fragment(),
@@ -130,18 +132,20 @@ internal class TransactionListFragment :
     }
 
     private fun exportTransactions() {
-        val transactions = viewModel.getAllTransactions()
-        if (transactions.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
-        } else {
-            val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
-            val file = viewModel.createExportFile(filecontent, cacheFileFactory)
-            val uri = FileProvider.getUriForFile(
-                requireContext(),
-                getString(R.string.chucker_provider_authority),
-                file
-            )
-            shareFile(uri)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val transactions = viewModel.getAllTransactions()
+            if (transactions.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
+            } else {
+                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+                val file = viewModel.createExportFile(filecontent, cacheFileFactory)
+                val uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    getString(R.string.chucker_provider_authority),
+                    file
+                )
+                shareFile(uri)
+            }
         }
     }
 

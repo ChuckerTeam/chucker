@@ -15,9 +15,8 @@ import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import java.io.File
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 internal class MainViewModel : ViewModel() {
 
@@ -42,20 +41,14 @@ internal class MainViewModel : ViewModel() {
     val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
-    fun getAllTransactions(): List<HttpTransaction>? = runBlocking {
-        val transactions = viewModelScope.async(Dispatchers.Default) {
-            RepositoryProvider.transaction().getAllTransactions()
-        }
-        transactions.await()
+    suspend fun getAllTransactions(): List<HttpTransaction>? = withContext(Dispatchers.Default) {
+        return@withContext RepositoryProvider.transaction().getAllTransactions()
     }
 
-    fun createExportFile(content: String, fileFactory: FileFactory): File = runBlocking {
-        val file = viewModelScope.async(Dispatchers.IO) {
-            val file = fileFactory.create(EXPORT_FILENAME)
-            file.writeText(content)
-            return@async file
-        }
-        file.await()
+    suspend fun createExportFile(content: String, fileFactory: FileFactory): File = withContext(Dispatchers.IO) {
+        val file = fileFactory.create(EXPORT_FILENAME)
+        file.writeText(content)
+        return@withContext file
     }
 
     fun updateItemsFilter(searchQuery: String) {
