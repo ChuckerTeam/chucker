@@ -17,10 +17,10 @@ private val BITMAP_PAINT = Paint(Paint.FILTER_BITMAP_FLAG)
 
 internal suspend fun Bitmap.calculateLuminance(): Double? {
     val color = Color.MAGENTA
-    val alphaColouredBitmap = withContext(Dispatchers.Default) {
-        return@withContext replaceAlphaWithColor(color)
+    return withContext(Dispatchers.Default) {
+        val alpha = replaceAlphaWithColor(color)
+        return@withContext alpha.getLuminance(color)
     }
-    return alphaColouredBitmap.getLuminance(color)
 }
 
 private fun Bitmap.replaceAlphaWithColor(@ColorInt color: Int): Bitmap {
@@ -32,16 +32,11 @@ private fun Bitmap.replaceAlphaWithColor(@ColorInt color: Int): Bitmap {
     return result
 }
 
-private suspend fun Bitmap.getLuminance(@ColorInt alphaSubstitute: Int): Double? {
-    return suspendCancellableCoroutine { continuation ->
-        val luminanceTask = Palette.from(this)
-            .clearFilters()
-            .addFilter { rgb, _ -> rgb != alphaSubstitute }
-            .generate { palette ->
-                val dominantSwatch = palette?.dominantSwatch
-                val luminance = dominantSwatch?.rgb?.let { ColorUtils.calculateLuminance(it) }
-                continuation.resume(luminance)
-            }
-        continuation.invokeOnCancellation { luminanceTask.cancel(true) }
-    }
+private fun Bitmap.getLuminance(@ColorInt alphaSubstitute: Int): Double? {
+    val imagePalette = Palette.from(this)
+        .clearFilters()
+        .addFilter { rgb, _ -> (rgb != alphaSubstitute) }
+        .generate()
+    val dominantSwatch = imagePalette.dominantSwatch
+    return dominantSwatch?.let { ColorUtils.calculateLuminance(it.rgb) }
 }
