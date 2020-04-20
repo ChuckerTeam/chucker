@@ -8,9 +8,7 @@ import android.graphics.Paint
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
-import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 private val BITMAP_PAINT = Paint(Paint.FILTER_BITMAP_FLAG)
@@ -38,5 +36,5 @@ private fun Bitmap.getLuminance(@ColorInt alphaSubstitute: Int): Double? {
         .addFilter { rgb, _ -> (rgb != alphaSubstitute) }
         .generate()
     val dominantSwatch = imagePalette.dominantSwatch
-    return dominantSwatch?.let { ColorUtils.calculateLuminance(it.rgb) }
+    return dominantSwatch?.rgb?.let(ColorUtils::calculateLuminance)
 }
