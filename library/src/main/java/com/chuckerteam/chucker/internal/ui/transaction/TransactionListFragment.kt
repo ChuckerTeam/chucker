@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +18,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
@@ -27,6 +27,8 @@ import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 internal class TransactionListFragment :
@@ -40,6 +42,7 @@ internal class TransactionListFragment :
     private val cacheFileFactory: FileFactory by lazy {
         AndroidCacheFileFactory(requireContext())
     }
+    private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +80,11 @@ internal class TransactionListFragment :
                     if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        uiScope.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -132,7 +140,7 @@ internal class TransactionListFragment :
     }
 
     private fun exportTransactions() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        uiScope.launch {
             val transactions = viewModel.getAllTransactions()
             if (transactions.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
@@ -150,15 +158,19 @@ internal class TransactionListFragment :
     }
 
     private fun shareFile(uri: Uri) {
-        startActivity(
-            ShareCompat.IntentBuilder.from(requireActivity())
-                .setType(MIME_TYPE)
-                .setChooserTitle(getString(R.string.chucker_share_all_transactions_title))
-                .setSubject(getString(R.string.chucker_share_all_transactions_subject))
-                .addStream(uri)
-                .createChooserIntent()
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        )
+        val sendIntent = ShareCompat.IntentBuilder.from(requireActivity())
+            .setType(requireContext().contentResolver.getType(uri))
+            .setChooserTitle(getString(R.string.chucker_share_all_transactions_title))
+            .setSubject(getString(R.string.chucker_share_all_transactions_subject))
+            .setStream(uri)
+            .intent
+
+        sendIntent.apply {
+            clipData = ClipData.newRawUri("transactions", uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        startActivity(Intent.createChooser(sendIntent, getString(R.string.chucker_share_all_transactions_title)))
     }
 
     private fun getClearDialogData(): DialogData = DialogData(
@@ -176,7 +188,6 @@ internal class TransactionListFragment :
     )
 
     companion object {
-        private const val MIME_TYPE = "text/plain"
         fun newInstance(): TransactionListFragment {
             return TransactionListFragment()
         }
