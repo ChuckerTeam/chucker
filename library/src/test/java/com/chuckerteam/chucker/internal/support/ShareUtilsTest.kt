@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.random.Random
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class ShareUtilsTest {
@@ -42,7 +43,9 @@ class ShareUtilsTest {
             transactionList.add(TestTransactionFactory.createTransaction(getRandomHttpMethod()))
         }
 
-        val actualStringFromTransactions = ShareUtils.getStringFromTransactions(transactionList, contextMock)
+        val actualStringFromTransactions = runBlocking {
+            ShareUtils.getStringFromTransactions(transactionList, contextMock)
+        }
         val expectedStringFromTransactions = transactionList.joinToString(
             separator = "\n==================\n",
             prefix = "/* Export Start */\n",

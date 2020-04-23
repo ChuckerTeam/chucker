@@ -41,9 +41,7 @@ internal class MainViewModel : ViewModel() {
     val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
-    suspend fun getAllTransactions(): List<HttpTransaction>? = withContext(Dispatchers.Default) {
-        return@withContext RepositoryProvider.transaction().getAllTransactions()
-    }
+    suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
 
     suspend fun createExportFile(content: String, fileFactory: FileFactory): File = withContext(Dispatchers.IO) {
         val file = fileFactory.create(EXPORT_FILENAME)
