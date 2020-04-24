@@ -91,6 +91,7 @@ class HttpBinClient(
             cache(30).enqueue(cb)
             redirectTo("https://ascii.cl?parameter=%22Click+on+%27URL+Encode%27%21%22").enqueue(cb)
             redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(cb)
+            postForm("Value 1", "Value with symbols &$%").enqueue(cb)
         }
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")

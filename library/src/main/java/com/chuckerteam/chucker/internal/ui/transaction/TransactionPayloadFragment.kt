@@ -26,6 +26,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
+import com.chuckerteam.chucker.internal.support.combineLatest
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -79,27 +80,29 @@ internal class TransactionPayloadFragment :
             adapter = payloadAdapter
         }
 
-        viewModel.transaction.observe(
-            viewLifecycleOwner,
-            Observer { transaction ->
-                if (transaction == null) return@Observer
-                uiScope.launch {
-                    payloadBinding.loadingProgress.visibility = View.VISIBLE
+        viewModel.transaction
+            .combineLatest(viewModel.formatRequestBody)
+            .observe(
+                viewLifecycleOwner,
+                Observer { (transaction, formatRequestBody) ->
+                    if (transaction == null) return@Observer
+                    uiScope.launch {
+                        payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                    val result = processPayload(type, transaction)
-                    if (result.isEmpty()) {
-                        showEmptyState()
-                    } else {
-                        payloadAdapter.setItems(result)
-                        showPayloadState()
+                        val result = processPayload(type, transaction, formatRequestBody)
+                        if (result.isEmpty()) {
+                            showEmptyState()
+                        } else {
+                            payloadAdapter.setItems(result)
+                            showPayloadState()
+                        }
+                        // Invalidating menu, because we need to hide menu items for empty payloads
+                        requireActivity().invalidateOptionsMenu()
+
+                        payloadBinding.loadingProgress.visibility = View.GONE
                     }
-                    // Invalidating menu, because we need to hide menu items for empty payloads
-                    requireActivity().invalidateOptionsMenu()
-
-                    payloadBinding.loadingProgress.visibility = View.GONE
                 }
-            }
-        )
+            )
     }
 
     private fun showEmptyState() {
@@ -148,7 +151,14 @@ internal class TransactionPayloadFragment :
             }
         }
 
-        menu.findItem(R.id.encode_url).isVisible = false
+        if (type == TYPE_REQUEST) {
+            viewModel.doesRequestBodyRequireEncoding.observe(
+                viewLifecycleOwner,
+                Observer { menu.findItem(R.id.encode_url).isVisible = it }
+            )
+        } else {
+            menu.findItem(R.id.encode_url).isVisible = false
+        }
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -228,7 +238,8 @@ internal class TransactionPayloadFragment :
 
     private suspend fun processPayload(
         type: Int,
-        transaction: HttpTransaction
+        transaction: HttpTransaction,
+        formatRequestBody: Boolean
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
@@ -240,7 +251,11 @@ internal class TransactionPayloadFragment :
             if (type == TYPE_REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyPlainText = transaction.isRequestBodyPlainText
-                bodyString = transaction.getFormattedRequestBody()
+                bodyString = if (formatRequestBody) {
+                    transaction.getFormattedRequestBody()
+                } else {
+                    transaction.requestBody ?: ""
+                }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
                 isBodyPlainText = transaction.isResponseBodyPlainText

@@ -168,6 +168,61 @@ class FormatUtilsTest {
     }
 
     @Test
+    fun testFormatUrlEncodedForm_blankString() {
+        assertThat(FormatUtils.formatUrlEncodedForm("    ")).isEqualTo("    ")
+    }
+
+    @Test
+    fun testFormatUrlEncodedForm_properRequest() {
+        val request =
+            """
+            sampleKey=Some%20value&someOtherKey=With%20symbols%20%25!%40%25
+            """.trimIndent()
+        val expected =
+            """
+            sampleKey: Some value
+            someOtherKey: With symbols %!@%
+            """.trimIndent()
+        assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(expected)
+    }
+
+    @Test
+    fun testFormatUrlEncodedForm_singleParam() {
+        val request =
+            """
+            sampleKey=Some%20value
+            """.trimIndent()
+        val expected =
+            """
+            sampleKey: Some value
+            """.trimIndent()
+        assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(expected)
+    }
+
+    @Test
+    fun testFormatUrlEncodedForm_noValues() {
+        val request =
+            """
+            sampleKey=&someOtherKey=
+            """.trimIndent()
+        val expected =
+            """
+            sampleKey: 
+            someOtherKey: 
+            """.trimIndent()
+        assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(expected)
+    }
+
+    @Test
+    fun testFormatUrlEncodedForm_invalidRequest() {
+        val request =
+            """
+            sampleKey=Some%20value%someOtherKey=With%20symbols%20%25!%40%25
+            """.trimIndent()
+        assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(request)
+    }
+
+    @Test
     fun testCurlCommandWithoutHeaders() {
         getRequestMethods().forEach { method ->
             val transaction = TestTransactionFactory.createTransaction(method)

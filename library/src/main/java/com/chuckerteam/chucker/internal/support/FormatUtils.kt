@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.util.Locale
 import javax.xml.XMLConstants
@@ -91,6 +93,24 @@ internal object FormatUtils {
             xml
         } catch (t: TransformerException) {
             xml
+        }
+    }
+
+    fun formatUrlEncodedForm(form: String): String {
+        return try {
+            if (form.isBlank()) {
+                return form
+            }
+            form.split("&").joinToString(separator = "\n") { entry ->
+                val keyValue = entry.split("=")
+                val key = keyValue[0]
+                val value = if (keyValue.size > 1) URLDecoder.decode(keyValue[1], "UTF-8") else ""
+                "$key: $value"
+            }
+        } catch (e: IllegalArgumentException) {
+            form
+        } catch (e: UnsupportedEncodingException) {
+            form
         }
     }
 
