@@ -10,11 +10,22 @@ on:
 
 jobs:
   gradle:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+        kotlin-version:
+          - 1.3.72
+          - 1.4-M1
+
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
 
+    - name: Set environment variables
+      uses: allenevans/set-env@v1.0.0
+      with:
+        KOTLIN_VERSION: ${{ matrix.kotlin-version }}
 
     - name: Cache Gradle Caches
       uses: actions/cache@v1
