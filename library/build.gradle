@@ -30,6 +30,8 @@ android {
         warningsAsErrors true
         abortOnError true
     }
+
+    resourcePrefix 'chucker_'
 }
 
 dokka {
