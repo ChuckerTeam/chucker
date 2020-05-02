@@ -22,6 +22,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.MergeAdapter
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -42,7 +43,18 @@ internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter()
+
+    private val payloadAdapter = TransactionPayloadAdapter()
+
+    private val headerAdapter by lazy { TransactionHeadersAdapter() }
+    private val bodyAdapter by lazy { TransactionBodyAdapter() }
+    private val imageAdapter by lazy { TransactionImageAdapter() }
+
+    private val newPayloadAdapter = MergeAdapter(
+        headerAdapter,
+        bodyAdapter,
+        imageAdapter
+    )
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED

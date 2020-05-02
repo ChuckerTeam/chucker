@@ -12,6 +12,7 @@ buildscript {
         lifecycleVersion = '2.2.0'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
+        recyclerViewVersion = '1.2.0-alpha03'
 
         // Publishing
         androidMavenGradleVersion = '2.1'

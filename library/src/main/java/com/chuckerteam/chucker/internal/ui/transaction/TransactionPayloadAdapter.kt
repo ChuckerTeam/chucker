@@ -20,7 +20,7 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionPayloadAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
 
     private val items = arrayListOf<TransactionPayloadItem>()
 
