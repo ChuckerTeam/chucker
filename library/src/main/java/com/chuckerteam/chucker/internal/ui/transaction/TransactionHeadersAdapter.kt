@@ -1,17 +1,20 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
-import android.text.Spanned
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
+import com.chuckerteam.chucker.internal.data.entity.HttpHeader
+import com.chuckerteam.chucker.internal.support.applyBoldSpan
 
 internal class TransactionHeadersAdapter : RecyclerView.Adapter<TransactionHeadersAdapter.HeaderViewHolder>() {
 
-    private lateinit var headers: Spanned
+    private val headers = arrayListOf<HttpHeader>()
 
-    fun setItems(headersItems: Spanned) {
-        headers = headersItems
+    fun setItems(headersItems: List<HttpHeader>) {
+        headers.clear()
+        headers.addAll(headersItems)
         notifyDataSetChanged()
     }
 
@@ -21,18 +24,20 @@ internal class TransactionHeadersAdapter : RecyclerView.Adapter<TransactionHeade
         return HeaderViewHolder(headersItemBinding)
     }
 
-    override fun getItemCount(): Int = if (!this::headers.isInitialized) 0 else 1
+    override fun getItemCount(): Int = headers.size
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.bind(headers)
+        holder.bind(headers[position])
     }
 
     internal class HeaderViewHolder(
         private val headerBinding: ChuckerTransactionItemHeadersBinding
     ) : RecyclerView.ViewHolder(headerBinding.root) {
 
-        fun bind(headerItem: Spanned) {
-            headerBinding.responseHeaders.text = headerItem
+        fun bind(headerItem: HttpHeader) {
+            val headerName = "${headerItem.name}: ".applyBoldSpan()
+            val headerValue = headerItem.value
+            headerBinding.responseHeaders.text = SpannableStringBuilder(headerName).append(headerValue)
         }
     }
 }

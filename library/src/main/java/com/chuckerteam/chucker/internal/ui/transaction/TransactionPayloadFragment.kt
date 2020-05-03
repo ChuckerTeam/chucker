@@ -51,6 +51,7 @@ internal class TransactionPayloadFragment :
     private val imageAdapter by lazy { TransactionImageAdapter() }
 
     private val newPayloadAdapter = MergeAdapter(
+        payloadAdapter,
         headerAdapter,
         bodyAdapter,
         imageAdapter
@@ -89,7 +90,7 @@ internal class TransactionPayloadFragment :
 
         payloadBinding.payloadRecyclerView.apply {
             setHasFixedSize(true)
-            adapter = payloadAdapter
+            adapter = newPayloadAdapter
         }
 
         viewModel.transaction

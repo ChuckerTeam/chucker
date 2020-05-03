@@ -1,9 +1,12 @@
 package com.chuckerteam.chucker.internal.support
 
+import android.graphics.Typeface
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 
 /**
@@ -59,4 +62,8 @@ private fun applyColoredSpannable(
             )
             builder
         }
+}
+
+fun CharSequence.applyBoldSpan() = SpannableString(this).apply {
+    setSpan(StyleSpan(Typeface.BOLD), 0, this.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 }
