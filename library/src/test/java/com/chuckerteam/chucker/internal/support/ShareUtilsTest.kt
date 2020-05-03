@@ -3,7 +3,9 @@ package com.chuckerteam.chucker.internal.support
 import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.TestTransactionFactory
+import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.random.Random
@@ -35,6 +37,10 @@ class ShareUtilsTest {
         every { getString(R.string.chucker_body_empty) } returns "(body is empty)"
     }
 
+    private val requestMethods = arrayOf("GET", "POST", "PUT", "DELETE")
+
+    private fun getRandomHttpMethod(): String = requestMethods[Random.nextInt(0, 4)]
+
     @Test
     fun isStringFromTransactionsListValid() {
         val transactionList = ArrayList<HttpTransaction>()
@@ -51,11 +57,74 @@ class ShareUtilsTest {
             prefix = "/* Export Start */\n",
             postfix = "\n/*  Export End  */\n"
         ) {
-            FormatUtils.getShareText(contextMock, it, false)
+            ShareUtils.getShareText(contextMock, it, false)
         }
 
-        assert(actualStringFromTransactions == expectedStringFromTransactions)
+        assertThat(actualStringFromTransactions).isEqualTo(expectedStringFromTransactions)
     }
 
-    private fun getRandomHttpMethod(): String = arrayOf("GET", "POST", "PUT", "DELETE")[Random.nextInt(0, 4)]
+    @Test
+    fun testCurlCommandWithoutHeaders() {
+        requestMethods.forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method)
+            val curlCommand = ShareUtils.getShareCurlCommand(transaction)
+            val expectedCurlCommand = "curl -X $method http://localhost/getUsers"
+            assertThat(curlCommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun testCurlCommandWithHeaders() {
+        val httpHeaders = ArrayList<HttpHeader>()
+        for (i in 0 until 5) {
+            httpHeaders.add(HttpHeader("name$i", "value$i"))
+        }
+        val dummyHeaders = JsonConverter.instance.toJson(httpHeaders)
+
+        requestMethods.forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method)
+            transaction.requestHeaders = dummyHeaders
+            val curlCommand = ShareUtils.getShareCurlCommand(transaction)
+            var expectedCurlCommand = "curl -X $method"
+            httpHeaders.forEach { header ->
+                expectedCurlCommand += " -H \"${header.name}: ${header.value}\""
+            }
+            expectedCurlCommand += " http://localhost/getUsers"
+            assertThat(curlCommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun testCurlPostAndPutCommandWithRequestBody() {
+        requestMethods.filter { method ->
+            method == "POST" || method == "PUT"
+        }.forEach { method ->
+            val dummyRequestBody = "{thing:put}"
+            val transaction = TestTransactionFactory.createTransaction(method)
+            transaction.requestBody = dummyRequestBody
+            val curlCommand = ShareUtils.getShareCurlCommand(transaction)
+            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
+            assertThat(curlCommand).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun getShareTextForGetTransaction() {
+        val shareText = getShareText("GET")
+        assertThat(shareText).isEqualTo(TestTransactionFactory.expectedGetHttpTransaction)
+    }
+
+    @Test
+    fun getShareTextForPostTransaction() {
+        val shareText = getShareText("POST")
+        assertThat(shareText).isEqualTo(TestTransactionFactory.expectedHttpPostTransaction)
+    }
+
+    private fun getShareText(method: String): String {
+        return ShareUtils.getShareText(
+            contextMock,
+            TestTransactionFactory.createTransaction(method),
+            false
+        )
+    }
 }
