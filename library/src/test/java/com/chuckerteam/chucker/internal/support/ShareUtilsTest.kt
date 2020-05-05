@@ -39,7 +39,7 @@ class ShareUtilsTest {
 
     private val requestMethods = arrayOf("GET", "POST", "PUT", "DELETE")
 
-    private fun getRandomHttpMethod(): String = requestMethods[Random.nextInt(0, 4)]
+    private fun getRandomHttpMethod(): String = requestMethods.random()
 
     @Test
     fun isStringFromTransactionsListValid() {
