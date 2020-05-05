@@ -1,6 +1,5 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.TestTransactionFactory
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -221,51 +220,4 @@ class FormatUtilsTest {
             """.trimIndent()
         assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(request)
     }
-
-    @Test
-    fun testCurlCommandWithoutHeaders() {
-        getRequestMethods().forEach { method ->
-            val transaction = TestTransactionFactory.createTransaction(method)
-            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method http://localhost/getUsers"
-            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
-        }
-    }
-
-    @Test
-    fun testCurlCommandWithHeaders() {
-        val httpHeaders = ArrayList<HttpHeader>()
-        for (i in 0 until 5) {
-            httpHeaders.add(HttpHeader("name$i", "value$i"))
-        }
-        val dummyHeaders = JsonConverter.instance.toJson(httpHeaders)
-
-        getRequestMethods().forEach { method ->
-            val transaction = TestTransactionFactory.createTransaction(method)
-            transaction.requestHeaders = dummyHeaders
-            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
-            var expectedCurlCommand = "curl -X $method"
-            httpHeaders.forEach { header ->
-                expectedCurlCommand += " -H \"${header.name}: ${header.value}\""
-            }
-            expectedCurlCommand += " http://localhost/getUsers"
-            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
-        }
-    }
-
-    @Test
-    fun testCurlPostAndPutCommandWithRequestBody() {
-        getRequestMethods().filter { method ->
-            method == "POST" || method == "PUT"
-        }.forEach { method ->
-            val dummyRequestBody = "{thing:put}"
-            val transaction = TestTransactionFactory.createTransaction(method)
-            transaction.requestBody = dummyRequestBody
-            val curlСommand = FormatUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
-            assertThat(curlСommand).isEqualTo(expectedCurlCommand)
-        }
-    }
-
-    private fun getRequestMethods() = arrayOf("GET", "POST", "PUT", "DELETE")
 }
