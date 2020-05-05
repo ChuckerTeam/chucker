@@ -17,8 +17,8 @@ internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
 
     override fun getItem(position: Int): Fragment = when (position) {
         0 -> TransactionOverviewFragment()
-        1 -> TransactionPayloadFragment.newInstance(PayloadType.Request)
-        2 -> TransactionPayloadFragment.newInstance(PayloadType.Response)
+        1 -> TransactionPayloadFragment.newInstance(PayloadType.REQUEST)
+        2 -> TransactionPayloadFragment.newInstance(PayloadType.RESPONSE)
         else -> throw IllegalArgumentException("no item")
     }
 

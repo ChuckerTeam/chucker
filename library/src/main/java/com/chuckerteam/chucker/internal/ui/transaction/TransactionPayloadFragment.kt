@@ -47,7 +47,7 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
-    private val payloadType: PayloadType by lazy {
+    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
     }
 
@@ -108,7 +108,7 @@ internal class TransactionPayloadFragment :
 
     private fun showEmptyState() {
         payloadBinding.apply {
-            emptyPayloadTextView.text = if (payloadType is PayloadType.Response) {
+            emptyPayloadTextView.text = if (payloadType == PayloadType.RESPONSE) {
                 getString(R.string.chucker_response_is_empty)
             } else {
                 getString(R.string.chucker_request_is_empty)
@@ -152,7 +152,7 @@ internal class TransactionPayloadFragment :
             }
         }
 
-        if (payloadType is PayloadType.Request) {
+        if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
                 Observer { menu.findItem(R.id.encode_url).isVisible = it }
@@ -167,16 +167,16 @@ internal class TransactionPayloadFragment :
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
         // SAF is not available on pre-Kit Kat so let's hide the icon.
         (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-        (payloadType is PayloadType.Request) -> (0L != (transaction?.requestContentLength))
-        (payloadType is PayloadType.Response) -> (0L != (transaction?.responseContentLength))
+        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestContentLength))
+        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responseContentLength))
         else -> true
     }
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
-        PayloadType.Request -> {
+        PayloadType.REQUEST -> {
             (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
-        PayloadType.Response -> {
+        PayloadType.RESPONSE -> {
             (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
     }
@@ -248,7 +248,7 @@ internal class TransactionPayloadFragment :
             val isBodyPlainText: Boolean
             val bodyString: String
 
-            if (type is PayloadType.Request) {
+            if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyPlainText = transaction.isRequestBodyPlainText
                 bodyString = if (formatRequestBody) {
@@ -274,7 +274,7 @@ internal class TransactionPayloadFragment :
 
             // The body could either be an image, binary encoded or plain text.
             val responseBitmap = transaction.responseImageBitmap
-            if (type is PayloadType.Response && responseBitmap != null) {
+            if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
             } else if (!isBodyPlainText) {
@@ -292,24 +292,19 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    @Suppress("ThrowsCount")
     private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
-                            is PayloadType.Request -> {
+                            PayloadType.REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
-                            is PayloadType.Response -> {
+                            PayloadType.RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                                    ?: if (transaction.responseImageData != null) {
-                                        fos.write(transaction.responseImageData)
-                                    } else {
-                                        throw IOException(TRANSACTION_EXCEPTION)
-                                    }
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                         }
                     }
