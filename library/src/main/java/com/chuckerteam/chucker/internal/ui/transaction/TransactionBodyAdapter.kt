@@ -36,5 +36,4 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionBodyAdap
             bodyBinding.bodyLine.text = item
         }
     }
-
 }
