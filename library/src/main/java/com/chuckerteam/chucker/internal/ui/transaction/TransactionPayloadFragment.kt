@@ -47,7 +47,9 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
-    private var type: Int = 0
+    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getSerializable(ARG_TYPE) as PayloadType
+    }
 
     private lateinit var viewModel: TransactionViewModel
 
@@ -55,7 +57,6 @@ internal class TransactionPayloadFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        type = arguments!!.getInt(ARG_TYPE)
         viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
@@ -89,7 +90,7 @@ internal class TransactionPayloadFragment :
                     uiScope.launch {
                         payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                        val result = processPayload(type, transaction, formatRequestBody)
+                        val result = processPayload(payloadType, transaction, formatRequestBody)
                         if (result.isEmpty()) {
                             showEmptyState()
                         } else {
@@ -107,7 +108,7 @@ internal class TransactionPayloadFragment :
 
     private fun showEmptyState() {
         payloadBinding.apply {
-            emptyPayloadTextView.text = if (type == TYPE_RESPONSE) {
+            emptyPayloadTextView.text = if (payloadType == PayloadType.RESPONSE) {
                 getString(R.string.chucker_response_is_empty)
             } else {
                 getString(R.string.chucker_request_is_empty)
@@ -151,7 +152,7 @@ internal class TransactionPayloadFragment :
             }
         }
 
-        if (type == TYPE_REQUEST) {
+        if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
                 Observer { menu.findItem(R.id.encode_url).isVisible = it }
@@ -166,19 +167,18 @@ internal class TransactionPayloadFragment :
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
         // SAF is not available on pre-Kit Kat so let's hide the icon.
         (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-        (type == TYPE_REQUEST) -> (0L != (transaction?.requestContentLength))
-        (type == TYPE_RESPONSE) -> (0L != (transaction?.responseContentLength))
+        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestContentLength))
+        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responseContentLength))
         else -> true
     }
 
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (type) {
-        TYPE_REQUEST -> {
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
+        PayloadType.REQUEST -> {
             (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
         }
-        TYPE_RESPONSE -> {
+        PayloadType.RESPONSE -> {
             (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
         }
-        else -> false
     }
 
     override fun onAttach(context: Context) {
@@ -213,7 +213,7 @@ internal class TransactionPayloadFragment :
             val transaction = viewModel.transaction.value
             if (uri != null && transaction != null) {
                 uiScope.launch {
-                    val result = saveToFile(type, uri, transaction)
+                    val result = saveToFile(payloadType, uri, transaction)
                     val toastMessageId = if (result) {
                         R.string.chucker_file_saved
                     } else {
@@ -237,7 +237,7 @@ internal class TransactionPayloadFragment :
     }
 
     private suspend fun processPayload(
-        type: Int,
+        type: PayloadType,
         transaction: HttpTransaction,
         formatRequestBody: Boolean
     ): MutableList<TransactionPayloadItem> {
@@ -248,7 +248,7 @@ internal class TransactionPayloadFragment :
             val isBodyPlainText: Boolean
             val bodyString: String
 
-            if (type == TYPE_REQUEST) {
+            if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyPlainText = transaction.isRequestBodyPlainText
                 bodyString = if (formatRequestBody) {
@@ -274,7 +274,7 @@ internal class TransactionPayloadFragment :
 
             // The body could either be an image, binary encoded or plain text.
             val responseBitmap = transaction.responseImageBitmap
-            if (type == TYPE_RESPONSE && responseBitmap != null) {
+            if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
             } else if (!isBodyPlainText) {
@@ -292,27 +292,19 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    @Suppress("ThrowsCount")
-    private suspend fun saveToFile(type: Int, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
-                            TYPE_REQUEST -> {
+                            PayloadType.REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
-                            TYPE_RESPONSE -> {
+                            PayloadType.RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
-                            }
-                            else -> {
-                                if (transaction.responseImageData != null) {
-                                    fos.write(transaction.responseImageData)
-                                } else {
-                                    throw IOException(TRANSACTION_EXCEPTION)
-                                }
                             }
                         }
                     }
@@ -334,15 +326,12 @@ internal class TransactionPayloadFragment :
 
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
 
-        const val TYPE_REQUEST = 0
-        const val TYPE_RESPONSE = 1
-
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
-        fun newInstance(type: Int): TransactionPayloadFragment =
+        fun newInstance(type: PayloadType): TransactionPayloadFragment =
             TransactionPayloadFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_TYPE, type)
+                    putSerializable(ARG_TYPE, type)
                 }
             }
     }
