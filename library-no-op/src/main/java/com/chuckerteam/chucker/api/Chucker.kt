@@ -8,9 +8,9 @@ import android.content.Intent
  */
 object Chucker {
 
-    @Deprecated("This param will be removed in 4.x release")
+    @Deprecated("This variable will be removed in 4.x release")
     const val SCREEN_HTTP = 1
-    @Deprecated("This param will be removed in 4.x release")
+    @Deprecated("This variable will be removed in 4.x release")
     const val SCREEN_ERROR = 2
 
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
