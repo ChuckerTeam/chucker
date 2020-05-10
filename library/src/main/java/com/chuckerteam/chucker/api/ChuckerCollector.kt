@@ -37,6 +37,11 @@ class ChuckerCollector @JvmOverloads constructor(
      * @param tag A tag you choose
      * @param throwable The triggered [Throwable]
      */
+    @Deprecated(
+        "This fun will be removed in 4.x release as part of Throwable functionality removal.",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun onError(tag: String, throwable: Throwable) {
         val recordedThrowable = RecordedThrowable(tag, throwable)
         CoroutineScope(Dispatchers.IO).launch {

@@ -45,7 +45,7 @@ internal class NotificationHelper(val context: Context) {
         PendingIntent.getActivity(
             context,
             TRANSACTION_NOTIFICATION_ID,
-            Chucker.getLaunchIntent(context, Chucker.SCREEN_HTTP),
+            Chucker.getLaunchIntent(context),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
@@ -161,6 +161,11 @@ internal class NotificationHelper(val context: Context) {
     }
 
     fun dismissErrorsNotification() {
+        notificationManager.cancel(ERROR_NOTIFICATION_ID)
+    }
+
+    fun dismissNotifications() {
+        notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
         notificationManager.cancel(ERROR_NOTIFICATION_ID)
     }
 }

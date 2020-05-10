@@ -11,6 +11,11 @@ class ChuckerCollector @JvmOverloads constructor(
     var retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
 
+    @Deprecated(
+        "This fun will be removed in 4.x release as part of Throwable functionality removal.",
+        ReplaceWith(""),
+        DeprecationLevel.WARNING
+    )
     fun onError(obj: Any?, obj2: Any?) {
         // Empty method for the library-no-op artifact
     }
