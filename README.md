@@ -105,7 +105,9 @@ val client = OkHttpClient.Builder()
         .build()
 ```
 
-### Throwables ☄️
+### Throwables (Deprected) ☄️
+
+#### Warning: This functionality will be unavailable in 4.x release. Details in [this issue](https://github.com/ChuckerTeam/chucker/issues/321#issuecomment-626138370)
 
 Chucker can also collect and display **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
 
