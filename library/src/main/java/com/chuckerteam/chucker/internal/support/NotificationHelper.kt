@@ -20,6 +20,8 @@ internal class NotificationHelper(val context: Context) {
 
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
+
+        @Deprecated("This variable will be removed in 4.x release")
         private const val ERRORS_CHANNEL_ID = "chucker_errors"
 
         private const val TRANSACTION_NOTIFICATION_ID = 1138
