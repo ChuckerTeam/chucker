@@ -52,6 +52,9 @@ jobs:
 
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
+      env:
+        ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
+        ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v2
