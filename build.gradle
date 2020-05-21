@@ -13,9 +13,6 @@ buildscript {
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
 
-        // Publishing
-        androidMavenGradleVersion = '2.1'
-
         // Networking
         gsonVersion = '2.8.6'
         okhttp3Version = '3.12.10'
@@ -44,7 +41,6 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradleVersion"
-        classpath "com.github.dcendents:android-maven-gradle-plugin:$androidMavenGradleVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"

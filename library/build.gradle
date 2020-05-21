@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -32,39 +31,6 @@ android {
     }
 
     resourcePrefix 'chucker_'
-}
-
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-
-    configuration {
-        includeNonPublic = false
-        reportUndocumented = true
-        skipEmptyPackages = true
-
-        perPackageOption {
-            prefix = "com.chuckerteam.chucker.internal"
-            suppress = true
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
-}
-
-def dokka = tasks['dokka']
-
-task javadocJar(type: Jar, dependsOn: dokka) {
-    archiveClassifier.set('javadoc')
-    from dokka.outputDirectory
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
 }
 
 dependencies {
