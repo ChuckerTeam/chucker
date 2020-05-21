@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.2.0"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.2.0"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.2.0"
 }
 ```
 
@@ -150,8 +150,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:develop-SNAPSHOT"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:develop-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:develop-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT"
 }
 ```
 
