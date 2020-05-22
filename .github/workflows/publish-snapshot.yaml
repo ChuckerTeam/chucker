@@ -22,7 +22,7 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: 'chucker-release-artifacts'
+        name: 'chucker-snapshot-artifacts'
         path: '~/.m2/repository/'
 
     - name: Publish to the Snapshot Repository
