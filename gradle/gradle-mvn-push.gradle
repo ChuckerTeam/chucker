@@ -86,7 +86,7 @@ afterEvaluate {
 
     def signingKey = findProperty("SIGNING_KEY")
     def signingPwd = findProperty("SIGNING_PWD")
-    if (signingKey != null && signingPwd != null) {
+    if (signingKey && signingPwd) {
         signing {
             useInMemoryPgpKeys(signingKey, signingPwd)
             sign publishing.publications.release
