@@ -2,10 +2,13 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
@@ -52,6 +55,12 @@ internal class TransactionAdapter internal constructor(
             itemView.setOnClickListener(this)
         }
 
+        override fun onClick(v: View?) {
+            transactionId?.let {
+                listener?.onTransactionClick(it, adapterPosition)
+            }
+        }
+
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
             transactionId = transaction.id
@@ -60,7 +69,8 @@ internal class TransactionAdapter internal constructor(
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
-                ssl.visibility = if (transaction.isSsl) View.VISIBLE else View.GONE
+
+                setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()
@@ -79,10 +89,12 @@ internal class TransactionAdapter internal constructor(
             setStatusColor(transaction)
         }
 
-        override fun onClick(v: View?) {
-            transactionId?.let {
-                listener?.onTransactionClick(it, adapterPosition)
-            }
+        private fun setProtocolImage(resources: ProtocolResources) {
+            itemBinding.ssl.setImageDrawable(AppCompatResources.getDrawable(itemView.context, resources.icon))
+            ImageViewCompat.setImageTintList(
+                itemBinding.ssl,
+                ColorStateList.valueOf(ContextCompat.getColor(itemView.context, resources.color))
+            )
         }
 
         private fun setStatusColor(transaction: HttpTransactionTuple) {

@@ -11,17 +11,19 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
  */
 internal interface HttpTransactionRepository {
 
-    fun insertTransaction(transaction: HttpTransaction)
+    suspend fun insertTransaction(transaction: HttpTransaction)
 
     fun updateTransaction(transaction: HttpTransaction): Int
 
-    fun deleteOldTransactions(threshold: Long)
+    suspend fun deleteOldTransactions(threshold: Long)
 
-    fun deleteAllTransactions()
+    suspend fun deleteAllTransactions()
 
     fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>>
 
     fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>>
 
     fun getTransaction(transactionId: Long): LiveData<HttpTransaction?>
+
+    suspend fun getAllTransactions(): List<HttpTransaction>
 }

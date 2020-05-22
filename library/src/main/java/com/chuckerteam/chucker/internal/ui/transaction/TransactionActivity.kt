@@ -11,8 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
-import com.chuckerteam.chucker.internal.support.FormatUtils.getShareCurlCommand
-import com.chuckerteam.chucker.internal.support.FormatUtils.getShareText
+import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -76,13 +75,13 @@ internal class TransactionActivity : BaseChuckerActivity() {
         when (item.itemId) {
             R.id.share_text -> {
                 viewModel.transaction.value?.let {
-                    share(getShareText(this, it, viewModel.encodeUrl.value!!))
+                    share(ShareUtils.getShareText(this, it, viewModel.encodeUrl.value!!))
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
             R.id.share_curl -> {
                 viewModel.transaction.value?.let {
-                    share(getShareCurlCommand(it))
+                    share(ShareUtils.getShareCurlCommand(it))
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }

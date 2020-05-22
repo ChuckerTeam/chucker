@@ -1,5 +1,57 @@
 # Change Log
 
+## Version 3.2.0 *(2020-04-04)*
+
+This is a new minor release with numerous internal changes.
+
+### Summary of changes
+
+* Chucker won't load the whole response into memory anymore, but will mutlicast it with the help of temporary files. It allows to avoid issues with OOM, like in reported in [#218].
+This change also allows to avoid problems with Chucker consuming responses, like reported in [#242].
+* Added a red open padlock icon to clearly indicate HTTP requests in transactions list.
+* Added TLS info (version and cipher suite) into `Overview` tab.
+* Added ability to encode/decode URLs.
+* Added RTL support.
+* Switched from AsyncTasks to Kotlin coroutines.
+* Switched to [ViewBinding](https://developer.android.com/topic/libraries/view-binding).
+* Bumped targetSDK to 29.
+* Greatly increased test coverage (we will add exact numbers and reports pretty soon).
+
+### Bugfixes
+
+* Fix for [#218] with OOM exceptions on big responses.
+* Fix for [#242] with Chucker throwing exceptions when used as `networkInterceptor()`.
+* Fix for [#240] with HttpHeader serialisation exceptions when obfuscation is used.
+* Fix for [#254] with response body search being case-sensitive.
+* Fix for [#255] with missing search icon on Response tab.
+* Fix for [#241] with overlapping texts.
+
+### Dependency updates
+
+* Added kotlinx-coroutines-core 1.3.5
+* Added kotlinx-coroutines-android 1.3.5
+* Updated Kotlin to 1.3.71
+* Updated Android Gradle plugin to 3.6.1
+* Updated Room to 2.2.5
+* Updated OkHttp to 3.12.10
+* Updated Detekt to 1.7.3
+* Updated Dokka to 0.10.1
+* Updated KtLint plugin to 9.2.1
+* Updated MaterialComponents to 1.1.0
+* Updated Gradle to 6.3
+
+### Credits
+
+This release was possible thanks to the contribution of:
+
+@adammasyk
+@cortinico
+@CuriousNikhil
+@hitanshu-dhawan
+@MiSikora
+@technoir42
+@vbuberen
+
 ## Version 3.1.2 *(2020-02-09)*
 
 This is hot-fix release to fix multiple issues introduced in `3.1.0`.
@@ -310,3 +362,9 @@ Initial release.
 [#196]: https://github.com/ChuckerTeam/chucker/pull/196
 [#198]: https://github.com/ChuckerTeam/chucker/pull/198
 [#201]: https://github.com/ChuckerTeam/chucker/pull/201
+[#218]: https://github.com/ChuckerTeam/chucker/issues/218
+[#242]: https://github.com/ChuckerTeam/chucker/issues/242
+[#240]: https://github.com/ChuckerTeam/chucker/pull/240
+[#254]: https://github.com/ChuckerTeam/chucker/issues/254
+[#255]: https://github.com/ChuckerTeam/chucker/issues/255
+[#241]: https://github.com/ChuckerTeam/chucker/issues/241

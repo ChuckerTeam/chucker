@@ -1,0 +1,66 @@
+name: Pre Merge Checks
+on: 
+  push:
+    branches:
+      - develop 
+      - release
+  pull_request:
+    branches: 
+      - '*'
+
+jobs:
+  gradle:
+    runs-on: [ubuntu-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+        kotlin-version:
+          - 1.3.72
+          - 1.4-M1
+
+    env:
+      KOTLIN_VERSION: ${{ matrix.kotlin-version }}
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+      
+    - name: Cache Gradle Caches
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches/
+        key: cache-clean-gradle-${{ matrix.os }}-${{ matrix.jdk }}
+    - name: Cache Gradle Wrapper
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/wrapper/
+        key: cache-clean-wrapper-${{ matrix.os }}-${{ matrix.jdk }}
+
+    - name: Run ktlint
+      run: ./gradlew ktlintCheck
+
+    - name: Run detekt
+      run: ./gradlew detekt
+
+    - name: Run all the tests
+      run: ./gradlew test
+
+    - name: Build everything
+      run: ./gradlew build
+
+    - name: Publish to Maven Local
+      run: ./gradlew publishToMavenLocal
+      env:
+        ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
+        ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'chucker-local-artifacts-${{ matrix.kotlin-version }}'
+        path: '~/.m2/repository/'
+
+    # We stop gradle at the end to make sure the cache folders
+    # don't contain any lock files and are free to be cached.
+    - name: Stop Gradle
+      run: ./gradlew --stop

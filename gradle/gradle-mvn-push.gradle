@@ -1,44 +1,97 @@
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'org.jetbrains.dokka'
 
-def siteUrl = 'https://github.com/ChuckerTeam/chucker' // Homepage URL of the library
-def gitUrl = 'https://github.com/ChuckerTeam/chucker.git' // Git repository URL
-group = GROUP // Maven Group ID for the artifact
+group = GROUP
+version = VERSION_NAME
 
-afterEvaluate { proj ->
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
 
-    install {
-        repositories.mavenInstaller {
-            // This generates POM.xml with proper parameters
-            pom {
-                project {
-                    packaging 'aar'
+    configuration {
+        includeNonPublic = false
+        reportUndocumented = true
+        skipEmptyPackages = true
 
-                    // Add your description here
-                    name "${rootProject.group}:${proj.name}"
+        perPackageOption {
+            prefix = "com.chuckerteam.chucker.internal"
+            suppress = true
+        }
+    }
+}
+
+def dokka = tasks['dokka']
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    archiveClassifier.set('javadoc')
+    from dokka.outputDirectory
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                name "snapshot"
+                url = "https://oss.sonatype.org/content/repositories/snapshots"
+                credentials {
+                    username = findProperty("NEXUS_USERNAME")
+                    password = findProperty("NEXUS_PASSWORD")
+                }
+            }
+            maven {
+                name "staging"
+                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                credentials {
+                    username = findProperty("NEXUS_USERNAME")
+                    password = findProperty("NEXUS_PASSWORD")
+                }
+            }
+        }
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact javadocJar
+                artifact sourcesJar
+                artifactId = project.name
+                pom {
+                    name = POM_REPO_NAME
                     description = POM_DESCRIPTION
-                    url siteUrl
-
-                    // Set your license
+                    url = POM_URL
                     licenses {
                         license {
-                            name POM_LICENCE_NAME
-                            url POM_SCM_CONNECTION
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'olivierperez'
-                            name 'Olivier Perez'
-                            email 'olivier@olivierperez.fr'
+                            name = POM_LICENSE_NAME
+                            url = POM_LICENSE_URL
                         }
                     }
                     scm {
-                        connection gitUrl
-                        developerConnection gitUrl
-                        url siteUrl
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_CONNECTION
+                        url = POM_URL
                     }
                 }
             }
         }
+    }
+
+    def signingKey = findProperty("SIGNING_KEY")
+    def signingPwd = findProperty("SIGNING_PWD")
+    if (signingKey != null && signingPwd != null) {
+        signing {
+            useInMemoryPgpKeys(signingKey, signingPwd)
+            sign publishing.publications.release
+        }
+    } else {
+        logger.info("Signing Disable as the PGP key was not found")
     }
 }

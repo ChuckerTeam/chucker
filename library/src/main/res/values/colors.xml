@@ -4,7 +4,7 @@
     <color name="chucker_color_primary_variant">#002f6c</color>
     <color name="chucker_color_background">#ffffff</color>
     <color name="chucker_color_surface">#ffffff</color>
-    <color name="chucker_color_secondary">#00e676</color>
+    <color name="chucker_color_secondary">#009E09</color>
     <color name="chucker_color_error">#F44336</color>
     <color name="chucker_color_on_primary">#ffffff</color>
     <color name="chucker_color_on_secondary">#000000</color>
@@ -21,4 +21,9 @@
 
     <color name="chucker_background_span_color">#ffffff00</color>
     <color name="chucker_foreground_span_color">#ffff0000</color>
+
+    <color name="chucker_chessboard_even_square_light">#F8FAFC</color>
+    <color name="chucker_chessboard_odd_square_light">#D2DADF</color>
+    <color name="chucker_chessboard_even_square_dark">#182531</color>
+    <color name="chucker_chessboard_odd_square_dark">#01101D</color>
 </resources>

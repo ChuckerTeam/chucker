@@ -1,5 +1,5 @@
 # Chucker
-[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) [![Build Status](https://travis-ci.org/ChuckerTeam/chucker.svg?branch=master)](https://travis-ci.org/ChuckerTeam/chucker)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
+[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) ![Pre Merge Checks](https://github.com/ChuckerTeam/chucker/workflows/Pre%20Merge%20Checks/badge.svg?branch=develop)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
 
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -42,8 +42,8 @@ repositories {
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:3.1.2"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.1.2"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.2.0"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.2.0"
 }
 ```
 
@@ -105,7 +105,9 @@ val client = OkHttpClient.Builder()
         .build()
 ```
 
-### Throwables ☄️
+### Throwables (Deprected) ☄️
+
+#### Warning: This functionality will be unavailable in 4.x release. Details in [this issue](https://github.com/ChuckerTeam/chucker/issues/321#issuecomment-626138370)
 
 Chucker can also collect and display **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
 
@@ -119,7 +121,7 @@ try {
 
 ### Redact-Header 👮‍♂️
 
-**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies. 
+**Warning** The data generated and stored when using Chucker may contain sensitive information such as Authorization or Cookie headers, and the contents of request and response bodies.
 
 It is intended for **use during development**, and not in release builds or other production deployments.
 
@@ -148,8 +150,8 @@ repositories {
 
 ```gradle
 dependencies {
-  debugImplementation "com.github.ChuckerTeam.Chucker:library:develop-SNAPSHOT"
-  releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:develop-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:develop-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT"
 }
 ```
 

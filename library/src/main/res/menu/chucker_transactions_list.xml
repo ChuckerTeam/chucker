@@ -6,8 +6,12 @@
         android:icon="@drawable/chucker_ic_search_white"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item android:id="@+id/export"
+        android:icon="@drawable/chucker_ic_share_white"
+        android:title="@string/chucker_export"
+        app:showAsAction="ifRoom" />
     <item android:title="@string/chucker_clear"
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

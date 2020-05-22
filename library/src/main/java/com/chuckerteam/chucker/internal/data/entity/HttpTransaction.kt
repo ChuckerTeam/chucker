@@ -20,6 +20,7 @@ import okhttp3.HttpUrl
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
  * should be populated as soon as the library receives data from OkHttp.
  */
+@Suppress("LongParameterList")
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
@@ -191,10 +192,11 @@ internal class HttpTransaction(
 
     private fun formatBody(body: String, contentType: String?): String {
         return when {
-            contentType != null && contentType.contains("json", ignoreCase = true) ->
-                FormatUtils.formatJson(body)
-            contentType != null && contentType.contains("xml", ignoreCase = true) ->
-                FormatUtils.formatXml(body)
+            contentType.isNullOrBlank() -> body
+            contentType.contains("json", ignoreCase = true) -> FormatUtils.formatJson(body)
+            contentType.contains("xml", ignoreCase = true) -> FormatUtils.formatXml(body)
+            contentType.contains("x-www-form-urlencoded", ignoreCase = true) ->
+                FormatUtils.formatUrlEncodedForm(body)
             else -> body
         }
     }

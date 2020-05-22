@@ -1,15 +1,18 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
+import com.chuckerteam.chucker.internal.support.ChessboardDrawable
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 /**
@@ -17,12 +20,18 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter(
-    private val bodyItems: List<TransactionPayloadItem>
-) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+
+    private val items = arrayListOf<TransactionPayloadItem>()
+
+    fun setItems(bodyItems: List<TransactionPayloadItem>) {
+        items.clear()
+        items.addAll(bodyItems)
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {
-        holder.bind(bodyItems[position])
+        holder.bind(items[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
@@ -43,10 +52,10 @@ internal class TransactionBodyAdapter(
         }
     }
 
-    override fun getItemCount() = bodyItems.size
+    override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (bodyItems[position]) {
+        return when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
@@ -54,7 +63,7 @@ internal class TransactionBodyAdapter(
     }
 
     internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
-        bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 if (item.line.contains(newText, ignoreCase = true)) {
@@ -74,7 +83,7 @@ internal class TransactionBodyAdapter(
     }
 
     internal fun resetHighlight() {
-        bodyItems.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
@@ -118,10 +127,36 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     internal class ImageViewHolder(
         private val imageBinding: ChuckerTransactionItemImageBinding
     ) : TransactionPayloadViewHolder(imageBinding.root) {
+
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
+                imageBinding.root.background = createContrastingBackground(item.luminance)
             }
+        }
+
+        private fun createContrastingBackground(luminance: Double?): Drawable? {
+            if (luminance == null) return null
+
+            return if (luminance < LUMINANCE_THRESHOLD) {
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_light,
+                    R.color.chucker_chessboard_odd_square_light,
+                    R.dimen.chucker_half_grid
+                )
+            } else {
+                ChessboardDrawable.createPattern(
+                    itemView.context,
+                    R.color.chucker_chessboard_even_square_dark,
+                    R.color.chucker_chessboard_odd_square_dark,
+                    R.dimen.chucker_half_grid
+                )
+            }
+        }
+
+        private companion object {
+            const val LUMINANCE_THRESHOLD = 0.25
         }
     }
 }
@@ -129,5 +164,5 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
-    internal class ImageItem(val image: Bitmap) : TransactionPayloadItem()
+    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }

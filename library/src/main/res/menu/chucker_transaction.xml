@@ -13,12 +13,12 @@
         android:title="@string/chucker_encode_url"
         android:id="@+id/encode_url"
         android:visible="false"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
     </item>
     <item
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_share"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
         <menu>
             <group>
                 <item
@@ -35,6 +35,6 @@
         android:title="@string/chucker_save"
         android:id="@+id/save_body"
         android:visible="false"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
     </item>
 </menu>

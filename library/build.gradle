@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -25,39 +24,13 @@ android {
     viewBinding {
         enabled = true
     }
-}
 
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-
-    configuration {
-        includeNonPublic = false
-        reportUndocumented = true
-        skipEmptyPackages = true
-
-        perPackageOption {
-            prefix = "com.chuckerteam.chucker.internal"
-            suppress = true
-        }
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
     }
-}
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
-}
-
-def dokka = tasks['dokka']
-
-task javadocJar(type: Jar, dependsOn: dokka) {
-    archiveClassifier.set('javadoc')
-    from dokka.outputDirectory
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
+    resourcePrefix 'chucker_'
 }
 
 dependencies {
@@ -65,11 +38,16 @@ dependencies {
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.palette:palette-ktx:$paletteKtxVersion"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"

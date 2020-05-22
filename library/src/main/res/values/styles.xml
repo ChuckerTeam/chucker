@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Chucker.BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
       <item name="colorPrimary">@color/chucker_color_primary</item>
@@ -30,8 +30,9 @@
         <item name="android:textIsSelectable">true</item>
     </style>
 
-    <style name="Chucker.TextAppearance.TransactionTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="Chucker.TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
         <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
     </style>
 </resources>

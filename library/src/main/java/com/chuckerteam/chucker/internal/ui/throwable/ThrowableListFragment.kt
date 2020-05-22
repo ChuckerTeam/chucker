@@ -8,20 +8,21 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentThrowableListBinding
+import com.chuckerteam.chucker.internal.data.model.DialogData
+import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 
 internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableClickListListener {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var throwablesBinding: ChuckerFragmentThrowableListBinding
-    private lateinit var throwablesAdapter: ThrowableAdapter
+    private lateinit var errorsBinding: ChuckerFragmentThrowableListBinding
+    private lateinit var errorsAdapter: ThrowableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,18 +31,19 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        throwablesBinding = ChuckerFragmentThrowableListBinding.inflate(inflater, container, false)
-        throwablesAdapter = ThrowableAdapter(this)
+        errorsBinding = ChuckerFragmentThrowableListBinding.inflate(inflater, container, false)
+        errorsAdapter = ThrowableAdapter(this)
 
-        with(throwablesBinding) {
+        with(errorsBinding) {
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
-            throwablesRecyclerView.apply {
+            errorsRecyclerView.apply {
+                setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-                adapter = throwablesAdapter
+                adapter = errorsAdapter
             }
         }
 
-        return throwablesBinding.root
+        return errorsBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,8 +51,8 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
         viewModel.throwables.observe(
             viewLifecycleOwner,
             Observer { throwables ->
-                throwablesAdapter.setData(throwables)
-                throwablesBinding.tutorialView.visibility = if (throwables.isNullOrEmpty()) {
+                errorsAdapter.setData(throwables)
+                errorsBinding.tutorialView.visibility = if (throwables.isNullOrEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -74,14 +76,19 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
     }
 
     private fun askForConfirmation() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.chucker_clear)
-            .setMessage(R.string.chucker_clear_throwable_confirmation)
-            .setPositiveButton(R.string.chucker_clear) { _, _ ->
+        val confirmationDialogData = DialogData(
+            title = getString(R.string.chucker_clear),
+            message = getString(R.string.chucker_clear_throwable_confirmation),
+            postiveButtonText = getString(R.string.chucker_clear),
+            negativeButtonText = getString(R.string.chucker_cancel)
+        )
+        requireContext().showDialog(
+            confirmationDialogData,
+            onPositiveClick = {
                 viewModel.clearThrowables()
-            }
-            .setNegativeButton(R.string.chucker_cancel, null)
-            .show()
+            },
+            onNegativeClick = null
+        )
     }
 
     override fun onThrowableClick(throwableId: Long, position: Int) {

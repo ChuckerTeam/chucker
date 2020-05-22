@@ -9,8 +9,8 @@ internal class TransactionPagerAdapter(fragmentActivity: FragmentActivity) :
 
     override fun createFragment(position: Int): Fragment = when (position) {
         OVERVIEW_SCREEN_POSITION -> TransactionOverviewFragment()
-        REQUEST_SCREEN_POSITION -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_REQUEST)
-        RESPONSE_SCREEN_POSITION -> TransactionPayloadFragment.newInstance(TransactionPayloadFragment.TYPE_RESPONSE)
+        REQUEST_SCREEN_POSITION -> TransactionPayloadFragment.newInstance(PayloadType.REQUEST)
+        RESPONSE_SCREEN_POSITION -> TransactionPayloadFragment.newInstance(PayloadType.RESPONSE)
         else -> throw IllegalStateException("Invalid adapter position")
     }
 
