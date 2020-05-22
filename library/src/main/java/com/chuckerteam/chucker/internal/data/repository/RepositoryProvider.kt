@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.data.repository
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider.initialize
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 
@@ -34,5 +35,14 @@ internal object RepositoryProvider {
             transactionRepository = HttpTransactionDatabaseRepository(db)
             throwableRepository = RecordedThrowableDatabaseRepository(db)
         }
+    }
+
+    /**
+     * Cleanup stored singleton objects
+     */
+    @VisibleForTesting
+    fun close() {
+        transactionRepository = null
+        throwableRepository = null
     }
 }
