@@ -18,15 +18,6 @@ android {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
-}
-
-artifacts {
-    archives sourcesJar
-}
-
 dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
