@@ -1,5 +1,5 @@
 # Chucker
-[![JitPack](https://jitpack.io/v/ChuckerTeam/Chucker.svg)](https://jitpack.io/#ChuckerTeam/Chucker) ![Pre Merge Checks](https://github.com/ChuckerTeam/chucker/workflows/Pre%20Merge%20Checks/badge.svg?branch=develop)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.chuckerteam.chucker/library)](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library) ![Pre Merge Checks](https://github.com/ChuckerTeam/chucker/workflows/Pre%20Merge%20Checks/badge.svg?branch=develop)  ![License](https://img.shields.io/github/license/ChuckerTeam/Chucker.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com) [![Join the chat at https://kotlinlang.slack.com](https://img.shields.io/badge/slack-@kotlinlang/chucker-yellow.svg?logo=slack)](https://kotlinlang.slack.com/archives/CRWD6370R) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-%23375-blue.svg)](https://androidweekly.net/issues/issue-375)
 
 _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
@@ -30,15 +30,9 @@ Apps using Chucker will display a **push notification** showing a summary of ong
 
 ## Getting Started 👣
 
-Chucker is distributed through [JitPack](https://jitpack.io/#ChuckerTeam/chucker). To use it you need to add the following **Gradle dependency** to your `build.gradle` file of you android app module (NOT the root file).
+Chucker is distributed through [Maven Central](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library). To use it you need to add the following **Gradle dependency** to your `build.gradle` file of you android app module (NOT the root file).
 
 Please note that you should add both the `library` and the the `library-no-op` variant to isolate Chucker from release builds as follows:
-
-```groovy
-repositories {
-    maven { url "https://jitpack.io" }
-}
-```
 
 ```groovy
 dependencies {
@@ -56,6 +50,9 @@ val client = OkHttpClient.Builder()
 ```
 
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
+
+Historically, Chucker was distributed through JitPack. 
+You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/ChuckerTeam/chucker.svg)](https://jitpack.io/#ChuckerTeam/chucker).
 
 ## Features 🧰
 
@@ -140,20 +137,30 @@ If you're migrating **from Chucker v2.0 to v3.0**, please expect multiple breaki
 
 ## Snapshots 📦
 
-Development of Chucker happens in the [develop](https://github.com/ChuckerTeam/chucker/tree/develop) branch. You can get `SNAPSHOT` versions directly from JitPack if needed.
+Development of Chucker happens in the [`develop`](https://github.com/ChuckerTeam/chucker/tree/develop) branch. Every push to `develop` will trigger a publishing of a `SNAPSHOT` artifact for the upcoming version. You can get those snapshots artifacts directly from Sonatype with:
+
+```gradle
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+dependencies {
+  debugImplementation "com.github.chuckerteam.chucker:library:3.3.0-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.3.0-SNAPSHOT"
+}
+```
+
+Moreover, you can still use [JitPack](https://jitpack.io/#ChuckerTeam/chucker) as it builds every branch. So the top of `develop` is available here:
 
 ```gradle
 repositories {
     maven { url "https://jitpack.io" }
 }
-```
-
-```gradle
 dependencies {
   debugImplementation "com.github.chuckerteam.chucker:library:develop-SNAPSHOT"
   releaseImplementation "com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT"
 }
 ```
+
 
 ⚠️ Please note that the latest snapshot might be **unstable**. Use it at your own risk ⚠️
 
