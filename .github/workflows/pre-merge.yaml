@@ -9,7 +9,7 @@ on:
       - '*'
 
 jobs:
-  gradle:
+  test:
     runs-on: [ubuntu-latest]
     strategy:
       fail-fast: false
@@ -24,29 +24,86 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-      
     - name: Cache Gradle Caches
       uses: actions/cache@v1
       with:
         path: ~/.gradle/caches/
-        key: cache-clean-gradle-${{ matrix.os }}-${{ matrix.jdk }}
+        key: cache-test-gradle-${{ matrix.kotlin-version }}
     - name: Cache Gradle Wrapper
       uses: actions/cache@v1
       with:
         path: ~/.gradle/wrapper/
-        key: cache-clean-wrapper-${{ matrix.os }}-${{ matrix.jdk }}
-
-    - name: Run ktlint
-      run: ./gradlew ktlintCheck
-
-    - name: Run detekt
-      run: ./gradlew detekt
+        key: cache-test-wrapper-${{ matrix.kotlin-version }}
 
     - name: Run all the tests
       run: ./gradlew test
 
-    - name: Build everything
-      run: ./gradlew build
+    - name: Stop Gradle
+      run: ./gradlew --stop
+
+  detekt:
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Cache Gradle Caches
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches/
+        key: cache-detekt-gradle
+    - name: Cache Gradle Wrapper
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/wrapper/
+        key: cache-detekt-wrapper
+
+    - name: Run detekt
+      run: ./gradlew detekt
+
+    - name: Stop Gradle
+      run: ./gradlew --stop
+
+  ktlint:
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Cache Gradle Caches
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches/
+        key: cache-ktlint-gradle
+    - name: Cache Gradle Wrapper
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/wrapper/
+        key: cache-ktlint-wrapper
+
+    - name: Run ktlint
+      run: ./gradlew ktlintCheck
+
+    - name: Stop Gradle
+      run: ./gradlew --stop
+
+  publish-artifact:
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Cache Gradle Caches
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches/
+        key: cache-publish-gradle
+    - name: Cache Gradle Wrapper
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/wrapper/
+        key: cache-publish-wrapper
+
 
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
@@ -57,10 +114,8 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: 'chucker-local-artifacts-${{ matrix.kotlin-version }}'
+        name: 'chucker-local-artifacts'
         path: '~/.m2/repository/'
 
-    # We stop gradle at the end to make sure the cache folders
-    # don't contain any lock files and are free to be cached.
     - name: Stop Gradle
       run: ./gradlew --stop

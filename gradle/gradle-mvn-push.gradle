@@ -79,6 +79,23 @@ afterEvaluate {
                         developerConnection = POM_SCM_CONNECTION
                         url = POM_URL
                     }
+                    developers {
+                        developer {
+                            id = 'cortinico'
+                            name = 'Nicola Corti'
+                            email = 'corti.nico@gmail.com'
+                        }
+                        developer {
+                            id = 'vbuberen'
+                            name = 'Volodymyr Buberenko'
+                            email = 'v.buberenko@gmail.com'
+                        }
+                        developer {
+                            id = 'olivierperez'
+                            name = 'Olivier Perez'
+                            email = 'olivier@olivierperez.fr'
+                        }
+                    }
                 }
             }
         }
@@ -86,7 +103,7 @@ afterEvaluate {
 
     def signingKey = findProperty("SIGNING_KEY")
     def signingPwd = findProperty("SIGNING_PWD")
-    if (signingKey != null && signingPwd != null) {
+    if (signingKey && signingPwd) {
         signing {
             useInMemoryPgpKeys(signingKey, signingPwd)
             sign publishing.publications.release
