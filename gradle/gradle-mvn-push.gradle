@@ -79,6 +79,23 @@ afterEvaluate {
                         developerConnection = POM_SCM_CONNECTION
                         url = POM_URL
                     }
+                    developers {
+                        developer {
+                            id = 'cortinico'
+                            name = 'Nicola Corti'
+                            email = 'corti.nico@gmail.com'
+                        }
+                        developer {
+                            id = 'vbuberen'
+                            name = 'Volodymyr Buberenko'
+                            email = 'v.buberenko@gmail.com'
+                        }
+                        developer {
+                            id = 'olivierperez'
+                            name = 'Olivier Perez'
+                            email = 'olivier@olivierperez.fr'
+                        }
+                    }
                 }
             }
         }
