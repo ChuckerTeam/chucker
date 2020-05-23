@@ -88,7 +88,7 @@ afterEvaluate {
                         developer {
                             id = 'vbuberen'
                             name = 'Volodymyr Buberenko'
-                            email = 'vbuberenko@gmail.com'
+                            email = 'v.buberenko@gmail.com'
                         }
                         developer {
                             id = 'olivierperez'
