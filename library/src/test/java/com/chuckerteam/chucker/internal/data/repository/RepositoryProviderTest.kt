@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.google.common.truth.Truth.assertThat
 import org.junit.After
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,13 +43,13 @@ class RepositoryProviderTest {
     @Test
     fun transactionRepoAvailableAfterInitialize() {
         RepositoryProvider.initialize(context)
-        assertNotNull(RepositoryProvider.transaction())
+        assertThat(RepositoryProvider.transaction()).isNotNull()
     }
 
     @Test
     fun errorRepoAvailableAfterInitialize() {
         RepositoryProvider.initialize(context)
-        assertNotNull(RepositoryProvider.throwable())
+        assertThat(RepositoryProvider.throwable()).isNotNull()
     }
 
     @Test
@@ -58,7 +57,7 @@ class RepositoryProviderTest {
         RepositoryProvider.initialize(context)
         val one = RepositoryProvider.transaction()
         val two = RepositoryProvider.transaction()
-        assertSame(one, two)
+        assertThat(one).isSameInstanceAs(two)
     }
 
     @Test
@@ -66,6 +65,6 @@ class RepositoryProviderTest {
         RepositoryProvider.initialize(context)
         val one = RepositoryProvider.throwable()
         val two = RepositoryProvider.throwable()
-        assertSame(one, two)
+        assertThat(one).isSameInstanceAs(two)
     }
 }

@@ -1,108 +1,109 @@
 package com.chuckerteam.chucker.internal.data.entity
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class HttpTransactionTupleTest {
     @Test
     fun schemeIsSSL() {
-        assertTrue(createTuple(scheme = "https").isSsl)
+        assertThat(createTuple(scheme = "https").isSsl).isTrue()
     }
 
     @Test
     fun schemeIsNotSSL() {
-        assertFalse(createTuple(scheme = "http").isSsl)
+        assertThat(createTuple(scheme = "http").isSsl).isFalse()
     }
 
     @Test
     fun statusIsComplete() {
-        assertEquals(
-            HttpTransaction.Status.Complete,
-            createTuple(responseCode = 200, error = null).status
-        )
+        assertThat(
+            createTuple(
+                responseCode = 200,
+                error = null
+            ).status
+        ).isEqualTo(HttpTransaction.Status.Complete)
     }
 
     @Test
     fun statusIsFailed() {
-        assertEquals(
-            HttpTransaction.Status.Failed,
-            createTuple(error = "foo").status
-        )
+        assertThat(
+            createTuple(
+                error = "foo"
+            ).status
+        ).isEqualTo(HttpTransaction.Status.Failed)
     }
 
     @Test
     fun statusIsRequested() {
-        assertEquals(
-            HttpTransaction.Status.Requested,
-            createTuple(responseCode = null).status
-        )
+        assertThat(
+            createTuple(
+                responseCode = null
+            ).status
+        ).isEqualTo(HttpTransaction.Status.Requested)
     }
 
     @Test
     fun durationBlankUntilWeHaveData() {
-        assertNull(createTuple(tookMs = null).durationString)
+        assertThat(createTuple(tookMs = null).durationString).isNull()
     }
 
     @Test
     fun duration() {
-        assertEquals("123 ms", createTuple(tookMs = 123).durationString)
+        assertThat(createTuple(tookMs = 123).durationString).isEqualTo("123 ms")
     }
 
     @Test
     fun totalSizeHandlesNulls() {
-        assertEquals(
-            "0 B",
+        assertThat(
             createTuple(
                 requestContentLength = null,
                 responseContentLength = null
             ).totalSizeString
-        )
+        ).isEqualTo("0 B")
 
-        assertEquals(
-            "0 B",
+        assertThat(
             createTuple(
                 requestContentLength = 0,
                 responseContentLength = null
             ).totalSizeString
-        )
+        ).isEqualTo("0 B")
 
-        assertEquals(
-            "0 B",
+        assertThat(
             createTuple(
                 requestContentLength = null,
                 responseContentLength = 0
             ).totalSizeString
-        )
+        ).isEqualTo("0 B")
     }
 
     @Test
     fun totalSize() {
-        assertEquals(
-            "579 B",
+        assertThat(
             createTuple(
                 requestContentLength = 123,
                 responseContentLength = 456
             ).totalSizeString
-        )
+        ).isEqualTo("579 B")
     }
 
     @Test
     fun nonEncodedFormattedPath() {
-        assertEquals("/abc/def?foo=bar baz", createTuple(path = "/abc/def?foo=bar baz").getFormattedPath(false))
+        assertThat(createTuple(path = "/abc/def?foo=bar baz").getFormattedPath(false))
+            .isEqualTo("/abc/def?foo=bar baz")
     }
 
     @Test
     fun encodedFormattedPath() {
-        assertEquals("/abc/def?foo=bar%20baz", createTuple(path = "/abc/def?foo=bar baz").getFormattedPath(true))
+        assertThat(createTuple(path = "/abc/def?foo=bar baz").getFormattedPath(true))
+            .isEqualTo("/abc/def?foo=bar%20baz")
     }
 
     @Test
     fun formattedPathHandlesNull() {
-        assertEquals("", createTuple(path = null).getFormattedPath(false))
-        assertEquals("", createTuple(path = null).getFormattedPath(true))
+        assertThat(createTuple(path = null).getFormattedPath(false))
+            .isEqualTo("")
+        assertThat(createTuple(path = null).getFormattedPath(true))
+            .isEqualTo("")
     }
 
     private fun createTuple(

@@ -9,11 +9,9 @@ import com.chuckerteam.chucker.internal.data.entity.createRequest
 import com.chuckerteam.chucker.internal.data.entity.randomString
 import com.chuckerteam.chucker.internal.data.entity.withResponseData
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,17 +56,17 @@ class HttpTransactionDatabaseRepositoryTest {
         db.transactionDao().insert(data)
 
         testObject.getTransaction(data.id).observeForever {
-            assertEquals(data.id, it?.id)
-            assertEquals(data.requestHeaders, it?.requestHeaders)
-            assertEquals(data.url, it?.url)
-            assertEquals(data.host, it?.host)
-            assertEquals(data.path, it?.path)
-            assertEquals(data.scheme, it?.scheme)
-            assertEquals(data.isRequestBodyPlainText, it?.isRequestBodyPlainText)
-            assertEquals(data.requestDate, it?.requestDate)
-            assertEquals(data.method, it?.method)
-            assertEquals(data.requestContentType, it?.requestContentType)
-            assertEquals(data.requestContentLength, it?.requestContentLength)
+            assertThat(it?.id).isEqualTo(data.id)
+            assertThat(it?.requestHeaders).isEqualTo(data.requestHeaders)
+            assertThat(it?.url).isEqualTo(data.url)
+            assertThat(it?.host).isEqualTo(data.host)
+            assertThat(it?.path).isEqualTo(data.path)
+            assertThat(it?.scheme).isEqualTo(data.scheme)
+            assertThat(it?.isRequestBodyPlainText).isEqualTo(data.isRequestBodyPlainText)
+            assertThat(it?.requestDate).isEqualTo(data.requestDate)
+            assertThat(it?.method).isEqualTo(data.method)
+            assertThat(it?.requestContentType).isEqualTo(data.requestContentType)
+            assertThat(it?.requestContentLength).isEqualTo(data.requestContentLength)
         }
     }
 
@@ -77,20 +75,20 @@ class HttpTransactionDatabaseRepositoryTest {
         val data = createRequest()
 
         testObject.insertTransaction(data)
-        assertTrue(data.id > 0)
+        assertThat(data.id > 0).isTrue()
 
         testObject.getTransaction(data.id).observeForever {
-            assertEquals(data.id, it?.id)
-            assertEquals(data.requestHeaders, it?.requestHeaders)
-            assertEquals(data.url, it?.url)
-            assertEquals(data.host, it?.host)
-            assertEquals(data.path, it?.path)
-            assertEquals(data.scheme, it?.scheme)
-            assertEquals(data.isRequestBodyPlainText, it?.isRequestBodyPlainText)
-            assertEquals(data.requestDate, it?.requestDate)
-            assertEquals(data.method, it?.method)
-            assertEquals(data.requestContentType, it?.requestContentType)
-            assertEquals(data.requestContentLength, it?.requestContentLength)
+            assertThat(it?.id).isEqualTo(data.id)
+            assertThat(it?.requestHeaders).isEqualTo(data.requestHeaders)
+            assertThat(it?.url).isEqualTo(data.url)
+            assertThat(it?.host).isEqualTo(data.host)
+            assertThat(it?.path).isEqualTo(data.path)
+            assertThat(it?.scheme).isEqualTo(data.scheme)
+            assertThat(it?.isRequestBodyPlainText).isEqualTo(data.isRequestBodyPlainText)
+            assertThat(it?.requestDate).isEqualTo(data.requestDate)
+            assertThat(it?.method).isEqualTo(data.method)
+            assertThat(it?.requestContentType).isEqualTo(data.requestContentType)
+            assertThat(it?.requestContentLength).isEqualTo(data.requestContentLength)
         }
     }
 
@@ -101,12 +99,12 @@ class HttpTransactionDatabaseRepositoryTest {
 
         val result = testObject.getAllTransactions()
         val first = result.firstOrNull { it.id == transaction.id }
-        assertNotNull(first)
-        assertEquals(transaction.host, first?.host)
+        assertThat(first).isNotNull()
+        assertThat(first?.host).isEqualTo(transaction.host)
 
         val second = result.firstOrNull { it.id == otherTransaction.id }
-        assertNotNull(second)
-        assertEquals(otherTransaction.host, second?.host)
+        assertThat(second).isNotNull()
+        assertThat(second?.host).isEqualTo(otherTransaction.host)
     }
 
     @Test
@@ -200,11 +198,11 @@ class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(otherTransaction)
 
         val result = testObject.getAllTransactions()
-        assertEquals(2, result.size)
+        assertThat(result.size).isEqualTo(2)
 
         testObject.deleteAllTransactions()
         val empty = testObject.getAllTransactions()
-        assertTrue(empty.isEmpty())
+        assertThat(empty.isEmpty()).isTrue()
     }
 
     @Test
@@ -213,15 +211,15 @@ class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(otherTransaction)
 
         val result = testObject.getAllTransactions()
-        assertEquals(2, result.size)
+        assertThat(result.size).isEqualTo(2)
 
         testObject.deleteOldTransactions(150L)
 
         val secondResult = testObject.getAllTransactions()
-        assertEquals(1, secondResult.size)
+        assertThat(secondResult.size).isEqualTo(1)
         val second = secondResult.firstOrNull { it.id == otherTransaction.id }
-        assertNotNull(second)
-        assertEquals(otherTransaction.host, second?.host)
+        assertThat(second).isNotNull()
+        assertThat(second?.host).isEqualTo(otherTransaction.host)
     }
 
     @Test
@@ -233,8 +231,8 @@ class HttpTransactionDatabaseRepositoryTest {
         testObject.updateTransaction(transaction)
 
         testObject.getTransaction(123456L).observeForever {
-            assertEquals(transaction.id, it?.id)
-            assertEquals(newHost, it?.host)
+            assertThat(it?.id).isEqualTo(transaction.id)
+            assertThat(it?.host).isEqualTo(newHost)
         }
     }
 }

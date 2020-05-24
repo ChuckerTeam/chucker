@@ -10,11 +10,9 @@ import com.chuckerteam.chucker.internal.data.entity.assertTransaction
 import com.chuckerteam.chucker.internal.data.entity.assertTuples
 import com.chuckerteam.chucker.internal.data.entity.createRequest
 import com.chuckerteam.chucker.internal.data.entity.withResponseData
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,28 +46,28 @@ class HttpTransactionDaoTest {
         val id = testObject.insert(data)
 
         with(db.query("select * from transactions", arrayOf())) {
-            assertEquals(1, count)
-            assertTrue(moveToFirst())
+            assertThat(count).isEqualTo(1)
+            assertThat(moveToFirst()).isTrue()
 
-            assertEquals(id, longValue("id"))
-            assertEquals(data.requestDate, longValue("requestDate"))
-            assertEquals(data.responseDate, longValue("responseDate"))
-            assertEquals(data.tookMs, longValue("tookMs"))
-            assertEquals(data.protocol, stringValue("protocol"))
-            assertEquals(data.requestHeaders, stringValue("requestHeaders"))
-            assertEquals(data.responseHeaders, stringValue("responseHeaders"))
-            assertEquals(data.method, stringValue("method"))
-            assertEquals(data.url, stringValue("url"))
-            assertEquals(data.host, stringValue("host"))
-            assertEquals(data.path, stringValue("path"))
-            assertEquals(data.scheme, stringValue("scheme"))
-            assertEquals(data.responseTlsVersion, stringValue("responseTlsVersion"))
-            assertEquals(data.responseCipherSuite, stringValue("responseCipherSuite"))
-            assertEquals(data.requestContentLength, longValue("requestContentLength"))
-            assertEquals(data.requestContentType, stringValue("requestContentType"))
-            assertEquals(data.responseMessage, stringValue("responseMessage"))
-            assertEquals(data.responseBody, stringValue("responseBody"))
-            assertEquals(data.error, stringValue("error"))
+            assertThat(longValue("id")).isEqualTo(id)
+            assertThat(longValue("requestDate")).isEqualTo(data.requestDate)
+            assertThat(longValue("responseDate")).isEqualTo(data.responseDate)
+            assertThat(longValue("tookMs")).isEqualTo(data.tookMs)
+            assertThat(stringValue("protocol")).isEqualTo(data.protocol)
+            assertThat(stringValue("requestHeaders")).isEqualTo(data.requestHeaders)
+            assertThat(stringValue("responseHeaders")).isEqualTo(data.responseHeaders)
+            assertThat(stringValue("method")).isEqualTo(data.method)
+            assertThat(stringValue("url")).isEqualTo(data.url)
+            assertThat(stringValue("host")).isEqualTo(data.host)
+            assertThat(stringValue("path")).isEqualTo(data.path)
+            assertThat(stringValue("scheme")).isEqualTo(data.scheme)
+            assertThat(stringValue("responseTlsVersion")).isEqualTo(data.responseTlsVersion)
+            assertThat(stringValue("responseCipherSuite")).isEqualTo(data.responseCipherSuite)
+            assertThat(longValue("requestContentLength")).isEqualTo(data.requestContentLength)
+            assertThat(stringValue("requestContentType")).isEqualTo(data.requestContentType)
+            assertThat(stringValue("responseMessage")).isEqualTo(data.responseMessage)
+            assertThat(stringValue("responseBody")).isEqualTo(data.responseBody)
+            assertThat(stringValue("error")).isEqualTo(data.error)
         }
     }
 
@@ -93,14 +91,14 @@ class HttpTransactionDaoTest {
         insertTransaction(newer)
 
         val all = testObject.getAll()
-        assertEquals(2, all.size)
+        assertThat(all.size).isEqualTo(2)
 
         val firstAssertion = all.firstOrNull { it.id == older.id }
-        assertNotNull(firstAssertion)
+        assertThat(firstAssertion).isNotNull()
         assertTransaction(older.id, older, firstAssertion)
 
         val secondAssertion = all.firstOrNull { it.id == newer.id }
-        assertNotNull(secondAssertion)
+        assertThat(secondAssertion).isNotNull()
         assertTransaction(newer.id, newer, secondAssertion)
     }
 
@@ -112,7 +110,7 @@ class HttpTransactionDaoTest {
         newer.id = older.id
 
         val rowsUpdated = testObject.update(newer)
-        assertEquals(1, rowsUpdated)
+        assertThat(rowsUpdated).isEqualTo(1)
 
         testObject.getById(older.id).observeForever {
             assertTransaction(older.id, newer, it)
@@ -228,7 +226,7 @@ class HttpTransactionDaoTest {
     private fun assertRowCountMatchingId(id: Long, expectedCount: Long) {
         with(db.query("select count(*) from transactions where id=$id", arrayOf())) {
             moveToFirst()
-            assertEquals(expectedCount, getLong(0))
+            assertThat(getLong(0)).isEqualTo(expectedCount)
             close()
         }
     }
@@ -236,7 +234,7 @@ class HttpTransactionDaoTest {
     private fun assertRowCount(rowCount: Long) {
         with(db.query("select count(*) from transactions", arrayOf())) {
             moveToFirst()
-            assertEquals(rowCount, getLong(0))
+            assertThat(getLong(0)).isEqualTo(rowCount)
             close()
         }
     }

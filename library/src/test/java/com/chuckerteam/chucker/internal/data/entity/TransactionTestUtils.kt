@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.internal.data.entity
 
+import com.google.common.truth.Truth.assertThat
 import java.util.UUID
 import okhttp3.Headers
 import okhttp3.HttpUrl
-import org.junit.Assert.assertEquals
 
 internal fun createRequest(path: String = ""): HttpTransaction =
     HttpTransaction().apply {
@@ -43,9 +43,9 @@ internal fun assertTuples(
     expected: List<HttpTransaction>,
     actual: List<HttpTransactionTuple>
 ) {
-    assertEquals(expected.size, actual.size)
+    assertThat(actual.size).isEqualTo(expected.size)
     expected.forEachIndexed { index, expectedTransaction ->
-        assertEquals(expectedTransaction.id, actual[index].id)
+        assertThat(actual[index].id).isEqualTo(expectedTransaction.id)
         assertTuple(expectedTransaction.id, expectedTransaction, actual[index])
     }
 }
@@ -55,16 +55,16 @@ internal fun assertTuple(
     expected: HttpTransaction,
     actual: HttpTransactionTuple?
 ) {
-    assertEquals(id, actual?.id)
-    assertEquals(expected.requestDate, actual?.requestDate)
-    assertEquals(expected.method, actual?.method)
-    assertEquals(expected.host, actual?.host)
-    assertEquals(expected.path, actual?.path)
-    assertEquals(expected.scheme, actual?.scheme)
-    assertEquals(expected.responseCode, actual?.responseCode)
-    assertEquals(expected.requestContentLength, actual?.requestContentLength)
-    assertEquals(expected.responseContentLength, actual?.responseContentLength)
-    assertEquals(expected.error, actual?.error)
+    assertThat(actual?.id).isEqualTo(id)
+    assertThat(actual?.requestDate).isEqualTo(expected.requestDate)
+    assertThat(actual?.method).isEqualTo(expected.method)
+    assertThat(actual?.host).isEqualTo(expected.host)
+    assertThat(actual?.path).isEqualTo(expected.path)
+    assertThat(actual?.scheme).isEqualTo(expected.scheme)
+    assertThat(actual?.responseCode).isEqualTo(expected.responseCode)
+    assertThat(actual?.requestContentLength).isEqualTo(expected.requestContentLength)
+    assertThat(actual?.responseContentLength).isEqualTo(expected.responseContentLength)
+    assertThat(actual?.error).isEqualTo(expected.error)
 }
 
 internal fun assertTransaction(
@@ -72,27 +72,27 @@ internal fun assertTransaction(
     expected: HttpTransaction,
     actual: HttpTransaction?
 ) {
-    assertEquals(transactionId, actual?.id)
-    assertEquals(expected.url, actual?.url)
-    assertEquals(expected.host, actual?.host)
-    assertEquals(expected.path, actual?.path)
-    assertEquals(expected.scheme, actual?.scheme)
-    assertEquals(expected.requestHeaders, actual?.requestHeaders)
-    assertEquals(expected.isRequestBodyPlainText, actual?.isRequestBodyPlainText)
-    assertEquals(expected.requestDate, actual?.requestDate)
-    assertEquals(expected.method, actual?.method)
-    assertEquals(expected.requestContentType, actual?.requestContentType)
-    assertEquals(expected.requestContentLength, actual?.requestContentLength)
-    assertEquals(expected.requestBody, actual?.requestBody)
-    assertEquals(expected.responseHeaders, actual?.responseHeaders)
-    assertEquals(expected.responseCode, actual?.responseCode)
-    assertEquals(expected.responseDate, actual?.responseDate)
-    assertEquals(expected.tookMs, actual?.tookMs)
-    assertEquals(expected.responseTlsVersion, actual?.responseTlsVersion)
-    assertEquals(expected.responseCipherSuite, actual?.responseCipherSuite)
-    assertEquals(expected.responseContentLength, actual?.responseContentLength)
-    assertEquals(expected.requestContentType, actual?.requestContentType)
-    assertEquals(expected.responseMessage, actual?.responseMessage)
-    assertEquals(expected.responseBody, actual?.responseBody)
-    assertEquals(expected.error, actual?.error)
+    assertThat(actual?.id).isEqualTo(transactionId)
+    assertThat(actual?.url).isEqualTo(expected.url)
+    assertThat(actual?.host).isEqualTo(expected.host)
+    assertThat(actual?.path).isEqualTo(expected.path)
+    assertThat(actual?.scheme).isEqualTo(expected.scheme)
+    assertThat(actual?.requestHeaders).isEqualTo(expected.requestHeaders)
+    assertThat(actual?.isRequestBodyPlainText).isEqualTo(expected.isRequestBodyPlainText)
+    assertThat(actual?.requestDate).isEqualTo(expected.requestDate)
+    assertThat(actual?.method).isEqualTo(expected.method)
+    assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)
+    assertThat(actual?.requestContentLength).isEqualTo(expected.requestContentLength)
+    assertThat(actual?.requestBody).isEqualTo(expected.requestBody)
+    assertThat(actual?.responseHeaders).isEqualTo(expected.responseHeaders)
+    assertThat(actual?.responseCode).isEqualTo(expected.responseCode)
+    assertThat(actual?.responseDate).isEqualTo(expected.responseDate)
+    assertThat(actual?.tookMs).isEqualTo(expected.tookMs)
+    assertThat(actual?.responseTlsVersion).isEqualTo(expected.responseTlsVersion)
+    assertThat(actual?.responseCipherSuite).isEqualTo(expected.responseCipherSuite)
+    assertThat(actual?.responseContentLength).isEqualTo(expected.responseContentLength)
+    assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)
+    assertThat(actual?.responseMessage).isEqualTo(expected.responseMessage)
+    assertThat(actual?.responseBody).isEqualTo(expected.responseBody)
+    assertThat(actual?.error).isEqualTo(expected.error)
 }
