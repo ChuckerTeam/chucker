@@ -1,9 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.IOException
-import kotlin.random.Random
 import okio.Buffer
 import okio.ByteString
 import okio.Okio
@@ -12,6 +9,9 @@ import okio.Timeout
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.io.IOException
+import kotlin.random.Random
 
 class TeeSourceTest {
     private val teeCallback = TestTeeCallback()

@@ -5,8 +5,6 @@ import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.readByteStringBody
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -20,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import java.io.File
+import java.net.HttpURLConnection.HTTP_NO_CONTENT
 
 class ChuckerInterceptorTest {
     enum class ClientFactory {

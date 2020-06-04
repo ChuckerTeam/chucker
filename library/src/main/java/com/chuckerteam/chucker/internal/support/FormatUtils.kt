@@ -3,6 +3,9 @@ package com.chuckerteam.chucker.internal.support
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
+import org.w3c.dom.Document
+import org.xml.sax.InputSource
+import org.xml.sax.SAXParseException
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.PrintWriter
@@ -21,9 +24,6 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.math.ln
 import kotlin.math.pow
-import org.w3c.dom.Document
-import org.xml.sax.InputSource
-import org.xml.sax.SAXParseException
 
 internal object FormatUtils {
 

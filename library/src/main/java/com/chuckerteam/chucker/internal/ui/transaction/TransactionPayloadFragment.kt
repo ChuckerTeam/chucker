@@ -27,14 +27,14 @@ import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBind
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 

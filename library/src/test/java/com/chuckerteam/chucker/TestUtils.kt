@@ -3,11 +3,11 @@ package com.chuckerteam.chucker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.internal.support.hasBody
-import java.io.File
 import okhttp3.Response
 import okio.Buffer
 import okio.ByteString
 import okio.Okio
+import java.io.File
 
 fun getResourceFile(file: String): Buffer {
     return Buffer().apply {

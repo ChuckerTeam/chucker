@@ -7,10 +7,10 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FileFactory
 import io.mockk.every
 import io.mockk.mockk
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.atomic.AtomicLong
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicLong
 
 internal class ChuckerInterceptorDelegate(
     fileFactory: FileFactory,

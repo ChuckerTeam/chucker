@@ -13,10 +13,10 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.EXPORT_FILENAME
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 internal class MainViewModel : ViewModel() {
 

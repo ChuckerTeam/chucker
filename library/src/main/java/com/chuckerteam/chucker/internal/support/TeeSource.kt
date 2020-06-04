@@ -1,11 +1,11 @@
 package com.chuckerteam.chucker.internal.support
 
-import java.io.File
-import java.io.IOException
 import okio.Buffer
 import okio.Okio
 import okio.Source
 import okio.Timeout
+import java.io.File
+import java.io.IOException
 
 /**
  * A source that acts as a tee operator - https://en.wikipedia.org/wiki/Tee_(command).
