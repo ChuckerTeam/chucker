@@ -5,7 +5,10 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
 
     compileOptions {
-        kotlinOptions.freeCompilerArgs += ['-module-name', "com.github.ChuckerTeam.Chucker.library-no-op"]
+        kotlinOptions.freeCompilerArgs += [
+            '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
+            '-Xexplicit-api', "strict"
+        ]
     }
 
     defaultConfig {
