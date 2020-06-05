@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.internal.data.entity
 
 import com.google.common.truth.Truth.assertThat
-import java.util.UUID
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import java.util.UUID
 
 internal fun createRequest(path: String = ""): HttpTransaction =
     HttpTransaction().apply {
