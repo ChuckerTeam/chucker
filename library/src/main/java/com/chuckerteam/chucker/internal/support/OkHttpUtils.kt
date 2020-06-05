@@ -1,11 +1,11 @@
 package com.chuckerteam.chucker.internal.support
 
-import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
-import java.net.HttpURLConnection.HTTP_NO_CONTENT
-import java.net.HttpURLConnection.HTTP_OK
 import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
+import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
+import java.net.HttpURLConnection.HTTP_NO_CONTENT
+import java.net.HttpURLConnection.HTTP_OK
 
 private const val HTTP_CONTINUE = 100
 

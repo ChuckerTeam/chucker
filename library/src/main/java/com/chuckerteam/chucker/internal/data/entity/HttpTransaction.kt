@@ -12,9 +12,9 @@ import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.Date
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import java.util.Date
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes

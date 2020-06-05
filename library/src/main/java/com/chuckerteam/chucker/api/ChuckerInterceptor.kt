@@ -10,9 +10,6 @@ import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.isGzipped
-import java.io.File
-import java.io.IOException
-import java.nio.charset.Charset
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -21,6 +18,9 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
 import okio.Okio
+import java.io.File
+import java.io.IOException
+import java.nio.charset.Charset
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity

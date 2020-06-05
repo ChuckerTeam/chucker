@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
-import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
 
 /**
  * No-op implementation.
