@@ -30,6 +30,12 @@ android {
         abortOnError true
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     resourcePrefix 'chucker_'
 }
 
@@ -54,11 +60,15 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "junit:junit:$vintageJunitVersion"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$vintageJunitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
+    testImplementation "androidx.test:core:$androidxTestCoreVersion"
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
