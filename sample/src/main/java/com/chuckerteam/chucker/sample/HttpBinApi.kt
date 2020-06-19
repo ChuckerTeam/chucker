@@ -72,7 +72,7 @@ internal interface HttpBinApi {
     @GET("/deflate")
     fun deflate(): Call<Void>
 
-    @GET("/cookies/set")
+    @GET("/cookies/set?one=two&three=four")
     fun cookieSet(@Query("k1") value: String): Call<Void>
 
     @GET("/basic-auth/{user}/{passwd}")

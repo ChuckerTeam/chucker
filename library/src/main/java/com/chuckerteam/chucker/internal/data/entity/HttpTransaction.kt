@@ -142,6 +142,18 @@ internal class HttpTransaction(
             }
         }
 
+    @delegate:Ignore
+    val requestCookies: List<HttpCookie> by lazy {
+        HttpCookie.fromRequestHeader(getParsedRequestHeaders()?.firstOrNull { it.name == "Cookie" }?.value)
+    }
+
+    @delegate:Ignore
+    val responseCookies: List<HttpCookie> by lazy {
+        HttpCookie.fromResponseHeaders(getParsedResponseHeaders()?.filter { it.name == "set-cookie" })
+    }
+
+    val cookiesPresent: Boolean get() = requestCookies.isNotEmpty() || responseCookies.isNotEmpty()
+
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))
     }

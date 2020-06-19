@@ -8,6 +8,7 @@
     <string name="chucker_overview">Overview</string>
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
+    <string name="chucker_cookies">Cookies</string>
     <string name="chucker_url">URL</string>
     <string name="chucker_method">Method</string>
     <string name="chucker_protocol">Protocol</string>

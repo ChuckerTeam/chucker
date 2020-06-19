@@ -6,6 +6,9 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,11 +38,27 @@ class HttpBinClient(
         headersToRedact = emptySet<String>()
     )
 
+    private val cookieJar = HttpBinSampleCookieJar().apply {
+        setup(
+            "https://httpbin.org/cookies",
+            "five" to "six",
+            "seven" to "eight nine"
+        )
+        setup(
+            "https://httpbin.org/delete",
+            "one" to "fish",
+            "two" to "fish",
+            "red" to "fish",
+            "blue" to "fish"
+        )
+    }
+
     private val httpClient =
         OkHttpClient.Builder()
             // Add a ChuckerInterceptor instance to your OkHttp client
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .addInterceptor(chuckerInterceptor)
+            .addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addNetworkInterceptor(chuckerInterceptor)
+            .cookieJar(cookieJar)
             .build()
 
     private val api: HttpBinApi by lazy {
@@ -119,5 +138,28 @@ class HttpBinClient(
                 response.body()?.source()?.use { it.readByteString() }
             }
         })
+    }
+
+    private class HttpBinSampleCookieJar : CookieJar {
+        private val cookieStorage: MutableMap<HttpUrl, MutableList<Cookie>> = mutableMapOf()
+
+        override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
+            cookieStorage[url] = cookies
+        }
+
+        override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
+            return cookieStorage[url] ?: mutableListOf()
+        }
+
+        // Used just to pre-fill the cookie jar before running the sample
+        @Suppress("SpreadOperator")
+        fun setup(url: String, vararg cookies: Pair<String, String>) {
+            cookieStorage[HttpUrl.parse(url)!!] = mutableListOf(
+                *cookies.map(::cookie).toTypedArray()
+            )
+        }
+
+        private fun cookie(it: Pair<String, String>) =
+            Cookie.Builder().domain("httpbin.org").name(it.first).value(it.second).build()
     }
 }
