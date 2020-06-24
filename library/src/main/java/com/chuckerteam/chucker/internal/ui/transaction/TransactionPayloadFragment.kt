@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -26,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FormatUtils.htmlFormatted
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
@@ -236,11 +236,13 @@ internal class TransactionPayloadFragment :
             val result = mutableListOf<TransactionPayloadItem>()
 
             val headersString: String
+            val cookiesString: String
             val isBodyPlainText: Boolean
             val bodyString: String
 
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
+                cookiesString = transaction.getRequestCookiesString()
                 isBodyPlainText = transaction.isRequestBodyPlainText
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
@@ -249,19 +251,14 @@ internal class TransactionPayloadFragment :
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
+                cookiesString = transaction.getResponseCookiesString()
                 isBodyPlainText = transaction.isResponseBodyPlainText
                 bodyString = transaction.getFormattedResponseBody()
             }
 
-            if (headersString.isNotBlank()) {
-                result.add(
-                    TransactionPayloadItem.HeaderItem(
-                        HtmlCompat.fromHtml(
-                            headersString, HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-                )
-            }
+            result.addHeadersLabel(headersString, cookiesString)
+            result.addHeaders(headersString)
+            result.addCookies(cookiesString)
 
             // The body could either be an image, binary encoded or plain text.
             val responseBitmap = transaction.responseImageBitmap
@@ -275,7 +272,13 @@ internal class TransactionPayloadFragment :
             } else {
                 if (bodyString.isNotBlank()) {
                     bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                        result.add(
+                            TransactionPayloadItem.BodyLineItem(
+                                SpannableStringBuilder.valueOf(
+                                    it
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -283,7 +286,33 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private fun MutableList<TransactionPayloadItem>.addHeadersLabel(
+        headersString: String,
+        cookiesString: String
+    ) {
+        if (headersString.isNotBlank() && cookiesString.isNotBlank()) {
+            add(TransactionPayloadItem.HeaderLabelItem(getString(R.string.chucker_headers_label)))
+        }
+    }
+
+    private fun MutableList<TransactionPayloadItem>.addHeaders(headersString: String) {
+        if (headersString.isNotBlank()) {
+            add(TransactionPayloadItem.HeaderItem(headersString.htmlFormatted()))
+        }
+    }
+
+    private fun MutableList<TransactionPayloadItem>.addCookies(cookiesString: String) {
+        if (cookiesString.isNotBlank()) {
+            add(TransactionPayloadItem.HeaderLabelItem(getString(R.string.chucker_cookies_label)))
+            add(TransactionPayloadItem.HeaderItem(cookiesString.htmlFormatted()))
+        }
+    }
+
+    private suspend fun saveToFile(
+        type: PayloadType,
+        uri: Uri,
+        transaction: HttpTransaction
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {

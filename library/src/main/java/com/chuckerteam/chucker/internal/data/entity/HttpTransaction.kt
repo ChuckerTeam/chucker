@@ -182,6 +182,10 @@ internal class HttpTransaction(
         return FormatUtils.formatHeaders(getParsedRequestHeaders(), withMarkup)
     }
 
+    fun getRequestCookiesString(): String {
+        return FormatUtils.formatCookies(requestCookies)
+    }
+
     fun setResponseHeaders(headers: Headers) {
         setResponseHeaders(toHttpHeaderList(headers))
     }
@@ -192,6 +196,10 @@ internal class HttpTransaction(
 
     fun getResponseHeadersString(withMarkup: Boolean): String {
         return FormatUtils.formatHeaders(getParsedResponseHeaders(), withMarkup)
+    }
+
+    fun getResponseCookiesString(): String {
+        return FormatUtils.formatCookies(responseCookies)
     }
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {

@@ -40,7 +40,7 @@ class HttpBinClient(
 
     private val cookieJar = HttpBinSampleCookieJar().apply {
         setup(
-            "https://httpbin.org/cookies",
+            "https://httpbin.org/cookies/set?one=two&three=four&k1=v",
             "five" to "six",
             "seven" to "eight nine"
         )

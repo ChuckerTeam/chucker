@@ -8,7 +8,6 @@
     <string name="chucker_overview">Overview</string>
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
-    <string name="chucker_cookies">Cookies</string>
     <string name="chucker_url">URL</string>
     <string name="chucker_method">Method</string>
     <string name="chucker_protocol">Protocol</string>
@@ -64,4 +63,6 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_provider_authority">com.chuckerteam.chucker.provider</string>
+    <string name="chucker_headers_label">Headers</string>
+    <string name="chucker_cookies_label">Cookies</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.internal.data.entity.HttpCookie
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -219,5 +220,24 @@ class FormatUtilsTest {
             sampleKey=Some%20value%someOtherKey=With%20symbols%20%25!%40%25
             """.trimIndent()
         assertThat(FormatUtils.formatUrlEncodedForm(request)).isEqualTo(request)
+    }
+
+    @Test
+    fun testEmptyCookiesLists() {
+        assertThat(
+            FormatUtils.formatCookies(cookies = emptyList())
+        ).isEqualTo("")
+    }
+
+    @Test
+    fun testRequestCookiesList() {
+        assertThat(
+            FormatUtils.formatCookies(
+                cookies = listOf(
+                    HttpCookie("name1", "value1"),
+                    HttpCookie("name2", "value2")
+                )
+            )
+        ).isEqualTo("<b>name1: </b>value1<br /><b>name2: </b>value2<br />")
     }
 }

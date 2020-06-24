@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
+import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersLabelBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
 import com.chuckerteam.chucker.internal.support.ChessboardDrawable
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
@@ -37,6 +38,10 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
+            TYPE_HEADERS_LABEL -> {
+                val headersLabelItemBinding = ChuckerTransactionItemHeadersLabelBinding.inflate(inflater, parent, false)
+                TransactionPayloadViewHolder.HeaderLabelViewHolder(headersLabelItemBinding)
+            }
             TYPE_HEADERS -> {
                 val headersItemBinding = ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
@@ -56,6 +61,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
+            is TransactionPayloadItem.HeaderLabelItem -> TYPE_HEADERS_LABEL
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
@@ -95,14 +101,25 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     }
 
     companion object {
-        private const val TYPE_HEADERS = 1
-        private const val TYPE_BODY_LINE = 2
-        private const val TYPE_IMAGE = 3
+        private const val TYPE_HEADERS_LABEL = 1
+        private const val TYPE_HEADERS = 2
+        private const val TYPE_BODY_LINE = 3
+        private const val TYPE_IMAGE = 4
     }
 }
 
 internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: TransactionPayloadItem)
+
+    internal class HeaderLabelViewHolder(
+        private val headerBinding: ChuckerTransactionItemHeadersLabelBinding
+    ) : TransactionPayloadViewHolder(headerBinding.root) {
+        override fun bind(item: TransactionPayloadItem) {
+            if (item is TransactionPayloadItem.HeaderLabelItem) {
+                headerBinding.label.text = item.label
+            }
+        }
+    }
 
     internal class HeaderViewHolder(
         private val headerBinding: ChuckerTransactionItemHeadersBinding
@@ -162,6 +179,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 }
 
 internal sealed class TransactionPayloadItem {
+    internal class HeaderLabelItem(val label: String) : TransactionPayloadItem()
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
     internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()

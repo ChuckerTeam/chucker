@@ -86,20 +86,13 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val transactionPagerAdapter = TransactionPagerAdapter(this, supportFragmentManager)
-        viewPager.adapter = transactionPagerAdapter
+        viewPager.adapter = TransactionPagerAdapter(this, supportFragmentManager)
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 selectedTabPosition = position
             }
         })
         viewPager.currentItem = selectedTabPosition
-        viewModel.transaction.observe(
-            this,
-            Observer { transaction ->
-                transactionPagerAdapter.cookiesPresent = transaction?.cookiesPresent ?: false
-            }
-        )
     }
 
     private fun share(transactionDetailsText: String) {

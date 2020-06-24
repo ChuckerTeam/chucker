@@ -1,5 +1,8 @@
 package com.chuckerteam.chucker.internal.support
 
+import android.text.Spanned
+import androidx.core.text.HtmlCompat
+import com.chuckerteam.chucker.internal.data.entity.HttpCookie
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
@@ -123,4 +126,18 @@ internal object FormatUtils {
         throwable.printStackTrace(pw)
         return sw.toString()
     }
+
+    fun formatCookies(cookies: List<HttpCookie>) = StringBuilder().apply {
+        if (cookies.isNotEmpty()) {
+            append(
+                cookies.joinToString(separator = "<br />") { cookie ->
+                    "<b>${cookie.name}: </b>${cookie.value}"
+                }
+            )
+            append("<br />")
+        }
+    }.toString()
+
+    fun String.htmlFormatted(): Spanned =
+        HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY)
 }
