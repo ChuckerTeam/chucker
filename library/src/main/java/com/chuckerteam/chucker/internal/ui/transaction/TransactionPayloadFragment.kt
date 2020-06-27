@@ -22,7 +22,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.MergeAdapter
+import androidx.recyclerview.widget.ConcatAdapter
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -50,7 +50,7 @@ internal class TransactionPayloadFragment :
     private val bodyAdapter by lazy { TransactionBodyAdapter() }
     private val imageAdapter by lazy { TransactionImageAdapter() }
 
-    private val newPayloadAdapter = MergeAdapter(
+    private val newPayloadAdapter = ConcatAdapter(
         payloadAdapter,
         headerAdapter,
         bodyAdapter,
