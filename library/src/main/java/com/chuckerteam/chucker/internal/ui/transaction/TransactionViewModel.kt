@@ -9,9 +9,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.combineLatest
 
-internal class TransactionViewModel(
-    transactionId: Long
-) : ViewModel() {
+internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     private val mutableEncodeUrl = MutableLiveData<Boolean>(false)
 
@@ -55,8 +53,7 @@ internal class TransactionViewModel(
 
 internal class TransactionViewModelFactory(
     private val transactionId: Long = 0L
-) :
-    ViewModelProvider.Factory {
+) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
         @Suppress("UNCHECKED_CAST")
