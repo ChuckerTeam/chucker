@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityThrowableBinding
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
@@ -17,16 +17,16 @@ import java.text.DateFormat
 
 internal class ThrowableActivity : BaseChuckerActivity() {
 
-    private lateinit var viewModel: ThrowableViewModel
-    private lateinit var errorBinding: ChuckerActivityThrowableBinding
+    private val viewModel: ThrowableViewModel by viewModels {
+        ThrowableViewModelFactory(intent.getLongExtra(EXTRA_THROWABLE_ID, 0))
+    }
 
-    private var throwableId: Long = 0
+    private lateinit var errorBinding: ChuckerActivityThrowableBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         errorBinding = ChuckerActivityThrowableBinding.inflate(layoutInflater)
-        throwableId = intent.getLongExtra(EXTRA_THROWABLE_ID, 0)
 
         with(errorBinding) {
             setContentView(root)
@@ -34,9 +34,6 @@ internal class ThrowableActivity : BaseChuckerActivity() {
             throwableItem.date.visibility = View.GONE
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        viewModel = ViewModelProvider(this, ThrowableViewModelFactory(throwableId))
-            .get(ThrowableViewModel::class.java)
 
         viewModel.throwable.observe(
             this,
