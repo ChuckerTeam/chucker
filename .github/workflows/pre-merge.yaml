@@ -25,12 +25,12 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Cache Gradle Caches
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/caches/
         key: cache-test-gradle-${{ matrix.kotlin-version }}
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper/
         key: cache-test-wrapper-${{ matrix.kotlin-version }}
@@ -48,12 +48,12 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Cache Gradle Caches
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/caches/
         key: cache-detekt-gradle
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper/
         key: cache-detekt-wrapper
@@ -71,12 +71,12 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Cache Gradle Caches
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/caches/
         key: cache-ktlint-gradle
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper/
         key: cache-ktlint-wrapper
@@ -94,12 +94,12 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Cache Gradle Caches
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/caches/
         key: cache-publish-gradle
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper/
         key: cache-publish-wrapper
