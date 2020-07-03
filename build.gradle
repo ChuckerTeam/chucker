@@ -29,7 +29,7 @@ buildscript {
         androidxTestCoreVersion = '1.2.0'
         junitGradlePluignVersion = '1.6.2.0'
         junitVersion = '5.6.2'
-        mockkVersion = '1.9.3'
+        mockkVersion = '1.10.0'
         robolectricVersion = '4.3.1'
         truthVersion = '1.0.1'
         vintageJunitVersion = '4.13'
