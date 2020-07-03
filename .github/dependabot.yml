@@ -4,15 +4,15 @@
 version: 2
 updates:
 # Updates for Github Actions used in the repo
-- package-ecosystem: "github-actions"
+- package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: weekly
 # Updates for Gradle dependencies used in the library
 - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: weekly
     open-pull-requests-limit: 10
     milestone: 3.3.0
     ignore:
