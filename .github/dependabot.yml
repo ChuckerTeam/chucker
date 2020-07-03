@@ -14,14 +14,11 @@ updates:
       schedule:
         interval: "weekly"
       open-pull-requests-limit: 10
-      milestone: 3.3.0
+      milestone: "3.3.0"
       ignore:
         - dependency-name: com.squareup.okhttp3:logging-interceptor
-          versions:
-        - "> 3.12.10"
+          versions: "> 3.12.10"
         - dependency-name: com.squareup.okhttp3:mockwebserver
-          versions:
-        - "> 3.12.10"
+          versions: "> 3.12.10"
         - dependency-name: com.squareup.okhttp3:okhttp
-          versions:
-        - "> 3.12.10"
+          versions: "> 3.12.10"
