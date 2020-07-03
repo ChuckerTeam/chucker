@@ -27,7 +27,7 @@ buildscript {
 
         // Testing
         androidxTestCoreVersion = '1.2.0'
-        junitGradlePluignVersion = '1.6.0.0'
+        junitGradlePluignVersion = '1.6.2.0'
         junitVersion = '5.6.2'
         mockkVersion = '1.9.3'
         robolectricVersion = '4.3'
