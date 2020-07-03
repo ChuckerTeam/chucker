@@ -24,16 +24,16 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-    - name: Cache Gradle Caches
-      uses: actions/cache@v1
+    - name: Cache Gradle Folders
+      uses: actions/cache@v2
       with:
-        path: ~/.gradle/caches/
-        key: cache-test-gradle-${{ matrix.kotlin-version }}
-    - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/wrapper/
-        key: cache-test-wrapper-${{ matrix.kotlin-version }}
+        path: |
+          ~/.gradle/caches/
+          ~/.gradle/wrapper/
+        key: cache-gradle-${{ matrix.kotlin-version }}-${{ hashFiles('build.gradle') }}
+        restore-keys: |
+          cache-gradle-${{ matrix.version }}-
+          cache-gradle-
 
     - name: Run all the tests
       run: ./gradlew test
@@ -47,16 +47,14 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-    - name: Cache Gradle Caches
-      uses: actions/cache@v1
+    - name: Cache Gradle Folders
+      uses: actions/cache@v2
       with:
-        path: ~/.gradle/caches/
-        key: cache-detekt-gradle
-    - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/wrapper/
-        key: cache-detekt-wrapper
+        path: |
+          ~/.gradle/caches/
+          ~/.gradle/wrapper/
+        key: cache-gradle-${{ hashFiles('build.gradle') }}
+        restore-keys: cache-gradle-
 
     - name: Run detekt
       run: ./gradlew detekt
@@ -70,17 +68,15 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-    - name: Cache Gradle Caches
-      uses: actions/cache@v1
+    - name: Cache Gradle Folders
+      uses: actions/cache@v2
       with:
-        path: ~/.gradle/caches/
-        key: cache-ktlint-gradle
-    - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/wrapper/
-        key: cache-ktlint-wrapper
-
+        path: |
+          ~/.gradle/caches/
+          ~/.gradle/wrapper/
+        key: cache-gradle-${{ hashFiles('build.gradle') }}
+        restore-keys: cache-gradle-
+ 
     - name: Run ktlint
       run: ./gradlew ktlintCheck
 
@@ -93,18 +89,15 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-    - name: Cache Gradle Caches
-      uses: actions/cache@v1
+    - name: Cache Gradle Folders
+      uses: actions/cache@v2
       with:
-        path: ~/.gradle/caches/
-        key: cache-publish-gradle
-    - name: Cache Gradle Wrapper
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/wrapper/
-        key: cache-publish-wrapper
-
-
+        path: |
+          ~/.gradle/caches/
+          ~/.gradle/wrapper/
+        key: cache-gradle-${{ hashFiles('build.gradle') }}
+        restore-keys: cache-gradle-
+          
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
       env:
