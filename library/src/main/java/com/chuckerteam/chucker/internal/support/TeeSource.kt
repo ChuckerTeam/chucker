@@ -14,8 +14,6 @@ import java.io.IOException
  * like a regular [Source]. While bytes are read from the [upstream] the are also copied
  * to a [sideChannel] file. After the [upstream] is depleted or when a failure occurs
  * an appropriate [callback] method is called.
- *
- * Failure is considered any [IOException] during reading the bytes.
  */
 internal class TeeSource(
     private val upstream: Source,
@@ -60,8 +58,12 @@ internal class TeeSource(
             bytesRead - (totalBytesRead - readBytesLimit)
         }
         val offset = sink.size() - bytesRead
-        sink.copyTo(sideStream.buffer(), offset, byteCountToCopy)
-        sideStream.emitCompleteSegments()
+        try {
+            sink.copyTo(sideStream.buffer(), offset, byteCountToCopy)
+            sideStream.emitCompleteSegments()
+        } catch (e: IOException) {
+            callSideChannelFailure(e)
+        }
     }
 
     override fun close() {
@@ -78,6 +80,7 @@ internal class TeeSource(
     private fun callSideChannelFailure(exception: IOException) {
         if (!isFailure) {
             isFailure = true
+            sideStream.close()
             callback.onFailure(exception, sideChannel)
         }
     }
@@ -91,8 +94,8 @@ internal class TeeSource(
         fun onClosed(file: File)
 
         /**
-         * Called when an exception was thrown while reading bytes from the upstream. Any read bytes
-         * are available in a [file].
+         * Called when an exception was thrown while reading bytes from the upstream
+         * or when writing to a side channel file fails. Any read bytes are available in a [file].
          */
         fun onFailure(exception: IOException, file: File)
     }
