@@ -22,14 +22,13 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
@@ -52,8 +51,6 @@ internal class TransactionPayloadFragment :
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
-
-    private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +83,7 @@ internal class TransactionPayloadFragment :
                 viewLifecycleOwner,
                 Observer { (transaction, formatRequestBody) ->
                     if (transaction == null) return@Observer
-                    uiScope.launch {
+                    lifecycleScope.launch {
                         payloadBinding.loadingProgress.visibility = View.VISIBLE
 
                         val result = processPayload(payloadType, transaction, formatRequestBody)
@@ -122,11 +119,6 @@ internal class TransactionPayloadFragment :
             emptyStateGroup.visibility = View.GONE
             payloadRecyclerView.visibility = View.VISIBLE
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        uiScope.cancel()
     }
 
     @SuppressLint("NewApi")
@@ -211,7 +203,7 @@ internal class TransactionPayloadFragment :
             val uri = resultData?.data
             val transaction = viewModel.transaction.value
             if (uri != null && transaction != null) {
-                uiScope.launch {
+                lifecycleScope.launch {
                     val result = saveToFile(payloadType, uri, transaction)
                     val toastMessageId = if (result) {
                         R.string.chucker_file_saved
