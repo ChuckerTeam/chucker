@@ -16,8 +16,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
@@ -36,7 +36,8 @@ internal class TransactionListFragment :
     SearchView.OnQueryTextListener,
     TransactionAdapter.TransactionClickListListener {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
+
     private lateinit var transactionsBinding: ChuckerFragmentTransactionListBinding
     private lateinit var transactionsAdapter: TransactionAdapter
     private val cacheFileFactory: FileFactory by lazy {
@@ -47,7 +48,6 @@ internal class TransactionListFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
     override fun onCreateView(

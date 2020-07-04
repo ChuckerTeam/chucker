@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
@@ -16,19 +16,15 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
-    private lateinit var viewModel: TransactionViewModel
+    private val viewModel: TransactionViewModel by viewModels {
+        TransactionViewModelFactory(intent.getLongExtra(EXTRA_TRANSACTION_ID, 0))
+    }
+
     private lateinit var transactionBinding: ChuckerActivityTransactionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         transactionBinding = ChuckerActivityTransactionBinding.inflate(layoutInflater)
-
-        val transactionId = intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
-
-        // Create the instance now, so it can be shared by the
-        // various fragments in the view pager later.
-        viewModel = ViewModelProvider(this, TransactionViewModelFactory(transactionId))
-            .get(TransactionViewModel::class.java)
 
         with(transactionBinding) {
             setContentView(root)

@@ -20,8 +20,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -41,23 +41,22 @@ private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
+    private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+
+    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getSerializable(ARG_TYPE) as PayloadType
+    }
+
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
     private val payloadAdapter = TransactionBodyAdapter()
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
-    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getSerializable(ARG_TYPE) as PayloadType
-    }
-
-    private lateinit var viewModel: TransactionViewModel
-
     private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
