@@ -235,30 +235,27 @@ class ChuckerInterceptor internal constructor(
         private val response: Response,
         private val transaction: HttpTransaction
     ) : TeeSource.Callback {
-        override fun onSuccess(file: File) {
-            val buffer = readResponseBuffer(file, response.isGzipped)
-            file.delete()
+        override fun onClosed(file: File) {
+            val buffer = try {
+                readResponseBuffer(file, response.isGzipped)
+            } catch (e: IOException) {
+                null
+            }
             if (buffer != null) processResponseBody(response, buffer, transaction)
             collector.onResponseReceived(transaction)
-        }
-
-        override fun onFailure(exception: IOException, file: File) {
             file.delete()
-            collector.onResponseReceived(transaction)
         }
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer? {
+        override fun onFailure(exception: IOException, file: File) = Unit
+
+        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
                 bufferedSource
             }
-            return try {
-                Buffer().apply { source.use { writeAll(it) } }
-            } catch (_: IOException) {
-                null
-            }
+            return Buffer().apply { source.use { writeAll(it) } }
         }
     }
 
