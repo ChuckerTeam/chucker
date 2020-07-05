@@ -58,8 +58,8 @@ internal class TeeSource(
             bytesRead - (totalBytesRead - readBytesLimit)
         }
         val offset = sink.size() - bytesRead
+        sink.copyTo(sideStream.buffer(), offset, byteCountToCopy)
         try {
-            sink.copyTo(sideStream.buffer(), offset, byteCountToCopy)
             sideStream.emitCompleteSegments()
         } catch (e: IOException) {
             callSideChannelFailure(e)
