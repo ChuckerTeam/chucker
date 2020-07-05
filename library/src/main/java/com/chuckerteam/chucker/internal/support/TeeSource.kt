@@ -46,7 +46,9 @@ internal class TeeSource(
             return bytesRead
         }
 
-        copyBytesToFile(sink, bytesRead)
+        if (!isFailure) {
+            copyBytesToFile(sink, bytesRead)
+        }
 
         return bytesRead
     }
