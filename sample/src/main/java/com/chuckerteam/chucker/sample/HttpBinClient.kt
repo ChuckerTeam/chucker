@@ -6,8 +6,10 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 private const val BASE_URL = "https://httpbin.org"
+private const val SEGMENT_SIZE = 8_192L
 
 class HttpBinClient(
     context: Context
@@ -38,8 +41,8 @@ class HttpBinClient(
     private val httpClient =
         OkHttpClient.Builder()
             // Add a ChuckerInterceptor instance to your OkHttp client
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(chuckerInterceptor)
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
     private val api: HttpBinApi by lazy {
@@ -53,10 +56,10 @@ class HttpBinClient(
 
     @Suppress("MagicNumber")
     internal fun doHttpActivity() {
-        val cb = object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) = Unit
+        val cb = object : Callback<Any?> {
+            override fun onResponse(call: Call<Any?>, response: Response<Any?>) = Unit
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<Any?>, t: Throwable) {
                 t.printStackTrace()
             }
         }
@@ -95,6 +98,7 @@ class HttpBinClient(
         }
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")
+        getResponsePartially()
     }
 
     internal fun initializeCrashHandler() {
@@ -117,6 +121,21 @@ class HttpBinClient(
 
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 response.body()?.source()?.use { it.readByteString() }
+            }
+        })
+    }
+
+    private fun getResponsePartially() {
+        val body = RequestBody.create(MediaType.get("application/json"), LARGE_JSON)
+        val request = Request.Builder()
+            .url("https://postman-echo.com/post")
+            .post(body)
+            .build()
+        httpClient.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.body()?.source()?.use { it.readByteString(SEGMENT_SIZE) }
             }
         })
     }
