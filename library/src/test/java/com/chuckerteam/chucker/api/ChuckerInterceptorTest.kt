@@ -246,4 +246,38 @@ class ChuckerInterceptorTest {
             """.trimMargin()
         )
     }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun responseBody_isLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
+        val body = Buffer().apply {
+            repeat(10_000) { writeUtf8("!") }
+        }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = chuckerInterceptor.copy(maxContentLength = 1_000)
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responseBody?.length).isEqualTo(1_000)
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
+        val body = Buffer().apply {
+            repeat(10_000) { writeUtf8("!") }
+        }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = chuckerInterceptor.copy(maxContentLength = 1_000)
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
 }
