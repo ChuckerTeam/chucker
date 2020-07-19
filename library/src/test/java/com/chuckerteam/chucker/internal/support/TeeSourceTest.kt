@@ -174,7 +174,7 @@ class TeeSourceTest {
         var isSuccess = false
             private set
 
-        override fun onClosed(file: File) {
+        override fun onClosed(file: File, totalBytesRead: Long) {
             isSuccess = true
             this.file = file
         }

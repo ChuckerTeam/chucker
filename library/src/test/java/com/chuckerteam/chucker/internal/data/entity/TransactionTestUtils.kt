@@ -13,7 +13,7 @@ internal fun createRequest(path: String = ""): HttpTransaction =
         requestDate = 300L
         method = "GET"
         requestContentType = "text/plain"
-        requestContentLength = 0L
+        requestPayloadSize = 0L
         requestBody = randomString()
     }
 
@@ -24,7 +24,7 @@ internal fun HttpTransaction.withResponseData(): HttpTransaction = this.apply {
     tookMs = 21L
     responseTlsVersion = randomString()
     responseCipherSuite = randomString()
-    responseContentLength = 0L
+    responsePayloadSize = 0L
     requestContentType = randomString()
     responseMessage = randomString()
     responseBody = randomString()
@@ -62,8 +62,8 @@ internal fun assertTuple(
     assertThat(actual?.path).isEqualTo(expected.path)
     assertThat(actual?.scheme).isEqualTo(expected.scheme)
     assertThat(actual?.responseCode).isEqualTo(expected.responseCode)
-    assertThat(actual?.requestContentLength).isEqualTo(expected.requestContentLength)
-    assertThat(actual?.responseContentLength).isEqualTo(expected.responseContentLength)
+    assertThat(actual?.requestPayloadSize).isEqualTo(expected.requestPayloadSize)
+    assertThat(actual?.responsePayloadSize).isEqualTo(expected.responsePayloadSize)
     assertThat(actual?.error).isEqualTo(expected.error)
 }
 
@@ -82,7 +82,7 @@ internal fun assertTransaction(
     assertThat(actual?.requestDate).isEqualTo(expected.requestDate)
     assertThat(actual?.method).isEqualTo(expected.method)
     assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)
-    assertThat(actual?.requestContentLength).isEqualTo(expected.requestContentLength)
+    assertThat(actual?.requestPayloadSize).isEqualTo(expected.requestPayloadSize)
     assertThat(actual?.requestBody).isEqualTo(expected.requestBody)
     assertThat(actual?.responseHeaders).isEqualTo(expected.responseHeaders)
     assertThat(actual?.responseCode).isEqualTo(expected.responseCode)
@@ -90,7 +90,7 @@ internal fun assertTransaction(
     assertThat(actual?.tookMs).isEqualTo(expected.tookMs)
     assertThat(actual?.responseTlsVersion).isEqualTo(expected.responseTlsVersion)
     assertThat(actual?.responseCipherSuite).isEqualTo(expected.responseCipherSuite)
-    assertThat(actual?.responseContentLength).isEqualTo(expected.responseContentLength)
+    assertThat(actual?.responsePayloadSize).isEqualTo(expected.responsePayloadSize)
     assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)
     assertThat(actual?.responseMessage).isEqualTo(expected.responseMessage)
     assertThat(actual?.responseBody).isEqualTo(expected.responseBody)

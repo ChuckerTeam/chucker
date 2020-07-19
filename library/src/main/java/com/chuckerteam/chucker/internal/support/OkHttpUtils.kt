@@ -29,7 +29,7 @@ internal fun Response.hasBody(): Boolean {
     return ((contentLength > 0) || isChunked)
 }
 
-internal val Response.contentLength: Long
+private val Response.contentLength: Long
     get() {
         return this.header("Content-Length")?.toLongOrNull() ?: -1L
     }

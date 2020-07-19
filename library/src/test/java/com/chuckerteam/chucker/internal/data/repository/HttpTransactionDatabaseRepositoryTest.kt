@@ -66,7 +66,7 @@ class HttpTransactionDatabaseRepositoryTest {
             assertThat(it?.requestDate).isEqualTo(data.requestDate)
             assertThat(it?.method).isEqualTo(data.method)
             assertThat(it?.requestContentType).isEqualTo(data.requestContentType)
-            assertThat(it?.requestContentLength).isEqualTo(data.requestContentLength)
+            assertThat(it?.requestPayloadSize).isEqualTo(data.requestPayloadSize)
         }
     }
 
@@ -88,7 +88,7 @@ class HttpTransactionDatabaseRepositoryTest {
             assertThat(it?.requestDate).isEqualTo(data.requestDate)
             assertThat(it?.method).isEqualTo(data.method)
             assertThat(it?.requestContentType).isEqualTo(data.requestContentType)
-            assertThat(it?.requestContentLength).isEqualTo(data.requestContentLength)
+            assertThat(it?.requestPayloadSize).isEqualTo(data.requestPayloadSize)
         }
     }
 
