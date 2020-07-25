@@ -83,7 +83,7 @@ internal class TeeSource(
         if (!isFailure) {
             isFailure = true
             sideStream.close()
-            callback.onFailure(exception, sideChannel)
+            callback.onFailure(sideChannel, exception)
         }
     }
 
@@ -100,6 +100,6 @@ internal class TeeSource(
          * Called when an exception was thrown while reading bytes from the upstream
          * or when writing to a side channel file fails. Any read bytes are available in a [file].
          */
-        fun onFailure(exception: IOException, file: File)
+        fun onFailure(file: File, exception: IOException)
     }
 }

@@ -246,7 +246,7 @@ class ChuckerInterceptor internal constructor(
             file.delete()
         }
 
-        override fun onFailure(exception: IOException, file: File) = Unit
+        override fun onFailure(file: File, exception: IOException) = Unit
 
         private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))
