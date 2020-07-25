@@ -47,14 +47,7 @@ class ChuckerInterceptorTest {
 
     @BeforeEach
     fun setUp(@TempDir tempDir: File) {
-        val fileFactory = object : FileFactory {
-            override fun create(): File = create("testFile")
-
-            override fun create(filename: String): File {
-                return File(tempDir, "testFile")
-            }
-        }
-        chuckerInterceptor = ChuckerInterceptorDelegate(fileFactory)
+        chuckerInterceptor = ChuckerInterceptorDelegate(TestFileFactory(tempDir))
     }
 
     @ParameterizedTest
@@ -249,14 +242,17 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun responseBody_isLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
+    fun responseBody_isLimitedByInterceptorMaxContentLength(factory: ClientFactory, @TempDir tempDir: File) {
         val body = Buffer().apply {
             repeat(10_000) { writeUtf8("!") }
         }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = chuckerInterceptor.copy(maxContentLength = 1_000)
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            fileFactory = TestFileFactory(tempDir),
+            maxContentLength = 1_000
+        )
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
 
@@ -266,18 +262,27 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
+    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory, @TempDir tempDir: File) {
         val body = Buffer().apply {
             repeat(10_000) { writeUtf8("!") }
         }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = chuckerInterceptor.copy(maxContentLength = 1_000)
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            fileFactory = TestFileFactory(tempDir),
+            maxContentLength = 1_000
+        )
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
+    private class TestFileFactory(private val tempDir: File) : FileFactory {
+        override fun create() = create("testFile")
+
+        override fun create(filename: String) = File(tempDir, "testFile")
     }
 }

@@ -12,10 +12,10 @@ import okhttp3.Response
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
-internal data class ChuckerInterceptorDelegate(
-    private val fileFactory: FileFactory,
-    private val maxContentLength: Long = 250000L,
-    private val headersToRedact: Set<String> = emptySet()
+internal class ChuckerInterceptorDelegate(
+    fileFactory: FileFactory,
+    maxContentLength: Long = 250000L,
+    headersToRedact: Set<String> = emptySet()
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
