@@ -4,6 +4,7 @@ import com.chuckerteam.chucker.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.readByteStringBody
+import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -195,16 +196,16 @@ class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun payloadSize_dependsOnTheAmountOfDataDownloaded(factory: ClientFactory) {
-        val segmentSize = 8_192
+        val segmentSize = 8_192L
         val body = Buffer().apply {
-            repeat(10 * segmentSize) { writeUtf8("!") }
+            repeat(10 * segmentSize.toInt()) { writeUtf8("!") }
         }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
         val source = client.newCall(request).execute().body()!!.source()
-        source.use { it.readByteString(segmentSize.toLong()) }
+        source.use { it.readByteString(segmentSize) }
 
         val transaction = chuckerInterceptor.expectTransaction()
         // We cannot expect exact amount of data as there are no guarantees that client
@@ -212,7 +213,7 @@ class ChuckerInterceptorTest {
         //
         // It is only best effort attempt and if we download less than 8KiB reading will continue
         // in 8KiB batches until at least 8KiB is downloaded.
-        assertThat(transaction.responsePayloadSize).isAtMost(2 * segmentSize)
+        assertThat(transaction.responsePayloadSize).isIn(Range.closed(segmentSize, 2 * segmentSize))
     }
 
     @ParameterizedTest
