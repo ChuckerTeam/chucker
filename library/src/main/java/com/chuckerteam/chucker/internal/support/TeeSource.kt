@@ -90,7 +90,7 @@ internal class TeeSource(
     interface Callback {
         /**
          * Called when the upstream was closed. All read bytes are copied to the [file].
-         * This does not mean that the content of the [file] is valid. Only that the user
+         * This does not mean that the content of the [file] is valid. Only that the client
          * is done with the reading process. [totalBytesRead] is the exact amount of data
          * that the client downloaded even if the [file] is corrupted.
          */
