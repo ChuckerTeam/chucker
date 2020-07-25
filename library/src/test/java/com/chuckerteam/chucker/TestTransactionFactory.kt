@@ -19,7 +19,7 @@ object TestTransactionFactory {
             scheme = "",
             responseTlsVersion = "",
             responseCipherSuite = "",
-            requestContentLength = 1000L,
+            requestPayloadSize = 1000L,
             requestContentType = "application/json",
             requestHeaders = null,
             requestBody = null,
@@ -27,7 +27,7 @@ object TestTransactionFactory {
             responseCode = 200,
             responseMessage = "OK",
             error = null,
-            responseContentLength = 1000L,
+            responsePayloadSize = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
             responseBody =

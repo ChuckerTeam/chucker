@@ -63,7 +63,7 @@ class HttpTransactionDaoTest {
             assertThat(stringValue("scheme")).isEqualTo(data.scheme)
             assertThat(stringValue("responseTlsVersion")).isEqualTo(data.responseTlsVersion)
             assertThat(stringValue("responseCipherSuite")).isEqualTo(data.responseCipherSuite)
-            assertThat(longValue("requestContentLength")).isEqualTo(data.requestContentLength)
+            assertThat(longValue("requestPayloadSize")).isEqualTo(data.requestPayloadSize)
             assertThat(stringValue("requestContentType")).isEqualTo(data.requestContentType)
             assertThat(stringValue("responseMessage")).isEqualTo(data.responseMessage)
             assertThat(stringValue("responseBody")).isEqualTo(data.responseBody)

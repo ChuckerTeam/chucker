@@ -73,7 +73,7 @@ internal class TeeSource(
         upstream.close()
         if (!isClosed) {
             isClosed = true
-            callback.onClosed(sideChannel)
+            callback.onClosed(sideChannel, totalBytesRead)
         }
     }
 
@@ -83,22 +83,23 @@ internal class TeeSource(
         if (!isFailure) {
             isFailure = true
             sideStream.close()
-            callback.onFailure(exception, sideChannel)
+            callback.onFailure(sideChannel, exception)
         }
     }
 
     interface Callback {
         /**
          * Called when the upstream was closed. All read bytes are copied to the [file].
-         * This does not mean that the content of a [file] is valid. Only that the user
-         * is done with the reading process.
+         * This does not mean that the content of the [file] is valid. Only that the client
+         * is done with the reading process. [totalBytesRead] is the exact amount of data
+         * that the client downloaded even if the [file] is corrupted.
          */
-        fun onClosed(file: File)
+        fun onClosed(file: File, totalBytesRead: Long)
 
         /**
          * Called when an exception was thrown while reading bytes from the upstream
          * or when writing to a side channel file fails. Any read bytes are available in a [file].
          */
-        fun onFailure(exception: IOException, file: File)
+        fun onFailure(file: File, exception: IOException)
     }
 }

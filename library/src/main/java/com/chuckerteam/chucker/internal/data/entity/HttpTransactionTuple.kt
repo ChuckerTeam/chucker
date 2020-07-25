@@ -20,8 +20,8 @@ internal class HttpTransactionTuple(
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
-    @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
-    @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
+    @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
+    @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "error") var error: String?
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
@@ -37,8 +37,8 @@ internal class HttpTransactionTuple(
 
     val totalSizeString: String
         get() {
-            val reqBytes = requestContentLength ?: 0
-            val resBytes = responseContentLength ?: 0
+            val reqBytes = requestPayloadSize ?: 0
+            val resBytes = responsePayloadSize ?: 0
             return formatBytes(reqBytes + resBytes)
         }
 

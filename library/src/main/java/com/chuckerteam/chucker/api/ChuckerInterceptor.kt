@@ -6,7 +6,6 @@ import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.TeeSource
-import com.chuckerteam.chucker.internal.support.contentLength
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.isGzipped
@@ -109,7 +108,7 @@ class ChuckerInterceptor internal constructor(
             requestDate = System.currentTimeMillis()
             method = request.method()
             requestContentType = requestBody?.contentType()?.toString()
-            requestContentLength = requestBody?.contentLength() ?: 0L
+            requestPayloadSize = requestBody?.contentLength() ?: 0L
         }
 
         if (requestBody != null && encodingIsSupported) {
@@ -157,7 +156,6 @@ class ChuckerInterceptor internal constructor(
             }
 
             responseContentType = response.contentType
-            responseContentLength = response.contentLength
 
             tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
         }
@@ -235,18 +233,20 @@ class ChuckerInterceptor internal constructor(
         private val response: Response,
         private val transaction: HttpTransaction
     ) : TeeSource.Callback {
-        override fun onClosed(file: File) {
+
+        override fun onClosed(file: File, totalBytesRead: Long) {
             val buffer = try {
                 readResponseBuffer(file, response.isGzipped)
             } catch (e: IOException) {
                 null
             }
             if (buffer != null) processResponseBody(response, buffer, transaction)
+            transaction.responsePayloadSize = totalBytesRead
             collector.onResponseReceived(transaction)
             file.delete()
         }
 
-        override fun onFailure(exception: IOException, file: File) = Unit
+        override fun onFailure(file: File, exception: IOException) = Unit
 
         private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))

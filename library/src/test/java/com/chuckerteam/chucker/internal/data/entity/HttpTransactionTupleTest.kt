@@ -56,22 +56,22 @@ class HttpTransactionTupleTest {
     fun totalSizeHandlesNulls() {
         assertThat(
             createTuple(
-                requestContentLength = null,
-                responseContentLength = null
+                requestPayloadSize = null,
+                responsePayloadSize = null
             ).totalSizeString
         ).isEqualTo("0 B")
 
         assertThat(
             createTuple(
-                requestContentLength = 0,
-                responseContentLength = null
+                requestPayloadSize = 0,
+                responsePayloadSize = null
             ).totalSizeString
         ).isEqualTo("0 B")
 
         assertThat(
             createTuple(
-                requestContentLength = null,
-                responseContentLength = 0
+                requestPayloadSize = null,
+                responsePayloadSize = 0
             ).totalSizeString
         ).isEqualTo("0 B")
     }
@@ -80,8 +80,8 @@ class HttpTransactionTupleTest {
     fun totalSize() {
         assertThat(
             createTuple(
-                requestContentLength = 123,
-                responseContentLength = 456
+                requestPayloadSize = 123,
+                responsePayloadSize = 456
             ).totalSizeString
         ).isEqualTo("579 B")
     }
@@ -116,8 +116,8 @@ class HttpTransactionTupleTest {
         path: String? = null,
         scheme: String? = null,
         responseCode: Int? = null,
-        requestContentLength: Long? = null,
-        responseContentLength: Long? = null,
+        requestPayloadSize: Long? = null,
+        responsePayloadSize: Long? = null,
         error: String? = null
     ) = HttpTransactionTuple(
         id,
@@ -129,8 +129,8 @@ class HttpTransactionTupleTest {
         path,
         scheme,
         responseCode,
-        requestContentLength,
-        responseContentLength,
+        requestPayloadSize,
+        responsePayloadSize,
         error
     )
 }
