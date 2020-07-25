@@ -86,7 +86,7 @@ class TeeSourceTest {
     }
 
     @Test
-    fun readException_informOfFailures_inSideChannel(@TempDir tempDir: File) {
+    fun readException_informsOfFailures_inSideChannel(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val testSource = ThrowingSource
 
