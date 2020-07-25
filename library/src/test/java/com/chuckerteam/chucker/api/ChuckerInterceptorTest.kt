@@ -281,6 +281,40 @@ class ChuckerInterceptorTest {
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
     }
 
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun responseReplicationFailure_doesNotAffect_readingByConsumer(factory: ClientFactory, @TempDir tempDir: File) {
+        assertThat(tempDir.deleteRecursively()).isTrue()
+
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(TestFileFactory(tempDir))
+        val client = factory.create(chuckerInterceptor)
+        val responseBody = client.newCall(request).execute().body()!!.source().readByteString()
+
+        assertThat(responseBody.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun responseReplicationFailure_doesNotInvalidate_ChuckerTransaction(factory: ClientFactory, @TempDir tempDir: File) {
+        assertThat(tempDir.deleteRecursively()).isTrue()
+
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(TestFileFactory(tempDir))
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responseBody).isNull()
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
     private class TestFileFactory(private val tempDir: File) : FileFactory {
         override fun create() = create("testFile")
 
