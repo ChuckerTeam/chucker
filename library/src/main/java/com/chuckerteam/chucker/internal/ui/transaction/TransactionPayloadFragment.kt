@@ -181,20 +181,18 @@ internal class TransactionPayloadFragment :
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("DefaultLocale")
     private fun viewBodyExternally() {
-        viewModel.transaction.value?.let {
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
-                type = "*/*"
-            }
-            if (intent.resolveActivity(requireActivity().packageManager) != null) {
-                startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
-            } else {
-                Toast.makeText(
-                    requireContext(), R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+            type = "*/*"
+        }
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
+        } else {
+            Toast.makeText(
+                requireContext(), R.string.chucker_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -212,6 +210,8 @@ internal class TransactionPayloadFragment :
                     }
                     Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(context, R.string.chucker_file_not_saved, Toast.LENGTH_SHORT).show()
             }
         }
     }
