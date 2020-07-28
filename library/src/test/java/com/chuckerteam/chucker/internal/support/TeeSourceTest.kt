@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.random.Random
 
@@ -86,7 +87,7 @@ class TeeSourceTest {
     }
 
     @Test
-    fun readException_informOfFailures_inSideChannel(@TempDir tempDir: File) {
+    fun readException_informsOfFailures_inSideChannel(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val testSource = ThrowingSource
 
@@ -144,6 +145,21 @@ class TeeSourceTest {
         }
 
         assertThat(teeCallback.fileContent).isEqualTo(testSource.content)
+    }
+
+    @Test
+    fun exceptionWhileCreatingSideChannel_informsOfFailures_inSideChannel(@TempDir tempDir: File) {
+        assertThat(tempDir.deleteRecursively()).isTrue()
+
+        val testFile = File(tempDir, "testFile")
+
+        TeeSource(TestSource(), testFile, teeCallback)
+
+        assertThat(teeCallback.exception).apply {
+            isInstanceOf(IOException::class.java)
+            hasMessageThat().isEqualTo("Failed to use file $testFile by Chucker")
+            hasCauseThat().isInstanceOf(FileNotFoundException::class.java)
+        }
     }
 
     private class TestSource(contentLength: Int = 1_000) : Source {

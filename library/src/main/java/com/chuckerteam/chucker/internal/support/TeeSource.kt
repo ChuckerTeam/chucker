@@ -5,6 +5,7 @@ import okio.Okio
 import okio.Source
 import okio.Timeout
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 
 /**
@@ -21,7 +22,12 @@ internal class TeeSource(
     private val callback: Callback,
     private val readBytesLimit: Long = Long.MAX_VALUE
 ) : Source {
-    private val sideStream = Okio.buffer(Okio.sink(sideChannel))
+    private val sideStream = try {
+        Okio.buffer(Okio.sink(sideChannel))
+    } catch (e: FileNotFoundException) {
+        callSideChannelFailure(IOException("Failed to use file $sideChannel by Chucker", e))
+        null
+    }
     private var totalBytesRead = 0L
     private var isFailure = false
     private var isClosed = false
@@ -35,12 +41,14 @@ internal class TeeSource(
         }
 
         if (bytesRead == -1L) {
-            sideStream.close()
+            sideStream?.close()
             return -1L
         }
 
         val previousTotalByteRead = totalBytesRead
         totalBytesRead += bytesRead
+        if (sideStream == null) return bytesRead
+
         if (previousTotalByteRead >= readBytesLimit) {
             sideStream.close()
             return bytesRead
@@ -54,6 +62,8 @@ internal class TeeSource(
     }
 
     private fun copyBytesToFile(sink: Buffer, bytesRead: Long) {
+        if (sideStream == null) return
+
         val byteCountToCopy = if (totalBytesRead <= readBytesLimit) {
             bytesRead
         } else {
@@ -69,7 +79,7 @@ internal class TeeSource(
     }
 
     override fun close() {
-        sideStream.close()
+        sideStream?.close()
         upstream.close()
         if (!isClosed) {
             isClosed = true
@@ -82,7 +92,7 @@ internal class TeeSource(
     private fun callSideChannelFailure(exception: IOException) {
         if (!isFailure) {
             isFailure = true
-            sideStream.close()
+            sideStream?.close()
             callback.onFailure(sideChannel, exception)
         }
     }
