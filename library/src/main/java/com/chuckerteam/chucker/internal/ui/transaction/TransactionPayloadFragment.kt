@@ -137,7 +137,7 @@ internal class TransactionPayloadFragment :
             menu.findItem(R.id.save_body).apply {
                 isVisible = true
                 setOnMenuItemClickListener {
-                    viewBodyExternally()
+                    createFileToSaveBody()
                     true
                 }
             }
@@ -179,8 +179,7 @@ internal class TransactionPayloadFragment :
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    @SuppressLint("DefaultLocale")
-    private fun viewBodyExternally() {
+    private fun createFileToSaveBody() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
