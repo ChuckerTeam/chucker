@@ -12,4 +12,11 @@ internal object JsonConverter {
             .setPrettyPrinting()
             .create()
     }
+
+    val harInstance: Gson by lazy {
+        GsonBuilder()
+            .disableHtmlEscaping()
+            .setPrettyPrinting()
+            .create()
+    }
 }

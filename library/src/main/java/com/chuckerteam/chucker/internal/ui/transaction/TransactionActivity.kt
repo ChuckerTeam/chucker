@@ -80,6 +80,13 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
             }
+            R.id.share_har -> {
+                viewModel.transaction.value?.let {
+                    // TODO:
+//                    share(ShareUtils.harStringFromTransactions(listOf(it)))
+                } ?: showToast(getString(R.string.chucker_request_not_ready))
+                true
+            }
             else -> {
                 super.onOptionsItemSelected(item)
             }

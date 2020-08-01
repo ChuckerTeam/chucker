@@ -28,6 +28,7 @@
     <string name="chucker_export_empty_text">Nothing to export</string>
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
+    <string name="chucker_share_as_har">Share as har file</string>
     <string name="chucker_save">Save body to file</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>

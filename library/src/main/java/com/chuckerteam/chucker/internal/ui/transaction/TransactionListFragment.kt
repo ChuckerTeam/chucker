@@ -138,7 +138,7 @@ internal class TransactionListFragment :
             if (transactions.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
             } else {
-                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+                val filecontent = ShareUtils.harStringFromTransactions(transactions)
                 val file = viewModel.createExportFile(filecontent, cacheFileFactory)
                 val uri = FileProvider.getUriForFile(
                     requireContext(),
