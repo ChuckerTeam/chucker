@@ -17,6 +17,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Snapshots](#snapshots-)
 * [FAQ](#faq-)
 * [Contributing](#contributing-)
+  * [Building](#building-)
 * [Acknowledgments](#acknowledgments-)
 * [License](#license-)
 
@@ -187,6 +188,27 @@ Short `TODO` List for new contributors:
 
 - Increment the test coverage.
 - [Issues marked as `Help wanted`](https://github.com/ChuckerTeam/chucker/labels/help%20wanted)
+
+### Building 🛠
+
+In order to start working on Chucker, you need to fork the project and open it in Android Studio/IntelliJ IDEA.
+
+Before committing we suggest you install the pre-commit hooks with the following command:
+
+```
+./gradlew installGitHook
+```
+
+This will make sure your code is validated against KtLint and Detekt before every commit.
+
+Before submitting a PR please run:
+
+```
+./gradlew build
+```
+
+This will build the library and will run all the verification tasks (ktlint, detekt, lint, unit tests) locally.
+This will make sure your CI checks will pass.
 
 ## Acknowledgments 🌸
 
