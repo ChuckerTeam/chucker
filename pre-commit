@@ -8,7 +8,7 @@ if [ ${EXIT_CODE} -ne 0 ]; then
     cat ${OUTPUT}
     rm ${OUTPUT}
     echo "*********************************************"
-    echo "               Checks Failed!                 "
+    echo "               Checks Failed!                "
     echo "    Resolve found issues before committing   "
     echo "*********************************************"
     exit ${EXIT_CODE}
