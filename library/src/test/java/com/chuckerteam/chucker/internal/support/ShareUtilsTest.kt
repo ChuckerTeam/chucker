@@ -67,7 +67,7 @@ class ShareUtilsTest {
         requestMethods.forEach { method ->
             val transaction = TestTransactionFactory.createTransaction(method)
             val curlCommand = ShareUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method http://localhost:80/getUsers"
+            val expectedCurlCommand = "curl -X $method http://localhost/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }
@@ -88,7 +88,7 @@ class ShareUtilsTest {
             httpHeaders.forEach { header ->
                 expectedCurlCommand += " -H \"${header.name}: ${header.value}\""
             }
-            expectedCurlCommand += " http://localhost:80/getUsers"
+            expectedCurlCommand += " http://localhost/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }
@@ -102,7 +102,7 @@ class ShareUtilsTest {
             val transaction = TestTransactionFactory.createTransaction(method)
             transaction.requestBody = dummyRequestBody
             val curlCommand = ShareUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost:80/getUsers"
+            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }

@@ -16,7 +16,24 @@ internal class FormattedUrl private constructor(
             "$path?$query"
         }
 
-    val url get() = "$scheme://$host:$port$pathWithQuery"
+    val url: String
+        get() {
+            return if (shouldShowPort()) {
+                "$scheme://$host:$port$pathWithQuery"
+            } else {
+                "$scheme://$host$pathWithQuery"
+            }
+        }
+
+    private fun shouldShowPort(): Boolean {
+        if (scheme == "https" && port == 443) {
+            return false
+        }
+        if (scheme == "http" && port == 80) {
+            return false
+        }
+        return true
+    }
 
     companion object {
         fun fromHttpUrl(httpUrl: HttpUrl, encoded: Boolean): FormattedUrl {

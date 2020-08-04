@@ -39,7 +39,7 @@ object TestTransactionFactory {
 
     val expectedGetHttpTransaction =
         """
-        URL: http://localhost:80/getUsers
+        URL: http://localhost/getUsers
         Method: GET
         Protocol: HTTP
         Status: Complete
@@ -67,7 +67,7 @@ object TestTransactionFactory {
 
     val expectedHttpPostTransaction =
         """
-        URL: http://localhost:80/getUsers
+        URL: http://localhost/getUsers
         Method: POST
         Protocol: HTTP
         Status: Complete
