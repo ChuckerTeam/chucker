@@ -9,7 +9,6 @@
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
     <string name="chucker_url">URL</string>
-    <string name="chucker_port">Port</string>
     <string name="chucker_method">Method</string>
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>

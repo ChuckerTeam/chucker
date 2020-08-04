@@ -5,6 +5,7 @@ import okhttp3.HttpUrl
 internal class FormattedUrl private constructor(
     val scheme: String,
     val host: String,
+    val port: Int,
     val path: String,
     val query: String
 ) {
@@ -15,7 +16,7 @@ internal class FormattedUrl private constructor(
             "$path?$query"
         }
 
-    val url get() = "$scheme://$host$pathWithQuery"
+    val url get() = "$scheme://$host:$port$pathWithQuery"
 
     companion object {
         fun fromHttpUrl(httpUrl: HttpUrl, encoded: Boolean): FormattedUrl {
@@ -31,6 +32,7 @@ internal class FormattedUrl private constructor(
             return FormattedUrl(
                 httpUrl.scheme(),
                 httpUrl.host(),
+                httpUrl.port(),
                 if (path.isNotBlank()) "/$path" else "",
                 httpUrl.encodedQuery().orEmpty()
             )
@@ -41,6 +43,7 @@ internal class FormattedUrl private constructor(
             return FormattedUrl(
                 httpUrl.scheme(),
                 httpUrl.host(),
+                httpUrl.port(),
                 if (path.isNotBlank()) "/$path" else "",
                 httpUrl.query().orEmpty()
             )

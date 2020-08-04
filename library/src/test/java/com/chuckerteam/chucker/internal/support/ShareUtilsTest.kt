@@ -15,7 +15,6 @@ class ShareUtilsTest {
 
     private val contextMock = mockk<Context> {
         every { getString(R.string.chucker_url) } returns "URL"
-        every { getString(R.string.chucker_port) } returns "Port"
         every { getString(R.string.chucker_method) } returns "Method"
         every { getString(R.string.chucker_protocol) } returns "Protocol"
         every { getString(R.string.chucker_status) } returns "Status"
@@ -68,7 +67,7 @@ class ShareUtilsTest {
         requestMethods.forEach { method ->
             val transaction = TestTransactionFactory.createTransaction(method)
             val curlCommand = ShareUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method http://localhost/getUsers"
+            val expectedCurlCommand = "curl -X $method http://localhost:80/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }
@@ -89,7 +88,7 @@ class ShareUtilsTest {
             httpHeaders.forEach { header ->
                 expectedCurlCommand += " -H \"${header.name}: ${header.value}\""
             }
-            expectedCurlCommand += " http://localhost/getUsers"
+            expectedCurlCommand += " http://localhost:80/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }
@@ -103,7 +102,7 @@ class ShareUtilsTest {
             val transaction = TestTransactionFactory.createTransaction(method)
             transaction.requestBody = dummyRequestBody
             val curlCommand = ShareUtils.getShareCurlCommand(transaction)
-            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
+            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost:80/getUsers"
             assertThat(curlCommand).isEqualTo(expectedCurlCommand)
         }
     }

@@ -20,7 +20,6 @@ internal object ShareUtils {
 
     fun getShareText(context: Context, transaction: HttpTransaction, encodeUrls: Boolean): String {
         var text = "${context.getString(R.string.chucker_url)}: ${transaction.getFormattedUrl(encodeUrls)}\n"
-        text += "${context.getString(R.string.chucker_port)}: ${transaction.port}\n"
         text += "${context.getString(R.string.chucker_method)}: ${transaction.method}\n"
         text += "${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n"
         text += "${context.getString(R.string.chucker_status)}: ${transaction.status}\n"

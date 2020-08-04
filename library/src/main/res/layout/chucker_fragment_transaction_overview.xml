@@ -39,34 +39,13 @@
       tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
 
     <TextView
-        style="@style/Chucker.TextAppearance.Label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:text="@string/chucker_port"
-        app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/url" />
-
-    <TextView
-        android:id="@+id/port"
-        style="@style/Chucker.TextAppearance.Value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-        app:layout_constraintTop_toBottomOf="@id/url"
-        tools:text="443" />
-
-    <TextView
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@string/chucker_method"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/port" />
+      app:layout_constraintTop_toBottomOf="@id/url" />
 
     <TextView
       android:id="@+id/method"
@@ -75,7 +54,7 @@
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@+id/port"
+      app:layout_constraintTop_toBottomOf="@+id/url"
       tools:text="GET" />
 
     <TextView

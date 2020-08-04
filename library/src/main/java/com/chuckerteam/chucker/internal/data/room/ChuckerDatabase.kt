@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 
-@Database(entities = [RecordedThrowable::class, HttpTransaction::class], version = 5, exportSchema = false)
+@Database(entities = [RecordedThrowable::class, HttpTransaction::class], version = 4, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun throwableDao(): RecordedThrowableDao
