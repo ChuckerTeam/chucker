@@ -26,16 +26,19 @@ internal class FormattedUrl private constructor(
         }
 
     private fun shouldShowPort(): Boolean {
-        if (scheme == "https" && port == 443) {
+        if (scheme == "https" && port == HTTPS_PORT) {
             return false
         }
-        if (scheme == "http" && port == 80) {
+        if (scheme == "http" && port == HTTP_PORT) {
             return false
         }
         return true
     }
 
     companion object {
+        private const val HTTPS_PORT = 443
+        private const val HTTP_PORT = 80
+
         fun fromHttpUrl(httpUrl: HttpUrl, encoded: Boolean): FormattedUrl {
             return if (encoded) {
                 encodedUrl(httpUrl)
