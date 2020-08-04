@@ -142,7 +142,7 @@ internal class TransactionListFragment :
                 val file = viewModel.createExportFile(filecontent, cacheFileFactory)
                 val uri = FileProvider.getUriForFile(
                     requireContext(),
-                    getString(R.string.chucker_provider_authority),
+                    "${requireContext().packageName}.com.chuckerteam.chucker.provider",
                     file
                 )
                 shareFile(uri)
