@@ -32,6 +32,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "url") var url: String?,
     @ColumnInfo(name = "host") var host: String?,
+    @ColumnInfo(name = "port") var port: Int?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseTlsVersion") var responseTlsVersion: String?,
@@ -61,6 +62,7 @@ internal class HttpTransaction(
         method = null,
         url = null,
         host = null,
+        port = null,
         path = null,
         scheme = null,
         responseTlsVersion = null,
@@ -217,6 +219,7 @@ internal class HttpTransaction(
         val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
         url = formattedUrl.url
         host = formattedUrl.host
+        port = httpUrl.port()
         path = formattedUrl.pathWithQuery
         scheme = formattedUrl.scheme
         return this
@@ -247,6 +250,7 @@ internal class HttpTransaction(
             (method == other.method) &&
             (url == other.url) &&
             (host == other.host) &&
+            (port == other.port) &&
             (path == other.path) &&
             (scheme == other.scheme) &&
             (responseTlsVersion == other.responseTlsVersion) &&

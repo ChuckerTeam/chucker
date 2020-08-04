@@ -14,6 +14,7 @@ object TestTransactionFactory {
             protocol = "HTTP",
             method = method,
             url = "http://localhost/getUsers",
+            port = 80,
             host = "localhost",
             path = "/getUsers",
             scheme = "",
@@ -40,6 +41,7 @@ object TestTransactionFactory {
     val expectedGetHttpTransaction =
         """
         URL: http://localhost/getUsers
+        Port: 80
         Method: GET
         Protocol: HTTP
         Status: Complete
@@ -68,6 +70,7 @@ object TestTransactionFactory {
     val expectedHttpPostTransaction =
         """
         URL: http://localhost/getUsers
+        Port: 80
         Method: POST
         Protocol: HTTP
         Status: Complete

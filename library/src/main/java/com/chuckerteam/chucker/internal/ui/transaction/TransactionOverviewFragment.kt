@@ -60,6 +60,7 @@ internal class TransactionOverviewFragment : Fragment() {
     private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
         with(overviewBinding) {
             url.text = transaction?.getFormattedUrl(encodeUrl)
+            port.text = transaction?.port.toString()
             method.text = transaction?.method
             protocol.text = transaction?.protocol
             status.text = transaction?.status.toString()

@@ -15,6 +15,7 @@ class ShareUtilsTest {
 
     private val contextMock = mockk<Context> {
         every { getString(R.string.chucker_url) } returns "URL"
+        every { getString(R.string.chucker_port) } returns "Port"
         every { getString(R.string.chucker_method) } returns "Method"
         every { getString(R.string.chucker_protocol) } returns "Protocol"
         every { getString(R.string.chucker_status) } returns "Status"
