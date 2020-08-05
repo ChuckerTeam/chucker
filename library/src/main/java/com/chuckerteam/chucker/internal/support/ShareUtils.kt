@@ -94,7 +94,7 @@ internal object ShareUtils {
             // try to keep to a single line and use a subshell to preserve any line breaks
             curlCmd += " --data $'${requestBody.replace("\n", "\\n")}'"
         }
-        curlCmd += (if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(false)
+        curlCmd += (if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(encode = false)
         return curlCmd
     }
 }
