@@ -200,6 +200,7 @@ Before committing we suggest you install the pre-commit hooks with the following
 ```
 
 This will make sure your code is validated against KtLint and Detekt before every commit.
+The command will run automatically before the `clean` task, so you should have the pre-commit installed by then.
 
 Before submitting a PR please run:
 
