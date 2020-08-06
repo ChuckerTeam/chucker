@@ -2,7 +2,10 @@ package com.chuckerteam.chucker.internal.data.har
 
 import com.chuckerteam.chucker.BuildConfig
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -15,6 +18,12 @@ internal data class Har(
     }
 
     companion object {
+        suspend fun harStringFromTransactions(transactions: List<HttpTransaction>): String {
+            return withContext(Dispatchers.Default) {
+                JsonConverter.harInstance.toJson(fromHttpTransactions(transactions))
+            }
+        }
+
         fun fromHttpTransactions(transactions: List<HttpTransaction>): Har {
             return Har(
                 log = Log(

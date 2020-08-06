@@ -23,14 +23,14 @@ internal data class Response(
             return Response(
                 status = transaction.responseCode!!,
                 statusText = transaction.responseMessage!!,
-                httpVersion = transaction.protocol ?: "HTTP/1.1", // TODO: This is actually unknown
-                cookies = emptyList(), // TODO: Grab this from headers?
+                httpVersion = transaction.protocol!!,
+                cookies = emptyList(),
                 headers = transaction.getParsedResponseHeaders()!!.map { Header(it.name, it.value) },
                 content = PostData.responsePostData(transaction),
-                redirectUrl = "", // TODO: We could maybe get this off the response headers Location header?
+                redirectUrl = "",
                 headerSize = transaction.responseHeaders!!.length,
                 bodySize = transaction.responsePayloadSize ?: 0,
-                timings = Timings(0, 0, transaction.tookMs ?: 0) // TODO: We need more detailed values here!
+                timings = Timings(0, 0, transaction.tookMs ?: 0)
             )
         }
     }

@@ -4,7 +4,8 @@ import android.content.Context
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
-internal const val EXPORT_FILENAME = "transactions.har"
+internal const val HAR_EXPORT_FILENAME = "transactions.har"
+internal const val TXT_EXPORT_FILENAME = "transactions.txt"
 
 internal class AndroidCacheFileFactory(
     context: Context

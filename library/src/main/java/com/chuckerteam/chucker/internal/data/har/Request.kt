@@ -23,8 +23,8 @@ internal data class Request(
             return Request(
                 method = transaction.method!!,
                 url = transaction.url!!,
-                httpVersion = transaction.protocol ?: "HTTP/1.1", // TODO: This is wrong! This is the response protocol.
-                cookies = emptyList(), // TODO: Grab from headers?
+                httpVersion = transaction.protocol ?: "HTTP/1.1",
+                cookies = emptyList(),
                 headers = transaction.getParsedRequestHeaders()!!.map { Header(it.name, it.value) },
                 queryString = QueryString.fromUrl(HttpUrl.get(transaction.url!!)),
                 postData = PostData.requestPostData(transaction),

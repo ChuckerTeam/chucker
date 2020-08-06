@@ -6,10 +6,21 @@
         android:icon="@drawable/chucker_ic_search_white"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
-    <item android:id="@+id/export"
+    <item
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_export"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" >
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/share_text"
+                    android:title="@string/chucker_share_as_text" />
+                <item
+                    android:id="@+id/share_har"
+                    android:title="@string/chucker_share_as_har" />
+            </group>
+        </menu>
+    </item>
     <item android:title="@string/chucker_clear"
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white"
