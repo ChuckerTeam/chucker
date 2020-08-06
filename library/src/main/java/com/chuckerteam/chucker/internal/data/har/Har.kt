@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.data.har
 
+import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.BuildConfig
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.JsonConverter
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 // http://www.softwareishard.com/blog/har-12-spec/
+// https://github.com/ahmadnassri/har-spec/blob/master/versions/1.2.md
 internal data class Har(
     @SerializedName("log") val log: Log
 ) {
@@ -18,13 +20,11 @@ internal data class Har(
     }
 
     companion object {
-        suspend fun harStringFromTransactions(transactions: List<HttpTransaction>): String {
-            return withContext(Dispatchers.Default) {
-                JsonConverter.harInstance.toJson(fromHttpTransactions(transactions))
-            }
+        suspend fun harStringFromTransactions(transactions: List<HttpTransaction>): String = withContext(Dispatchers.Default) {
+            JsonConverter.harInstance.toJson(fromHttpTransactions(transactions))
         }
 
-        fun fromHttpTransactions(transactions: List<HttpTransaction>): Har {
+        @VisibleForTesting fun fromHttpTransactions(transactions: List<HttpTransaction>): Har {
             return Har(
                 log = Log(
                     version = "1.2",

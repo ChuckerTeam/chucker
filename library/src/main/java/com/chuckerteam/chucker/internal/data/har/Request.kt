@@ -12,7 +12,7 @@ internal data class Request(
     @SerializedName("headers") val headers: List<Header>,
     @SerializedName("queryString") val queryString: List<QueryString>,
     @SerializedName("postData") val postData: PostData?,
-    @SerializedName("headerSize") val headerSize: Int,
+    @SerializedName("headersSize") val headersSize: Int,
     @SerializedName("bodySize") val bodySize: Long
 ) {
     companion object {
@@ -25,10 +25,10 @@ internal data class Request(
                 url = transaction.url!!,
                 httpVersion = transaction.protocol ?: "HTTP/1.1",
                 cookies = emptyList(),
-                headers = transaction.getParsedRequestHeaders()!!.map { Header(it.name, it.value) },
+                headers = transaction.getParsedRequestHeaders()?.map { Header(it.name, it.value) } ?: emptyList(),
                 queryString = QueryString.fromUrl(HttpUrl.get(transaction.url!!)),
                 postData = PostData.requestPostData(transaction),
-                headerSize = transaction.requestHeaders!!.length,
+                headersSize = transaction.requestHeaders?.length ?: 0,
                 bodySize = transaction.requestPayloadSize!!
             )
         }

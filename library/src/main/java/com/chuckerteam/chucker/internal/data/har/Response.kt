@@ -11,7 +11,7 @@ internal data class Response(
     @SerializedName("headers") val headers: List<Header>,
     @SerializedName("content") val content: PostData?,
     @SerializedName("redirectURL") val redirectUrl: String,
-    @SerializedName("headerSize") val headerSize: Int,
+    @SerializedName("headersSize") val headersSize: Int,
     @SerializedName("bodySize") val bodySize: Long,
     @SerializedName("timings") val timings: Timings
 ) {
@@ -25,10 +25,10 @@ internal data class Response(
                 statusText = transaction.responseMessage!!,
                 httpVersion = transaction.protocol!!,
                 cookies = emptyList(),
-                headers = transaction.getParsedResponseHeaders()!!.map { Header(it.name, it.value) },
+                headers = transaction.getParsedResponseHeaders()?.map { Header(it.name, it.value) } ?: emptyList(),
                 content = PostData.responsePostData(transaction),
                 redirectUrl = "",
-                headerSize = transaction.responseHeaders!!.length,
+                headersSize = transaction.responseHeaders?.length ?: 0,
                 bodySize = transaction.responsePayloadSize ?: 0,
                 timings = Timings(0, 0, transaction.tookMs ?: 0)
             )

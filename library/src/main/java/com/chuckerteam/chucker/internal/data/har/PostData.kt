@@ -4,23 +4,27 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.google.gson.annotations.SerializedName
 
 internal data class PostData(
+    @SerializedName("size") val size: Long,
     @SerializedName("mimeType") val mimeType: String,
     @SerializedName("text") val text: String
 ) {
     companion object {
         fun responsePostData(transaction: HttpTransaction): PostData? {
-            if (transaction.responseContentType == null || transaction.responseBody == null) return null
+            if (transaction.responsePayloadSize == null || !transaction.isResponseBodyPlainText) return null
+
             return PostData(
-                mimeType = transaction.responseContentType!!,
-                text = transaction.responseBody!!
+                size = transaction.responsePayloadSize!!,
+                mimeType = transaction.responseContentType ?: "text",
+                text = transaction.responseBody ?: ""
             )
         }
 
         fun requestPostData(transaction: HttpTransaction): PostData? {
-            if (transaction.requestContentType == null || transaction.requestBody == null) return null
+            if (transaction.requestPayloadSize == null || !transaction.isRequestBodyPlainText) return null
             return PostData(
-                mimeType = transaction.requestContentType!!,
-                text = transaction.requestBody!!
+                size = transaction.requestPayloadSize!!,
+                mimeType = transaction.requestContentType ?: "text",
+                text = transaction.requestBody ?: ""
             )
         }
     }
