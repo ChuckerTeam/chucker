@@ -13,7 +13,7 @@ object TestTransactionFactory {
             tookMs = 1000L,
             protocol = "HTTP",
             method = method,
-            url = "http://localhost/getUsers",
+            url = "http://localhost:80/getUsers",
             host = "localhost",
             path = "/getUsers",
             scheme = "",
