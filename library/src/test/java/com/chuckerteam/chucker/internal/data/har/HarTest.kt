@@ -15,7 +15,7 @@ class HarTest {
         assertThat(har.log.creator).isEqualTo(Creator("com.chuckerteam.chucker", BuildConfig.VERSION_NAME))
         assertThat(har.log.entries).hasSize(1)
         val entry = har.log.entries[0]
-        assertThat(entry.startedDateTime).startsWith("1969-12-31T18:21")
+        assertThat(Har.DateFormat.get()!!.parse(entry.startedDateTime)).isEqualTo(Date(transaction.requestDate!!))
         assertThat(entry.time).isEqualTo(1000)
         assertThat(entry.request).isEqualTo(
             Request(
