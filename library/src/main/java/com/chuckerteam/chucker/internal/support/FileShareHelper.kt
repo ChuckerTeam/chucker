@@ -49,6 +49,11 @@ internal class FileShareHelper(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-        activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.chucker_share_all_transactions_title)))
+        activity.startActivity(
+            Intent.createChooser(
+                sendIntent,
+                activity.getString(R.string.chucker_share_all_transactions_title)
+            )
+        )
     }
 }

@@ -127,7 +127,10 @@ internal class TransactionListFragment :
         TransactionActivity.start(requireActivity(), transactionId)
     }
 
-    private fun performShareAction(filename: String, fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String) {
+    private fun performShareAction(
+        filename: String,
+        fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String
+    ) {
         requireContext().showDialog(
             getExportDialogData(),
             onPositiveClick = {
@@ -137,7 +140,10 @@ internal class TransactionListFragment :
         )
     }
 
-    private fun exportTransactions(filename: String, fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String) {
+    private fun exportTransactions(
+        filename: String,
+        fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String
+    ) {
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
             if (transactions.isNullOrEmpty()) {

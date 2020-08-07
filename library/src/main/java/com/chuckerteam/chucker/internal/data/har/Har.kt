@@ -20,7 +20,9 @@ internal data class Har(
     }
 
     companion object {
-        suspend fun harStringFromTransactions(transactions: List<HttpTransaction>): String = withContext(Dispatchers.Default) {
+        suspend fun harStringFromTransactions(
+            transactions: List<HttpTransaction>
+        ): String = withContext(Dispatchers.Default) {
             JsonConverter.harInstance.toJson(fromHttpTransactions(transactions))
         }
 
