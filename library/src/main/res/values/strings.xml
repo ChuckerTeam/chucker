@@ -62,5 +62,4 @@
     <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
-    <string name="chucker_provider_authority">com.chuckerteam.chucker.provider</string>
 </resources>
