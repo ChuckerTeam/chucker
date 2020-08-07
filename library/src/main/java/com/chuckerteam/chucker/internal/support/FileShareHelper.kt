@@ -24,7 +24,7 @@ internal class FileShareHelper(
         val file = createExportFile(fileContentsFactory())
         val uri = FileProvider.getUriForFile(
             activity,
-            activity.getString(R.string.chucker_provider_authority),
+            "${activity.packageName}.com.chuckerteam.chucker.provider",
             file
         )
         shareFile(uri)

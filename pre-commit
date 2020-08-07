@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "Running pre-commit checks..."
+
+OUTPUT="/tmp/analysis-result"
+./gradlew detekt ktlintCheck > ${OUTPUT}
+EXIT_CODE=$?
+if [ ${EXIT_CODE} -ne 0 ]; then
+    cat ${OUTPUT}
+    rm ${OUTPUT}
+    echo "*********************************************"
+    echo "               Checks Failed!                "
+    echo "    Resolve found issues before committing   "
+    echo "*********************************************"
+    exit ${EXIT_CODE}
+else
+    rm ${OUTPUT}
+    echo "*********************************************"
+    echo "          Checks Passed Successfully!        "
+    echo "*********************************************"
+fi

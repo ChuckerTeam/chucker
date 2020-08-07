@@ -22,8 +22,8 @@
             android:exported="false" />
     
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="@string/chucker_provider_authority"
+            android:name="com.chuckerteam.chucker.internal.support.ChuckerFileProvider"
+            android:authorities="${applicationId}.com.chuckerteam.chucker.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
