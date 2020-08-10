@@ -7,7 +7,7 @@ buildscript {
         // Google libraries
         appCompatVersion = '1.1.0'
         constraintLayoutVersion = '1.1.3'
-        materialComponentsVersion = '1.1.0'
+        materialComponentsVersion = '1.2.0'
         roomVersion = '2.2.5'
         fragmentVersion = '1.2.5'
         lifecycleVersion = '2.2.0'
