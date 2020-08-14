@@ -62,6 +62,12 @@ allprojects {
         google()
         maven { url("https://dl.bintray.com/kotlin/kotlin-eap") }
     }
+
+    tasks.withType(Test) {
+        testLogging {
+            events "skipped", "failed", "passed"
+        }
+    }
 }
 
 task installGitHook(type: Copy) {
