@@ -18,12 +18,12 @@ import java.io.IOException
  */
 internal class TeeSource(
     private val upstream: Source,
-    private val sideChannel: File,
+    private val sideChannel: File?,
     private val callback: Callback,
     private val readBytesLimit: Long = Long.MAX_VALUE
 ) : Source {
     private val sideStream = try {
-        Okio.buffer(Okio.sink(sideChannel))
+        sideChannel?.let { Okio.buffer(Okio.sink(it)) }
     } catch (e: FileNotFoundException) {
         callSideChannelFailure(IOException("Failed to use file $sideChannel by Chucker", e))
         null
@@ -102,14 +102,14 @@ internal class TeeSource(
          * Called when the upstream was closed. All read bytes are copied to the [file].
          * This does not mean that the content of the [file] is valid. Only that the client
          * is done with the reading process. [totalBytesRead] is the exact amount of data
-         * that the client downloaded even if the [file] is corrupted.
+         * that the client downloaded even if the [file] is corrupted or does not exist.
          */
-        fun onClosed(file: File, totalBytesRead: Long)
+        fun onClosed(file: File?, totalBytesRead: Long)
 
         /**
          * Called when an exception was thrown while reading bytes from the upstream
          * or when writing to a side channel file fails. Any read bytes are available in a [file].
          */
-        fun onFailure(file: File, exception: IOException)
+        fun onFailure(file: File?, exception: IOException)
     }
 }

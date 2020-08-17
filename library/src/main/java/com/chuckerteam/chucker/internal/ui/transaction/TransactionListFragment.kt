@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.data.model.DialogData
-import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.support.showDialog
@@ -40,7 +39,7 @@ internal class TransactionListFragment :
     private lateinit var transactionsBinding: ChuckerFragmentTransactionListBinding
     private lateinit var transactionsAdapter: TransactionAdapter
     private val cacheFileFactory: FileFactory by lazy {
-        AndroidCacheFileFactory(requireContext())
+        FileFactory { requireContext().cacheDir }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,8 +137,12 @@ internal class TransactionListFragment :
             if (transactions.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
             } else {
-                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
-                val file = viewModel.createExportFile(filecontent, cacheFileFactory)
+                val fileContent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+                val file = viewModel.createExportFile(fileContent, cacheFileFactory)
+                if (file == null) {
+                    Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
                 val uri = FileProvider.getUriForFile(
                     requireContext(),
                     "${requireContext().packageName}.com.chuckerteam.chucker.provider",

@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.TeeSource
@@ -61,7 +60,7 @@ class ChuckerInterceptor internal constructor(
         collector: ChuckerCollector = ChuckerCollector(context),
         maxContentLength: Long = 250000L,
         headersToRedact: Set<String> = emptySet()
-    ) : this(context, collector, maxContentLength, AndroidCacheFileFactory(context), headersToRedact)
+    ) : this(context, collector, maxContentLength, FileFactory(context::getCacheDir), headersToRedact)
 
     private val io: IOUtils = IOUtils(context)
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
@@ -234,28 +233,26 @@ class ChuckerInterceptor internal constructor(
         private val transaction: HttpTransaction
     ) : TeeSource.Callback {
 
-        override fun onClosed(file: File, totalBytesRead: Long) {
-            val buffer = try {
-                readResponseBuffer(file, response.isGzipped)
-            } catch (e: IOException) {
-                null
-            }
+        override fun onClosed(file: File?, totalBytesRead: Long) {
+            val buffer = file?.let { readResponseBuffer(it, response.isGzipped) }
             if (buffer != null) processResponseBody(response, buffer, transaction)
             transaction.responsePayloadSize = totalBytesRead
             collector.onResponseReceived(transaction)
-            file.delete()
+            file?.delete()
         }
 
-        override fun onFailure(file: File, exception: IOException) = exception.printStackTrace()
+        override fun onFailure(file: File?, exception: IOException) = exception.printStackTrace()
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
+        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
                 bufferedSource
             }
-            return Buffer().apply { source.use { writeAll(it) } }
+            Buffer().apply { source.use { writeAll(it) } }
+        } catch (e: IOException) {
+            null
         }
     }
 
