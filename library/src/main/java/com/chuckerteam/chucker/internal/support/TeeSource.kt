@@ -23,7 +23,7 @@ internal class TeeSource(
     private val readBytesLimit: Long = Long.MAX_VALUE
 ) : Source {
     private val sideStream = try {
-        sideChannel?.let { Okio.buffer(Okio.sink(it)) }
+        if (sideChannel != null) Okio.buffer(Okio.sink(sideChannel)) else null
     } catch (e: FileNotFoundException) {
         callSideChannelFailure(IOException("Failed to use file $sideChannel by Chucker", e))
         null

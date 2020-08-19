@@ -234,8 +234,12 @@ class ChuckerInterceptor internal constructor(
     ) : TeeSource.Callback {
 
         override fun onClosed(file: File?, totalBytesRead: Long) {
-            val buffer = file?.let { readResponseBuffer(it, response.isGzipped) }
-            if (buffer != null) processResponseBody(response, buffer, transaction)
+            if (file != null) {
+                val buffer = readResponseBuffer(file, response.isGzipped)
+                if (buffer != null) {
+                    processResponseBody(response, buffer, transaction)
+                }
+            }
             transaction.responsePayloadSize = totalBytesRead
             collector.onResponseReceived(transaction)
             file?.delete()
