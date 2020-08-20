@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.ReportingSink
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
@@ -178,12 +179,12 @@ class ChuckerInterceptor internal constructor(
         val contentType = responseBody.contentType()
         val contentLength = responseBody.contentLength()
 
-        val teeSource = TeeSource(
-            responseBody.source(),
+        val reportingSink = ReportingSink(
             fileFactory.create(),
             ChuckerTransactionTeeCallback(response, transaction),
             maxContentLength
         )
+        val teeSource = TeeSource(responseBody.source(), reportingSink)
 
         return response.newBuilder()
             .body(ResponseBody.create(contentType, contentLength, Okio.buffer(teeSource)))
@@ -231,16 +232,16 @@ class ChuckerInterceptor internal constructor(
     private inner class ChuckerTransactionTeeCallback(
         private val response: Response,
         private val transaction: HttpTransaction
-    ) : TeeSource.Callback {
+    ) : ReportingSink.Callback {
 
-        override fun onClosed(file: File?, totalBytesRead: Long) {
+        override fun onClosed(file: File?, writtenBytesCount: Long) {
             if (file != null) {
                 val buffer = readResponseBuffer(file, response.isGzipped)
                 if (buffer != null) {
                     processResponseBody(response, buffer, transaction)
                 }
             }
-            transaction.responsePayloadSize = totalBytesRead
+            transaction.responsePayloadSize = writtenBytesCount
             collector.onResponseReceived(transaction)
             file?.delete()
         }
