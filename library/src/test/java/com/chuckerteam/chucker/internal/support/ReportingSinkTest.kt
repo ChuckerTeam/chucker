@@ -19,7 +19,9 @@ class ReportingSinkTest {
     @Test
     fun bytesWrittenToDownstream_areAvailableForConsumer(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
-        val testSource = TestSource()
+        val repetitions = Random.nextInt(1, 100)
+        // Okio uses 8KiB as a single size read.
+        val testSource = TestSource(8_192 * repetitions)
         val reportingSink = ReportingSink(testFile, reportingCallback)
 
         Okio.buffer(reportingSink).use { it.writeAll(testSource) }
@@ -28,10 +30,10 @@ class ReportingSinkTest {
     }
 
     @Test
-    fun bytesWrittenToDownstream_canByLimited(@TempDir tempDir: File) {
+    fun bytesWrittenToDownstream_canBeLimited(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val testSource = TestSource(10_000)
-        val reportingSink = ReportingSink(testFile, reportingCallback, writeBytesLimit = 9_999)
+        val reportingSink = ReportingSink(testFile, reportingCallback, writeByteLimit = 9_999)
 
         Okio.buffer(reportingSink).use { it.writeAll(testSource) }
 
@@ -50,21 +52,6 @@ class ReportingSinkTest {
 
         val expectedContent = testSource.content.substring(0, 8_192)
         assertThat(reportingCallback.fileContent).isEqualTo(expectedContent)
-    }
-
-    @Test
-    fun exactlyWrittenBytesToDownstream_areAvailableForConsumer(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        val repetitions = Random.nextInt(1, 100)
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * repetitions)
-        val reportingSink = ReportingSink(testFile, reportingCallback)
-
-        Okio.buffer(reportingSink).use { sink ->
-            repeat(repetitions) { sink.write(testSource, 8_192) }
-        }
-
-        assertThat(reportingCallback.fileContent).isEqualTo(testSource.content)
     }
 
     @Test
@@ -100,7 +87,7 @@ class ReportingSinkTest {
         var isSuccess = false
             private set
 
-        override fun onClosed(file: File?, writtenBytesCount: Long) {
+        override fun onClosed(file: File?, sourceByteCount: Long) {
             isSuccess = true
             this.file = file
         }

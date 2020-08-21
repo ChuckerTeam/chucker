@@ -234,14 +234,14 @@ class ChuckerInterceptor internal constructor(
         private val transaction: HttpTransaction
     ) : ReportingSink.Callback {
 
-        override fun onClosed(file: File?, writtenBytesCount: Long) {
+        override fun onClosed(file: File?, sourceByteCount: Long) {
             if (file != null) {
                 val buffer = readResponseBuffer(file, response.isGzipped)
                 if (buffer != null) {
                     processResponseBody(response, buffer, transaction)
                 }
             }
-            transaction.responsePayloadSize = writtenBytesCount
+            transaction.responsePayloadSize = sourceByteCount
             collector.onResponseReceived(transaction)
             file?.delete()
         }

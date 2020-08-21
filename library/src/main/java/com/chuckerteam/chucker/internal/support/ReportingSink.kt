@@ -10,15 +10,15 @@ import java.io.IOException
 /**
  * A sink that reports result of writing to it via [callback].
  *
- * It takes an input [downstreamFile] and writes to it bytes from a source. Amount of bytes
- * that is copied can be limited with [writeBytesLimit]. Results are reported back to a client
- * when this is is closed or when an exception occurs while creating a downstream sink or while
+ * Takes an input [downstreamFile] and writes bytes from a source into this input. Amount of bytes
+ * to copy can be limited with [writeByteLimit]. Results are reported back to a client
+ * when sink is closed or when an exception occurs while creating a downstream sink or while
  * writing bytes.
  */
 internal class ReportingSink(
     private val downstreamFile: File?,
     private val callback: Callback,
-    private val writeBytesLimit: Long = Long.MAX_VALUE
+    private val writeByteLimit: Long = Long.MAX_VALUE
 ) : Sink {
     private var totalByteCount = 0L
     private var isFailure = false
@@ -33,17 +33,21 @@ internal class ReportingSink(
     override fun write(source: Buffer, byteCount: Long) {
         val previousTotalByteCount = totalByteCount
         totalByteCount += byteCount
-        if (previousTotalByteCount >= writeBytesLimit) return
+        if (isFailure || previousTotalByteCount >= writeByteLimit) return
 
-        val bytesToWrite = if (previousTotalByteCount + byteCount <= writeBytesLimit) {
+        val bytesToWrite = if (previousTotalByteCount + byteCount <= writeByteLimit) {
             byteCount
         } else {
-            writeBytesLimit - previousTotalByteCount
+            writeByteLimit - previousTotalByteCount
         }
 
-        if (bytesToWrite == 0L || isFailure) return
+        if (bytesToWrite == 0L) return
 
-        downstream?.write(source, bytesToWrite)
+        try {
+            downstream?.write(source, bytesToWrite)
+        } catch (e: IOException) {
+            callDownstreamFailure(e)
+        }
     }
 
     override fun flush() {
@@ -82,10 +86,12 @@ internal class ReportingSink(
         /**
          * Called when the sink is closed. All written bytes are copied to the [file].
          * This does not mean that the content of the [file] is valid. Only that the client
-         * is done with the writing process. [writtenBytesCount] is the exact amount of data
-         * that the client wrote even if the [file] is corrupted or does not exist.
+         * is done with the writing process.
+         *
+         * [sourceByteCount] is the exact amount of bytes that the were read from upstream even if
+         * the [file] is corrupted or does not exist. It is not limited by [writeByteLimit].
          */
-        fun onClosed(file: File?, writtenBytesCount: Long)
+        fun onClosed(file: File?, sourceByteCount: Long)
 
         /**
          * Called when an [exception] was thrown while processing data.

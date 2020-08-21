@@ -14,13 +14,15 @@ internal class FileFactory(
 
     fun create(filename: String): File? = try {
         val directory = getFileDirectory()
-            ?: throw FileNotFoundException("Failed to create directory for temporary Chucker files")
+            ?: throw FileNotFoundException("Failed to create directory for Chucker files")
         File(directory, filename).apply {
             if (exists()) {
                 delete()
             }
             parentFile?.mkdirs()
-            createNewFile()
+            if (!createNewFile()) {
+                throw IOException("Failed to create a Chucker file: $this")
+            }
         }
     } catch (e: IOException) {
         e.printStackTrace()
