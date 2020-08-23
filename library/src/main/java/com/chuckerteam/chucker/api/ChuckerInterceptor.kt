@@ -274,6 +274,7 @@ class ChuckerInterceptor internal constructor(
             }
             Buffer().apply { source.use { writeAll(it) } }
         } catch (e: IOException) {
+            IOException("Response payload couldn't be processed by Chucker", e).printStackTrace()
             null
         }
     }
