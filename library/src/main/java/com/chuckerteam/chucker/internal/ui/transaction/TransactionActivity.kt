@@ -87,11 +87,13 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         viewPager.adapter = TransactionPagerAdapter(this, supportFragmentManager)
-        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                selectedTabPosition = position
+        viewPager.addOnPageChangeListener(
+            object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    selectedTabPosition = position
+                }
             }
-        })
+        )
         viewPager.currentItem = selectedTabPosition
     }
 
