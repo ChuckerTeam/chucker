@@ -181,7 +181,7 @@ class ChuckerInterceptor internal constructor(
 
         val reportingSink = ReportingSink(
             fileFactory.create(),
-            ChuckerTransactionTeeCallback(response, transaction),
+            ChuckerTransactionReportingSinkCallback(response, transaction),
             maxContentLength
         )
         val teeSource = TeeSource(responseBody.source(), reportingSink)
@@ -229,7 +229,7 @@ class ChuckerInterceptor internal constructor(
         return builder.build()
     }
 
-    private inner class ChuckerTransactionTeeCallback(
+    private inner class ChuckerTransactionReportingSinkCallback(
         private val response: Response,
         private val transaction: HttpTransaction
     ) : ReportingSink.Callback {
