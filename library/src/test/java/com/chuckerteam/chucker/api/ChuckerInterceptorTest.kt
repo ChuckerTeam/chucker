@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.api
 
 import com.chuckerteam.chucker.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.getResourceFile
-import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.readByteStringBody
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
@@ -48,7 +47,7 @@ class ChuckerInterceptorTest {
 
     @BeforeEach
     fun setUp(@TempDir tempDir: File) {
-        chuckerInterceptor = ChuckerInterceptorDelegate(FileFactory { tempDir })
+        chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
     }
 
     @ParameterizedTest
@@ -249,7 +248,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
 
         val chuckerInterceptor = ChuckerInterceptorDelegate(
-            fileFactory = FileFactory { tempDir },
+            cacheDirectoryFactory = { tempDir },
             maxContentLength = 1_000
         )
         val client = factory.create(chuckerInterceptor)
@@ -269,7 +268,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
 
         val chuckerInterceptor = ChuckerInterceptorDelegate(
-            fileFactory = FileFactory { tempDir },
+            cacheDirectoryFactory = { tempDir },
             maxContentLength = 1_000
         )
         val client = factory.create(chuckerInterceptor)
@@ -286,7 +285,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(FileFactory { tempDir })
+        val chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
         val client = factory.create(chuckerInterceptor)
         val response = client.newCall(request).execute()
 
@@ -304,7 +303,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(FileFactory { tempDir })
+        val chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
         val client = factory.create(chuckerInterceptor)
         val response = client.newCall(request).execute()
 

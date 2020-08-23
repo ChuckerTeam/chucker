@@ -10,9 +10,8 @@ internal class FileFactoryTest {
 
     @Test
     fun fileIsCreated_evenIfParentDirectory_isDeleted() {
-        val fileFactory = FileFactory { tempDir }
-
         assertThat(tempDir.deleteRecursively()).isTrue()
-        assertThat(fileFactory.create()!!.isFile).isTrue()
+
+        assertThat(FileFactory.create(tempDir)!!.isFile).isTrue()
     }
 }

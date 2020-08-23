@@ -15,6 +15,7 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 internal const val EXPORT_FILENAME = "transactions.txt"
 
@@ -43,8 +44,11 @@ internal class MainViewModel : ViewModel() {
 
     suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
 
-    suspend fun createExportFile(content: String, fileFactory: FileFactory) = withContext(Dispatchers.IO) {
-        fileFactory.create(EXPORT_FILENAME)?.apply { writeText(content) }
+    suspend fun createExportFile(
+        content: String,
+        cacheDirectory: File,
+    ) = withContext(Dispatchers.IO) {
+        FileFactory.create(cacheDirectory, EXPORT_FILENAME)?.apply { writeText(content) }
     }
 
     fun updateItemsFilter(searchQuery: String) {
