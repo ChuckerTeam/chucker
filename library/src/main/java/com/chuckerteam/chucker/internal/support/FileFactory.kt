@@ -11,16 +11,16 @@ internal object FileFactory {
 
     fun create(directory: File, fileName: String): File? = try {
         File(directory, fileName).apply {
-            if (exists()) {
-                delete()
+            if (exists() && !delete()) {
+                throw IOException("Failed to delete file $this")
             }
             parentFile?.mkdirs()
             if (!createNewFile()) {
-                throw IOException("Failed to create a Chucker file: $this")
+                throw IOException("File $this already exists")
             }
         }
     } catch (e: IOException) {
-        e.printStackTrace()
+        IOException("An error occurred while creating a Chucker file", e).printStackTrace()
         null
     }
 }
