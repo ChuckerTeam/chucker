@@ -116,13 +116,15 @@ class HttpBinClient(
             .url("https://dummyimage.com/200x200/$colorHex/$colorHex.png")
             .get()
             .build()
-        httpClient.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+        httpClient.newCall(request).enqueue(
+            object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.body()?.source()?.use { it.readByteString() }
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    response.body()?.source()?.use { it.readByteString() }
+                }
             }
-        })
+        )
     }
 
     private fun getResponsePartially() {
@@ -131,12 +133,14 @@ class HttpBinClient(
             .url("https://postman-echo.com/post")
             .post(body)
             .build()
-        httpClient.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+        httpClient.newCall(request).enqueue(
+            object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.body()?.source()?.use { it.readByteString(SEGMENT_SIZE) }
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    response.body()?.source()?.use { it.readByteString(SEGMENT_SIZE) }
+                }
             }
-        })
+        )
     }
 }
