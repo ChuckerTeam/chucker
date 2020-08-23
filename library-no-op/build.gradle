@@ -7,7 +7,7 @@ android {
     compileOptions {
         kotlinOptions.freeCompilerArgs += [
             '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
-            '-Xexplicit-api', "strict"
+            "-Xexplicit-api=strict"
         ]
     }
 
