@@ -136,7 +136,7 @@ internal class TransactionListFragment :
 
         val cache = requireContext().cacheDir
         if (cache == null) {
-            println("Failed to create a cache directory for Chucker file export")
+            println("Failed to obtain a valid cache directory for Chucker file export")
             Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
             return@launch
         }

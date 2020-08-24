@@ -201,7 +201,7 @@ class ChuckerInterceptor internal constructor(
     private fun createTempTransactionFile(): File? {
         val cache = cacheDirectoryFactory.create()
         return if (cache == null) {
-            println("Failed to create a cache directory for Chucker transaction file")
+            IOException("Failed to obtain a valid cache directory for Chucker transaction file").printStackTrace()
             null
         } else {
             FileFactory.create(cache)
