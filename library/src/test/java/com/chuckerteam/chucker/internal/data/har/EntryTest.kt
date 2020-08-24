@@ -3,15 +3,14 @@ package com.chuckerteam.chucker.internal.data.har
 import com.chuckerteam.chucker.TestTransactionFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import java.time.Instant
+import java.util.Date
 
 internal class EntryTest {
     @Test fun fromHttpTransaction_createsEntryWithCorrectStartedDateTime() {
         val transaction = TestTransactionFactory.createTransaction("GET")
         val entry = Entry.fromHttpTransaction(transaction)
 
-        assertThat(Entry.DATE_FORMAT.parse(entry.startedDateTime, Instant::from))
-            .isEqualTo(Instant.ofEpochMilli(transaction.requestDate!!))
+        assertThat(Entry.DateFormat.get()!!.parse(entry.startedDateTime)).isEqualTo(Date(transaction.requestDate!!))
         assertThat(entry.time).isEqualTo(1000)
     }
 

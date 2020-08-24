@@ -6,8 +6,7 @@ import com.chuckerteam.chucker.internal.data.har.Entry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import java.time.Instant
-import java.time.ZoneId
+import java.util.Date
 
 internal class HarUtilsTest {
     @Test fun fromHttpTransactions_createsHarWithMultipleEntries() {
@@ -32,7 +31,7 @@ internal class HarUtilsTest {
                 },
                 "entries": [
                   {
-                    "startedDateTime": "${Instant.ofEpochMilli(transaction.requestDate!!).atZone(ZoneId.systemDefault()).format(Entry.DATE_FORMAT)}",
+                    "startedDateTime": "${Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))}",
                     "time": 1000,
                     "request": {
                       "method": "GET",
