@@ -8,6 +8,9 @@ android {
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "com.github.ChuckerTeam.Chucker.library"]
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
@@ -15,6 +18,7 @@ android {
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
         consumerProguardFiles 'proguard-rules.pro'
+        multiDexEnabled true
     }
 
     kotlinOptions {
@@ -58,6 +62,8 @@ dependencies {
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreLibraryDesugaringVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
