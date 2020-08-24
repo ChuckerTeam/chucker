@@ -47,7 +47,7 @@ class ChuckerInterceptorTest {
 
     @BeforeEach
     fun setUp(@TempDir tempDir: File) {
-        chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
+        chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
     }
 
     @ParameterizedTest
@@ -285,7 +285,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
+        val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
         val client = factory.create(chuckerInterceptor)
         val response = client.newCall(request).execute()
 
@@ -303,7 +303,7 @@ class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate { tempDir }
+        val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
         val client = factory.create(chuckerInterceptor)
         val response = client.newCall(request).execute()
 
@@ -314,5 +314,35 @@ class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isNull()
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun missingCache_doesNotInvalidate_ChuckerTransaction(factory: ClientFactory) {
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { null })
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responseBody).isNull()
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun missingCache_doesNotAffect_endConsumer(factory: ClientFactory) {
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { null })
+        val client = factory.create(chuckerInterceptor)
+        val responseBody = client.newCall(request).execute().readByteStringBody()
+
+        assertThat(responseBody!!.utf8()).isEqualTo("Hello, world!")
     }
 }
