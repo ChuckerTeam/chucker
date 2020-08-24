@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.har.Har
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.FileShareHelper
 import com.chuckerteam.chucker.internal.support.HAR_EXPORT_FILENAME
+import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.support.TXT_EXPORT_FILENAME
 import com.chuckerteam.chucker.internal.support.showDialog
@@ -107,7 +107,7 @@ internal class TransactionListFragment :
                 true
             }
             R.id.share_har -> {
-                performShareAction(HAR_EXPORT_FILENAME, Har.Companion::harStringFromTransactions)
+                performShareAction(HAR_EXPORT_FILENAME, HarUtils::harStringFromTransactions)
                 true
             }
             else -> {

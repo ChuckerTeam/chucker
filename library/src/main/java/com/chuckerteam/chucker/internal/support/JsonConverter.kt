@@ -13,7 +13,7 @@ internal object JsonConverter {
             .create()
     }
 
-    val harInstance: Gson by lazy {
+    val nonNullSerializerInstance: Gson by lazy {
         GsonBuilder()
             .disableHtmlEscaping()
             .setPrettyPrinting()

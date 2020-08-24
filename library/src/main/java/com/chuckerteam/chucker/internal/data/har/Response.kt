@@ -21,9 +21,9 @@ internal data class Response(
                 return null
             }
             return Response(
-                status = transaction.responseCode!!,
-                statusText = transaction.responseMessage!!,
-                httpVersion = transaction.protocol!!,
+                status = transaction.responseCode ?: 0,
+                statusText = transaction.responseMessage ?: "",
+                httpVersion = transaction.protocol ?: "",
                 cookies = emptyList(),
                 headers = transaction.getParsedResponseHeaders()?.map { Header(it.name, it.value) } ?: emptyList(),
                 content = PostData.responsePostData(transaction),

@@ -21,15 +21,15 @@ internal data class Request(
                 return null
             }
             return Request(
-                method = transaction.method!!,
-                url = transaction.url!!,
-                httpVersion = transaction.protocol ?: "HTTP/1.1",
+                method = transaction.method ?: "",
+                url = transaction.url ?: "",
+                httpVersion = transaction.protocol ?: "",
                 cookies = emptyList(),
                 headers = transaction.getParsedRequestHeaders()?.map { Header(it.name, it.value) } ?: emptyList(),
-                queryString = QueryString.fromUrl(HttpUrl.get(transaction.url!!)),
+                queryString = QueryString.fromUrl(HttpUrl.get(transaction.url ?: "")),
                 postData = PostData.requestPostData(transaction),
                 headersSize = transaction.requestHeaders?.length ?: 0,
-                bodySize = transaction.requestPayloadSize!!
+                bodySize = transaction.requestPayloadSize ?: 0
             )
         }
     }

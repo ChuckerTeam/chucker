@@ -12,9 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
-import com.chuckerteam.chucker.internal.data.har.Har
 import com.chuckerteam.chucker.internal.support.FileShareHelper
 import com.chuckerteam.chucker.internal.support.HAR_EXPORT_FILENAME
+import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import kotlinx.coroutines.launch
@@ -90,7 +90,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
                     val activity = this
                     lifecycleScope.launch {
                         FileShareHelper(activity, HAR_EXPORT_FILENAME) {
-                            Har.harStringFromTransactions(listOf(it))
+                            HarUtils.harStringFromTransactions(listOf(it))
                         }.share()
                     }
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
