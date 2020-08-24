@@ -37,6 +37,9 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            all {
+                useJUnitPlatform()
+            }
         }
     }
 
@@ -61,7 +64,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
-    implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreLibraryDesugaringVersion"
 

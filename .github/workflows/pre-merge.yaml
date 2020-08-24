@@ -7,19 +7,13 @@ on:
   pull_request:
     branches: 
       - '*'
+  workflow_dispatch:
+    branches:
+      - '*'
 
 jobs:
   test:
     runs-on: [ubuntu-latest]
-    strategy:
-      fail-fast: false
-      matrix:
-        kotlin-version:
-          - 1.3.72
-          - 1.4.0-rc
-
-    env:
-      KOTLIN_VERSION: ${{ matrix.kotlin-version }}
 
     steps:
     - name: Checkout Repo
