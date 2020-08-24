@@ -2,7 +2,7 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.CacheDirectoryFactory
+import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.ReportingSink
@@ -31,7 +31,7 @@ import java.nio.charset.Charset
  * @param maxContentLength The maximum length for request and response content
  * before their truncation. Warning: setting this value too high may cause unexpected
  * results.
- * @param cacheDirectoryFactory Provider for [File] where Chucker will save temporary responses
+ * @param cacheDirectoryProvider Provider of [File] where Chucker will save temporary responses
  * before processing them.
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
@@ -40,7 +40,7 @@ class ChuckerInterceptor internal constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    private val cacheDirectoryFactory: CacheDirectoryFactory,
+    private val cacheDirectoryProvider: CacheDirectoryProvider,
     headersToRedact: Set<String> = emptySet(),
 ) : Interceptor {
 
@@ -66,7 +66,7 @@ class ChuckerInterceptor internal constructor(
         context = context,
         collector = collector,
         maxContentLength = maxContentLength,
-        cacheDirectoryFactory = { context.cacheDir },
+        cacheDirectoryProvider = { context.cacheDir },
         headersToRedact = headersToRedact,
     )
 
@@ -199,7 +199,7 @@ class ChuckerInterceptor internal constructor(
     }
 
     private fun createTempTransactionFile(): File? {
-        val cache = cacheDirectoryFactory.create()
+        val cache = cacheDirectoryProvider.provide()
         return if (cache == null) {
             IOException("Failed to obtain a valid cache directory for Chucker transaction file").printStackTrace()
             null

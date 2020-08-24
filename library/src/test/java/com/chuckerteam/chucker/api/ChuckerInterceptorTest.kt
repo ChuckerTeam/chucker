@@ -248,7 +248,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
 
         val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryFactory = { tempDir },
+            cacheDirectoryProvider = { tempDir },
             maxContentLength = 1_000
         )
         val client = factory.create(chuckerInterceptor)
@@ -268,7 +268,7 @@ class ChuckerInterceptorTest {
         val request = Request.Builder().url(serverUrl).build()
 
         val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryFactory = { tempDir },
+            cacheDirectoryProvider = { tempDir },
             maxContentLength = 1_000
         )
         val client = factory.create(chuckerInterceptor)

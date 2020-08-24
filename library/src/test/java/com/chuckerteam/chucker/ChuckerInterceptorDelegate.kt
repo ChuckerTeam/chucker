@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.CacheDirectoryFactory
+import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import io.mockk.every
 import io.mockk.mockk
 import okhttp3.Interceptor
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong
 internal class ChuckerInterceptorDelegate(
     maxContentLength: Long = 250000L,
     headersToRedact: Set<String> = emptySet(),
-    cacheDirectoryFactory: CacheDirectoryFactory,
+    cacheDirectoryProvider: CacheDirectoryProvider,
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
@@ -37,7 +37,7 @@ internal class ChuckerInterceptorDelegate(
         collector = mockCollector,
         maxContentLength = maxContentLength,
         headersToRedact = headersToRedact,
-        cacheDirectoryFactory = cacheDirectoryFactory
+        cacheDirectoryProvider = cacheDirectoryProvider
     )
 
     internal fun expectTransaction(): HttpTransaction {
