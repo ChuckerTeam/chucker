@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import android.app.Activity
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.ShareCompat
@@ -11,32 +12,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-internal class FileShareHelper(
-    private val activity: Activity,
-    private val exportFilename: String,
-    private val fileContentsFactory: suspend () -> String
-) {
-    private val cacheFileFactory: FileFactory by lazy {
-        AndroidCacheFileFactory(activity)
-    }
-
-    suspend fun share() {
-        val file = createExportFile(fileContentsFactory())
+internal object FileShareHelper {
+    suspend fun share(activity: Activity, exportFilename: String, fileContentsFactory: suspend () -> String) {
+        val file = createExportFile(activity.applicationContext, exportFilename, fileContentsFactory())
         val uri = FileProvider.getUriForFile(
             activity,
             "${activity.packageName}.com.chuckerteam.chucker.provider",
             file
         )
-        shareFile(uri)
+        shareFile(activity, uri)
     }
 
-    private suspend fun createExportFile(content: String): File = withContext(Dispatchers.IO) {
-        val file = cacheFileFactory.create(exportFilename)
+    private suspend fun createExportFile(
+        context: Context,
+        exportFilename: String,
+        content: String
+    ): File = withContext(Dispatchers.IO) {
+        val file = AndroidCacheFileFactory(context).create(exportFilename)
         file.writeText(content)
         return@withContext file
     }
 
-    private fun shareFile(uri: Uri) {
+    private fun shareFile(activity: Activity, uri: Uri) {
         val sendIntent = ShareCompat.IntentBuilder.from(activity)
             .setType(activity.contentResolver.getType(uri))
             .setChooserTitle(activity.getString(R.string.chucker_share_all_transactions_title))

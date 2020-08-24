@@ -149,9 +149,9 @@ internal class TransactionListFragment :
             if (transactions.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
             } else {
-                FileShareHelper(requireActivity(), filename) {
+                FileShareHelper.share(requireActivity(), filename) {
                     fileContentFactory(transactions)
-                }.share()
+                }
             }
         }
     }

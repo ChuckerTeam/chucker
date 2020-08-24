@@ -89,9 +89,9 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 viewModel.transaction.value?.let {
                     val activity = this
                     lifecycleScope.launch {
-                        FileShareHelper(activity, HAR_EXPORT_FILENAME) {
+                        FileShareHelper.share(activity, HAR_EXPORT_FILENAME) {
                             HarUtils.harStringFromTransactions(listOf(it))
-                        }.share()
+                        }
                     }
                 } ?: showToast(getString(R.string.chucker_request_not_ready))
                 true
