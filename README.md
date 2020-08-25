@@ -95,7 +95,12 @@ val chuckerInterceptor = ChuckerInterceptor(
         // The max body content length in bytes, after this responses will be truncated.
         maxContentLength = 250000L,
         // List of headers to replace with ** in the Chucker UI
-        headersToRedact = setOf("Auth-Token"))
+        headersToRedact = setOf("Auth-Token"),
+        // Read response bodies fully even in case of not consuming all of the bytes by the client.
+        // This is useful in case of parsing errors or when the response body
+        // is closed before being read like in Retrofit with Void and Unit types.
+        alwaysReadResponseBody = true
+)
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()

@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong
 internal class ChuckerInterceptorDelegate(
     maxContentLength: Long = 250000L,
     headersToRedact: Set<String> = emptySet(),
+    alwaysReadResponseBody: Boolean = false,
     cacheDirectoryProvider: CacheDirectoryProvider,
 ) : Interceptor {
     private val idGenerator = AtomicLong()
@@ -37,12 +38,13 @@ internal class ChuckerInterceptorDelegate(
         collector = mockCollector,
         maxContentLength = maxContentLength,
         headersToRedact = headersToRedact,
-        cacheDirectoryProvider = cacheDirectoryProvider
+        cacheDirectoryProvider = cacheDirectoryProvider,
+        alwaysReadResponseBody = alwaysReadResponseBody,
     )
 
     internal fun expectTransaction(): HttpTransaction {
         if (transactions.isEmpty()) {
-            throw AssertionError("Expected transaction but was empty.")
+            throw AssertionError("Expected transaction but was empty")
         }
         return transactions.removeAt(0)
     }

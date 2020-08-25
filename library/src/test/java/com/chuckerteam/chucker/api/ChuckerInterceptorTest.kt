@@ -1,10 +1,14 @@
 package com.chuckerteam.chucker.api
 
 import com.chuckerteam.chucker.ChuckerInterceptorDelegate
+import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.readByteStringBody
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import com.google.gson.stream.JsonReader
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,7 +18,7 @@ import okio.Buffer
 import okio.ByteString
 import okio.GzipSink
 import org.junit.Rule
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -339,4 +343,60 @@ class ChuckerInterceptorTest {
 
         assertThat(responseBody!!.utf8()).isEqualTo("Hello, world!")
     }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun alwaysReadResponseBodyFlag_withoutClientConsumingBytes_makesResponseBodyAvailableForChucker(factory: ClientFactory) {
+        val body = Buffer().writeUtf8("Hello, world!")
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            alwaysReadResponseBody = true
+        )
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().body()!!.close()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun alwaysReadResponseBodyFlag_withParsingErrors_makesResponseBodyAvailableForChucker(factory: ClientFactory) {
+        val providedJson =
+            """
+            {
+              "string": "${"!".repeat(SEGMENT_SIZE.toInt())}",
+              "boolean": 100,
+              "secondString": "${"?".repeat(3 * SEGMENT_SIZE.toInt())}"
+            }
+            """.trimIndent()
+        val body = Buffer().writeUtf8(providedJson)
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            alwaysReadResponseBody = true
+        )
+        val client = factory.create(chuckerInterceptor)
+        val responseBody = client.newCall(request).execute().body()!!
+
+        val jsonAdapter = Gson().getAdapter(Expected::class.java)
+        val jsonReader = JsonReader(responseBody.charStream())
+
+        assertThrows<JsonParseException> {
+            jsonAdapter.read(jsonReader)
+        }
+        responseBody.close()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.responseBody).isEqualTo(providedJson)
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+    }
+
+    private data class Expected(val string: String, val boolean: Boolean, val secondString: String)
 }
