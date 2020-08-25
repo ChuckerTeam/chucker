@@ -15,9 +15,15 @@ fun getResourceFile(file: String): Buffer {
     }
 }
 
-fun Response.readByteStringBody(): ByteString? {
+fun Response.readByteStringBody(length: Long? = null): ByteString? {
     return if (hasBody()) {
-        body()?.source()?.use { it.readByteString() }
+        body()?.source()?.use { source ->
+            if (length == null) {
+                source.readByteString()
+            } else {
+                source.readByteString(length)
+            }
+        }
     } else {
         null
     }

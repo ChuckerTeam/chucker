@@ -46,7 +46,7 @@ internal class TransactionListFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         transactionsBinding = ChuckerFragmentTransactionListBinding.inflate(inflater, container, false)
 
@@ -142,7 +142,7 @@ internal class TransactionListFragment :
 
     private fun exportTransactions(
         filename: String,
-        fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String
+        fileContentFactory: suspend (transactions: List<HttpTransaction>) -> String,
     ) {
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
