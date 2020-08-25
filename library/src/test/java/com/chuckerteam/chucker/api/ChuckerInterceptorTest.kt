@@ -43,12 +43,8 @@ class ChuckerInterceptorTest {
 
     @get:Rule val server = MockWebServer()
     private val serverUrl = server.url("/") // Starts server implicitly
-    private lateinit var chuckerInterceptor: ChuckerInterceptorDelegate
-
-    @BeforeEach
-    fun setUp(@TempDir tempDir: File) {
-        chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
-    }
+    @TempDir lateinit var tempDir: File
+    private val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -195,15 +191,14 @@ class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun payloadSize_dependsOnTheAmountOfDataDownloaded(factory: ClientFactory) {
-        val segmentSize = 8_192L
         val body = Buffer().apply {
-            repeat(10 * segmentSize.toInt()) { writeUtf8("!") }
+            repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
         }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().readByteStringBody(segmentSize)
+        client.newCall(request).execute().readByteStringBody(SEGMENT_SIZE)
 
         val transaction = chuckerInterceptor.expectTransaction()
         // We cannot expect exact amount of data as there are no guarantees that client
@@ -211,21 +206,20 @@ class ChuckerInterceptorTest {
         //
         // It is only best effort attempt and if we download less than 8KiB reading will continue
         // in 8KiB batches until at least 8KiB is downloaded.
-        assertThat(transaction.responsePayloadSize).isIn(Range.closed(segmentSize, 2 * segmentSize))
+        assertThat(transaction.responsePayloadSize).isIn(Range.closed(SEGMENT_SIZE, 2 * SEGMENT_SIZE))
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun contentLength_isProperlyReadFromHeader_andNotFromAmountOfData(factory: ClientFactory) {
-        val segmentSize = 8_192
         val body = Buffer().apply {
-            repeat(10 * segmentSize) { writeUtf8("!") }
+            repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
         }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().readByteStringBody(segmentSize.toLong())
+        client.newCall(request).execute().readByteStringBody(SEGMENT_SIZE)
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseHeaders).contains(
@@ -240,7 +234,7 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun responseBody_isLimitedByInterceptorMaxContentLength(factory: ClientFactory, @TempDir tempDir: File) {
+    fun responseBody_isLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
         val body = Buffer().apply {
             repeat(10_000) { writeUtf8("!") }
         }
@@ -260,7 +254,7 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory, @TempDir tempDir: File) {
+    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
         val body = Buffer().apply {
             repeat(10_000) { writeUtf8("!") }
         }
@@ -280,7 +274,7 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun responseReplicationFailure_doesNotAffect_readingByConsumer(factory: ClientFactory, @TempDir tempDir: File) {
+    fun responseReplicationFailure_doesNotAffect_readingByConsumer(factory: ClientFactory) {
         val body = Buffer().apply { writeUtf8("Hello, world!") }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
@@ -298,7 +292,7 @@ class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun responseReplicationFailure_doesNotInvalidate_ChuckerTransaction(factory: ClientFactory, @TempDir tempDir: File) {
+    fun responseReplicationFailure_doesNotInvalidate_ChuckerTransaction(factory: ClientFactory) {
         val body = Buffer().apply { writeUtf8("Hello, world!") }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
