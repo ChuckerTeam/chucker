@@ -20,7 +20,7 @@ buildscript {
         retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        detektVersion = '1.11.2'
+        detektVersion = '1.12.0'
         dokkaVersion = '0.10.1'
         ktLintVersion = '0.38.0'
         ktLintGradleVersion = '9.3.0'
