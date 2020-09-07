@@ -21,7 +21,7 @@ buildscript {
 
         // Debug and quality control
         detektVersion = '1.12.0'
-        dokkaVersion = '0.10.1'
+        dokkaVersion = '1.4.0'
         ktLintVersion = '0.38.0'
         ktLintGradleVersion = '9.3.0'
         leakcanaryVersion = '2.4'
