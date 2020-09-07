@@ -31,7 +31,7 @@ buildscript {
         junitGradlePluignVersion = '1.6.2.0'
         junitVersion = '5.6.2'
         mockkVersion = '1.10.0'
-        robolectricVersion = '4.3.1'
+        robolectricVersion = '4.4'
         truthVersion = '1.0.1'
         vintageJunitVersion = '4.13'
     }
