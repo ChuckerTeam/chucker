@@ -96,7 +96,7 @@ val chuckerInterceptor = ChuckerInterceptor(
         maxContentLength = 250000L,
         // List of headers to replace with ** in the Chucker UI
         headersToRedact = setOf("Auth-Token"),
-        // Read response bodies fully even in case of not consuming all of the bytes by the client.
+        // Read the whole response body even when the client does not consume the response completely.
         // This is useful in case of parsing errors or when the response body
         // is closed before being read like in Retrofit with Void and Unit types.
         alwaysReadResponseBody = true
