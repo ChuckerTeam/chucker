@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource
@@ -37,16 +38,15 @@ class TeeSourceTest {
     @Test
     fun bytesPulledFromUpstream_arePulledToSideChannel_alongTheDownstream() {
         val repetitions = Random.nextInt(1, 100)
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * repetitions)
+        val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
         val sideStream = Buffer()
 
         val teeSource = TeeSource(testSource, sideStream)
         Okio.buffer(teeSource).use { source ->
             repeat(repetitions) { index ->
-                source.readByteString(8_192)
+                source.readByteString(SEGMENT_SIZE)
 
-                val subContent = testSource.content.substring(0, (index + 1) * 8_192)
+                val subContent = testSource.content.substring(0, (index + 1) * SEGMENT_SIZE.toInt())
                 assertThat(sideStream.snapshot()).isEqualTo(subContent)
             }
         }

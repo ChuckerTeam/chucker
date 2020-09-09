@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.ByteString
@@ -20,8 +21,7 @@ class ReportingSinkTest {
     fun bytesWrittenToDownstream_areAvailableForConsumer(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val repetitions = Random.nextInt(1, 100)
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * repetitions)
+        val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
 
         Okio.buffer(reportingSink).use { it.writeAll(testSource) }
@@ -44,13 +44,12 @@ class ReportingSinkTest {
     @Test
     fun partiallyConsumedUpstream_hasReadBytesAvailableForConsumer(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * 2)
+        val testSource = TestSource(2 * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
 
-        Okio.buffer(reportingSink).use { it.write(testSource, 8_192) }
+        Okio.buffer(reportingSink).use { it.write(testSource, SEGMENT_SIZE) }
 
-        val expectedContent = testSource.content.substring(0, 8_192)
+        val expectedContent = testSource.content.substring(0, SEGMENT_SIZE.toInt())
         assertThat(reportingCallback.fileContent).isEqualTo(expectedContent)
     }
 

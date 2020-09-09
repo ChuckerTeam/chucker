@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.DepletingSource
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
 import com.chuckerteam.chucker.internal.support.ReportingSink
@@ -18,6 +19,7 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
 import okio.Okio
+import okio.Source
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -33,6 +35,8 @@ import java.nio.charset.Charset
  * results.
  * @param cacheDirectoryProvider Provider of [File] where Chucker will save temporary responses
  * before processing them.
+ * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
+ * bodies even in case of parsing errors or closing the response body without reading it.
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
@@ -41,6 +45,7 @@ class ChuckerInterceptor internal constructor(
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
     private val cacheDirectoryProvider: CacheDirectoryProvider,
+    private val alwaysReadResponseBody: Boolean = false,
     headersToRedact: Set<String> = emptySet(),
 ) : Interceptor {
 
@@ -53,6 +58,8 @@ class ChuckerInterceptor internal constructor(
      * @param maxContentLength The maximum length for request and response content
      * before their truncation. Warning: setting this value too high may cause unexpected
      * results.
+     * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
+     * bodies even in case of parsing errors or closing the response body without reading it.
      * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
      * with a `**` in the Chucker UI.
      */
@@ -61,12 +68,14 @@ class ChuckerInterceptor internal constructor(
         context: Context,
         collector: ChuckerCollector = ChuckerCollector(context),
         maxContentLength: Long = 250000L,
-        headersToRedact: Set<String> = emptySet()
+        headersToRedact: Set<String> = emptySet(),
+        alwaysReadResponseBody: Boolean = false,
     ) : this(
         context = context,
         collector = collector,
         maxContentLength = maxContentLength,
         cacheDirectoryProvider = { context.cacheDir },
+        alwaysReadResponseBody = alwaysReadResponseBody,
         headersToRedact = headersToRedact,
     )
 
@@ -186,15 +195,16 @@ class ChuckerInterceptor internal constructor(
         val contentType = responseBody.contentType()
         val contentLength = responseBody.contentLength()
 
-        val reportingSink = ReportingSink(
+        val sideStream = ReportingSink(
             createTempTransactionFile(),
             ChuckerTransactionReportingSinkCallback(response, transaction),
             maxContentLength
         )
-        val teeSource = TeeSource(responseBody.source(), reportingSink)
+        var upstream: Source = TeeSource(responseBody.source(), sideStream)
+        if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
         return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(teeSource)))
+            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(upstream)))
             .build()
     }
 

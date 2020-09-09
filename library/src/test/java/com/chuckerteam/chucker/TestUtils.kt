@@ -9,6 +9,8 @@ import okio.ByteString
 import okio.Okio
 import java.io.File
 
+const val SEGMENT_SIZE = 8_192L
+
 fun getResourceFile(file: String): Buffer {
     return Buffer().apply {
         writeAll(Okio.buffer(Okio.source(File("./src/test/resources/$file"))))
