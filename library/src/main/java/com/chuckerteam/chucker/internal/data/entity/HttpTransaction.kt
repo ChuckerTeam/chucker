@@ -12,9 +12,9 @@ import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
-import java.util.Date
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import java.util.Date
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -36,7 +36,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseTlsVersion") var responseTlsVersion: String?,
     @ColumnInfo(name = "responseCipherSuite") var responseCipherSuite: String?,
-    @ColumnInfo(name = "requestContentLength") var requestContentLength: Long?,
+    @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
@@ -44,7 +44,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "responseMessage") var responseMessage: String?,
     @ColumnInfo(name = "error") var error: String?,
-    @ColumnInfo(name = "responseContentLength") var responseContentLength: Long?,
+    @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "responseContentType") var responseContentType: String?,
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
@@ -65,14 +65,14 @@ internal class HttpTransaction(
         scheme = null,
         responseTlsVersion = null,
         responseCipherSuite = null,
-        requestContentLength = null,
+        requestPayloadSize = null,
         requestContentType = null,
         requestHeaders = null,
         requestBody = null,
         responseCode = null,
         responseMessage = null,
         error = null,
-        responseContentLength = null,
+        responsePayloadSize = null,
         responseContentType = null,
         responseHeaders = null,
         responseBody = null,
@@ -102,15 +102,15 @@ internal class HttpTransaction(
         get() = tookMs?.let { "$it ms" }
 
     val requestSizeString: String
-        get() = formatBytes(requestContentLength ?: 0)
+        get() = formatBytes(requestPayloadSize ?: 0)
 
     val responseSizeString: String?
-        get() = responseContentLength?.let { formatBytes(it) }
+        get() = responsePayloadSize?.let { formatBytes(it) }
 
     val totalSizeString: String
         get() {
-            val reqBytes = requestContentLength ?: 0
-            val resBytes = responseContentLength ?: 0
+            val reqBytes = requestPayloadSize ?: 0
+            val resBytes = responsePayloadSize ?: 0
             return formatBytes(reqBytes + resBytes)
         }
 
@@ -251,7 +251,7 @@ internal class HttpTransaction(
             (scheme == other.scheme) &&
             (responseTlsVersion == other.responseTlsVersion) &&
             (responseCipherSuite == other.responseCipherSuite) &&
-            (requestContentLength == other.requestContentLength) &&
+            (requestPayloadSize == other.requestPayloadSize) &&
             (requestContentType == other.requestContentType) &&
             (requestHeaders == other.requestHeaders) &&
             (requestBody == other.requestBody) &&
@@ -259,7 +259,7 @@ internal class HttpTransaction(
             (responseCode == other.responseCode) &&
             (responseMessage == other.responseMessage) &&
             (error == other.error) &&
-            (responseContentLength == other.responseContentLength) &&
+            (responsePayloadSize == other.responsePayloadSize) &&
             (responseContentType == other.responseContentType) &&
             (responseHeaders == other.responseHeaders) &&
             (responseBody == other.responseBody) &&

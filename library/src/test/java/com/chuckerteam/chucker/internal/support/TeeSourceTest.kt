@@ -1,147 +1,85 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.io.IOException
-import kotlin.random.Random
 import okio.Buffer
+import okio.BufferedSource
 import okio.ByteString
 import okio.Okio
+import okio.Sink
 import okio.Source
 import okio.Timeout
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.io.TempDir
+import java.io.IOException
+import kotlin.random.Random
 
 class TeeSourceTest {
-    private val teeCallback = TestTeeCallback()
-
     @Test
-    fun bytesReadFromUpstream_areAvailableDownstream(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
+    fun bytesReadFromUpstream_areAvailableDownstream() {
         val testSource = TestSource()
-        val downstream = Buffer()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
-        Okio.buffer(teeSource).use { it.readAll(downstream) }
+        val teeSource = TeeSource(testSource, sideStream = Buffer())
+        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
 
-        assertThat(downstream.snapshot()).isEqualTo(testSource.content)
+        assertThat(downstream).isEqualTo(testSource.content)
     }
 
     @Test
-    fun bytesReadFromUpstream_areAvailableToSideChannel(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
+    fun bytesReadFromUpstream_areAvailableToSideChannel() {
         val testSource = TestSource()
-        val downstream = Buffer()
+        val sideStream = Buffer()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
-        Okio.buffer(teeSource).use { it.readAll(downstream) }
+        val teeSource = TeeSource(testSource, sideStream)
+        Okio.buffer(teeSource).use(BufferedSource::readByteString)
 
-        assertThat(teeCallback.fileContent).isEqualTo(testSource.content)
+        assertThat(sideStream.snapshot()).isEqualTo(testSource.content)
     }
 
     @Test
-    fun bytesPulledFromUpstream_arePulledToSideChannel_alongTheDownstream(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
+    fun bytesPulledFromUpstream_arePulledToSideChannel_alongTheDownstream() {
         val repetitions = Random.nextInt(1, 100)
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * repetitions)
+        val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
+        val sideStream = Buffer()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
+        val teeSource = TeeSource(testSource, sideStream)
         Okio.buffer(teeSource).use { source ->
             repeat(repetitions) { index ->
-                source.readByteString(8_192)
+                source.readByteString(SEGMENT_SIZE)
 
-                val subContent = testSource.content.substring(0, (index + 1) * 8_192)
-                Okio.buffer(Okio.source(testFile)).use {
-                    assertThat(it.readByteString()).isEqualTo(subContent)
-                }
+                val subContent = testSource.content.substring(0, (index + 1) * SEGMENT_SIZE.toInt())
+                assertThat(sideStream.snapshot()).isEqualTo(subContent)
             }
         }
     }
 
     @Test
-    fun tooBigSources_informOfFailures_inSideChannel(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        val testSource = TestSource(10_000)
-        val downstream = Buffer()
+    fun sideStreamThatFailsToWrite_doesNotFailDownstream() {
+        val testSource = TestSource()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback, readBytesLimit = 9_999)
-        Okio.buffer(teeSource).use { it.readAll(downstream) }
+        val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForWrite = true))
+        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
 
-        assertThat(teeCallback.exception)
-            .hasMessageThat()
-            .isEqualTo("Capacity of 9999 bytes exceeded")
+        assertThat(downstream).isEqualTo(testSource.content)
     }
 
     @Test
-    fun tooBigSources_doNotResultInSuccess_ifTheUpstreamIsExhausted(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        val testSource = TestSource(10_000)
-        val downstream = Buffer()
+    fun sideStreamThatFailsToFlush_doesNotFailDownstream() {
+        val testSource = TestSource()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback, readBytesLimit = 9_999)
-        Okio.buffer(teeSource).use { it.readAll(downstream) }
+        val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForFlush = true))
+        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
 
-        assertThat(teeCallback.isSuccess).isFalse()
+        assertThat(downstream).isEqualTo(testSource.content)
     }
 
     @Test
-    fun tooBigSources_areAvailableDownstream(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        val testSource = TestSource(10_000)
-        val downstream = Buffer()
+    fun sideStreamThatFailsToClose_doesNotFailDownstream() {
+        val testSource = TestSource()
 
-        val teeSource = TeeSource(testSource, testFile, teeCallback, readBytesLimit = 9_999)
-        Okio.buffer(teeSource).use { it.readAll(downstream) }
+        val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForClose = true))
+        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
 
-        assertThat(downstream.snapshot()).isEqualTo(testSource.content)
-    }
-
-    @Test
-    fun readException_informOfFailures_inSideChannel(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        val testSource = ThrowingSource
-
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
-
-        assertThrows<IOException> {
-            Okio.buffer(teeSource).use { it.readByte() }
-        }
-
-        assertThat(teeCallback.exception)
-            .hasMessageThat()
-            .isEqualTo("Hello there!")
-    }
-
-    @Test
-    fun notConsumedUpstream_isNotConsideredSuccess(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * 2)
-
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
-        Okio.buffer(teeSource).use { source ->
-            source.readByteString(8_192)
-        }
-
-        assertThat(teeCallback.exception)
-            .hasMessageThat()
-            .isEqualTo("Upstream was not fully consumed")
-    }
-
-    @Test
-    fun partiallyReadBytesFromUpstream_areAvailableToSideChannel(@TempDir tempDir: File) {
-        val testFile = File(tempDir, "testFile")
-        // Okio uses 8KiB as a single size read.
-        val testSource = TestSource(8_192 * 2)
-
-        val teeSource = TeeSource(testSource, testFile, teeCallback)
-        Okio.buffer(teeSource).use { source ->
-            source.readByteString(8_192)
-        }
-
-        assertThat(teeCallback.fileContent).isEqualTo(testSource.content.substring(0, 8_192))
+        assertThat(downstream).isEqualTo(testSource.content)
     }
 
     private class TestSource(contentLength: Int = 1_000) : Source {
@@ -155,31 +93,23 @@ class TeeSourceTest {
         override fun timeout(): Timeout = buffer.timeout()
     }
 
-    private object ThrowingSource : Source {
-        override fun read(sink: Buffer, byteCount: Long): Long {
-            throw IOException("Hello there!")
+    private class ThrowingSink(
+        private val throwForWrite: Boolean = false,
+        private val throwForFlush: Boolean = false,
+        private val throwForClose: Boolean = false,
+    ) : Sink {
+        override fun write(source: Buffer, byteCount: Long) {
+            if (throwForWrite) throw IOException("Hello there!")
         }
 
-        override fun close() = Unit
+        override fun flush() {
+            if (throwForFlush) throw IOException("Hello there!")
+        }
+
+        override fun close() {
+            if (throwForClose) throw IOException("Hello there!")
+        }
 
         override fun timeout(): Timeout = Timeout.NONE
-    }
-
-    private class TestTeeCallback : TeeSource.Callback {
-        private var file: File? = null
-        val fileContent get() = file?.let { Okio.buffer(Okio.source(it)).readByteString() }
-        var exception: IOException? = null
-        var isSuccess = false
-            private set
-
-        override fun onSuccess(file: File) {
-            isSuccess = true
-            this.file = file
-        }
-
-        override fun onFailure(exception: IOException, file: File) {
-            this.exception = exception
-            this.file = file
-        }
     }
 }

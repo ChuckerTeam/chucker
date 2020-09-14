@@ -15,8 +15,7 @@ internal class ThrowableViewModel(
 
 internal class ThrowableViewModelFactory(
     private val throwableId: Long = 0L
-) :
-    ViewModelProvider.Factory {
+) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         require(modelClass == ThrowableViewModel::class.java) { "Cannot create $modelClass" }
         @Suppress("UNCHECKED_CAST")

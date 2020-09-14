@@ -20,26 +20,31 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
+
+    private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+
+    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getSerializable(ARG_TYPE) as PayloadType
+    }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
     private val payloadAdapter = TransactionBodyAdapter()
@@ -47,17 +52,8 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
-    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getSerializable(ARG_TYPE) as PayloadType
-    }
-
-    private lateinit var viewModel: TransactionViewModel
-
-    private val uiScope = MainScope()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         setHasOptionsMenu(true)
     }
 
@@ -67,7 +63,8 @@ internal class TransactionPayloadFragment :
         savedInstanceState: Bundle?
     ): View? {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
-            inflater, container,
+            inflater,
+            container,
             false
         )
         return payloadBinding.root
@@ -87,7 +84,7 @@ internal class TransactionPayloadFragment :
                 viewLifecycleOwner,
                 Observer { (transaction, formatRequestBody) ->
                     if (transaction == null) return@Observer
-                    uiScope.launch {
+                    lifecycleScope.launch {
                         payloadBinding.loadingProgress.visibility = View.VISIBLE
 
                         val result = processPayload(payloadType, transaction, formatRequestBody)
@@ -125,11 +122,6 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        uiScope.cancel()
-    }
-
     @SuppressLint("NewApi")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val transaction = viewModel.transaction.value
@@ -146,7 +138,7 @@ internal class TransactionPayloadFragment :
             menu.findItem(R.id.save_body).apply {
                 isVisible = true
                 setOnMenuItemClickListener {
-                    viewBodyExternally()
+                    createFileToSaveBody()
                     true
                 }
             }
@@ -167,17 +159,17 @@ internal class TransactionPayloadFragment :
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
         // SAF is not available on pre-Kit Kat so let's hide the icon.
         (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestContentLength))
-        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responseContentLength))
+        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
+        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
         else -> true
     }
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
         PayloadType.REQUEST -> {
-            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestContentLength))
+            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestPayloadSize))
         }
         PayloadType.RESPONSE -> {
-            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responseContentLength))
+            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responsePayloadSize))
         }
     }
 
@@ -188,22 +180,20 @@ internal class TransactionPayloadFragment :
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    @SuppressLint("DefaultLocale")
-    private fun viewBodyExternally() {
-        viewModel.transaction.value?.let {
-            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
-                type = "*/*"
-            }
-            if (intent.resolveActivity(requireActivity().packageManager) != null) {
-                startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
-            } else {
-                Toast.makeText(
-                    requireContext(), R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private fun createFileToSaveBody() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+            type = "*/*"
+        }
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.chucker_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -212,7 +202,7 @@ internal class TransactionPayloadFragment :
             val uri = resultData?.data
             val transaction = viewModel.transaction.value
             if (uri != null && transaction != null) {
-                uiScope.launch {
+                lifecycleScope.launch {
                     val result = saveToFile(payloadType, uri, transaction)
                     val toastMessageId = if (result) {
                         R.string.chucker_file_saved
@@ -221,6 +211,8 @@ internal class TransactionPayloadFragment :
                     }
                     Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(context, R.string.chucker_file_not_saved, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -266,7 +258,8 @@ internal class TransactionPayloadFragment :
                 result.add(
                     TransactionPayloadItem.HeaderItem(
                         HtmlCompat.fromHtml(
-                            headersString, HtmlCompat.FROM_HTML_MODE_LEGACY
+                            headersString,
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
                         )
                     )
                 )

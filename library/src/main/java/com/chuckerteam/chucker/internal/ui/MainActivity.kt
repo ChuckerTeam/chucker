@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.internal.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
@@ -12,7 +11,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 internal class MainActivity :
     BaseChuckerActivity() {
 
-    private lateinit var viewModel: MainViewModel
     private lateinit var mainBinding: ChuckerActivityMainBinding
 
     private val applicationName: CharSequence
@@ -21,7 +19,6 @@ internal class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         with(mainBinding) {
             setContentView(root)
@@ -54,16 +51,18 @@ internal class MainActivity :
     private fun setupViewPager() {
         mainBinding.viewPager.apply {
             adapter = HomePageAdapter(this@MainActivity)
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    if (position == HomePageAdapter.NETWORK_SCREEN_POSITION) {
-                        Chucker.dismissTransactionsNotification(this@MainActivity)
-                    } else {
-                        Chucker.dismissErrorsNotification(this@MainActivity)
+            registerOnPageChangeCallback(
+                object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        super.onPageSelected(position)
+                        if (position == HomePageAdapter.NETWORK_SCREEN_POSITION) {
+                            Chucker.dismissTransactionsNotification(this@MainActivity)
+                        } else {
+                            Chucker.dismissErrorsNotification(this@MainActivity)
+                        }
                     }
                 }
-            })
+            )
         }
 
         TabLayoutMediator(mainBinding.tabLayout, mainBinding.viewPager) { currentTab, currentPosition ->

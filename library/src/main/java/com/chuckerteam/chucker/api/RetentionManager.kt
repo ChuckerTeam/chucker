@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 /**
  * Class responsible of holding the logic for the retention of your HTTP transactions

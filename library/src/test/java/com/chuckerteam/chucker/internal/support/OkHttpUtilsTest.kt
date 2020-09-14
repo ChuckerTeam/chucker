@@ -11,30 +11,6 @@ import org.junit.jupiter.api.Test
 class OkHttpUtilsTest {
 
     @Test
-    fun contentLength_withNoHeader_returnsInvalidValue() {
-        val mockResponse = mockk<Response>()
-        every { mockResponse.header("Content-Length") } returns null
-
-        assertThat(mockResponse.contentLength).isEqualTo(-1)
-    }
-
-    @Test
-    fun contentLength_withZeroLength_returnsZero() {
-        val mockResponse = mockk<Response>()
-        every { mockResponse.header("Content-Length") } returns "0"
-
-        assertThat(mockResponse.contentLength).isEqualTo(0L)
-    }
-
-    @Test
-    fun contentLength_withRealLength_returnsValue() {
-        val mockResponse = mockk<Response>()
-        every { mockResponse.header("Content-Length") } returns "42"
-
-        assertThat(mockResponse.contentLength).isEqualTo(42L)
-    }
-
-    @Test
     fun isChunked_withNotChunked() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Transfer-Encoding") } returns "gzip"

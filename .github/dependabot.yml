@@ -1,0 +1,28 @@
+# Documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+# Updates for Github Actions used in the repo
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+        interval: "weekly"
+# Updates for Gradle dependencies used in the app      
+    - package-ecosystem: gradle
+      directory: "/"
+      schedule:
+        interval: "weekly"
+      open-pull-requests-limit: 10
+      reviewers:
+      - "cortinico"
+      - "vbuberen"
+      ignore:
+        - dependency-name: com.squareup.okhttp3:logging-interceptor
+          versions: "> 3.12.10"
+        - dependency-name: com.squareup.okhttp3:mockwebserver
+          versions: "> 3.12.10"
+        - dependency-name: com.squareup.okhttp3:okhttp
+          versions: "> 3.12.10"
+        - dependency-name: com.squareup.retrofit2:retrofit
+          versions: "> 2.6.4"

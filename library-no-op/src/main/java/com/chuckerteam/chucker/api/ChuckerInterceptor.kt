@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
-import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
 
 /**
  * No-op implementation.
@@ -12,7 +12,8 @@ class ChuckerInterceptor @JvmOverloads constructor(
     context: Context,
     collector: Any? = null,
     maxContentLength: Any? = null,
-    headersToRedact: Any? = null
+    headersToRedact: Any? = null,
+    alwaysReadResponseBody: Any? = null,
 ) : Interceptor {
 
     fun redactHeaders(vararg names: String): ChuckerInterceptor {

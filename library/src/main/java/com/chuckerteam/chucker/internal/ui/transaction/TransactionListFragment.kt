@@ -16,19 +16,16 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.data.model.DialogData
-import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
-import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.ShareUtils
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 internal class TransactionListFragment :
@@ -36,24 +33,20 @@ internal class TransactionListFragment :
     SearchView.OnQueryTextListener,
     TransactionAdapter.TransactionClickListListener {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
+
     private lateinit var transactionsBinding: ChuckerFragmentTransactionListBinding
     private lateinit var transactionsAdapter: TransactionAdapter
-    private val cacheFileFactory: FileFactory by lazy {
-        AndroidCacheFileFactory(requireContext())
-    }
-    private val uiScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         transactionsBinding = ChuckerFragmentTransactionListBinding.inflate(inflater, container, false)
 
@@ -80,11 +73,6 @@ internal class TransactionListFragment :
                     if (transactionTuples.isEmpty()) View.VISIBLE else View.GONE
             }
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        uiScope.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -139,22 +127,34 @@ internal class TransactionListFragment :
         TransactionActivity.start(requireActivity(), transactionId)
     }
 
-    private fun exportTransactions() {
-        uiScope.launch {
-            val transactions = viewModel.getAllTransactions()
-            if (transactions.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
-            } else {
-                val filecontent = ShareUtils.getStringFromTransactions(transactions, requireContext())
-                val file = viewModel.createExportFile(filecontent, cacheFileFactory)
-                val uri = FileProvider.getUriForFile(
-                    requireContext(),
-                    getString(R.string.chucker_provider_authority),
-                    file
-                )
-                shareFile(uri)
-            }
+    private fun exportTransactions() = lifecycleScope.launch {
+        val transactions = viewModel.getAllTransactions()
+        if (transactions.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
+            return@launch
         }
+
+        val cache = requireContext().cacheDir
+        if (cache == null) {
+            println("Failed to obtain a valid cache directory for Chucker file export")
+            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+            return@launch
+        }
+
+        val fileContent = ShareUtils.getStringFromTransactions(transactions, requireContext())
+        val file = viewModel.createExportFile(fileContent, cache)
+        if (file == null) {
+            println("Failed to create an export file for Chucker")
+            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+            return@launch
+        }
+
+        val uri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.com.chuckerteam.chucker.provider",
+            file
+        )
+        shareFile(uri)
     }
 
     private fun shareFile(uri: Uri) {

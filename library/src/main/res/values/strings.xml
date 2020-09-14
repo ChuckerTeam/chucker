@@ -26,11 +26,12 @@
     <string name="chucker_share">Share</string>
     <string name="chucker_export">Export</string>
     <string name="chucker_export_empty_text">Nothing to export</string>
+    <string name="chucker_export_no_file">Failed to create file for export</string>
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
     <string name="chucker_save">Save body to file</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
-    <string name="chucker_file_saved">File was saved successfully!</string>
+    <string name="chucker_file_saved">File saved successfully!</string>
     <string name="chucker_file_not_saved">Failed to save file</string>
     <string name="chucker_body_empty">(body is empty)</string>
     <string name="chucker_body_omitted">(encoded or binary body omitted)</string>
@@ -62,5 +63,4 @@
     <string name="chucker_request_not_ready">The request isn\'t ready for sharing or saving</string>
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
-    <string name="chucker_provider_authority">com.chuckerteam.chucker.provider</string>
 </resources>

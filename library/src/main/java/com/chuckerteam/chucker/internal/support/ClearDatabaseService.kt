@@ -3,10 +3,10 @@ package com.chuckerteam.chucker.internal.support
 import android.app.IntentService
 import android.content.Intent
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import java.io.Serializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME) {
 

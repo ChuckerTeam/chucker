@@ -3,11 +3,13 @@ package com.chuckerteam.chucker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.internal.support.hasBody
-import java.io.File
 import okhttp3.Response
 import okio.Buffer
 import okio.ByteString
 import okio.Okio
+import java.io.File
+
+const val SEGMENT_SIZE = 8_192L
 
 fun getResourceFile(file: String): Buffer {
     return Buffer().apply {
@@ -15,9 +17,15 @@ fun getResourceFile(file: String): Buffer {
     }
 }
 
-fun Response.readByteStringBody(): ByteString? {
+fun Response.readByteStringBody(length: Long? = null): ByteString? {
     return if (hasBody()) {
-        body()?.source()?.use { it.readByteString() }
+        body()?.source()?.use { source ->
+            if (length == null) {
+                source.readByteString()
+            } else {
+                source.readByteString(length)
+            }
+        }
     } else {
         null
     }
