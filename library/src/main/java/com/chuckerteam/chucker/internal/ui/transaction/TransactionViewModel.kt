@@ -7,7 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.ui.EXPORT_FILENAME
+import java.io.File
+
+internal const val EXPORT_FILENAME = "transaction.txt"
 
 internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
@@ -49,6 +54,10 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
     fun encodeUrl(encode: Boolean) {
         mutableEncodeUrl.value = encode
     }
+
+    fun createExportFile(
+        cacheDirectory: File,
+    ) = FileFactory.create(cacheDirectory, EXPORT_FILENAME)
 }
 
 internal class TransactionViewModelFactory(

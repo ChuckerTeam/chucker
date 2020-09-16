@@ -27,6 +27,9 @@
                 <item
                     android:id="@+id/share_curl"
                     android:title="@string/chucker_share_as_curl" />
+                <item
+                    android:id="@+id/share_file"
+                    android:title="@string/chucker_share_as_file" />
             </group>
         </menu>
     </item>

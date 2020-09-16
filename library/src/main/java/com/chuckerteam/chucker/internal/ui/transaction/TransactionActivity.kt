@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionCurlCommandSharable
 import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
+import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +83,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         R.id.share_curl -> shareTransactionAsText { transaction ->
             TransactionCurlCommandSharable(transaction)
         }
+        R.id.share_file -> shareTransactionAsFile { transaction ->
+            val encodeUrls = viewModel.encodeUrl.value!!
+            TransactionDetailsSharable(transaction, encodeUrls)
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -96,6 +102,41 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 activity = this@TransactionActivity,
                 intentTitle = getString(R.string.chucker_share_transaction_title),
                 intentSubject = getString(R.string.chucker_share_transaction_subject)
+            )
+            startActivity(shareIntent)
+        }
+        return true
+    }
+
+    private fun shareTransactionAsFile(block: (HttpTransaction) -> Sharable): Boolean {
+        val transaction = viewModel.transaction.value
+        if (transaction == null) {
+            showToast(getString(R.string.chucker_request_not_ready))
+            return true
+        }
+
+        val cache = cacheDir
+        if (cache == null) {
+            println("Failed to obtain a valid cache directory for Chucker file export")
+            Toast.makeText(this, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        val file = viewModel.createExportFile(cache)
+        if (file == null) {
+            println("Failed to create an export file for Chucker")
+            Toast.makeText(this, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        val sharable = block(transaction)
+        lifecycleScope.launch {
+            val shareIntent = sharable.shareAsFile(
+                activity = this@TransactionActivity,
+                file = file,
+                intentTitle = getString(R.string.chucker_share_transaction_title),
+                intentSubject = getString(R.string.chucker_share_transaction_subject),
+                clipDataLabel = "transaction"
             )
             startActivity(shareIntent)
         }
