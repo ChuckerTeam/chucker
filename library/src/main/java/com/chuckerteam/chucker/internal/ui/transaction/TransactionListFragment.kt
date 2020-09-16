@@ -130,29 +130,17 @@ internal class TransactionListFragment :
             return@launch
         }
 
-        val cache = requireContext().cacheDir
-        if (cache == null) {
-            println("Failed to obtain a valid cache directory for Chucker file export")
-            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return@launch
-        }
-
-        val file = viewModel.createExportFile(cache)
-        if (file == null) {
-            println("Failed to create an export file for Chucker")
-            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return@launch
-        }
-
         val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
         val shareIntent = sharableTransactions.shareAsFile(
             activity = requireActivity(),
-            file = file,
+            fileName = EXPORT_FILE_NAME,
             intentTitle = getString(R.string.chucker_share_all_transactions_title),
             intentSubject = getString(R.string.chucker_share_all_transactions_subject),
             clipDataLabel = "transactions"
         )
-        startActivity(shareIntent)
+        if (shareIntent != null) {
+            startActivity(shareIntent)
+        }
     }
 
     private fun getClearDialogData(): DialogData = DialogData(
@@ -170,6 +158,8 @@ internal class TransactionListFragment :
     )
 
     companion object {
+        private const val EXPORT_FILE_NAME = "transactions.txt"
+
         fun newInstance(): TransactionListFragment {
             return TransactionListFragment()
         }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -19,9 +18,7 @@ import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsText
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
@@ -115,30 +112,18 @@ internal class TransactionActivity : BaseChuckerActivity() {
             return true
         }
 
-        val cache = cacheDir
-        if (cache == null) {
-            println("Failed to obtain a valid cache directory for Chucker file export")
-            Toast.makeText(this, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return true
-        }
-
-        val file = viewModel.createExportFile(cache)
-        if (file == null) {
-            println("Failed to create an export file for Chucker")
-            Toast.makeText(this, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return true
-        }
-
         val sharable = block(transaction)
         lifecycleScope.launch {
             val shareIntent = sharable.shareAsFile(
                 activity = this@TransactionActivity,
-                file = file,
+                fileName = EXPORT_FILE_NAME,
                 intentTitle = getString(R.string.chucker_share_transaction_title),
                 intentSubject = getString(R.string.chucker_share_transaction_subject),
                 clipDataLabel = "transaction"
             )
-            startActivity(shareIntent)
+            if (shareIntent != null) {
+                startActivity(shareIntent)
+            }
         }
         return true
     }
@@ -156,6 +141,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     companion object {
+        private const val EXPORT_FILE_NAME = "transaction.txt"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 

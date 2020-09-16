@@ -10,12 +10,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
-import java.io.File
-
-internal const val EXPORT_FILENAME = "transactions.txt"
 
 internal class MainViewModel : ViewModel() {
 
@@ -41,10 +37,6 @@ internal class MainViewModel : ViewModel() {
         .getSortedThrowablesTuples()
 
     suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
-
-    fun createExportFile(
-        cacheDirectory: File,
-    ) = FileFactory.create(cacheDirectory, EXPORT_FILENAME)
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
