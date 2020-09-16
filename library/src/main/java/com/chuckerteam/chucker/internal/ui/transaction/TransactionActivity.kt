@@ -16,7 +16,7 @@ import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionCurlCommandSharable
 import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
-import com.chuckerteam.chucker.internal.support.shareAsText
+import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import kotlinx.coroutines.launch
 
@@ -95,7 +95,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
         val sharable = block(transaction)
         lifecycleScope.launch {
-            val shareIntent = sharable.shareAsText(
+            val shareIntent = sharable.shareAsUtf8Text(
                 activity = this@TransactionActivity,
                 intentTitle = getString(R.string.chucker_share_transaction_title),
                 intentSubject = getString(R.string.chucker_share_transaction_subject)

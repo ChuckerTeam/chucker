@@ -21,7 +21,7 @@ class TransactionCurlCommandSharableTest {
             val transaction = TestTransactionFactory.createTransaction(method)
             val sharableTransaction = TransactionCurlCommandSharable(transaction)
 
-            val sharedContent = sharableTransaction.toSharableContent(context)
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
             assertThat(sharedContent).isEqualTo("curl -X $method http://localhost/getUsers")
         }
@@ -45,7 +45,7 @@ class TransactionCurlCommandSharableTest {
                 append(" http://localhost/getUsers")
             }
 
-            val sharedContent = sharableTransaction.toSharableContent(context)
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
             assertThat(sharedContent).isEqualTo(expectedCurlCommand)
         }
@@ -61,7 +61,7 @@ class TransactionCurlCommandSharableTest {
             val shareableTransaction = TransactionCurlCommandSharable(transaction)
             val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
 
-            val sharedContent = shareableTransaction.toSharableContent(context)
+            val sharedContent = shareableTransaction.toSharableUtf8Content(context)
 
             assertThat(sharedContent).isEqualTo(expectedCurlCommand)
         }

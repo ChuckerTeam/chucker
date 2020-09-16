@@ -2,13 +2,15 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import okio.Buffer
+import okio.Source
 
 internal class TransactionCurlCommandSharable(
     private val transaction: HttpTransaction,
 ) : Sharable {
-    override fun toSharableContent(context: Context): String {
+    override fun toSharableContent(context: Context): Source = Buffer().apply {
         var compressed = false
-        var curlCmd = "curl -X ${transaction.method}"
+        writeUtf8("curl -X ${transaction.method}")
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
@@ -17,15 +19,14 @@ internal class TransactionCurlCommandSharable(
             ) {
                 compressed = true
             }
-            curlCmd += " -H \"${header.name}: ${header.value}\""
+            writeUtf8(" -H \"${header.name}: ${header.value}\"")
         }
 
         val requestBody = transaction.requestBody
         if (!requestBody.isNullOrEmpty()) {
             // try to keep to a single line and use a subshell to preserve any line breaks
-            curlCmd += " --data $'${requestBody.replace("\n", "\\n")}'"
+            writeUtf8(" --data $'${requestBody.replace("\n", "\\n")}'")
         }
-        curlCmd += (if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(encode = false)
-        return curlCmd
+        writeUtf8((if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(encode = false))
     }
 }

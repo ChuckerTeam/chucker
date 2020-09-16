@@ -10,17 +10,24 @@ import androidx.core.content.FileProvider
 import com.chuckerteam.chucker.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okio.BufferedSource
+import okio.Okio
+import okio.Source
 
 internal interface Sharable {
-    fun toSharableContent(context: Context): String
+    fun toSharableContent(context: Context): Source
 }
 
-internal suspend fun Sharable.shareAsText(
+internal fun Sharable.toSharableUtf8Content(
+    context: Context,
+) = Okio.buffer(toSharableContent(context)).use(BufferedSource::readUtf8)
+
+internal suspend fun Sharable.shareAsUtf8Text(
     activity: Activity,
     intentTitle: String,
     intentSubject: String,
 ): Intent {
-    val content = withContext(Dispatchers.Default) { toSharableContent(activity) }
+    val content = withContext(Dispatchers.Default) { toSharableUtf8Content(activity) }
     return ShareCompat.IntentBuilder.from(activity)
         .setType("text/plain")
         .setChooserTitle(intentTitle)
@@ -51,7 +58,9 @@ internal suspend fun Sharable.shareAsFile(
     }
 
     val fileContent = withContext(Dispatchers.Default) { toSharableContent(activity) }
-    withContext(Dispatchers.IO) { file.writeText(fileContent) }
+    withContext(Dispatchers.IO) {
+        Okio.buffer(Okio.sink(file)).use { it.writeAll(fileContent) }
+    }
 
     val uri = FileProvider.getUriForFile(
         activity,

@@ -17,7 +17,7 @@ class TransactionDetailsSharableTest {
         val transaction = TestTransactionFactory.createTransaction("GET")
         val sharableTransaction = TransactionDetailsSharable(transaction, encodeUrls = false)
 
-        val sharedContent = sharableTransaction.toSharableContent(context)
+        val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
         assertThat(sharedContent).isEqualTo(TestTransactionFactory.expectedGetHttpTransaction)
     }
@@ -27,7 +27,7 @@ class TransactionDetailsSharableTest {
         val transaction = TestTransactionFactory.createTransaction("POST")
         val sharableTransaction = TransactionDetailsSharable(transaction, encodeUrls = false)
 
-        val sharedContent = sharableTransaction.toSharableContent(context)
+        val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
         assertThat(sharedContent).isEqualTo(TestTransactionFactory.expectedHttpPostTransaction)
     }
