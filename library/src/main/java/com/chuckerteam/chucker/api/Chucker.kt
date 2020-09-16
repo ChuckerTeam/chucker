@@ -10,19 +10,19 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
 /**
  * Chucker methods and utilities to interact with the library.
  */
-object Chucker {
+public object Chucker {
 
     @Deprecated("This variable will be removed in 4.x release")
-    const val SCREEN_HTTP = 1
+    public const val SCREEN_HTTP: Int = 1
     @Deprecated("This variable will be removed in 4.x release")
-    const val SCREEN_ERROR = 2
+    public const val SCREEN_ERROR: Int = 2
 
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
-    val isOp = true
+    public val isOp: Boolean = true
 
     /**
      * Get an Intent to launch the Chucker UI directly.
@@ -36,7 +36,7 @@ object Chucker {
         DeprecationLevel.WARNING
     )
     @JvmStatic
-    fun getLaunchIntent(context: Context, @Screen screen: Int): Intent {
+    public fun getLaunchIntent(context: Context, @Screen screen: Int): Intent {
         return getLaunchIntent(context).putExtra(MainActivity.EXTRA_SCREEN, screen)
     }
 
@@ -46,7 +46,7 @@ object Chucker {
      * @return An Intent for the main Chucker Activity that can be started with [Context.startActivity].
      */
     @JvmStatic
-    fun getLaunchIntent(context: Context): Intent {
+    public fun getLaunchIntent(context: Context): Intent {
         return Intent(context, MainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
@@ -63,7 +63,7 @@ object Chucker {
         DeprecationLevel.WARNING
     )
     @JvmStatic
-    fun registerDefaultCrashHandler(collector: ChuckerCollector) {
+    public fun registerDefaultCrashHandler(collector: ChuckerCollector) {
         Thread.setDefaultUncaughtExceptionHandler(ChuckerCrashHandler(collector))
     }
 
@@ -76,7 +76,7 @@ object Chucker {
         DeprecationLevel.WARNING
     )
     @JvmStatic
-    fun dismissTransactionsNotification(context: Context) {
+    public fun dismissTransactionsNotification(context: Context) {
         NotificationHelper(context).dismissTransactionsNotification()
     }
 
@@ -89,7 +89,7 @@ object Chucker {
         DeprecationLevel.WARNING
     )
     @JvmStatic
-    fun dismissErrorsNotification(context: Context) {
+    public fun dismissErrorsNotification(context: Context) {
         NotificationHelper(context).dismissErrorsNotification()
     }
 
@@ -97,7 +97,7 @@ object Chucker {
      * Dismisses all previous Chucker notifications.
      */
     @JvmStatic
-    fun dismissNotifications(context: Context) {
+    public fun dismissNotifications(context: Context) {
         NotificationHelper(context).dismissNotifications()
     }
 
@@ -106,7 +106,7 @@ object Chucker {
      */
     @Deprecated("This param will be removed in 4.x release")
     @IntDef(value = [SCREEN_HTTP, SCREEN_ERROR])
-    annotation class Screen
+    public annotation class Screen
 
     internal const val LOG_TAG = "Chucker"
 }

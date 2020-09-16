@@ -23,6 +23,7 @@ import okio.Source
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.jvm.Throws
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -40,7 +41,7 @@ import java.nio.charset.Charset
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
-class ChuckerInterceptor internal constructor(
+public class ChuckerInterceptor internal constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
@@ -64,7 +65,7 @@ class ChuckerInterceptor internal constructor(
      * with a `**` in the Chucker UI.
      */
     @JvmOverloads
-    constructor(
+    public constructor(
         context: Context,
         collector: ChuckerCollector = ChuckerCollector(context),
         maxContentLength: Long = 250000L,
@@ -83,7 +84,7 @@ class ChuckerInterceptor internal constructor(
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
 
     /** Adds [headerName] into [headersToRedact] */
-    fun redactHeader(vararg headerName: String) {
+    public fun redactHeader(vararg headerName: String) {
         headersToRedact.addAll(headerName)
     }
 
@@ -289,7 +290,7 @@ class ChuckerInterceptor internal constructor(
         }
     }
 
-    companion object {
+    private companion object {
         private val UTF8 = Charset.forName("UTF-8")
 
         private const val MAX_BLOB_SIZE = 1000_000L

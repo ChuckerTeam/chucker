@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * @param retentionPeriod A [Period] to specify the retention of data. Default 1 week.
  */
 @Suppress("MagicNumber")
-class RetentionManager @JvmOverloads constructor(
+public class RetentionManager @JvmOverloads constructor(
     context: Context,
     retentionPeriod: Period = Period.ONE_WEEK
 ) {
@@ -84,7 +84,7 @@ class RetentionManager @JvmOverloads constructor(
         }
     }
 
-    enum class Period {
+    public enum class Period {
         /** Retain data for the last hour. */
         ONE_HOUR,
         /** Retain data for the last day. */
@@ -95,7 +95,7 @@ class RetentionManager @JvmOverloads constructor(
         FOREVER
     }
 
-    companion object {
+    private companion object {
         private const val PREFS_NAME = "chucker_preferences"
         private const val KEY_LAST_CLEANUP = "last_cleanup"
         private var lastCleanup: Long = 0
