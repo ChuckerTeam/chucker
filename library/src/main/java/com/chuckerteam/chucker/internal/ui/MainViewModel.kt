@@ -10,13 +10,14 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.EXPORT_FILENAME
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+
+internal const val EXPORT_FILENAME = "transactions.txt"
 
 internal class MainViewModel : ViewModel() {
 
@@ -43,10 +44,11 @@ internal class MainViewModel : ViewModel() {
 
     suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
 
-    suspend fun createExportFile(content: String, fileFactory: FileFactory): File = withContext(Dispatchers.IO) {
-        val file = fileFactory.create(EXPORT_FILENAME)
-        file.writeText(content)
-        return@withContext file
+    suspend fun createExportFile(
+        content: String,
+        cacheDirectory: File,
+    ) = withContext(Dispatchers.IO) {
+        FileFactory.create(cacheDirectory, EXPORT_FILENAME)?.apply { writeText(content) }
     }
 
     fun updateItemsFilter(searchQuery: String) {

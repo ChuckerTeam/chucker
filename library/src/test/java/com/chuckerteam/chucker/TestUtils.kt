@@ -9,15 +9,23 @@ import okio.ByteString
 import okio.Okio
 import java.io.File
 
+const val SEGMENT_SIZE = 8_192L
+
 fun getResourceFile(file: String): Buffer {
     return Buffer().apply {
         writeAll(Okio.buffer(Okio.source(File("./src/test/resources/$file"))))
     }
 }
 
-fun Response.readByteStringBody(): ByteString? {
+fun Response.readByteStringBody(length: Long? = null): ByteString? {
     return if (hasBody()) {
-        body()?.source()?.use { it.readByteString() }
+        body()?.source()?.use { source ->
+            if (length == null) {
+                source.readByteString()
+            } else {
+                source.readByteString(length)
+            }
+        }
     } else {
         null
     }

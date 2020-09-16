@@ -2,9 +2,11 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.AndroidCacheFileFactory
+import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.DepletingSource
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.ReportingSink
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
@@ -17,6 +19,7 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
 import okio.Okio
+import okio.Source
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -31,8 +34,10 @@ import kotlin.jvm.Throws
  * @param maxContentLength The maximum length for request and response content
  * before their truncation. Warning: setting this value too high may cause unexpected
  * results.
- * @param fileFactory Provider for [File]s where Chucker will save temporary responses before
- * processing them.
+ * @param cacheDirectoryProvider Provider of [File] where Chucker will save temporary responses
+ * before processing them.
+ * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
+ * bodies even in case of parsing errors or closing the response body without reading it.
  * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
  * with a `**` in the Chucker UI.
  */
@@ -40,8 +45,9 @@ public class ChuckerInterceptor internal constructor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
     private val maxContentLength: Long = 250000L,
-    private val fileFactory: FileFactory,
-    headersToRedact: Set<String> = emptySet()
+    private val cacheDirectoryProvider: CacheDirectoryProvider,
+    private val alwaysReadResponseBody: Boolean = false,
+    headersToRedact: Set<String> = emptySet(),
 ) : Interceptor {
 
     /**
@@ -53,6 +59,8 @@ public class ChuckerInterceptor internal constructor(
      * @param maxContentLength The maximum length for request and response content
      * before their truncation. Warning: setting this value too high may cause unexpected
      * results.
+     * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
+     * bodies even in case of parsing errors or closing the response body without reading it.
      * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
      * with a `**` in the Chucker UI.
      */
@@ -61,8 +69,16 @@ public class ChuckerInterceptor internal constructor(
         context: Context,
         collector: ChuckerCollector = ChuckerCollector(context),
         maxContentLength: Long = 250000L,
-        headersToRedact: Set<String> = emptySet()
-    ) : this(context, collector, maxContentLength, AndroidCacheFileFactory(context), headersToRedact)
+        headersToRedact: Set<String> = emptySet(),
+        alwaysReadResponseBody: Boolean = false,
+    ) : this(
+        context = context,
+        collector = collector,
+        maxContentLength = maxContentLength,
+        cacheDirectoryProvider = { context.cacheDir },
+        alwaysReadResponseBody = alwaysReadResponseBody,
+        headersToRedact = headersToRedact,
+    )
 
     private val io: IOUtils = IOUtils(context)
     private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
@@ -180,16 +196,27 @@ public class ChuckerInterceptor internal constructor(
         val contentType = responseBody.contentType()
         val contentLength = responseBody.contentLength()
 
-        val teeSource = TeeSource(
-            responseBody.source(),
-            fileFactory.create(),
-            ChuckerTransactionTeeCallback(response, transaction),
+        val sideStream = ReportingSink(
+            createTempTransactionFile(),
+            ChuckerTransactionReportingSinkCallback(response, transaction),
             maxContentLength
         )
+        var upstream: Source = TeeSource(responseBody.source(), sideStream)
+        if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
         return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(teeSource)))
+            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(upstream)))
             .build()
+    }
+
+    private fun createTempTransactionFile(): File? {
+        val cache = cacheDirectoryProvider.provide()
+        return if (cache == null) {
+            IOException("Failed to obtain a valid cache directory for Chucker transaction file").printStackTrace()
+            null
+        } else {
+            FileFactory.create(cache)
+        }
     }
 
     private fun processResponseBody(
@@ -230,33 +257,36 @@ public class ChuckerInterceptor internal constructor(
         return builder.build()
     }
 
-    private inner class ChuckerTransactionTeeCallback(
+    private inner class ChuckerTransactionReportingSinkCallback(
         private val response: Response,
         private val transaction: HttpTransaction
-    ) : TeeSource.Callback {
+    ) : ReportingSink.Callback {
 
-        override fun onClosed(file: File, totalBytesRead: Long) {
-            val buffer = try {
-                readResponseBuffer(file, response.isGzipped)
-            } catch (e: IOException) {
-                null
+        override fun onClosed(file: File?, sourceByteCount: Long) {
+            if (file != null) {
+                val buffer = readResponseBuffer(file, response.isGzipped)
+                if (buffer != null) {
+                    processResponseBody(response, buffer, transaction)
+                }
             }
-            if (buffer != null) processResponseBody(response, buffer, transaction)
-            transaction.responsePayloadSize = totalBytesRead
+            transaction.responsePayloadSize = sourceByteCount
             collector.onResponseReceived(transaction)
-            file.delete()
+            file?.delete()
         }
 
-        override fun onFailure(file: File, exception: IOException) = exception.printStackTrace()
+        override fun onFailure(file: File?, exception: IOException) = exception.printStackTrace()
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean): Buffer {
+        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
             val bufferedSource = Okio.buffer(Okio.source(responseBody))
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
                 bufferedSource
             }
-            return Buffer().apply { source.use { writeAll(it) } }
+            Buffer().apply { source.use { writeAll(it) } }
+        } catch (e: IOException) {
+            IOException("Response payload couldn't be processed by Chucker", e).printStackTrace()
+            null
         }
     }
 

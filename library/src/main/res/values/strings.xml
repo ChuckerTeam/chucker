@@ -26,6 +26,7 @@
     <string name="chucker_share">Share</string>
     <string name="chucker_export">Export</string>
     <string name="chucker_export_empty_text">Nothing to export</string>
+    <string name="chucker_export_no_file">Failed to create file for export</string>
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
     <string name="chucker_save">Save body to file</string>

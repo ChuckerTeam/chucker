@@ -13,7 +13,8 @@ public class ChuckerInterceptor @JvmOverloads constructor(
     context: Context,
     collector: Any? = null,
     maxContentLength: Any? = null,
-    headersToRedact: Any? = null
+    headersToRedact: Any? = null,
+    alwaysReadResponseBody: Any? = null,
 ) : Interceptor {
 
     public fun redactHeaders(vararg names: String): ChuckerInterceptor {

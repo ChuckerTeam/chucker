@@ -63,7 +63,8 @@ internal class TransactionPayloadFragment :
         savedInstanceState: Bundle?
     ): View? {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
-            inflater, container,
+            inflater,
+            container,
             false
         )
         return payloadBinding.root
@@ -189,7 +190,8 @@ internal class TransactionPayloadFragment :
             startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
         } else {
             Toast.makeText(
-                requireContext(), R.string.chucker_save_failed_to_open_document,
+                requireContext(),
+                R.string.chucker_save_failed_to_open_document,
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -256,7 +258,8 @@ internal class TransactionPayloadFragment :
                 result.add(
                     TransactionPayloadItem.HeaderItem(
                         HtmlCompat.fromHtml(
-                            headersString, HtmlCompat.FROM_HTML_MODE_LEGACY
+                            headersString,
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
                         )
                     )
                 )

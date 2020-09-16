@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.FileFactory
+import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import io.mockk.every
 import io.mockk.mockk
 import okhttp3.Interceptor
@@ -13,9 +13,10 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
 internal class ChuckerInterceptorDelegate(
-    fileFactory: FileFactory,
     maxContentLength: Long = 250000L,
-    headersToRedact: Set<String> = emptySet()
+    headersToRedact: Set<String> = emptySet(),
+    alwaysReadResponseBody: Boolean = false,
+    cacheDirectoryProvider: CacheDirectoryProvider,
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
@@ -37,12 +38,13 @@ internal class ChuckerInterceptorDelegate(
         collector = mockCollector,
         maxContentLength = maxContentLength,
         headersToRedact = headersToRedact,
-        fileFactory = fileFactory
+        cacheDirectoryProvider = cacheDirectoryProvider,
+        alwaysReadResponseBody = alwaysReadResponseBody,
     )
 
     internal fun expectTransaction(): HttpTransaction {
         if (transactions.isEmpty()) {
-            throw AssertionError("Expected transaction but was empty.")
+            throw AssertionError("Expected transaction but was empty")
         }
         return transactions.removeAt(0)
     }

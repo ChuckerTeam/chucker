@@ -152,8 +152,10 @@ internal class NotificationHelper(val context: Context) {
                 putExtra(ClearDatabaseService.EXTRA_ITEM_TO_CLEAR, clearAction)
             }
             val intent = PendingIntent.getService(
-                context, INTENT_REQUEST_CODE,
-                deleteIntent, PendingIntent.FLAG_ONE_SHOT
+                context,
+                INTENT_REQUEST_CODE,
+                deleteIntent,
+                PendingIntent.FLAG_ONE_SHOT
             )
             return NotificationCompat.Action(R.drawable.chucker_ic_delete_white, clearTitle, intent)
         }
