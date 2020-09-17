@@ -1,8 +1,5 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
-import android.content.ClipData
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -13,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ShareCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -23,7 +18,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionListBinding
 import com.chuckerteam.chucker.internal.data.model.DialogData
-import com.chuckerteam.chucker.internal.support.ShareUtils
+import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
+import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainViewModel
 import kotlinx.coroutines.launch
@@ -134,43 +130,17 @@ internal class TransactionListFragment :
             return@launch
         }
 
-        val cache = requireContext().cacheDir
-        if (cache == null) {
-            println("Failed to obtain a valid cache directory for Chucker file export")
-            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return@launch
-        }
-
-        val fileContent = ShareUtils.getStringFromTransactions(transactions, requireContext())
-        val file = viewModel.createExportFile(fileContent, cache)
-        if (file == null) {
-            println("Failed to create an export file for Chucker")
-            Toast.makeText(requireContext(), R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-            return@launch
-        }
-
-        val uri = FileProvider.getUriForFile(
-            requireContext(),
-            "${requireContext().packageName}.com.chuckerteam.chucker.provider",
-            file
+        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
+        val shareIntent = sharableTransactions.shareAsFile(
+            activity = requireActivity(),
+            fileName = EXPORT_FILE_NAME,
+            intentTitle = getString(R.string.chucker_share_all_transactions_title),
+            intentSubject = getString(R.string.chucker_share_all_transactions_subject),
+            clipDataLabel = "transactions"
         )
-        shareFile(uri)
-    }
-
-    private fun shareFile(uri: Uri) {
-        val sendIntent = ShareCompat.IntentBuilder.from(requireActivity())
-            .setType(requireContext().contentResolver.getType(uri))
-            .setChooserTitle(getString(R.string.chucker_share_all_transactions_title))
-            .setSubject(getString(R.string.chucker_share_all_transactions_subject))
-            .setStream(uri)
-            .intent
-
-        sendIntent.apply {
-            clipData = ClipData.newRawUri("transactions", uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        if (shareIntent != null) {
+            startActivity(shareIntent)
         }
-
-        startActivity(Intent.createChooser(sendIntent, getString(R.string.chucker_share_all_transactions_title)))
     }
 
     private fun getClearDialogData(): DialogData = DialogData(
@@ -188,6 +158,8 @@ internal class TransactionListFragment :
     )
 
     companion object {
+        private const val EXPORT_FILE_NAME = "transactions.txt"
+
         fun newInstance(): TransactionListFragment {
             return TransactionListFragment()
         }
