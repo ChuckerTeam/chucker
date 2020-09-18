@@ -2,9 +2,8 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.Logger.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ public class RetentionManager @JvmOverloads constructor(
         if (period > 0) {
             val now = System.currentTimeMillis()
             if (isCleanupDue(now)) {
-                Log.i(LOG_TAG, "Performing data retention maintenance...")
+                info("Performing data retention maintenance...")
                 deleteSince(getThreshold(now))
                 updateLastCleanup(now)
             }

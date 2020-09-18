@@ -107,6 +107,4 @@ public object Chucker {
     @Deprecated("This param will be removed in 4.x release")
     @IntDef(value = [SCREEN_HTTP, SCREEN_ERROR])
     public annotation class Screen
-
-    internal const val LOG_TAG = "Chucker"
 }
