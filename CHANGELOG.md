@@ -12,7 +12,8 @@ Note, this release is the last one with minSDK 16. In next versions Chucker will
 * Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI. 
 * Transaction size is defined by actual payload size now, not by `Content-length` header.
 * Added empty state UI for payloads, so no more guessing if there is some error or the payload is really empty.
-* Added feature to export list of transactions.
+* Added ability to export list of transactions.
+* Added ability to save single transaction as file.
 * Added ability to format URL encoded forms with button to switch between encoded/decoded URLs.
 * Added generation of contrast background for image payload to distinguish Chucker UI from the image itself.
 * Switched OkHttp dependency from `implementation` to `api`, since it is available in the public API.
