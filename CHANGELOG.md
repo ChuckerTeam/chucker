@@ -3,7 +3,9 @@
 ## Version 3.3.0 *(2020-09-30)*
 
 This is a new minor release with multiple fixes and improvements. 
-Note, this release is the last one with minSDK 16. In next versions Chucker will bump minSDK to 21 in order to use newer OkHttp versions.
+After this release we are starting to work on a new major release 4.x with minSDK 21. 
+Bumping minSDK to 21 is required to keep up with [newer versions of OkHttp](https://medium.com/square-corner-blog/okhttp-3-13-requires-android-5-818bb78d07ce).
+Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes and minor improvements.
 
 ### Summary of changes
 
