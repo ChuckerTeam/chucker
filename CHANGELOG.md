@@ -3,7 +3,7 @@
 ## Version 3.3.0 *(2020-09-30)*
 
 This is a new minor release with multiple fixes and improvements. 
-Note, this release is the last one with minSDK 16. In next versions Chucker will bump minSDK 21 in order to use newer OkHttp versions.
+Note, this release is the last one with minSDK 16. In next versions Chucker will bump minSDK to 21 in order to use newer OkHttp versions.
 
 ### Summary of changes
 
