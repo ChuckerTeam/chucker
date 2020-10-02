@@ -24,7 +24,7 @@ buildscript {
         dokkaVersion = '1.4.10'
         ktLintVersion = '0.39.0'
         ktLintGradleVersion = '9.4.0'
-        leakcanaryVersion = '2.4'
+        leakcanaryVersion = '2.5'
 
         // Testing
         androidxTestCoreVersion = '1.3.0'
