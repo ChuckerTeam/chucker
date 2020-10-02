@@ -150,8 +150,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.3.0-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.3.0-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.3.1-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.3.1-SNAPSHOT"
 }
 ```
 
