@@ -17,11 +17,11 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
         private const val OLD_DB_NAME = "chuck.db"
         private const val DB_NAME = "chucker.db"
 
-        fun create(context: Context): ChuckerDatabase {
+        fun create(applicationContext: Context): ChuckerDatabase {
             // We eventually delete the old DB if a previous version of Chuck/Chucker was used.
-            context.getDatabasePath(OLD_DB_NAME).delete()
+            applicationContext.getDatabasePath(OLD_DB_NAME).delete()
 
-            return Room.databaseBuilder(context, ChuckerDatabase::class.java, DB_NAME)
+            return Room.databaseBuilder(applicationContext, ChuckerDatabase::class.java, DB_NAME)
                 .fallbackToDestructiveMigration()
                 .build()
         }
