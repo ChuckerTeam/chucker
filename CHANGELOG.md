@@ -1,6 +1,6 @@
 # Change Log
 
-## UNRELEASED
+## Unreleased
 
 ### Changed
 
@@ -446,4 +446,4 @@ Initial release.
 [#394]: https://github.com/ChuckerTeam/chucker/issues/394
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
-[#465]: https://github.com/ChuckerTeam/chucker/issues/422
+[#465]: https://github.com/ChuckerTeam/chucker/issues/465
