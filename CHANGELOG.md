@@ -1,5 +1,18 @@
 # Change Log
 
+This file follows [Keepachangelog](https://keepachangelog.com/) format. 
+Please add your entries according to this format.
+
+## Unreleased
+
+### Changed
+
+* Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
+
+### Fixed
+
+* Fixed memory leak in MainActivity [#465].
+
 ## Version 3.3.0 *(2020-09-30)*
 
 This is a new minor release with multiple fixes and improvements. 
@@ -436,3 +449,4 @@ Initial release.
 [#394]: https://github.com/ChuckerTeam/chucker/issues/394
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
+[#465]: https://github.com/ChuckerTeam/chucker/issues/465
