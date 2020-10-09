@@ -1,5 +1,8 @@
 # Change Log
 
+This file follows [Keepchangelog](https://keepachangelog.com/) format. 
+Please add your entries according to this format.
+
 ## Unreleased
 
 ### Changed
