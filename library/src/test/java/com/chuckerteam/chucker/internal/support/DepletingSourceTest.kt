@@ -12,7 +12,7 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.io.IOException
 
-class DepletingSourceTest {
+internal class DepletingSourceTest {
     @Test
     fun delegateContent_isMovedToDownstream() {
         val delegate = Buffer().writeUtf8("Hello, world!")

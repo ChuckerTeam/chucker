@@ -6,7 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 
-class ChuckerCrashHandlerTest {
+internal class ChuckerCrashHandlerTest {
 
     @Test
     fun uncaughtException_isReportedCorrectly() {

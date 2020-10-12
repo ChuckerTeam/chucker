@@ -8,7 +8,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.junit.jupiter.api.Test
 
-class OkHttpUtilsTest {
+internal class OkHttpUtilsTest {
 
     @Test
     fun isChunked_withNotChunked() {

@@ -3,7 +3,7 @@ package com.chuckerteam.chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date
 
-object TestTransactionFactory {
+internal object TestTransactionFactory {
 
     internal fun createTransaction(method: String): HttpTransaction {
         return HttpTransaction(

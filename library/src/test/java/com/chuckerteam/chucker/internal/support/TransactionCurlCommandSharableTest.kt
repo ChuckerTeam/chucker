@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class TransactionCurlCommandSharableTest {
+internal class TransactionCurlCommandSharableTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     private val requestMethods = listOf("GET", "POST", "PUT", "DELETE")

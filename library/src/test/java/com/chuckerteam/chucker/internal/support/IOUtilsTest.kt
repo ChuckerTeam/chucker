@@ -16,7 +16,7 @@ import java.io.EOFException
 import java.nio.charset.Charset
 import java.util.stream.Stream
 
-class IOUtilsTest {
+internal class IOUtilsTest {
 
     private val mockContext = mockk<Context>()
     private val ioUtils = IOUtils(mockContext)

@@ -4,7 +4,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class FormatUtilsTest {
+internal class FormatUtilsTest {
 
     private val exampleHeadersList = listOf(
         HttpHeader("Accept", "text/html"),
