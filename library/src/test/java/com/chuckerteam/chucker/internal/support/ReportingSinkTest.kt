@@ -14,7 +14,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.random.Random
 
-class ReportingSinkTest {
+internal class ReportingSinkTest {
     private val reportingCallback = TestReportingCallback()
 
     @Test

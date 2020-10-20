@@ -9,15 +9,15 @@ import okio.ByteString
 import okio.Okio
 import java.io.File
 
-const val SEGMENT_SIZE = 8_192L
+internal const val SEGMENT_SIZE = 8_192L
 
-fun getResourceFile(file: String): Buffer {
+internal fun getResourceFile(file: String): Buffer {
     return Buffer().apply {
         writeAll(Okio.buffer(Okio.source(File("./src/test/resources/$file"))))
     }
 }
 
-fun Response.readByteStringBody(length: Long? = null): ByteString? {
+internal fun Response.readByteStringBody(length: Long? = null): ByteString? {
     return if (hasBody()) {
         body()?.source()?.use { source ->
             if (length == null) {
@@ -31,7 +31,7 @@ fun Response.readByteStringBody(length: Long? = null): ByteString? {
     }
 }
 
-fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
+internal fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()
     observeForever(observer)
     LiveDataRecord(observer).test()
@@ -39,7 +39,7 @@ fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     observer.records.clear()
 }
 
-class LiveDataRecord<T> internal constructor(
+internal class LiveDataRecord<T> internal constructor(
     private val observer: RecordingObserver<T>
 ) {
     fun expectData(): T {

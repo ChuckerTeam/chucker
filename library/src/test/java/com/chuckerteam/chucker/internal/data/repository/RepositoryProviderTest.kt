@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class RepositoryProviderTest {
+internal class RepositoryProviderTest {
     private lateinit var db: ChuckerDatabase
     private lateinit var context: Context
 

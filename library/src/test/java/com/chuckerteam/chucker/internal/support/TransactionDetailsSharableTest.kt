@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class TransactionDetailsSharableTest {
+internal class TransactionDetailsSharableTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     @Test

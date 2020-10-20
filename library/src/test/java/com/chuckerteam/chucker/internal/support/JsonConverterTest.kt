@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class JsonConverterTest {
+internal class JsonConverterTest {
 
     @Test
     fun testInstance_sameInstance() {

@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.EnumSource
 import java.io.File
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 
-class ChuckerInterceptorTest {
+internal class ChuckerInterceptorTest {
     enum class ClientFactory {
         APPLICATION {
             override fun create(interceptor: Interceptor): OkHttpClient {

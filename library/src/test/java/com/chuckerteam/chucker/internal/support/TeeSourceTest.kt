@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import java.io.IOException
 import kotlin.random.Random
 
-class TeeSourceTest {
+internal class TeeSourceTest {
     @Test
     fun bytesReadFromUpstream_areAvailableDownstream() {
         val testSource = TestSource()

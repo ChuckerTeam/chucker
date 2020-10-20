@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import okhttp3.HttpUrl
 import org.junit.Test
 
-class FormattedUrlTest {
+internal class FormattedUrlTest {
     @Test
     fun encodedUrl_withAllParams_isFormattedProperly() {
         val url = HttpUrl.get("https://www.example.com/path/to some/resource?q=\"Hello, world!\"")

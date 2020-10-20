@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.data.entity
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class HttpTransactionTupleTest {
+internal class HttpTransactionTupleTest {
     @Test
     fun schemeIsSSL() {
         assertThat(createTuple(scheme = "https").isSsl).isTrue()
