@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
-import kotlinx.android.synthetic.main.activity_main_sample.*
+import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var mainBinding: ActivityMainSampleBinding
 
     private val client: HttpBinClient by lazy {
         HttpBinClient(applicationContext)
@@ -14,14 +16,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_sample)
 
-        do_http.setOnClickListener { client.doHttpActivity() }
-        trigger_exception.setOnClickListener { client.recordException() }
+        mainBinding = ActivityMainSampleBinding.inflate(layoutInflater)
 
-        with(launch_chucker_directly) {
-            visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
-            setOnClickListener { launchChuckerDirectly() }
+        with(mainBinding) {
+            setContentView(root)
+            doHttp.setOnClickListener { client.doHttpActivity() }
+            triggerException.setOnClickListener { client.recordException() }
+
+            launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
         }
 
         client.initializeCrashHandler()
