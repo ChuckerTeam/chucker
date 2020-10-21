@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -11,6 +10,10 @@ android {
         applicationId "com.chuckerteam.chucker.sample"
         versionCode 1
         versionName "1.0"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {

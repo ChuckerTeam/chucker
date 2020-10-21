@@ -8,10 +8,12 @@ Please add your entries according to this format.
 ### Changed
 
 * Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
+* Removed `kotlin-android-extensions` plugin.
 
 ### Fixed
 
 * Fixed memory leak in MainActivity [#465].
+* Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
 
 ## Version 3.3.0 *(2020-09-30)*
 
@@ -450,3 +452,4 @@ Initial release.
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
+[#480]: https://github.com/ChuckerTeam/chucker/issues/480
