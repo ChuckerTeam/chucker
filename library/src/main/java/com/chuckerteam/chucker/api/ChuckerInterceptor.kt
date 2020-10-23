@@ -65,6 +65,19 @@ public class ChuckerInterceptor internal constructor(
      * with a `**` in the Chucker UI.
      */
     @JvmOverloads
+    @Deprecated(
+        message = "" +
+            "Customisation of ChuckerInterceptor should be replaced with a builder pattern " +
+            "unless you pass only Context.",
+        replaceWith = ReplaceWith(
+            "ChuckerInterceptor.Builder(context)\n" +
+                ".collector(collector)\n" +
+                ".maxContentLength(maxContentLength)\n" +
+                ".redactHeaders(headersToRedact)\n" +
+                ".alwaysReadResponseBody(alwaysReadResponseBody)\n" +
+                ".build()"
+        )
+    )
     public constructor(
         context: Context,
         collector: ChuckerCollector = ChuckerCollector(context),
@@ -290,10 +303,79 @@ public class ChuckerInterceptor internal constructor(
         }
     }
 
+    /**
+     * Assembles a new [ChuckerInterceptor].
+     *
+     * @param context An Android [Context].
+     */
+    public class Builder(private var context: Context) {
+        private var collector: ChuckerCollector? = null
+        private var maxContentLength = MAX_CONTENT_LENGTH
+        private var cacheDirectoryProvider: CacheDirectoryProvider? = null
+        private var alwaysReadResponseBody = false
+        private var headersToRedact = emptySet<String>()
+
+        /**
+         * Sets the [ChuckerCollector] to customize data retention.
+         */
+        public fun collector(collector: ChuckerCollector): Builder = apply {
+            this.collector = collector
+        }
+
+        /**
+         * Sets the maximum length for requests and responses content before their truncation.
+         *
+         * Warning: setting this value too high may cause unexpected results.
+         */
+        public fun maxContentLength(length: Long): Builder = apply {
+            this.maxContentLength = length
+        }
+
+        /**
+         * Sets headers that will be redacted if their names match.
+         * They will be replaced with the `**` symbols in the Chucker UI.
+         */
+        public fun redactHeaders(headerNames: Iterable<String>): Builder = apply {
+            this.headersToRedact = headerNames.toSet()
+        }
+
+        /**
+         * Sets headers that will be redacted if their names match.
+         * They will be replaced with the `**` symbols in the Chucker UI.
+         */
+        public fun redactHeaders(vararg headerNames: String): Builder = apply {
+            this.headersToRedact = headerNames.toSet()
+        }
+
+        /**
+         * If set to `true` [ChuckerInterceptor] will read full content of response
+         * bodies even in case of parsing errors or closing the response body without reading it.
+         *
+         * Warning: enabling this feature may potentially cause different behaviour from the
+         * production application.
+         */
+        public fun alwaysReadResponseBody(enable: Boolean): Builder = apply {
+            this.alwaysReadResponseBody = enable
+        }
+
+        /**
+         * Creates a new [ChuckerInterceptor] instance with values defined in this builder.
+         */
+        public fun build(): ChuckerInterceptor = ChuckerInterceptor(
+            context = context,
+            collector = collector ?: ChuckerCollector(context),
+            maxContentLength = maxContentLength,
+            cacheDirectoryProvider = cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir },
+            alwaysReadResponseBody = alwaysReadResponseBody,
+            headersToRedact = headersToRedact,
+        )
+    }
+
     private companion object {
         private val UTF8 = Charset.forName("UTF-8")
 
-        private const val MAX_BLOB_SIZE = 1000_000L
+        private const val MAX_CONTENT_LENGTH = 250_000L
+        private const val MAX_BLOB_SIZE = 1_000_000L
 
         private const val CONTENT_TYPE_IMAGE = "image"
         private const val CONTENT_ENCODING = "Content-Encoding"
