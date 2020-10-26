@@ -14,8 +14,6 @@ android {
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
-        versionName VERSION_NAME
-        versionCode VERSION_CODE.toInteger()
         consumerProguardFiles 'proguard-rules.pro'
     }
 
