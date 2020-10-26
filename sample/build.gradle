@@ -9,8 +9,8 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         applicationId "com.chuckerteam.chucker.sample"
-        versionCode 1
-        versionName "1.0"
+        versionName VERSION_NAME
+        versionCode VERSION_CODE.toInteger()
     }
 
     buildTypes {
