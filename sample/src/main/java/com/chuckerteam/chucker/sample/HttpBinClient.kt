@@ -99,6 +99,7 @@ class HttpBinClient(
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")
         getResponsePartially()
+        fakeGzipRequest()
     }
 
     internal fun initializeCrashHandler() {
@@ -115,6 +116,24 @@ class HttpBinClient(
         val request = Request.Builder()
             .url("https://dummyimage.com/200x200/$colorHex/$colorHex.png")
             .get()
+            .build()
+        httpClient.newCall(request).enqueue(
+            object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    response.body()?.source()?.use { it.readByteString() }
+                }
+            }
+        )
+    }
+
+    private fun fakeGzipRequest() {
+        val body = RequestBody.create(MediaType.get("application/json"), "Some invalid fake gzip request")
+        val request = Request.Builder()
+            .header("Content-Encoding", "gzip")
+            .url("$BASE_URL/gzip")
+            .post(body)
             .build()
         httpClient.newCall(request).enqueue(
             object : okhttp3.Callback {

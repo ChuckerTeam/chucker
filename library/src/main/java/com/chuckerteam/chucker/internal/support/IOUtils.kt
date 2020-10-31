@@ -57,7 +57,7 @@ internal class IOUtils(private val context: Context) {
 
     fun getNativeSource(input: BufferedSource, isGzipped: Boolean): BufferedSource = if (isGzipped) {
         val source = GzipSource(input)
-        Okio.buffer(source)
+        source.use { Okio.buffer(it) }
     } else {
         input
     }

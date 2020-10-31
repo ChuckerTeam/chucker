@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.sample
 
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
@@ -29,6 +30,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         client.initializeCrashHandler()
+
+        StrictMode.setVmPolicy(
+            StrictMode.VmPolicy.Builder()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build()
+        )
     }
 
     private fun launchChuckerDirectly() {
