@@ -7,6 +7,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -61,7 +62,11 @@ internal interface HttpBinApi {
     fun image(@Header("Accept") accept: String): Call<Any?>
 
     @GET("/gzip")
-    fun gzip(): Call<Any?>
+    fun gzipResponse(): Call<Any?>
+
+    @POST("/post")
+    @Headers("Content-Encoding: gzip")
+    fun gzipRequest(@Body body: Data): Call<Any?>
 
     @GET("/xml")
     fun xml(): Call<Any?>

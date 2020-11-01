@@ -100,19 +100,18 @@ internal class IOUtilsTest {
 
     @Test
     fun getNativeSource_withNotGzipped() {
-        val mockBuffer = mockk<Buffer>()
+        val buffer = Buffer()
 
-        val nativeSource = ioUtils.getNativeSource(mockBuffer, false)
-
-        assertThat(nativeSource).isEqualTo(mockBuffer)
+        val nativeSource = ioUtils.getNativeSource(buffer, false)
+        assertThat(nativeSource).isEqualTo(buffer)
     }
 
     @Test
     fun getNativeSource_withGzipped() {
-        val mockBuffer = mockk<Buffer>()
+        val buffer = Buffer()
 
-        val nativeSource = ioUtils.getNativeSource(mockBuffer, true)
-        assertThat(nativeSource).isNotEqualTo(mockBuffer)
+        val nativeSource = ioUtils.getNativeSource(buffer, true)
+        assertThat(nativeSource).isNotEqualTo(buffer)
     }
 
     @ParameterizedTest(name = "{0} must be supported? {1}")
