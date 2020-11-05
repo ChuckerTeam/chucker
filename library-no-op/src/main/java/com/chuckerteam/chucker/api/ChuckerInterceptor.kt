@@ -26,4 +26,21 @@ public class ChuckerInterceptor @JvmOverloads constructor(
         val request = chain.request()
         return chain.proceed(request)
     }
+
+    /**
+     * No-op implementation.
+     */
+    public class Builder(private val context: Context) {
+        public fun collector(collector: ChuckerCollector): Builder = this
+
+        public fun maxContentLength(length: Long): Builder = this
+
+        public fun redactHeaders(headerNames: Iterable<String>): Builder = this
+
+        public fun redactHeaders(vararg headerNames: String): Builder = this
+
+        public fun alwaysReadResponseBody(enable: Boolean): Builder = this
+
+        public fun build(): ChuckerInterceptor = ChuckerInterceptor(context)
+    }
 }
