@@ -37,8 +37,8 @@ Please note that you should add both the `library` and the the `library-no-op` v
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.3.0"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.3.0"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.4.0"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
 }
 ```
 
@@ -150,8 +150,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.3.1-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.3.1-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.4.1-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.1-SNAPSHOT"
 }
 ```
 
