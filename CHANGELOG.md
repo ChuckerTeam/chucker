@@ -3,7 +3,7 @@
 This file follows [Keepachangelog](https://keepachangelog.com/) format. 
 Please add your entries according to this format.
 
-## Unreleased
+## Version 3.4.0 *(2020-11-05)*
 
 ### Added
 
@@ -12,11 +12,15 @@ Please add your entries according to this format.
 ### Changed
 
 * Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
-* Removed `kotlin-android-extensions` plugin.
+
+### Removed
+
+* `kotlin-android-extensions` plugin for better compatibility with Kotlin 1.4.20.
 
 ### Fixed
 
 * Fixed memory leak in MainActivity [#465].
+* Fixed `GzipSource is not closed` error reported by StrictMode [#472].
 * Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
 
 ### Deprecated
@@ -460,4 +464,5 @@ Initial release.
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
+[#472]: https://github.com/ChuckerTeam/chucker/issues/472
 [#480]: https://github.com/ChuckerTeam/chucker/issues/480
