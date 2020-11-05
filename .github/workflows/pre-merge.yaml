@@ -2,8 +2,7 @@ name: Pre Merge Checks
 on: 
   push:
     branches:
-      - develop 
-      - main
+      - develop
   pull_request:
     branches: 
       - '*'
