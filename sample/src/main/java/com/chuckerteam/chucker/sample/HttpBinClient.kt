@@ -31,12 +31,11 @@ class HttpBinClient(
         retentionPeriod = RetentionManager.Period.ONE_HOUR
     )
 
-    private val chuckerInterceptor = ChuckerInterceptor(
-        context = context,
-        collector = collector,
-        maxContentLength = 250000L,
-        headersToRedact = emptySet<String>()
-    )
+    private val chuckerInterceptor = ChuckerInterceptor.Builder(context)
+        .collector(collector)
+        .maxContentLength(250000L)
+        .redactHeaders(emptySet())
+        .build()
 
     private val httpClient =
         OkHttpClient.Builder()

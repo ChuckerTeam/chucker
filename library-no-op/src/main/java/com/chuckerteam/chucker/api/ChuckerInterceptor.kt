@@ -9,13 +9,14 @@ import kotlin.jvm.Throws
 /**
  * No-op implementation.
  */
-public class ChuckerInterceptor @JvmOverloads constructor(
-    context: Context,
-    collector: Any? = null,
-    maxContentLength: Any? = null,
-    headersToRedact: Any? = null,
-    alwaysReadResponseBody: Any? = null,
+public class ChuckerInterceptor private constructor(
+    builder: Builder,
 ) : Interceptor {
+
+    /**
+     * No-op implementation.
+     */
+    public constructor(context: Context) : this(Builder(context))
 
     public fun redactHeaders(vararg names: String): ChuckerInterceptor {
         return this
@@ -41,6 +42,6 @@ public class ChuckerInterceptor @JvmOverloads constructor(
 
         public fun alwaysReadResponseBody(enable: Boolean): Builder = this
 
-        public fun build(): ChuckerInterceptor = ChuckerInterceptor(context)
+        public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }
 }

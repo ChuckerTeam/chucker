@@ -3,6 +3,12 @@
 This file follows [Keepachangelog](https://keepachangelog.com/) format. 
 Please add your entries according to this format.
 
+## Unreleased
+
+### Removed
+
+* Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
+
 ## Version 3.4.0 *(2020-11-05)*
 
 ### Added
