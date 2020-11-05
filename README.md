@@ -170,7 +170,7 @@ dependencies {
 
 ⚠️ Please note that the latest snapshot might be **unstable**. Use it at your own risk ⚠️
 
-If you're looking for the **latest stable version**, you can always find it on the top of the `main` branch.
+If you're looking for the **latest stable version**, you can always find it in `Releases` section.
 
 ## FAQ ❓
 
