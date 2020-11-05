@@ -5,6 +5,10 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Added
+
+* `ChuckerInterceptor.Builder` for fluent creation of the interceptor. It will also help us with preserving binary compatibility in future releases of `4.x`. [#462]
+
 ### Changed
 
 * Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
@@ -14,6 +18,10 @@ Please add your entries according to this format.
 
 * Fixed memory leak in MainActivity [#465].
 * Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
+
+### Deprecated
+
+* `ChuckerInterceptor` constructor is now deprecated. Unless `Context` is the only parameter that you pass into the constructor you should migrate to builder.
 
 ## Version 3.3.0 *(2020-09-30)*
 
