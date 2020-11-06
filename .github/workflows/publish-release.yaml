@@ -25,7 +25,7 @@ jobs:
         name: 'chucker-release-artifacts'
         path: '~/.m2/repository/'
 
-    - name: Publish to the Snapshot Repository
+    - name: Publish to the Staging Repository
       run: ./gradlew publishReleasePublicationToStagingRepository
       env:
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
