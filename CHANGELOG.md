@@ -8,6 +8,7 @@ Please add your entries according to this format.
 ### Removed
 
 * Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
+* Removed the Throwable reporting feature as well as all the @Deprecated related methods.
 
 ## Version 3.4.0 *(2020-11-05)*
 

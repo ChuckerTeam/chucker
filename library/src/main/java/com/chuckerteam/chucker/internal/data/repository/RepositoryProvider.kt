@@ -6,13 +6,12 @@ import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider.initi
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 
 /**
- * A singleton to hold the [HttpTransactionRepository] and [RecordedThrowableRepository] instances.
+ * A singleton to hold the [HttpTransactionRepository] instance.
  * Make sure you call [initialize] before accessing the stored instance.
  */
 internal object RepositoryProvider {
 
     private var transactionRepository: HttpTransactionRepository? = null
-    private var throwableRepository: RecordedThrowableRepository? = null
 
     fun transaction(): HttpTransactionRepository {
         return checkNotNull(transactionRepository) {
@@ -20,20 +19,13 @@ internal object RepositoryProvider {
         }
     }
 
-    fun throwable(): RecordedThrowableRepository {
-        return checkNotNull(throwableRepository) {
-            "You can't access the throwable repository if you don't initialize it!"
-        }
-    }
-
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
     fun initialize(applicationContext: Context) {
-        if (transactionRepository == null || throwableRepository == null) {
+        if (transactionRepository == null) {
             val db = ChuckerDatabase.create(applicationContext)
             transactionRepository = HttpTransactionDatabaseRepository(db)
-            throwableRepository = RecordedThrowableDatabaseRepository(db)
         }
     }
 
@@ -43,6 +35,5 @@ internal object RepositoryProvider {
     @VisibleForTesting
     fun close() {
         transactionRepository = null
-        throwableRepository = null
     }
 }

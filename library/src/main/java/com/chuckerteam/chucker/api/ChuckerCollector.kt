@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.CoroutineScope
@@ -30,27 +29,6 @@ public class ChuckerCollector @JvmOverloads constructor(
 
     init {
         RepositoryProvider.initialize(context)
-    }
-
-    /**
-     * Call this method when a throwable is triggered and you want to record it.
-     * @param tag A tag you choose
-     * @param throwable The triggered [Throwable]
-     */
-    @Deprecated(
-        "This fun will be removed in 4.x release as part of Throwable functionality removal.",
-        ReplaceWith(""),
-        DeprecationLevel.WARNING
-    )
-    public fun onError(tag: String, throwable: Throwable) {
-        val recordedThrowable = RecordedThrowable(tag, throwable)
-        CoroutineScope(Dispatchers.IO).launch {
-            RepositoryProvider.throwable().saveThrowable(recordedThrowable)
-        }
-        if (showNotification) {
-            notificationHelper.show(recordedThrowable)
-        }
-        retentionManager.doMaintenance()
     }
 
     /**

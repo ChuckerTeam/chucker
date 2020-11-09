@@ -5,12 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
 
-@Database(entities = [RecordedThrowable::class, HttpTransaction::class], version = 4, exportSchema = false)
+@Database(entities = [HttpTransaction::class], version = 5, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
-    abstract fun throwableDao(): RecordedThrowableDao
     abstract fun transactionDao(): HttpTransactionDao
 
     companion object {

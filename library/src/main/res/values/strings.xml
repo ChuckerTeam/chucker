@@ -42,18 +42,12 @@
     <string name="chucker_tab_network">Network</string>
     <string name="chucker_tab_errors">Errors</string>
     <string name="chucker_network_tutorial">This tab displays network requests recorded with the ChuckerInterceptor. Add the interceptor to your OkHttp client to reap the benefits.</string>
-    <string name="chucker_throwable_tutorial">This tab displays throwables recorded with the ChuckerCollector.onError method. Call this method when an error is thrown to check your stacktrace live.</string>
     <string name="chucker_network_notification_category">Chucker network requests</string>
-    <string name="chucker_throwable_notification_category">Chucker throwables</string>
-    <string name="chucker_share_throwable_title">Share throwable details</string>
     <string name="chucker_share_transaction_title">Share transaction details</string>
     <string name="chucker_share_all_transactions_title">Share transactions</string>
-    <string name="chucker_share_throwable_subject">Throwable details</string>
     <string name="chucker_share_transaction_subject">Transaction details</string>
     <string name="chucker_share_all_transactions_subject">All transactions</string>
-    <string name="chucker_share_throwable_content"><![CDATA[Date: %1$s\nException: %2$s\nTag: %3$s\nMessage: %4$s\n\n%5$s]]></string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
-    <string name="chucker_clear_throwable_confirmation">Do you want to clear complete throwables history?</string>
     <string name="chucker_export_http_confirmation">Do you want to export all network transactions?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Export Start */</string>

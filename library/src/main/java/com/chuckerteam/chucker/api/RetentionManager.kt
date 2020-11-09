@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
- * Class responsible of holding the logic for the retention of your HTTP transactions
- * and your throwable. You can customize how long data should be stored here.
+ * Class responsible of holding the logic for the retention of your HTTP transactions.
+ * You can customize how long data should be stored here.
  * @param context An Android Context
  * @param retentionPeriod A [Period] to specify the retention of data. Default 1 week.
  */
@@ -66,7 +66,6 @@ public class RetentionManager @JvmOverloads constructor(
     private fun deleteSince(threshold: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             RepositoryProvider.transaction().deleteOldTransactions(threshold)
-            RepositoryProvider.throwable().deleteOldThrowables(threshold)
         }
     }
 
