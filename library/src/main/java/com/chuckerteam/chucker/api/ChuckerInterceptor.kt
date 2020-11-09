@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.DepletingSource
@@ -28,73 +29,29 @@ import kotlin.jvm.Throws
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
- *
- * @param context An Android [Context]
- * @param collector A [ChuckerCollector] to customize data retention
- * @param maxContentLength The maximum length for request and response content
- * before their truncation. Warning: setting this value too high may cause unexpected
- * results.
- * @param cacheDirectoryProvider Provider of [File] where Chucker will save temporary responses
- * before processing them.
- * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
- * bodies even in case of parsing errors or closing the response body without reading it.
- * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
- * with a `**` in the Chucker UI.
  */
-public class ChuckerInterceptor internal constructor(
-    private val context: Context,
-    private val collector: ChuckerCollector = ChuckerCollector(context),
-    private val maxContentLength: Long = 250000L,
-    private val cacheDirectoryProvider: CacheDirectoryProvider,
-    private val alwaysReadResponseBody: Boolean = false,
-    headersToRedact: Set<String> = emptySet(),
+public class ChuckerInterceptor private constructor(
+    builder: Builder,
 ) : Interceptor {
 
     /**
      * An OkHttp Interceptor which persists and displays HTTP activity
      * in your application for later inspection.
      *
+     * This constructor  is a shorthand for `ChuckerInterceptor.Builder(context).build()`.
+     *
      * @param context An Android [Context]
-     * @param collector A [ChuckerCollector] to customize data retention
-     * @param maxContentLength The maximum length for request and response content
-     * before their truncation. Warning: setting this value too high may cause unexpected
-     * results.
-     * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
-     * bodies even in case of parsing errors or closing the response body without reading it.
-     * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
-     * with a `**` in the Chucker UI.
+     * @see ChuckerInterceptor.Builder
      */
-    @JvmOverloads
-    @Deprecated(
-        message = "" +
-            "Customisation of ChuckerInterceptor should be replaced with a builder pattern " +
-            "unless you pass only Context.",
-        replaceWith = ReplaceWith(
-            "ChuckerInterceptor.Builder(context)\n" +
-                ".collector(collector)\n" +
-                ".maxContentLength(maxContentLength)\n" +
-                ".redactHeaders(headersToRedact)\n" +
-                ".alwaysReadResponseBody(alwaysReadResponseBody)\n" +
-                ".build()"
-        )
-    )
-    public constructor(
-        context: Context,
-        collector: ChuckerCollector = ChuckerCollector(context),
-        maxContentLength: Long = 250000L,
-        headersToRedact: Set<String> = emptySet(),
-        alwaysReadResponseBody: Boolean = false,
-    ) : this(
-        context = context,
-        collector = collector,
-        maxContentLength = maxContentLength,
-        cacheDirectoryProvider = { context.cacheDir },
-        alwaysReadResponseBody = alwaysReadResponseBody,
-        headersToRedact = headersToRedact,
-    )
+    public constructor(context: Context) : this(Builder(context))
 
-    private val io: IOUtils = IOUtils(context)
-    private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
+    private val context = builder.context
+    private val collector = builder.collector ?: ChuckerCollector(context)
+    private val maxContentLength = builder.maxContentLength
+    private val cacheDirectoryProvider = builder.cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir }
+    private val alwaysReadResponseBody = builder.alwaysReadResponseBody
+    private val io = IOUtils(builder.context)
+    private val headersToRedact = builder.headersToRedact.toMutableSet()
 
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
@@ -308,12 +265,12 @@ public class ChuckerInterceptor internal constructor(
      *
      * @param context An Android [Context].
      */
-    public class Builder(private var context: Context) {
-        private var collector: ChuckerCollector? = null
-        private var maxContentLength = MAX_CONTENT_LENGTH
-        private var cacheDirectoryProvider: CacheDirectoryProvider? = null
-        private var alwaysReadResponseBody = false
-        private var headersToRedact = emptySet<String>()
+    public class Builder(internal var context: Context) {
+        internal var collector: ChuckerCollector? = null
+        internal var maxContentLength = MAX_CONTENT_LENGTH
+        internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
+        internal var alwaysReadResponseBody = false
+        internal var headersToRedact = emptySet<String>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -359,16 +316,18 @@ public class ChuckerInterceptor internal constructor(
         }
 
         /**
+         * Sets provider of a directory where Chucker will save temporary responses
+         * before processing them.
+         */
+        @VisibleForTesting
+        internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
+            this.cacheDirectoryProvider = provider
+        }
+
+        /**
          * Creates a new [ChuckerInterceptor] instance with values defined in this builder.
          */
-        public fun build(): ChuckerInterceptor = ChuckerInterceptor(
-            context = context,
-            collector = collector ?: ChuckerCollector(context),
-            maxContentLength = maxContentLength,
-            cacheDirectoryProvider = cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir },
-            alwaysReadResponseBody = alwaysReadResponseBody,
-            headersToRedact = headersToRedact,
-        )
+        public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }
 
     private companion object {
