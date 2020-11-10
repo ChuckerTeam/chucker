@@ -17,6 +17,7 @@ updates:
       reviewers:
       - "cortinico"
       - "vbuberen"
+      - "MiSikora"
       ignore:
         - dependency-name: com.squareup.okhttp3:logging-interceptor
           versions: "> 3.12.10"
