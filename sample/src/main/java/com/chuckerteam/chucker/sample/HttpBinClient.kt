@@ -1,7 +1,6 @@
 package com.chuckerteam.chucker.sample
 
 import android.content.Context
-import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
@@ -99,16 +98,6 @@ class HttpBinClient(
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")
         getResponsePartially()
-    }
-
-    internal fun initializeCrashHandler() {
-        Chucker.registerDefaultCrashHandler(collector)
-    }
-
-    internal fun recordException() {
-        collector.onError("Example button pressed", RuntimeException("User triggered the button"))
-        // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHandler"
-        // throw new RuntimeException("User triggered the button");
     }
 
     private fun downloadSampleImage(colorHex: String) {

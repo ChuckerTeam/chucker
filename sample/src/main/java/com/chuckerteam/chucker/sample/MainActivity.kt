@@ -23,13 +23,10 @@ class MainActivity : AppCompatActivity() {
         with(mainBinding) {
             setContentView(root)
             doHttp.setOnClickListener { client.doHttpActivity() }
-            triggerException.setOnClickListener { client.recordException() }
 
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
         }
-
-        client.initializeCrashHandler()
 
         StrictMode.setVmPolicy(
             StrictMode.VmPolicy.Builder()
@@ -42,6 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun launchChuckerDirectly() {
         // Optionally launch Chucker directly from your own app UI
-        startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP))
+        startActivity(Chucker.getLaunchIntent(this))
     }
 }

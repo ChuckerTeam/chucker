@@ -11,7 +11,6 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Features](#features-)
   * [Multi-Window](#multi-window-)
 * [Configure](#configure-)
-  * [Throwables](#throwables-️)
   * [Redact-Header️](#redact-header-️)
 * [Migrating](#migrating-)
 * [Snapshots](#snapshots-)
@@ -21,13 +20,13 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Acknowledgments](#acknowledgments-)
 * [License](#license-)
 
-Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
+Chucker simplifies the inspection of **HTTP(S) requests/responses** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
-Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
+Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
-| HTTP Calls | Throwables |
-| --- | --- |
-| ![Chucker HTTP transactions](assets/chucker-http.gif) | ![Chucker errors](assets/chucker-error.gif) |
+<p align="center">
+  <img src="assets/chucker-http.gif" alt="chucker http sample" width="50%"/>
+</p>
 
 ## Getting Started 👣
 
@@ -106,20 +105,6 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
 val client = OkHttpClient.Builder()
         .addInterceptor(chuckerInterceptor)
         .build()
-```
-
-### Throwables (Deprected) ☄️
-
-#### Warning: This functionality will be unavailable in 4.x release. Details in [this issue](https://github.com/ChuckerTeam/chucker/issues/321#issuecomment-626138370)
-
-Chucker can also collect and display **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
-
-```kotlin
-try {
-    // Do something risky
-} catch (IOException exception) {
-    chuckerCollector.onError("TAG", exception)
-}
 ```
 
 ### Redact-Header 👮‍♂️
