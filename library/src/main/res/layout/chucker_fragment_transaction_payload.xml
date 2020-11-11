@@ -27,12 +27,12 @@
         android:layout_marginBottom="@dimen/chucker_quad_grid"
         android:contentDescription="@string/chucker_body_empty"
         android:src="@drawable/chucker_empty_payload"
-        android:tint="@color/chucker_color_primary"
         app:layout_constraintBottom_toTopOf="@id/emptyPayloadTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
+        app:layout_constraintVertical_bias="1"
+        app:tint="@color/chucker_color_primary" />
 
     <TextView
         android:id="@+id/emptyPayloadTextView"

@@ -55,7 +55,7 @@ internal class IOUtilsTest {
     @Test
     fun isPlaintext_withEOF_returnsFalse() {
         val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size() } returns 100L
+        every { mockBuffer.size } returns 100L
         every { mockBuffer.copyTo(any<Buffer>(), any(), any()) } throws EOFException()
 
         assertThat(ioUtils.isPlaintext(mockBuffer)).isFalse()
@@ -64,7 +64,7 @@ internal class IOUtilsTest {
     @Test
     fun readFromBuffer_contentNotTruncated() {
         val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size() } returns 100L
+        every { mockBuffer.size } returns 100L
         every { mockBuffer.readString(any(), any()) } returns "{ \"message\": \"just a mock body\"}"
 
         val result = ioUtils.readFromBuffer(mockBuffer, Charset.defaultCharset(), 200L)
@@ -76,7 +76,7 @@ internal class IOUtilsTest {
     @Test
     fun readFromBuffer_contentTruncated() {
         val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size() } returns 100L
+        every { mockBuffer.size } returns 100L
         every { mockBuffer.readString(any(), any()) } returns "{ \"message\": \"just a mock body\"}"
         every { mockContext.getString(R.string.chucker_body_content_truncated) } returns "\\n\\n--- Content truncated ---"
 
@@ -89,7 +89,7 @@ internal class IOUtilsTest {
     @Test
     fun readFromBuffer_unexpectedEOF() {
         val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size() } returns 100L
+        every { mockBuffer.size } returns 100L
         every { mockBuffer.readString(any(), any()) } throws EOFException()
         every { mockContext.getString(R.string.chucker_body_unexpected_eof) } returns "\\n\\n--- Unexpected end of content ---"
 

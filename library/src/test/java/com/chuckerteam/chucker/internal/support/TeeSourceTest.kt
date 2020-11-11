@@ -5,10 +5,10 @@ import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
-import okio.Okio
 import okio.Sink
 import okio.Source
 import okio.Timeout
+import okio.buffer
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import kotlin.random.Random
@@ -19,7 +19,7 @@ internal class TeeSourceTest {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = Buffer())
-        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
+        val downstream = teeSource.buffer().use(BufferedSource::readByteString)
 
         assertThat(downstream).isEqualTo(testSource.content)
     }
@@ -30,7 +30,7 @@ internal class TeeSourceTest {
         val sideStream = Buffer()
 
         val teeSource = TeeSource(testSource, sideStream)
-        Okio.buffer(teeSource).use(BufferedSource::readByteString)
+        teeSource.buffer().use(BufferedSource::readByteString)
 
         assertThat(sideStream.snapshot()).isEqualTo(testSource.content)
     }
@@ -42,7 +42,7 @@ internal class TeeSourceTest {
         val sideStream = Buffer()
 
         val teeSource = TeeSource(testSource, sideStream)
-        Okio.buffer(teeSource).use { source ->
+        teeSource.buffer().use { source ->
             repeat(repetitions) { index ->
                 source.readByteString(SEGMENT_SIZE)
 
@@ -57,7 +57,7 @@ internal class TeeSourceTest {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForWrite = true))
-        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
+        val downstream = teeSource.buffer().use(BufferedSource::readByteString)
 
         assertThat(downstream).isEqualTo(testSource.content)
     }
@@ -67,7 +67,7 @@ internal class TeeSourceTest {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForFlush = true))
-        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
+        val downstream = teeSource.buffer().use(BufferedSource::readByteString)
 
         assertThat(downstream).isEqualTo(testSource.content)
     }
@@ -77,7 +77,7 @@ internal class TeeSourceTest {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForClose = true))
-        val downstream = Okio.buffer(teeSource).use(BufferedSource::readByteString)
+        val downstream = teeSource.buffer().use(BufferedSource::readByteString)
 
         assertThat(downstream).isEqualTo(testSource.content)
     }
