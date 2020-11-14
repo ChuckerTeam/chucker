@@ -12,7 +12,7 @@ internal fun Context.showDialog(
     MaterialAlertDialogBuilder(this)
         .setTitle(dialogData.title)
         .setMessage(dialogData.message)
-        .setPositiveButton(dialogData.postiveButtonText) { _, _ ->
+        .setPositiveButton(dialogData.positiveButtonText) { _, _ ->
             onPositiveClick?.invoke()
         }
         .setNegativeButton(dialogData.negativeButtonText) { _, _ ->
