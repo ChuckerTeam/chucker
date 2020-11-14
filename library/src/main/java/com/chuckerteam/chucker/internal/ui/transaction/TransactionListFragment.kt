@@ -146,14 +146,14 @@ internal class TransactionListFragment :
     private fun getClearDialogData(): DialogData = DialogData(
         title = getString(R.string.chucker_clear),
         message = getString(R.string.chucker_clear_http_confirmation),
-        postiveButtonText = getString(R.string.chucker_clear),
+        positiveButtonText = getString(R.string.chucker_clear),
         negativeButtonText = getString(R.string.chucker_cancel)
     )
 
     private fun getExportDialogData(): DialogData = DialogData(
         title = getString(R.string.chucker_export),
         message = getString(R.string.chucker_export_http_confirmation),
-        postiveButtonText = getString(R.string.chucker_export),
+        positiveButtonText = getString(R.string.chucker_export),
         negativeButtonText = getString(R.string.chucker_cancel)
     )
 
