@@ -10,7 +10,7 @@ Please add your entries according to this format.
 * Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
 * Removed the Throwable reporting feature as well as all the @Deprecated related methods.
 
-### Dependency updates
+### Changed
 
 * Updated OkHttp to 4.9.0
 
