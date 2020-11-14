@@ -57,7 +57,7 @@ dependencies {
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp4Version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion"
