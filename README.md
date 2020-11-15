@@ -49,6 +49,20 @@ val client = OkHttpClient.Builder()
                 .build()
 ```
 
+[Enable Java 8 support](https://developer.android.com/studio/write/java8-support).
+
+```groovy
+android {
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  // For Kotlin projects add also this line
+  kotlinOptions.jvmTarget = "1.8"
+}
+```
+
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
 
 Historically, Chucker was distributed through JitPack. 
@@ -59,7 +73,7 @@ You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/Chu
 Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the changes in the latest version of Chucker.
 
 * Compatible with **OkHTTP 4**
-* **API >= 16** compatible
+* **API >= 21** compatible
 * Easy to integrate (just 2 gradle `implementation` lines).
 * Works **out of the box**, no customization needed.
 * **Empty release artifact** 🧼 (no traces of Chucker in your final APK).
@@ -164,6 +178,10 @@ If you're looking for the **latest stable version**, you can always find it in `
 * Why are my encoded request/response bodies not appearing as plain text?
 
 Please refer to [this section of the OkHttp documentation](https://square.github.io/okhttp/interceptors/). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
+
+* Why Android < 21 is no longer supported?
+
+In order to keep up with the changes in OkHttp we decided to bump its version in `4.x` release. Chucker `3.4.x` supports Android 16+ but its active development stopped and only bug fixes and minor improvements will land on [3.x branch](https://github.com/ChuckerTeam/chucker/tree/3.x) till March 2021.
 
 ## Contributing 🤝
 

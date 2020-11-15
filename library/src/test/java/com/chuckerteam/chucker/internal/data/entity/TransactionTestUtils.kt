@@ -2,13 +2,13 @@ package com.chuckerteam.chucker.internal.data.entity
 
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Headers
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.UUID
 
 internal fun createRequest(path: String = ""): HttpTransaction =
     HttpTransaction().apply {
         setRequestHeaders(randomHeaders())
-        populateUrl(HttpUrl.parse("https://www.example.com/$path?query=baz")!!)
+        populateUrl("https://www.example.com/$path?query=baz".toHttpUrlOrNull()!!)
         isRequestBodyPlainText = true
         requestDate = 300L
         method = "GET"

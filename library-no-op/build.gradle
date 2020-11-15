@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    api "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 

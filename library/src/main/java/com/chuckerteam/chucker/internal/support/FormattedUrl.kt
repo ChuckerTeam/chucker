@@ -48,24 +48,24 @@ internal class FormattedUrl private constructor(
         }
 
         private fun encodedUrl(httpUrl: HttpUrl): FormattedUrl {
-            val path = httpUrl.encodedPathSegments().joinToString("/")
+            val path = httpUrl.encodedPathSegments.joinToString("/")
             return FormattedUrl(
-                httpUrl.scheme(),
-                httpUrl.host(),
-                httpUrl.port(),
+                httpUrl.scheme,
+                httpUrl.host,
+                httpUrl.port,
                 if (path.isNotBlank()) "/$path" else "",
-                httpUrl.encodedQuery().orEmpty()
+                httpUrl.encodedQuery.orEmpty()
             )
         }
 
         private fun decodedUrl(httpUrl: HttpUrl): FormattedUrl {
-            val path = httpUrl.pathSegments().joinToString("/")
+            val path = httpUrl.pathSegments.joinToString("/")
             return FormattedUrl(
-                httpUrl.scheme(),
-                httpUrl.host(),
-                httpUrl.port(),
+                httpUrl.scheme,
+                httpUrl.host,
+                httpUrl.port,
                 if (path.isNotBlank()) "/$path" else "",
-                httpUrl.query().orEmpty()
+                httpUrl.query.orEmpty()
             )
         }
     }

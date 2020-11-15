@@ -84,7 +84,7 @@ internal class ChuckerInterceptorTest {
     fun gzippedBody_isGunzippedForChucker(factory: ClientFactory) {
         val bytes = Buffer().apply { writeUtf8("Hello, world!") }
         val gzippedBytes = Buffer().apply {
-            GzipSink(this).use { sink -> sink.write(bytes, bytes.size()) }
+            GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
         }
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
@@ -102,7 +102,7 @@ internal class ChuckerInterceptorTest {
     fun gzippedBody_isGunzippedForTheEndConsumer(factory: ClientFactory) {
         val bytes = Buffer().apply { writeUtf8("Hello, world!") }
         val gzippedBytes = Buffer().apply {
-            GzipSink(this).use { sink -> sink.write(bytes, bytes.size()) }
+            GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
         }
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
@@ -230,7 +230,7 @@ internal class ChuckerInterceptorTest {
             """
             |  {
             |    "name": "Content-Length",
-            |    "value": "${body.size()}"
+            |    "value": "${body.size}"
             |  }
             """.trimMargin()
         )
@@ -273,7 +273,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
     }
 
     @ParameterizedTest
@@ -311,7 +311,7 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isNull()
-        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
     }
 
     @ParameterizedTest
@@ -327,7 +327,7 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isNull()
-        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
     }
 
     @ParameterizedTest
@@ -356,11 +356,11 @@ internal class ChuckerInterceptorTest {
             alwaysReadResponseBody = true
         )
         val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().body()!!.close()
+        client.newCall(request).execute().body!!.close()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
-        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
     }
 
     @ParameterizedTest
@@ -383,7 +383,7 @@ internal class ChuckerInterceptorTest {
             alwaysReadResponseBody = true
         )
         val client = factory.create(chuckerInterceptor)
-        val responseBody = client.newCall(request).execute().body()!!
+        val responseBody = client.newCall(request).execute().body!!
 
         val jsonAdapter = Gson().getAdapter(Expected::class.java)
         val jsonReader = JsonReader(responseBody.charStream())
@@ -395,7 +395,7 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo(providedJson)
-        assertThat(transaction.responsePayloadSize).isEqualTo(body.size())
+        assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
     }
 
     private data class Expected(val string: String, val boolean: Boolean, val secondString: String)

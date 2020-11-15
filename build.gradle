@@ -16,8 +16,8 @@ buildscript {
 
         // Networking
         gsonVersion = '2.8.6'
-        okhttp3Version = '3.12.10'
-        retrofitVersion = '2.6.4'
+        okhttpVersion = '4.9.0'
+        retrofitVersion = '2.9.0'
 
         // Debug and quality control
         detektVersion = '1.14.0'
@@ -80,7 +80,7 @@ task clean(type: Delete) {
 }
 
 ext {
-    minSdkVersion = 16
+    minSdkVersion = 21
     targetSdkVersion = 30
     compileSdkVersion = 30
 }
