@@ -56,7 +56,7 @@ internal class MainActivity :
             this,
             { transactionTuples ->
                 transactionsAdapter.setData(transactionTuples)
-                mainBinding.tutorialView.isVisible = transactionTuples.isEmpty()
+                mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
             }
         )
     }
