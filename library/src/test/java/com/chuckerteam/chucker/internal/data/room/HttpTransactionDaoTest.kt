@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class HttpTransactionDaoTest {
+internal class HttpTransactionDaoTest {
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()

@@ -2,22 +2,21 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import com.chuckerteam.chucker.api.Chucker.LOG_TAG
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.Logger.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
- * Class responsible of holding the logic for the retention of your HTTP transactions
- * and your throwable. You can customize how long data should be stored here.
+ * Class responsible of holding the logic for the retention of your HTTP transactions.
+ * You can customize how long data should be stored here.
  * @param context An Android Context
  * @param retentionPeriod A [Period] to specify the retention of data. Default 1 week.
  */
 @Suppress("MagicNumber")
-class RetentionManager @JvmOverloads constructor(
+public class RetentionManager @JvmOverloads constructor(
     context: Context,
     retentionPeriod: Period = Period.ONE_WEEK
 ) {
@@ -45,7 +44,7 @@ class RetentionManager @JvmOverloads constructor(
         if (period > 0) {
             val now = System.currentTimeMillis()
             if (isCleanupDue(now)) {
-                Log.i(LOG_TAG, "Performing data retention maintenance...")
+                info("Performing data retention maintenance...")
                 deleteSince(getThreshold(now))
                 updateLastCleanup(now)
             }
@@ -67,7 +66,6 @@ class RetentionManager @JvmOverloads constructor(
     private fun deleteSince(threshold: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             RepositoryProvider.transaction().deleteOldTransactions(threshold)
-            RepositoryProvider.throwable().deleteOldThrowables(threshold)
         }
     }
 
@@ -84,7 +82,7 @@ class RetentionManager @JvmOverloads constructor(
         }
     }
 
-    enum class Period {
+    public enum class Period {
         /** Retain data for the last hour. */
         ONE_HOUR,
         /** Retain data for the last day. */
@@ -95,7 +93,7 @@ class RetentionManager @JvmOverloads constructor(
         FOREVER
     }
 
-    companion object {
+    private companion object {
         private const val PREFS_NAME = "chucker_preferences"
         private const val KEY_LAST_CLEANUP = "last_cleanup"
         private var lastCleanup: Long = 0

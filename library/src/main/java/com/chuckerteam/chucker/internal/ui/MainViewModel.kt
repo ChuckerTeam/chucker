@@ -8,16 +8,9 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
-import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-
-internal const val EXPORT_FILENAME = "transactions.txt"
 
 internal class MainViewModel : ViewModel() {
 
@@ -39,17 +32,7 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
-        .getSortedThrowablesTuples()
-
     suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
-
-    suspend fun createExportFile(
-        content: String,
-        cacheDirectory: File,
-    ) = withContext(Dispatchers.IO) {
-        FileFactory.create(cacheDirectory, EXPORT_FILENAME)?.apply { writeText(content) }
-    }
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
@@ -60,11 +43,5 @@ internal class MainViewModel : ViewModel() {
             RepositoryProvider.transaction().deleteAllTransactions()
         }
         NotificationHelper.clearBuffer()
-    }
-
-    fun clearThrowables() {
-        viewModelScope.launch {
-            RepositoryProvider.throwable().deleteAllThrowables()
-        }
     }
 }

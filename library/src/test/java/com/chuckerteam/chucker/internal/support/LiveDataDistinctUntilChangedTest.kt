@@ -8,7 +8,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 
-class LiveDataDistinctUntilChangedTest {
+internal class LiveDataDistinctUntilChangedTest {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @Test

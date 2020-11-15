@@ -17,12 +17,4 @@ updates:
       reviewers:
       - "cortinico"
       - "vbuberen"
-      ignore:
-        - dependency-name: com.squareup.okhttp3:logging-interceptor
-          versions: "> 3.12.10"
-        - dependency-name: com.squareup.okhttp3:mockwebserver
-          versions: "> 3.12.10"
-        - dependency-name: com.squareup.okhttp3:okhttp
-          versions: "> 3.12.10"
-        - dependency-name: com.squareup.retrofit2:retrofit
-          versions: "> 2.6.4"
+      - "MiSikora"

@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class RepositoryProviderTest {
+internal class RepositoryProviderTest {
     private lateinit var db: ChuckerDatabase
     private lateinit var context: Context
 
@@ -35,11 +35,6 @@ class RepositoryProviderTest {
         RepositoryProvider.transaction()
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun uninitialzedErrorsRepo() {
-        RepositoryProvider.throwable()
-    }
-
     @Test
     fun transactionRepoAvailableAfterInitialize() {
         RepositoryProvider.initialize(context)
@@ -47,24 +42,10 @@ class RepositoryProviderTest {
     }
 
     @Test
-    fun errorRepoAvailableAfterInitialize() {
-        RepositoryProvider.initialize(context)
-        assertThat(RepositoryProvider.throwable()).isNotNull()
-    }
-
-    @Test
     fun providerCachesInstancesOfTransactionRepo() {
         RepositoryProvider.initialize(context)
         val one = RepositoryProvider.transaction()
         val two = RepositoryProvider.transaction()
-        assertThat(one).isSameInstanceAs(two)
-    }
-
-    @Test
-    fun providerCachesInstancesOfErrorRepo() {
-        RepositoryProvider.initialize(context)
-        val one = RepositoryProvider.throwable()
-        val two = RepositoryProvider.throwable()
         assertThat(one).isSameInstanceAs(two)
     }
 }

@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.DepletingSource
@@ -18,72 +19,43 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import okio.GzipSource
-import okio.Okio
 import okio.Source
+import okio.buffer
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.jvm.Throws
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
- *
- * @param context An Android [Context]
- * @param collector A [ChuckerCollector] to customize data retention
- * @param maxContentLength The maximum length for request and response content
- * before their truncation. Warning: setting this value too high may cause unexpected
- * results.
- * @param cacheDirectoryProvider Provider of [File] where Chucker will save temporary responses
- * before processing them.
- * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
- * bodies even in case of parsing errors or closing the response body without reading it.
- * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
- * with a `**` in the Chucker UI.
  */
-class ChuckerInterceptor internal constructor(
-    private val context: Context,
-    private val collector: ChuckerCollector = ChuckerCollector(context),
-    private val maxContentLength: Long = 250000L,
-    private val cacheDirectoryProvider: CacheDirectoryProvider,
-    private val alwaysReadResponseBody: Boolean = false,
-    headersToRedact: Set<String> = emptySet(),
+public class ChuckerInterceptor private constructor(
+    builder: Builder,
 ) : Interceptor {
 
     /**
      * An OkHttp Interceptor which persists and displays HTTP activity
      * in your application for later inspection.
      *
+     * This constructor  is a shorthand for `ChuckerInterceptor.Builder(context).build()`.
+     *
      * @param context An Android [Context]
-     * @param collector A [ChuckerCollector] to customize data retention
-     * @param maxContentLength The maximum length for request and response content
-     * before their truncation. Warning: setting this value too high may cause unexpected
-     * results.
-     * @param alwaysReadResponseBody If set to `true` Chucker will read full content of response
-     * bodies even in case of parsing errors or closing the response body without reading it.
-     * @param headersToRedact a [Set] of headers you want to redact. They will be replaced
-     * with a `**` in the Chucker UI.
+     * @see ChuckerInterceptor.Builder
      */
-    @JvmOverloads
-    constructor(
-        context: Context,
-        collector: ChuckerCollector = ChuckerCollector(context),
-        maxContentLength: Long = 250000L,
-        headersToRedact: Set<String> = emptySet(),
-        alwaysReadResponseBody: Boolean = false,
-    ) : this(
-        context = context,
-        collector = collector,
-        maxContentLength = maxContentLength,
-        cacheDirectoryProvider = { context.cacheDir },
-        alwaysReadResponseBody = alwaysReadResponseBody,
-        headersToRedact = headersToRedact,
-    )
+    public constructor(context: Context) : this(Builder(context))
 
-    private val io: IOUtils = IOUtils(context)
-    private val headersToRedact: MutableSet<String> = headersToRedact.toMutableSet()
+    private val context = builder.context
+    private val collector = builder.collector ?: ChuckerCollector(context)
+    private val maxContentLength = builder.maxContentLength
+    private val cacheDirectoryProvider = builder.cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir }
+    private val alwaysReadResponseBody = builder.alwaysReadResponseBody
+    private val io = IOUtils(builder.context)
+    private val headersToRedact = builder.headersToRedact.toMutableSet()
 
     /** Adds [headerName] into [headersToRedact] */
-    fun redactHeader(vararg headerName: String) {
+    public fun redactHeader(vararg headerName: String) {
         headersToRedact.addAll(headerName)
     }
 
@@ -112,17 +84,17 @@ class ChuckerInterceptor internal constructor(
      * Processes a [Request] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processRequest(request: Request, transaction: HttpTransaction) {
-        val requestBody = request.body()
+        val requestBody = request.body
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers[CONTENT_ENCODING])
 
         transaction.apply {
-            setRequestHeaders(request.headers())
-            populateUrl(request.url())
+            setRequestHeaders(request.headers)
+            populateUrl(request.url)
 
             isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
-            method = request.method()
+            method = request.method
             requestContentType = requestBody?.contentType()?.toString()
             requestPayloadSize = requestBody?.contentLength() ?: 0L
         }
@@ -152,28 +124,28 @@ class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction
     ) {
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
+        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers[CONTENT_ENCODING])
 
         transaction.apply {
             // includes headers added later in the chain
-            setRequestHeaders(filterHeaders(response.request().headers()))
-            setResponseHeaders(filterHeaders(response.headers()))
+            setRequestHeaders(filterHeaders(response.request.headers))
+            setResponseHeaders(filterHeaders(response.headers))
 
             isResponseBodyPlainText = responseEncodingIsSupported
-            requestDate = response.sentRequestAtMillis()
-            responseDate = response.receivedResponseAtMillis()
-            protocol = response.protocol().toString()
-            responseCode = response.code()
-            responseMessage = response.message()
+            requestDate = response.sentRequestAtMillis
+            responseDate = response.receivedResponseAtMillis
+            protocol = response.protocol.toString()
+            responseCode = response.code
+            responseMessage = response.message
 
-            response.handshake()?.let { handshake ->
-                responseTlsVersion = handshake.tlsVersion().javaName()
-                responseCipherSuite = handshake.cipherSuite().javaName()
+            response.handshake?.let { handshake ->
+                responseTlsVersion = handshake.tlsVersion.javaName
+                responseCipherSuite = handshake.cipherSuite.javaName
             }
 
             responseContentType = response.contentType
 
-            tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
+            tookMs = (response.receivedResponseAtMillis - response.sentRequestAtMillis)
         }
     }
 
@@ -186,7 +158,7 @@ class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction
     ): Response {
-        val responseBody = response.body()
+        val responseBody = response.body
         if (!response.hasBody() || responseBody == null) {
             collector.onResponseReceived(transaction)
             return response
@@ -204,7 +176,7 @@ class ChuckerInterceptor internal constructor(
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
         return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(upstream)))
+            .body(ResponseBody.create(contentType, contentLength, upstream.buffer()))
             .build()
     }
 
@@ -223,14 +195,14 @@ class ChuckerInterceptor internal constructor(
         responseBodyBuffer: Buffer,
         transaction: HttpTransaction
     ) {
-        val responseBody = response.body() ?: return
+        val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8
 
         if (io.isPlaintext(responseBodyBuffer)) {
             transaction.isResponseBodyPlainText = true
-            if (responseBodyBuffer.size() != 0L) {
+            if (responseBodyBuffer.size != 0L) {
                 transaction.responseBody = responseBodyBuffer.readString(charset)
             }
         } else {
@@ -239,7 +211,7 @@ class ChuckerInterceptor internal constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && (responseBodyBuffer.size() < MAX_BLOB_SIZE)) {
+            if (isImageContentType && (responseBodyBuffer.size < MAX_BLOB_SIZE)) {
                 transaction.responseImageData = responseBodyBuffer.readByteArray()
             }
         }
@@ -276,7 +248,7 @@ class ChuckerInterceptor internal constructor(
         override fun onFailure(file: File?, exception: IOException) = exception.printStackTrace()
 
         private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
-            val bufferedSource = Okio.buffer(Okio.source(responseBody))
+            val bufferedSource = responseBody.source().buffer()
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
@@ -289,10 +261,81 @@ class ChuckerInterceptor internal constructor(
         }
     }
 
-    companion object {
+    /**
+     * Assembles a new [ChuckerInterceptor].
+     *
+     * @param context An Android [Context].
+     */
+    public class Builder(internal var context: Context) {
+        internal var collector: ChuckerCollector? = null
+        internal var maxContentLength = MAX_CONTENT_LENGTH
+        internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
+        internal var alwaysReadResponseBody = false
+        internal var headersToRedact = emptySet<String>()
+
+        /**
+         * Sets the [ChuckerCollector] to customize data retention.
+         */
+        public fun collector(collector: ChuckerCollector): Builder = apply {
+            this.collector = collector
+        }
+
+        /**
+         * Sets the maximum length for requests and responses content before their truncation.
+         *
+         * Warning: setting this value too high may cause unexpected results.
+         */
+        public fun maxContentLength(length: Long): Builder = apply {
+            this.maxContentLength = length
+        }
+
+        /**
+         * Sets headers that will be redacted if their names match.
+         * They will be replaced with the `**` symbols in the Chucker UI.
+         */
+        public fun redactHeaders(headerNames: Iterable<String>): Builder = apply {
+            this.headersToRedact = headerNames.toSet()
+        }
+
+        /**
+         * Sets headers that will be redacted if their names match.
+         * They will be replaced with the `**` symbols in the Chucker UI.
+         */
+        public fun redactHeaders(vararg headerNames: String): Builder = apply {
+            this.headersToRedact = headerNames.toSet()
+        }
+
+        /**
+         * If set to `true` [ChuckerInterceptor] will read full content of response
+         * bodies even in case of parsing errors or closing the response body without reading it.
+         *
+         * Warning: enabling this feature may potentially cause different behaviour from the
+         * production application.
+         */
+        public fun alwaysReadResponseBody(enable: Boolean): Builder = apply {
+            this.alwaysReadResponseBody = enable
+        }
+
+        /**
+         * Sets provider of a directory where Chucker will save temporary responses
+         * before processing them.
+         */
+        @VisibleForTesting
+        internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
+            this.cacheDirectoryProvider = provider
+        }
+
+        /**
+         * Creates a new [ChuckerInterceptor] instance with values defined in this builder.
+         */
+        public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
+    }
+
+    private companion object {
         private val UTF8 = Charset.forName("UTF-8")
 
-        private const val MAX_BLOB_SIZE = 1000_000L
+        private const val MAX_CONTENT_LENGTH = 250_000L
+        private const val MAX_BLOB_SIZE = 1_000_000L
 
         private const val CONTENT_TYPE_IMAGE = "image"
         private const val CONTENT_ENCODING = "Content-Encoding"

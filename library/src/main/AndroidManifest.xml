@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chuckerteam.chucker">
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.CREATE_DOCUMENT" />
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
+
     <application>
         <activity
             android:name="com.chuckerteam.chucker.internal.ui.MainActivity"
@@ -12,10 +20,6 @@
         <activity android:name="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity"
             android:theme="@style/Chucker.Theme"
             android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity"/>
-
-        <activity android:name="com.chuckerteam.chucker.internal.ui.throwable.ThrowableActivity"
-            android:theme="@style/Chucker.Theme"
-            android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity" />
 
         <service
             android:name="com.chuckerteam.chucker.internal.support.ClearDatabaseService"

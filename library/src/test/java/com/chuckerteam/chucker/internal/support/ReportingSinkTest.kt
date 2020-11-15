@@ -4,9 +4,10 @@ import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.ByteString
-import okio.Okio
 import okio.Source
 import okio.Timeout
+import okio.buffer
+import okio.source
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.random.Random
 
-class ReportingSinkTest {
+internal class ReportingSinkTest {
     private val reportingCallback = TestReportingCallback()
 
     @Test
@@ -24,7 +25,7 @@ class ReportingSinkTest {
         val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
 
-        Okio.buffer(reportingSink).use { it.writeAll(testSource) }
+        reportingSink.buffer().use { it.writeAll(testSource) }
 
         assertThat(reportingCallback.fileContent).isEqualTo(testSource.content)
     }
@@ -35,7 +36,7 @@ class ReportingSinkTest {
         val testSource = TestSource(10_000)
         val reportingSink = ReportingSink(testFile, reportingCallback, writeByteLimit = 9_999)
 
-        Okio.buffer(reportingSink).use { it.writeAll(testSource) }
+        reportingSink.buffer().use { it.writeAll(testSource) }
 
         val expectedContent = testSource.content.substring(0, 9_999)
         assertThat(reportingCallback.fileContent).isEqualTo(expectedContent)
@@ -47,7 +48,7 @@ class ReportingSinkTest {
         val testSource = TestSource(2 * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
 
-        Okio.buffer(reportingSink).use { it.write(testSource, SEGMENT_SIZE) }
+        reportingSink.buffer().use { it.write(testSource, SEGMENT_SIZE) }
 
         val expectedContent = testSource.content.substring(0, SEGMENT_SIZE.toInt())
         assertThat(reportingCallback.fileContent).isEqualTo(expectedContent)
@@ -81,7 +82,7 @@ class ReportingSinkTest {
 
     private class TestReportingCallback : ReportingSink.Callback {
         private var file: File? = null
-        val fileContent get() = file?.let { Okio.buffer(Okio.source(it)).readByteString() }
+        val fileContent get() = file?.let { it.source().buffer().readByteString() }
         var exception: IOException? = null
         var isSuccess = false
             private set

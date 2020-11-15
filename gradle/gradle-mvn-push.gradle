@@ -5,23 +5,23 @@ apply plugin: 'org.jetbrains.dokka'
 group = GROUP
 version = VERSION_NAME
 
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
+def dokka = tasks['dokkaJavadoc']
 
-    configuration {
-        includeNonPublic = false
-        reportUndocumented = true
-        skipEmptyPackages = true
+dokkaJavadoc {
+    dokkaSourceSets {
+        configureEach {
+            includeNonPublic.set(false)
+            reportUndocumented.set(true)
+            skipEmptyPackages.set(true)
 
-        perPackageOption {
-            prefix = "com.chuckerteam.chucker.internal"
-            suppress = true
+            perPackageOption {
+                prefix.set("com.chuckerteam.chucker.internal")
+                suppress.set(true)
+            }
         }
     }
 }
 
-def dokka = tasks['dokka']
 
 task javadocJar(type: Jar, dependsOn: dokka) {
     archiveClassifier.set('javadoc')

@@ -33,14 +33,13 @@ internal class ChuckerInterceptorDelegate(
         }
     }
 
-    private val chucker = ChuckerInterceptor(
-        context = mockContext,
-        collector = mockCollector,
-        maxContentLength = maxContentLength,
-        headersToRedact = headersToRedact,
-        cacheDirectoryProvider = cacheDirectoryProvider,
-        alwaysReadResponseBody = alwaysReadResponseBody,
-    )
+    private val chucker = ChuckerInterceptor.Builder(context = mockContext)
+        .collector(mockCollector)
+        .maxContentLength(maxContentLength)
+        .redactHeaders(headersToRedact)
+        .alwaysReadResponseBody(alwaysReadResponseBody)
+        .cacheDirectorProvider(cacheDirectoryProvider)
+        .build()
 
     internal fun expectTransaction(): HttpTransaction {
         if (transactions.isEmpty()) {

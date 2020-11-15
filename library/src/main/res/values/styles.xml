@@ -13,6 +13,8 @@
       <item name="colorOnBackground">@color/chucker_color_on_background</item>
       <item name="colorOnSurface">@color/chucker_color_on_surface</item>
       <item name="colorOnError">@color/chucker_color_on_error</item>
+      <item name="android:textDirection">locale</item>
+      <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="Chucker.Theme" parent="Chucker.BaseTheme"/>

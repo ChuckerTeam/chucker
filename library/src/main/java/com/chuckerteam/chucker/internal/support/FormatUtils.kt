@@ -8,7 +8,6 @@ import org.xml.sax.InputSource
 import org.xml.sax.SAXParseException
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -109,18 +108,5 @@ internal object FormatUtils {
         } catch (e: UnsupportedEncodingException) {
             form
         }
-    }
-
-    /**
-     * Convert a stacktrace into a String.
-     *
-     * @param throwable The throwable to convert
-     * @return The String of the throwable
-     */
-    fun formatThrowable(throwable: Throwable): String {
-        val sw = StringWriter()
-        val pw = PrintWriter(sw)
-        throwable.printStackTrace(pw)
-        return sw.toString()
     }
 }

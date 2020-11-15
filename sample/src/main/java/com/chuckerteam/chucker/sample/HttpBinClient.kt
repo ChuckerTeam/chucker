@@ -1,15 +1,14 @@
 package com.chuckerteam.chucker.sample
 
 import android.content.Context
-import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,12 +30,11 @@ class HttpBinClient(
         retentionPeriod = RetentionManager.Period.ONE_HOUR
     )
 
-    private val chuckerInterceptor = ChuckerInterceptor(
-        context = context,
-        collector = collector,
-        maxContentLength = 250000L,
-        headersToRedact = emptySet<String>()
-    )
+    private val chuckerInterceptor = ChuckerInterceptor.Builder(context)
+        .collector(collector)
+        .maxContentLength(250000L)
+        .redactHeaders(emptySet())
+        .build()
 
     private val httpClient =
         OkHttpClient.Builder()
@@ -82,7 +80,8 @@ class HttpBinClient(
             stream(500).enqueue(cb)
             streamBytes(2048).enqueue(cb)
             image("image/png").enqueue(cb)
-            gzip().enqueue(cb)
+            gzipResponse().enqueue(cb)
+            gzipRequest(Data("Some gzip request")).enqueue(cb)
             xml().enqueue(cb)
             utf8().enqueue(cb)
             deflate().enqueue(cb)
@@ -101,16 +100,6 @@ class HttpBinClient(
         getResponsePartially()
     }
 
-    internal fun initializeCrashHandler() {
-        Chucker.registerDefaultCrashHandler(collector)
-    }
-
-    internal fun recordException() {
-        collector.onError("Example button pressed", RuntimeException("User triggered the button"))
-        // You can also throw exception, it will be caught thanks to "Chucker.registerDefaultCrashHandler"
-        // throw new RuntimeException("User triggered the button");
-    }
-
     private fun downloadSampleImage(colorHex: String) {
         val request = Request.Builder()
             .url("https://dummyimage.com/200x200/$colorHex/$colorHex.png")
@@ -121,14 +110,14 @@ class HttpBinClient(
                 override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    response.body()?.source()?.use { it.readByteString() }
+                    response.body?.source()?.use { it.readByteString() }
                 }
             }
         )
     }
 
     private fun getResponsePartially() {
-        val body = RequestBody.create(MediaType.get("application/json"), LARGE_JSON)
+        val body = LARGE_JSON.toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
             .url("https://postman-echo.com/post")
             .post(body)
@@ -138,7 +127,7 @@ class HttpBinClient(
                 override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    response.body()?.source()?.use { it.readByteString(SEGMENT_SIZE) }
+                    response.body?.source()?.use { it.readByteString(SEGMENT_SIZE) }
                 }
             }
         )
