@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
 
-    private val currentFilter = MutableLiveData<String>("")
+    private val currentFilter = MutableLiveData("")
 
     val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
@@ -32,7 +32,7 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
+    suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
