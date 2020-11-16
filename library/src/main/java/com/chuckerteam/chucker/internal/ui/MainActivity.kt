@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.ui
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -23,8 +24,7 @@ private const val EXPORT_FILE_NAME = "transactions.txt"
 
 internal class MainActivity :
     BaseChuckerActivity(),
-    SearchView.OnQueryTextListener,
-    TransactionAdapter.TransactionClickListListener {
+    SearchView.OnQueryTextListener {
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -36,15 +36,18 @@ internal class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
-        transactionsAdapter = TransactionAdapter(this, this)
+        transactionsAdapter = TransactionAdapter(this) { transactionId ->
+            TransactionActivity.start(this, transactionId)
+        }
 
         with(mainBinding) {
             setContentView(root)
             setSupportActionBar(toolbar)
             toolbar.subtitle = applicationName
 
-            tutorialLink.movementMethod = android.text.method.LinkMovementMethod.getInstance()
+            tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             transactionsRecyclerView.apply {
                 setHasFixedSize(true)
                 addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
@@ -142,8 +145,4 @@ internal class MainActivity :
         positiveButtonText = getString(R.string.chucker_export),
         negativeButtonText = getString(R.string.chucker_cancel)
     )
-
-    override fun onTransactionClick(transactionId: Long, position: Int) {
-        TransactionActivity.start(this, transactionId)
-    }
 }

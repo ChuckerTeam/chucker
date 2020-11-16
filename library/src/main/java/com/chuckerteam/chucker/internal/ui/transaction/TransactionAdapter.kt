@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -19,7 +18,7 @@ import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val listener: TransactionClickListListener?
+    private val onTransactionClick: (Long) -> Unit,
 ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
     private var transactions: List<HttpTransactionTuple> = arrayListOf()
 
@@ -47,17 +46,15 @@ internal class TransactionAdapter internal constructor(
 
     inner class TransactionViewHolder(
         private val itemBinding: ChuckerListItemTransactionBinding
-    ) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener {
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
 
         private var transactionId: Long? = null
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            transactionId?.let {
-                listener?.onTransactionClick(it, adapterPosition)
+            itemView.setOnClickListener {
+                transactionId?.let {
+                    onTransactionClick.invoke(it)
+                }
             }
         }
 
@@ -110,9 +107,5 @@ internal class TransactionAdapter internal constructor(
             itemBinding.code.setTextColor(color)
             itemBinding.path.setTextColor(color)
         }
-    }
-
-    interface TransactionClickListListener {
-        fun onTransactionClick(transactionId: Long, position: Int)
     }
 }
