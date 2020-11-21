@@ -76,6 +76,27 @@ jobs:
     - name: Stop Gradle
       run: ./gradlew --stop
 
+  api-check:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ hashFiles('build.gradle') }}
+          restore-keys: cache-gradle-
+
+      - name: Run apiCheck
+        run: ./gradlew apiCheck
+
+      - name: Stop Gradle
+        run: ./gradlew --stop
+
   publish-artifact:
     runs-on: [ubuntu-latest]
 
