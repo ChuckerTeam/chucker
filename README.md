@@ -113,7 +113,6 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // is closed before being read like in Retrofit with Void and Unit types.
         .alwaysReadResponseBody(true)
         .build()
-)
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
