@@ -9,9 +9,10 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/doub_grid_size"
+        android:gravity="center"
         android:text="@string/intro_title"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         app:layout_constraintBottom_toTopOf="@+id/description"
@@ -23,9 +24,9 @@
 
     <TextView
         android:id="@+id/description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="@string/intro_body"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
