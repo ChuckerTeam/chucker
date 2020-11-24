@@ -31,13 +31,6 @@
         android:text="@string/do_http_activity" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/trigger_exception"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginTop="@dimen/doub_grid_size"
-        android:text="@string/trigger_exception" />
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/launch_chucker_directly"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
