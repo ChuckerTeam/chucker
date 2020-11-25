@@ -55,14 +55,17 @@ dependencies {
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion"
 }
 
 apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
