@@ -16,7 +16,7 @@ import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
 import okio.GzipSource
 import okio.Source
@@ -101,7 +101,7 @@ public class ChuckerInterceptor private constructor(
 
         if (requestBody != null && encodingIsSupported) {
             val source = io.getNativeSource(Buffer(), request.isGzipped)
-            val buffer = source.buffer()
+            val buffer = source.buffer
             requestBody.writeTo(buffer)
             var charset: Charset = UTF8
             val contentType = requestBody.contentType()
@@ -176,7 +176,7 @@ public class ChuckerInterceptor private constructor(
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
         return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, upstream.buffer()))
+            .body(upstream.buffer().asResponseBody(contentType, contentLength))
             .build()
     }
 
