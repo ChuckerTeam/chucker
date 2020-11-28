@@ -41,6 +41,7 @@ android {
     lintOptions {
         warningsAsErrors true
         abortOnError true
+        disable 'AcceptsUserCertificates'
     }
 
     compileOptions {
