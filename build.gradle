@@ -20,6 +20,7 @@ buildscript {
         retrofitVersion = '2.9.0'
 
         // Debug and quality control
+        binaryCompatibilityValidator = '0.2.4'
         detektVersion = '1.14.0'
         dokkaVersion = '1.4.10.2'
         ktLintVersion = '0.39.0'
@@ -49,7 +50,17 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
+        classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
     }
+}
+apply plugin: 'binary-compatibility-validator'
+
+apiValidation {
+    ignoredProjects += ["sample"]
+    ignoredPackages += [
+            "com.chuckerteam.chucker.internal",
+            "com.chuckerteam.chucker.databinding"
+    ]
 }
 
 allprojects {
