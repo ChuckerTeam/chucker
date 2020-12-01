@@ -11,6 +11,10 @@ android {
         ]
     }
 
+    buildFeatures {
+        buildConfig = false
+    }
+
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
     }
