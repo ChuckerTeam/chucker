@@ -15,7 +15,7 @@ dokkaJavadoc {
             skipEmptyPackages.set(true)
 
             perPackageOption {
-                prefix.set("com.chuckerteam.chucker.internal")
+                matchingRegex.set(".*\\.internal.*")
                 suppress.set(true)
             }
         }
