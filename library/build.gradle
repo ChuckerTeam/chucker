@@ -63,7 +63,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
-    api "com.squareup.okhttp3:okhttp:$okhttpVersion"
+
+    api platform("com.squareup.okhttp3:okhttp-bom:$okhttpVersion")
+    api "com.squareup.okhttp3:okhttp"
+    testImplementation "com.squareup.okhttp3:mockwebserver"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
@@ -71,7 +74,6 @@ dependencies {
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$vintageJunitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
-    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttpVersion"
     testImplementation "androidx.test:core:$androidxTestCoreVersion"
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
