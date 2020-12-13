@@ -58,7 +58,7 @@ internal class MainActivity :
         viewModel.transactions.observe(
             this,
             { transactionTuples ->
-                transactionsAdapter.setData(transactionTuples)
+                transactionsAdapter.submitList(transactionTuples)
                 mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
             }
         )
