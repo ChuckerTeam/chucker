@@ -13,5 +13,5 @@ internal object TransactionDiffCallback : DiffUtil.ItemCallback<HttpTransactionT
     }
 
     // Overriding function is empty on purpose to avoid flickering by default animator
-    override fun getChangePayload(oldItem: HttpTransactionTuple, newItem: HttpTransactionTuple) {}
+    override fun getChangePayload(oldItem: HttpTransactionTuple, newItem: HttpTransactionTuple) = Unit
 }
