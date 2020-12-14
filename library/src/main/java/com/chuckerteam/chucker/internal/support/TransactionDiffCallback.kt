@@ -11,4 +11,7 @@ internal object TransactionDiffCallback : DiffUtil.ItemCallback<HttpTransactionT
     override fun areContentsTheSame(oldItem: HttpTransactionTuple, newItem: HttpTransactionTuple): Boolean {
         return oldItem == newItem
     }
+
+    // Overriding function is empty on purpose to avoid flickering by default animator
+    override fun getChangePayload(oldItem: HttpTransactionTuple, newItem: HttpTransactionTuple) {}
 }
