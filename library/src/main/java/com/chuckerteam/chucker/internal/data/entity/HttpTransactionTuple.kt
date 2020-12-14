@@ -10,7 +10,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
  * This Tuple is good to be used on List or Preview interfaces.
  */
 @Suppress("LongParameterList")
-internal class HttpTransactionTuple(
+internal data class HttpTransactionTuple(
     @ColumnInfo(name = "id") var id: Long,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,
     @ColumnInfo(name = "tookMs") var tookMs: Long?,

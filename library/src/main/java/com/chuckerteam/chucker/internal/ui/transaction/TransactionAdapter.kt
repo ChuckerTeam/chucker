@@ -8,19 +8,20 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
 import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
     private val onTransactionClick: (Long) -> Unit,
-) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
-    private var transactions: List<HttpTransactionTuple> = arrayListOf()
+) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(TransactionDiffCallback) {
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
@@ -29,20 +30,13 @@ internal class TransactionAdapter internal constructor(
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
 
-    override fun getItemCount(): Int = transactions.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val viewBinding = ChuckerListItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TransactionViewHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) =
-        holder.bind(transactions[position])
-
-    fun setData(httpTransactions: List<HttpTransactionTuple>) {
-        this.transactions = httpTransactions
-        notifyDataSetChanged()
-    }
+        holder.bind(getItem(position))
 
     inner class TransactionViewHolder(
         private val itemBinding: ChuckerListItemTransactionBinding
