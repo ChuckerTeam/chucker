@@ -7,6 +7,10 @@ import okhttp3.Headers
 import okhttp3.Headers.Companion.headersOf
 import okhttp3.Request
 import okhttp3.Response
+import okio.Buffer
+import okio.BufferedSource
+import okio.GzipSink
+import okio.buffer
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -71,6 +75,31 @@ internal class OkHttpUtilsTest {
         every { mockRequest.headers } returns headersOf("Content-Encoding", "identity")
 
         assertThat(mockRequest.isGzipped).isFalse()
+    }
+
+    @Test
+    fun uncompressSource_withGzippedContent() {
+        val content = "Hello there!"
+        val source = Buffer()
+        GzipSink(source).buffer().use { it.writeUtf8(content) }
+
+        val result = source.uncompress(headersOf("Content-Encoding", "gzip"))
+            .buffer()
+            .use(BufferedSource::readUtf8)
+
+        assertThat(result).isEqualTo(content)
+    }
+
+    @Test
+    fun uncompressSource_withPlainTextContent() {
+        val content = "Hello there!"
+        val source = Buffer().writeUtf8(content)
+
+        val result = source.uncompress(headersOf())
+            .buffer()
+            .use(BufferedSource::readUtf8)
+
+        assertThat(result).isEqualTo(content)
     }
 
     @ParameterizedTest(name = "\"{0}\" must be supported: {1}")

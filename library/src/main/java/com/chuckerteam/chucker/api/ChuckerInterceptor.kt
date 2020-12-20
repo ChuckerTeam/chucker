@@ -15,13 +15,13 @@ import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.hasSupportedContentEncoding
 import com.chuckerteam.chucker.internal.support.isGzipped
 import com.chuckerteam.chucker.internal.support.isProbablyPlainText
+import com.chuckerteam.chucker.internal.support.uncompress
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
-import okio.GzipSource
 import okio.Source
 import okio.buffer
 import okio.source
@@ -187,9 +187,9 @@ public class ChuckerInterceptor private constructor(
         }
     }
 
-    private fun processResponseBody(
+    private fun processResponsePayload(
         response: Response,
-        responseBodyBuffer: Buffer,
+        payload: Buffer,
         transaction: HttpTransaction
     ) {
         val responseBody = response.body ?: return
@@ -197,10 +197,10 @@ public class ChuckerInterceptor private constructor(
         val contentType = responseBody.contentType()
         val charset = contentType?.charset() ?: UTF_8
 
-        if (responseBodyBuffer.isProbablyPlainText) {
+        if (payload.isProbablyPlainText) {
             transaction.isResponseBodyPlainText = true
-            if (responseBodyBuffer.size != 0L) {
-                transaction.responseBody = responseBodyBuffer.readString(charset)
+            if (payload.size != 0L) {
+                transaction.responseBody = payload.readString(charset)
             }
         } else {
             transaction.isResponseBodyPlainText = false
@@ -208,8 +208,8 @@ public class ChuckerInterceptor private constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && (responseBodyBuffer.size < MAX_BLOB_SIZE)) {
-                transaction.responseImageData = responseBodyBuffer.readByteArray()
+            if (isImageContentType && (payload.size < MAX_BLOB_SIZE)) {
+                transaction.responseImageData = payload.readByteArray()
             }
         }
     }
@@ -231,11 +231,8 @@ public class ChuckerInterceptor private constructor(
     ) : ReportingSink.Callback {
 
         override fun onClosed(file: File?, sourceByteCount: Long) {
-            if (file != null) {
-                val buffer = readResponseBuffer(file, response.isGzipped)
-                if (buffer != null) {
-                    processResponseBody(response, buffer, transaction)
-                }
+            file?.readResponsePayload()?.let { payload ->
+                processResponsePayload(response, payload, transaction)
             }
             transaction.responsePayloadSize = sourceByteCount
             collector.onResponseReceived(transaction)
@@ -246,14 +243,10 @@ public class ChuckerInterceptor private constructor(
             Logger.error("Failed to read response payload", exception)
         }
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
-            val bufferedSource = responseBody.source().buffer()
-            val source = if (isGzipped) {
-                GzipSource(bufferedSource)
-            } else {
-                bufferedSource
+        private fun File.readResponsePayload() = try {
+            source().uncompress(response.headers).use { source ->
+                Buffer().apply { writeAll(source) }
             }
-            Buffer().apply { source.use { writeAll(it) } }
         } catch (e: IOException) {
             Logger.error("Response payload couldn't be processed", e)
             null

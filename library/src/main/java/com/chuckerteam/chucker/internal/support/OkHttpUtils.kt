@@ -3,6 +3,8 @@ package com.chuckerteam.chucker.internal.support
 import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
+import okio.Source
+import okio.gzip
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import java.net.HttpURLConnection.HTTP_OK
@@ -69,3 +71,9 @@ internal val Headers.hasSupportedContentEncoding: Boolean
         ?.takeIf { it.isNotEmpty() }
         ?.let { it.toLowerCase(Locale.ROOT) in supportedEncodings }
         ?: true
+
+internal fun Source.uncompress(headers: Headers) = if (headers.containsGzip) {
+    gzip()
+} else {
+    this
+}
