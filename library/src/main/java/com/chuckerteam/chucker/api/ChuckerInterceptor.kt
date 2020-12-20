@@ -26,7 +26,7 @@ import okio.buffer
 import okio.source
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
+import kotlin.text.Charsets.UTF_8
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -104,11 +104,7 @@ public class ChuckerInterceptor private constructor(
             val source = io.getNativeSource(Buffer(), request.isGzipped)
             val buffer = source.buffer
             requestBody.writeTo(buffer)
-            var charset: Charset = UTF8
-            val contentType = requestBody.contentType()
-            if (contentType != null) {
-                charset = contentType.charset(UTF8) ?: UTF8
-            }
+            val charset = requestBody.contentType()?.charset() ?: UTF_8
             if (buffer.isProbablyPlainText) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
@@ -199,7 +195,7 @@ public class ChuckerInterceptor private constructor(
         val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
-        val charset = contentType?.charset(UTF8) ?: UTF8
+        val charset = contentType?.charset() ?: UTF_8
 
         if (responseBodyBuffer.isProbablyPlainText) {
             transaction.isResponseBodyPlainText = true
@@ -335,8 +331,6 @@ public class ChuckerInterceptor private constructor(
     }
 
     private companion object {
-        private val UTF8 = Charset.forName("UTF-8")
-
         private const val MAX_CONTENT_LENGTH = 250_000L
         private const val MAX_BLOB_SIZE = 1_000_000L
 
