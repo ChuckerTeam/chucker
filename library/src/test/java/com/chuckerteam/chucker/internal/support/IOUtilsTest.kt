@@ -7,14 +7,9 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import okio.Buffer
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import java.io.EOFException
 import java.nio.charset.Charset
-import java.util.stream.Stream
 
 internal class IOUtilsTest {
 
@@ -72,27 +67,5 @@ internal class IOUtilsTest {
 
         val nativeSource = ioUtils.getNativeSource(buffer, true)
         assertThat(nativeSource).isNotEqualTo(buffer)
-    }
-
-    @ParameterizedTest(name = "{0} must be supported? {1}")
-    @MethodSource("supportedEncodingSource")
-    @DisplayName("Check if body encoding is supported")
-    fun bodyHasSupportedEncoding(encoding: String?, isSupported: Boolean) {
-        val result = ioUtils.bodyHasSupportedEncoding(encoding)
-
-        assertThat(result).isEqualTo(isSupported)
-    }
-
-    companion object {
-        @JvmStatic
-        fun supportedEncodingSource(): Stream<Arguments> {
-            return Stream.of(
-                Arguments.of(null, true),
-                Arguments.of("", true),
-                Arguments.of("identity", true),
-                Arguments.of("gzip", true),
-                Arguments.of("other", false)
-            )
-        }
     }
 }

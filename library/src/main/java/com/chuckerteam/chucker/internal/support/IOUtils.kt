@@ -34,9 +34,4 @@ internal class IOUtils(private val context: Context) {
     } else {
         input
     }
-
-    fun bodyHasSupportedEncoding(contentEncoding: String?) =
-        contentEncoding.isNullOrEmpty() ||
-            contentEncoding.equals("identity", ignoreCase = true) ||
-            contentEncoding.equals("gzip", ignoreCase = true)
 }

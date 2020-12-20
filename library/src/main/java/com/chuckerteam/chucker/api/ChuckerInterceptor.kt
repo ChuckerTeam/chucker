@@ -12,6 +12,7 @@ import com.chuckerteam.chucker.internal.support.ReportingSink
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
+import com.chuckerteam.chucker.internal.support.hasSupportedContentEncoding
 import com.chuckerteam.chucker.internal.support.isGzipped
 import com.chuckerteam.chucker.internal.support.isProbablyPlainText
 import okhttp3.Headers
@@ -86,7 +87,7 @@ public class ChuckerInterceptor private constructor(
     private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers[CONTENT_ENCODING])
+        val encodingIsSupported = request.headers.hasSupportedContentEncoding
 
         transaction.apply {
             setRequestHeaders(request.headers)
@@ -120,7 +121,7 @@ public class ChuckerInterceptor private constructor(
         response: Response,
         transaction: HttpTransaction
     ) {
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers[CONTENT_ENCODING])
+        val responseEncodingIsSupported = response.headers.hasSupportedContentEncoding
 
         transaction.apply {
             // includes headers added later in the chain
@@ -334,6 +335,5 @@ public class ChuckerInterceptor private constructor(
         private const val MAX_BLOB_SIZE = 1_000_000L
 
         private const val CONTENT_TYPE_IMAGE = "image"
-        private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }

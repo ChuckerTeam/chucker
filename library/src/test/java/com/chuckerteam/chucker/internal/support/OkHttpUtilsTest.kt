@@ -3,10 +3,16 @@ package com.chuckerteam.chucker.internal.support
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import okhttp3.Headers
 import okhttp3.Headers.Companion.headersOf
 import okhttp3.Request
 import okhttp3.Response
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
 
 internal class OkHttpUtilsTest {
 
@@ -65,5 +71,26 @@ internal class OkHttpUtilsTest {
         every { mockRequest.headers } returns headersOf("Content-Encoding", "identity")
 
         assertThat(mockRequest.isGzipped).isFalse()
+    }
+
+    @ParameterizedTest(name = "\"{0}\" must be supported: {1}")
+    @MethodSource("supportedEncodingSource")
+    @DisplayName("Check if body encoding is supported")
+    fun headersHaveSupportedEncoding(headers: Headers, isSupported: Boolean) {
+        val result = headers.hasSupportedContentEncoding
+
+        assertThat(result).isEqualTo(isSupported)
+    }
+
+    companion object {
+        @JvmStatic
+        fun supportedEncodingSource(): Stream<Arguments> = Stream.of(
+            "" to true,
+            "identity" to true,
+            "gzip" to true,
+            "other" to false,
+        ).map { (encoding, result) ->
+            Arguments.of(headersOf("Content-Encoding", encoding), result)
+        }
     }
 }
