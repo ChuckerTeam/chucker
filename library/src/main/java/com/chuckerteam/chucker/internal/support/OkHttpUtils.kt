@@ -6,6 +6,7 @@ import okhttp3.Response
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import java.net.HttpURLConnection.HTTP_OK
+import java.util.Locale
 
 private const val HTTP_CONTINUE = 100
 
@@ -60,3 +61,11 @@ private val Headers.containsGzip: Boolean
     get() {
         return this["Content-Encoding"].equals("gzip", ignoreCase = true)
     }
+
+private val supportedEncodings = listOf("identity", "gzip")
+
+internal val Headers.hasSupportedContentEncoding: Boolean
+    get() = get("Content-Encoding")
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { it.toLowerCase(Locale.ROOT) in supportedEncodings }
+        ?: true
