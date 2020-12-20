@@ -13,6 +13,7 @@ import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.isGzipped
+import com.chuckerteam.chucker.internal.support.isProbablyPlainText
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -26,7 +27,6 @@ import okio.source
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
-import kotlin.jvm.Throws
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -109,7 +109,7 @@ public class ChuckerInterceptor private constructor(
             if (contentType != null) {
                 charset = contentType.charset(UTF8) ?: UTF8
             }
-            if (io.isPlaintext(buffer)) {
+            if (buffer.isProbablyPlainText) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
             } else {
@@ -201,7 +201,7 @@ public class ChuckerInterceptor private constructor(
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8
 
-        if (io.isPlaintext(responseBodyBuffer)) {
+        if (responseBodyBuffer.isProbablyPlainText) {
             transaction.isResponseBodyPlainText = true
             if (responseBodyBuffer.size != 0L) {
                 transaction.responseBody = responseBodyBuffer.readString(charset)
