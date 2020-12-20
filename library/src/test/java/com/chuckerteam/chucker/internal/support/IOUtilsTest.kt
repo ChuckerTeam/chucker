@@ -25,7 +25,7 @@ internal class IOUtilsTest {
     fun isPlaintext_withEmptyBuffer_returnsTrue() {
         val buffer = Buffer()
 
-        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
+        assertThat(buffer.isProbablyPlainText).isTrue()
     }
 
     @Test
@@ -33,7 +33,7 @@ internal class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeString(" ", Charset.defaultCharset())
 
-        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
+        assertThat(buffer.isProbablyPlainText).isTrue()
     }
 
     @Test
@@ -41,7 +41,7 @@ internal class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeString("just a string", Charset.defaultCharset())
 
-        assertThat(ioUtils.isPlaintext(buffer)).isTrue()
+        assertThat(buffer.isProbablyPlainText).isTrue()
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class IOUtilsTest {
         val buffer = Buffer()
         buffer.writeByte(0x11000000)
 
-        assertThat(ioUtils.isPlaintext(buffer)).isFalse()
+        assertThat(buffer.isProbablyPlainText).isFalse()
     }
 
     @Test
@@ -58,7 +58,7 @@ internal class IOUtilsTest {
         every { mockBuffer.size } returns 100L
         every { mockBuffer.copyTo(any<Buffer>(), any(), any()) } throws EOFException()
 
-        assertThat(ioUtils.isPlaintext(mockBuffer)).isFalse()
+        assertThat(mockBuffer.isProbablyPlainText).isFalse()
     }
 
     @Test
