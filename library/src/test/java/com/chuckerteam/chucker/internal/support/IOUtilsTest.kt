@@ -22,46 +22,6 @@ internal class IOUtilsTest {
     private val ioUtils = IOUtils(mockContext)
 
     @Test
-    fun isPlaintext_withEmptyBuffer_returnsTrue() {
-        val buffer = Buffer()
-
-        assertThat(buffer.isProbablyPlainText).isTrue()
-    }
-
-    @Test
-    fun isPlaintext_withWhiteSpace_returnsTrue() {
-        val buffer = Buffer()
-        buffer.writeString(" ", Charset.defaultCharset())
-
-        assertThat(buffer.isProbablyPlainText).isTrue()
-    }
-
-    @Test
-    fun isPlaintext_withPlainText_returnsTrue() {
-        val buffer = Buffer()
-        buffer.writeString("just a string", Charset.defaultCharset())
-
-        assertThat(buffer.isProbablyPlainText).isTrue()
-    }
-
-    @Test
-    fun isPlaintext_withCodepoint_returnsFalse() {
-        val buffer = Buffer()
-        buffer.writeByte(0x11000000)
-
-        assertThat(buffer.isProbablyPlainText).isFalse()
-    }
-
-    @Test
-    fun isPlaintext_withEOF_returnsFalse() {
-        val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size } returns 100L
-        every { mockBuffer.copyTo(any<Buffer>(), any(), any()) } throws EOFException()
-
-        assertThat(mockBuffer.isProbablyPlainText).isFalse()
-    }
-
-    @Test
     fun readFromBuffer_contentNotTruncated() {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size } returns 100L
