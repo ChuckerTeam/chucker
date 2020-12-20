@@ -1,11 +1,9 @@
 package com.chuckerteam.chucker.internal.support
 
 import com.google.common.truth.Truth
-import io.mockk.every
-import io.mockk.mockk
 import okio.Buffer
+import okio.ByteString.Companion.encodeUtf8
 import org.junit.jupiter.api.Test
-import java.io.EOFException
 import java.nio.charset.Charset
 
 internal class OkioUtilsTest {
@@ -41,11 +39,18 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withEOF_returnsFalse() {
-        val mockBuffer = mockk<Buffer>()
-        every { mockBuffer.size } returns 100L
-        every { mockBuffer.copyTo(any<Buffer>(), any(), any()) } throws EOFException()
+    fun isPlaintext_withNonAsciiText_returnsTrue() {
+        val buffer = Buffer()
+        buffer.writeString("ą", Charset.defaultCharset())
 
-        Truth.assertThat(mockBuffer.isProbablyPlainText).isFalse()
+        Truth.assertThat(buffer.isProbablyPlainText).isTrue()
+    }
+
+    @Test
+    fun isPlaintext_withTruncatedUtf_returnsFalse() {
+        val bytes = "ą".encodeUtf8().let { it.substring(0, it.size - 1) }
+        val buffer = Buffer().write(bytes)
+
+        Truth.assertThat(buffer.isProbablyPlainText).isFalse()
     }
 }
