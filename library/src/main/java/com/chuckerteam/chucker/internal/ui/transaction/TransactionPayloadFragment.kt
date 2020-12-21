@@ -61,7 +61,7 @@ internal class TransactionPayloadFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
             inflater,
             container,
