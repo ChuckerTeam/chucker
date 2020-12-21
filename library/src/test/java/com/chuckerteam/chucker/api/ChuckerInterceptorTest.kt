@@ -63,7 +63,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun imageResponse_isAvailableToChucker(factory: ClientFactory) {
+    fun imageResponseBody_isAvailableToChucker(factory: ClientFactory) {
         val image = getResourceFile("sample_image.png")
         server.enqueue(MockResponse().addHeader("Content-Type: image/jpeg").setBody(image))
         val request = Request.Builder().url(serverUrl).build()
@@ -78,7 +78,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun imageResponse_isAvailableToTheEndConsumer(factory: ClientFactory) {
+    fun imageResponseBody_isAvailableToTheEndConsumer(factory: ClientFactory) {
         val image = getResourceFile("sample_image.png")
         server.enqueue(MockResponse().addHeader("Content-Type: image/jpeg").setBody(image))
         val request = Request.Builder().url(serverUrl).build()
@@ -92,7 +92,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun gzippedBody_isGunzippedForChucker(factory: ClientFactory) {
+    fun gzippedResponseBody_isGunzippedForChucker(factory: ClientFactory) {
         val bytes = Buffer().apply { writeUtf8("Hello, world!") }
         val gzippedBytes = Buffer().apply {
             GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
@@ -110,7 +110,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun gzippedBody_isGunzippedForTheEndConsumer(factory: ClientFactory) {
+    fun gzippedResponseBody_isGunzippedForTheEndConsumer(factory: ClientFactory) {
         val bytes = Buffer().apply { writeUtf8("Hello, world!") }
         val gzippedBytes = Buffer().apply {
             GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
@@ -126,7 +126,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun gzippedBody_withNoContent_isTransparentForChucker(factory: ClientFactory) {
+    fun gzippedResponseBody_withNoContent_isTransparentForChucker(factory: ClientFactory) {
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -139,7 +139,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun gzippedBody_withNoContent_isTransparentForEndConsumer(factory: ClientFactory) {
+    fun gzippedResponseBody_withNoContent_isTransparentForEndConsumer(factory: ClientFactory) {
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -151,7 +151,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun regularBody_isAvailableForChucker(factory: ClientFactory) {
+    fun plainTextResponseBody_isAvailableForChucker(factory: ClientFactory) {
         val body = Buffer().apply { writeUtf8("Hello, world!") }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
@@ -166,7 +166,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun regularBody_isAvailableForTheEndConsumer(factory: ClientFactory) {
+    fun plainTextResponseBody_isAvailableForTheEndConsumer(factory: ClientFactory) {
         val body = Buffer().apply { writeUtf8("Hello, world!") }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
@@ -179,7 +179,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun regularBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
+    fun plainTextResponseBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
         server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -193,7 +193,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun regularBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
+    fun plainTextResponseBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
         server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -205,7 +205,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun payloadSize_dependsOnTheAmountOfDataDownloaded(factory: ClientFactory) {
+    fun responsePayloadSize_dependsOnTheAmountOfDataDownloaded(factory: ClientFactory) {
         val body = Buffer().apply {
             repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
         }
@@ -226,7 +226,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun contentLength_isProperlyReadFromHeader_andNotFromAmountOfData(factory: ClientFactory) {
+    fun responseContentLength_isProperlyReadFromHeader_andNotFromAmountOfData(factory: ClientFactory) {
         val body = Buffer().apply {
             repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
         }
@@ -269,7 +269,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun payloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
+    fun responsePayloadSize_isNotLimitedByInterceptorMaxContentLength(factory: ClientFactory) {
         val body = Buffer().apply {
             repeat(10_000) { writeUtf8("!") }
         }
