@@ -1,7 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
 import okhttp3.Headers
-import okhttp3.Request
 import okhttp3.Response
 import okio.Source
 import okio.gzip
@@ -45,18 +44,6 @@ internal val Response.isChunked: Boolean
 internal val Response.contentType: String?
     get() {
         return this.header("Content-Type")
-    }
-
-/** Checks if the OkHttp response uses gzip encoding. */
-internal val Response.isGzipped: Boolean
-    get() {
-        return this.headers.containsGzip
-    }
-
-/** Checks if the OkHttp request uses gzip encoding. */
-internal val Request.isGzipped: Boolean
-    get() {
-        return this.headers.containsGzip
     }
 
 private val Headers.containsGzip: Boolean
