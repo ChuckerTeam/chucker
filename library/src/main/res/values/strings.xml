@@ -37,7 +37,6 @@
     <string name="chucker_body_empty">(body is empty)</string>
     <string name="chucker_body_omitted">(encoded or binary body omitted)</string>
     <string name="chucker_search">Search</string>
-    <string name="chucker_body_unexpected_eof">\n\n--- Unexpected end of content ---</string>
     <string name="chucker_body_content_truncated">\n\n--- Content truncated ---</string>
     <string name="chucker_tab_network">Network</string>
     <string name="chucker_tab_errors">Errors</string>

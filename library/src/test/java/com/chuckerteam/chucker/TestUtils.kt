@@ -32,6 +32,10 @@ internal fun Response.readByteStringBody(length: Long? = null): ByteString? {
     }
 }
 
+internal fun Response.readByteStringRequestBody(): ByteString? = request.body?.let { body ->
+    Buffer().apply { body.writeTo(this) }.readByteString()
+}
+
 internal fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()
     observeForever(observer)
