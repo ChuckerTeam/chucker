@@ -26,12 +26,12 @@ import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -300,11 +300,8 @@ internal class TransactionPayloadFragment :
                         }
                     }
                 }
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-                return@withContext false
             } catch (e: IOException) {
-                e.printStackTrace()
+                Logger.error("Failed to save transaction to a file", e)
                 return@withContext false
             }
             return@withContext true

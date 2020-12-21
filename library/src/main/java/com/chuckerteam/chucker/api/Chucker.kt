@@ -2,6 +2,8 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import com.chuckerteam.chucker.internal.ui.MainActivity
 
@@ -34,5 +36,21 @@ public object Chucker {
     @JvmStatic
     public fun dismissNotifications(context: Context) {
         NotificationHelper(context).dismissNotifications()
+    }
+
+    internal var logger: Logger = object : Logger {
+        val TAG = "Chucker"
+
+        override fun info(message: String) {
+            Log.i(TAG, message)
+        }
+
+        override fun warn(message: String) {
+            Log.w(TAG, message)
+        }
+
+        override fun error(message: String, throwable: Throwable?) {
+            Log.e(TAG, message, throwable)
+        }
     }
 }
