@@ -147,7 +147,7 @@ internal class TransactionPayloadFragment :
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
-                Observer { menu.findItem(R.id.encode_url).isVisible = it }
+                { menu.findItem(R.id.encode_url).isVisible = it }
             )
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
