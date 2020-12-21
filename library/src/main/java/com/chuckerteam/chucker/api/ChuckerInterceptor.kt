@@ -38,7 +38,8 @@ public class ChuckerInterceptor private constructor(
     private val requestProcessor = RequestProcessor(
         context = context,
         collector = collector,
-        maxContentLength = builder.maxContentLength
+        maxContentLength = builder.maxContentLength,
+        redactedHeaders = headersToRedact,
     )
     private val responseProcessor = ResponseProcessor(
         collector = collector,
