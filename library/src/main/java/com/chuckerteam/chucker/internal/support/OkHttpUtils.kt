@@ -77,3 +77,13 @@ internal fun Source.uncompress(headers: Headers) = if (headers.containsGzip) {
 } else {
     this
 }
+
+internal fun Headers.redact(names: Iterable<String>): Headers {
+    val builder = newBuilder()
+    for (name in names()) {
+        if (names.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
+            builder[name] = "**"
+        }
+    }
+    return builder.build()
+}
