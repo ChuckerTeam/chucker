@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.DepletingSource
 import com.chuckerteam.chucker.internal.support.FileFactory
 import com.chuckerteam.chucker.internal.support.IOUtils
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.ReportingSink
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
@@ -183,7 +184,7 @@ public class ChuckerInterceptor private constructor(
     private fun createTempTransactionFile(): File? {
         val cache = cacheDirectoryProvider.provide()
         return if (cache == null) {
-            IOException("Failed to obtain a valid cache directory for Chucker transaction file").printStackTrace()
+            Logger.warn("Failed to obtain a valid cache directory for transaction files")
             null
         } else {
             FileFactory.create(cache)
@@ -245,7 +246,9 @@ public class ChuckerInterceptor private constructor(
             file?.delete()
         }
 
-        override fun onFailure(file: File?, exception: IOException) = exception.printStackTrace()
+        override fun onFailure(file: File?, exception: IOException) {
+            Logger.error("Failed to read response payload", exception)
+        }
 
         private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
             val bufferedSource = responseBody.source().buffer()
@@ -256,7 +259,7 @@ public class ChuckerInterceptor private constructor(
             }
             Buffer().apply { source.use { writeAll(it) } }
         } catch (e: IOException) {
-            IOException("Response payload couldn't be processed by Chucker", e).printStackTrace()
+            Logger.error("Response payload couldn't be processed", e)
             null
         }
     }

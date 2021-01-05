@@ -20,7 +20,7 @@ internal object FileFactory {
             }
         }
     } catch (e: IOException) {
-        IOException("An error occurred while creating a Chucker file", e).printStackTrace()
+        Logger.error("An error occurred while creating a file", e)
         null
     }
 }

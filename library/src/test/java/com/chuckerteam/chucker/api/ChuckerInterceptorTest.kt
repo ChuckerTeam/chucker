@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import com.chuckerteam.chucker.ChuckerInterceptorDelegate
+import com.chuckerteam.chucker.NoLoggerRule
 import com.chuckerteam.chucker.SEGMENT_SIZE
 import com.chuckerteam.chucker.getResourceFile
 import com.chuckerteam.chucker.readByteStringBody
@@ -19,12 +20,14 @@ import okio.ByteString
 import okio.GzipSink
 import org.junit.Rule
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import java.io.File
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 
+@ExtendWith(NoLoggerRule::class)
 internal class ChuckerInterceptorTest {
     enum class ClientFactory {
         APPLICATION {

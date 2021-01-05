@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.support.Logger.warn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.BufferedSource
@@ -47,14 +46,14 @@ internal suspend fun Sharable.shareAsFile(
 ): Intent? {
     val cache = activity.cacheDir
     if (cache == null) {
-        warn("Failed to obtain a valid cache directory for Chucker file export")
+        Logger.warn("Failed to obtain a valid cache directory for file export")
         Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
     val file = FileFactory.create(cache, fileName)
     if (file == null) {
-        warn("Failed to create an export file for Chucker")
+        Logger.warn("Failed to create an export file")
         Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }

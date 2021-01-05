@@ -1,24 +1,25 @@
 package com.chuckerteam.chucker.internal.support
 
-import android.util.Log
+import com.chuckerteam.chucker.api.Chucker
 
-internal object Logger {
+internal interface Logger {
+    fun info(message: String)
 
-    private const val TAG = "Chucker"
+    fun warn(message: String)
 
-    fun info(message: String) {
-        Log.i(TAG, message)
-    }
+    fun error(message: String, throwable: Throwable? = null)
 
-    fun warn(message: String) {
-        Log.w(TAG, message)
-    }
+    companion object : Logger {
+        override fun info(message: String) {
+            Chucker.logger.info(message)
+        }
 
-    fun error(message: String, throwable: Throwable? = null) {
-        if (throwable != null) {
-            Log.e(TAG, message, throwable)
-        } else {
-            Log.e(TAG, message)
+        override fun warn(message: String) {
+            Chucker.logger.warn(message)
+        }
+
+        override fun error(message: String, throwable: Throwable?) {
+            Chucker.logger.error(message, throwable)
         }
     }
 }

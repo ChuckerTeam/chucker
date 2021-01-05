@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.NoLoggerRule
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource
@@ -10,8 +11,10 @@ import okio.buffer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import java.io.IOException
 
+@ExtendWith(NoLoggerRule::class)
 internal class DepletingSourceTest {
     @Test
     fun delegateContent_isMovedToDownstream() {

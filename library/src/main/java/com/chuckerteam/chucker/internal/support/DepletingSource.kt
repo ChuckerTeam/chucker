@@ -24,7 +24,7 @@ internal class DepletingSource(delegate: Source) : ForwardingSource(delegate) {
             try {
                 delegate.buffer().readAll(blackholeSink())
             } catch (e: IOException) {
-                IOException("An error occurred while depleting the source", e).printStackTrace()
+                Logger.error("An error occurred while depleting the source", e)
             }
         }
         shouldDeplete = false

@@ -26,12 +26,12 @@ import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -61,7 +61,7 @@ internal class TransactionPayloadFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
             inflater,
             container,
@@ -147,7 +147,7 @@ internal class TransactionPayloadFragment :
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
-                Observer { menu.findItem(R.id.encode_url).isVisible = it }
+                { menu.findItem(R.id.encode_url).isVisible = it }
             )
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
@@ -300,11 +300,8 @@ internal class TransactionPayloadFragment :
                         }
                     }
                 }
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-                return@withContext false
             } catch (e: IOException) {
-                e.printStackTrace()
+                Logger.error("Failed to save transaction to a file", e)
                 return@withContext false
             }
             return@withContext true
