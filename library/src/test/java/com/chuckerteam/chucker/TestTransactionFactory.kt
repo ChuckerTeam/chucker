@@ -30,8 +30,7 @@ internal object TestTransactionFactory {
             responsePayloadSize = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
-            responseBody =
-                """{"field": "value"}""",
+            responseBody = """{"field": "value"}""",
             isResponseBodyPlainText = true,
             responseImageData = null
         )

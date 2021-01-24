@@ -49,7 +49,9 @@ internal class ChuckerInterceptorTest {
     }
 
     @get:Rule val server = MockWebServer()
+
     private val serverUrl = server.url("/") // Starts server implicitly
+
     @TempDir lateinit var tempDir: File
     private val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
 
