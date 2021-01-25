@@ -24,7 +24,7 @@ buildscript {
         detektVersion = '1.14.0'
         dokkaVersion = '1.4.20'
         ktLintVersion = '0.40.0'
-        ktLintGradleVersion = '9.4.0'
+        ktLintGradleVersion = '9.4.1'
         leakcanaryVersion = '2.5'
 
         // Testing
