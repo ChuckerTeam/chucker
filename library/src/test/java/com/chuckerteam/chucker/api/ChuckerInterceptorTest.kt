@@ -410,7 +410,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun nonPlainTextBody_isRecognizedNotToBePlainText(factory: ClientFactory) {
+    fun nonPlainTextRequestBody_isRecognizedNotToBePlainText(factory: ClientFactory) {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
