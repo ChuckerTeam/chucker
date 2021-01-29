@@ -22,7 +22,7 @@ internal class ChuckerInterceptorDelegate(
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
 
     private val mockContext = mockk<Context> {
-        every { getString(any()) } returns ""
+        every { getString(R.string.chucker_body_content_truncated) } returns "\n\n--- Content truncated ---"
     }
     private val mockCollector = mockk<ChuckerCollector> {
         every { onRequestSent(any()) } returns Unit

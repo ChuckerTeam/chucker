@@ -41,7 +41,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
-    @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = true,
+    @ColumnInfo(name = "isRequestBodyPlainText") var isRequestBodyPlainText: Boolean = false,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "responseMessage") var responseMessage: String?,
     @ColumnInfo(name = "error") var error: String?,
