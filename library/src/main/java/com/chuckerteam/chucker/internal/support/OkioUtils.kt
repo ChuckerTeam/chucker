@@ -8,7 +8,7 @@ private const val MAX_PREFIX_SIZE = 64L
 private const val CODE_POINT_SIZE = 16
 
 /**
- * Returns true if the body in question probably contains human readable text. Uses a small sample
+ * Returns true if the [Buffer] contains human readable text. Uses a small sample
  * of code points to detect unicode control characters commonly used in binary file signatures.
  */
 internal val Buffer.isProbablyPlainText

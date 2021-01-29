@@ -8,7 +8,7 @@ import java.nio.charset.Charset
 
 internal class OkioUtilsTest {
     @Test
-    fun isPlaintext_withEmptyBuffer_returnsTrue() {
+    fun isProbablyPlainText_withEmptyBuffer_returnsTrue() {
         val buffer = Buffer()
 
         assertThat(buffer.isProbablyPlainText).isTrue()
