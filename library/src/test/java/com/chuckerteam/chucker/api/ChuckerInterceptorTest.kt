@@ -13,10 +13,13 @@ import com.google.gson.stream.JsonReader
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
 import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
 import org.junit.Rule
 import org.junit.jupiter.api.assertThrows
@@ -404,4 +407,19 @@ internal class ChuckerInterceptorTest {
     }
 
     private data class Expected(val string: String, val boolean: Boolean, val secondString: String)
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun nonPlainTextRequestBody_isRecognizedNotToBePlainText(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val request = "\u0080".encodeUtf8().toRequestBody().toServerRequest()
+        client.newCall(request).execute().body!!.close()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.isRequestBodyPlainText).isFalse()
+    }
+
+    private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
 }
