@@ -10,34 +10,7 @@ import java.io.EOFException
 import java.nio.charset.Charset
 import kotlin.math.min
 
-private const val PREFIX_SIZE = 64L
-private const val CODE_POINT_SIZE = 16
-
 internal class IOUtils(private val context: Context) {
-
-    /**
-     * Returns true if the body in question probably contains human readable text. Uses a small sample
-     * of code points to detect unicode control characters commonly used in binary file signatures.
-     */
-    fun isPlaintext(buffer: Buffer): Boolean {
-        try {
-            val prefix = Buffer()
-            val byteCount = if (buffer.size < PREFIX_SIZE) buffer.size else PREFIX_SIZE
-            buffer.copyTo(prefix, 0, byteCount)
-            for (i in 0 until CODE_POINT_SIZE) {
-                if (prefix.exhausted()) {
-                    break
-                }
-                val codePoint = prefix.readUtf8CodePoint()
-                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false
-                }
-            }
-            return true
-        } catch (e: EOFException) {
-            return false // Truncated UTF-8 sequence.
-        }
-    }
 
     fun readFromBuffer(buffer: Buffer, charset: Charset, maxContentLength: Long): String {
         val bufferSize = buffer.size
@@ -61,9 +34,4 @@ internal class IOUtils(private val context: Context) {
     } else {
         input
     }
-
-    fun bodyHasSupportedEncoding(contentEncoding: String?) =
-        contentEncoding.isNullOrEmpty() ||
-            contentEncoding.equals("identity", ignoreCase = true) ||
-            contentEncoding.equals("gzip", ignoreCase = true)
 }

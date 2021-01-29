@@ -12,21 +12,22 @@ import com.chuckerteam.chucker.internal.support.ReportingSink
 import com.chuckerteam.chucker.internal.support.TeeSource
 import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
+import com.chuckerteam.chucker.internal.support.hasSupportedContentEncoding
 import com.chuckerteam.chucker.internal.support.isGzipped
+import com.chuckerteam.chucker.internal.support.isProbablyPlainText
+import com.chuckerteam.chucker.internal.support.uncompress
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
-import okio.GzipSource
 import okio.Source
 import okio.buffer
 import okio.source
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
-import kotlin.jvm.Throws
+import kotlin.text.Charsets.UTF_8
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -63,14 +64,13 @@ public class ChuckerInterceptor private constructor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response: Response
         val transaction = HttpTransaction()
 
         processRequest(request, transaction)
         collector.onRequestSent(transaction)
 
-        try {
-            response = chain.proceed(request)
+        val response = try {
+            chain.proceed(request)
         } catch (e: IOException) {
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
@@ -87,7 +87,7 @@ public class ChuckerInterceptor private constructor(
     private fun processRequest(request: Request, transaction: HttpTransaction) {
         val requestBody = request.body
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers[CONTENT_ENCODING])
+        val encodingIsSupported = request.headers.hasSupportedContentEncoding
 
         transaction.apply {
             setRequestHeaders(request.headers)
@@ -104,12 +104,8 @@ public class ChuckerInterceptor private constructor(
             val source = io.getNativeSource(Buffer(), request.isGzipped)
             val buffer = source.buffer
             requestBody.writeTo(buffer)
-            var charset: Charset = UTF8
-            val contentType = requestBody.contentType()
-            if (contentType != null) {
-                charset = contentType.charset(UTF8) ?: UTF8
-            }
-            if (io.isPlaintext(buffer)) {
+            val charset = requestBody.contentType()?.charset() ?: UTF_8
+            if (buffer.isProbablyPlainText) {
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
             } else {
@@ -125,7 +121,7 @@ public class ChuckerInterceptor private constructor(
         response: Response,
         transaction: HttpTransaction
     ) {
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers[CONTENT_ENCODING])
+        val responseEncodingIsSupported = response.headers.hasSupportedContentEncoding
 
         transaction.apply {
             // includes headers added later in the chain
@@ -191,20 +187,20 @@ public class ChuckerInterceptor private constructor(
         }
     }
 
-    private fun processResponseBody(
+    private fun processResponsePayload(
         response: Response,
-        responseBodyBuffer: Buffer,
+        payload: Buffer,
         transaction: HttpTransaction
     ) {
         val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
-        val charset = contentType?.charset(UTF8) ?: UTF8
+        val charset = contentType?.charset() ?: UTF_8
 
-        if (io.isPlaintext(responseBodyBuffer)) {
+        if (payload.isProbablyPlainText) {
             transaction.isResponseBodyPlainText = true
-            if (responseBodyBuffer.size != 0L) {
-                transaction.responseBody = responseBodyBuffer.readString(charset)
+            if (payload.size != 0L) {
+                transaction.responseBody = payload.readString(charset)
             }
         } else {
             transaction.isResponseBodyPlainText = false
@@ -212,8 +208,8 @@ public class ChuckerInterceptor private constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && (responseBodyBuffer.size < MAX_BLOB_SIZE)) {
-                transaction.responseImageData = responseBodyBuffer.readByteArray()
+            if (isImageContentType && (payload.size < MAX_BLOB_SIZE)) {
+                transaction.responseImageData = payload.readByteArray()
             }
         }
     }
@@ -235,11 +231,8 @@ public class ChuckerInterceptor private constructor(
     ) : ReportingSink.Callback {
 
         override fun onClosed(file: File?, sourceByteCount: Long) {
-            if (file != null) {
-                val buffer = readResponseBuffer(file, response.isGzipped)
-                if (buffer != null) {
-                    processResponseBody(response, buffer, transaction)
-                }
+            file?.readResponsePayload()?.let { payload ->
+                processResponsePayload(response, payload, transaction)
             }
             transaction.responsePayloadSize = sourceByteCount
             collector.onResponseReceived(transaction)
@@ -250,14 +243,10 @@ public class ChuckerInterceptor private constructor(
             Logger.error("Failed to read response payload", exception)
         }
 
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
-            val bufferedSource = responseBody.source().buffer()
-            val source = if (isGzipped) {
-                GzipSource(bufferedSource)
-            } else {
-                bufferedSource
+        private fun File.readResponsePayload() = try {
+            source().uncompress(response.headers).use { source ->
+                Buffer().apply { writeAll(source) }
             }
-            Buffer().apply { source.use { writeAll(it) } }
         } catch (e: IOException) {
             Logger.error("Response payload couldn't be processed", e)
             null
@@ -335,12 +324,9 @@ public class ChuckerInterceptor private constructor(
     }
 
     private companion object {
-        private val UTF8 = Charset.forName("UTF-8")
-
         private const val MAX_CONTENT_LENGTH = 250_000L
         private const val MAX_BLOB_SIZE = 1_000_000L
 
         private const val CONTENT_TYPE_IMAGE = "image"
-        private const val CONTENT_ENCODING = "Content-Encoding"
     }
 }
