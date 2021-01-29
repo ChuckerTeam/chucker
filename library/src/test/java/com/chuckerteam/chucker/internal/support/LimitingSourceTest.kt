@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class LimitingSourceTest {
     @Test
-    fun limitedBytes_doNotExceedLimit_whenAboveThreshold() {
+    fun limitedBytes_doNotExceedLimit() {
         val content = "!".repeat(10 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 2 * SEGMENT_SIZE)
