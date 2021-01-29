@@ -21,6 +21,7 @@ import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
+import okio.buffer
 import org.junit.Rule
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -419,6 +420,80 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.isRequestBodyPlainText).isFalse()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun requestBody_isAvailableToServer(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val request = "Hello, world!".toRequestBody().toServerRequest()
+        client.newCall(request).execute().readByteStringBody()
+        val serverRequestContent = server.takeRequest().body.readByteString()
+
+        assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun plainTextRequestBody_isAvailableToChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val request = "Hello, world!".toRequestBody().toServerRequest()
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.requestBody).isEqualTo("Hello, world!")
+        assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun gzippedRequestBody_isGunzippedForChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val gzippedBytes = Buffer().apply {
+            GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
+        }.readByteString()
+        val request = gzippedBytes.toRequestBody().toServerRequest()
+            .newBuilder()
+            .header("Content-Encoding", "gzip")
+            .build()
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.requestBody).isEqualTo("Hello, world!")
+        assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun requestBody_isTruncatedToMaxContentLength(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            maxContentLength = SEGMENT_SIZE,
+            cacheDirectoryProvider = { tempDir },
+        )
+        val client = factory.create(chuckerInterceptor)
+
+        val request = "!".repeat(SEGMENT_SIZE.toInt() * 10).toRequestBody().toServerRequest()
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.requestBody).isEqualTo(
+            """
+            ${"!".repeat(SEGMENT_SIZE.toInt())}
+            
+            --- Content truncated ---
+            """.trimIndent()
+        )
+        assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
     }
 
     private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
