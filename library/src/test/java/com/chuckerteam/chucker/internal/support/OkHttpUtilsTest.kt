@@ -114,12 +114,14 @@ internal class OkHttpUtilsTest {
     companion object {
         @JvmStatic
         fun supportedEncodingSource(): Stream<Arguments> = Stream.of(
+            null to true,
             "" to true,
             "identity" to true,
             "gzip" to true,
             "other" to false,
         ).map { (encoding, result) ->
-            Arguments.of(headersOf("Content-Encoding", encoding), result)
+            val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
+            Arguments.of(headers, result)
         }
     }
 }
