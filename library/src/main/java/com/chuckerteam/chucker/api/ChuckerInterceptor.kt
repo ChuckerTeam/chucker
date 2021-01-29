@@ -154,7 +154,7 @@ public class ChuckerInterceptor internal constructor(
                 val content = io.readFromBuffer(buffer, charset, maxContentLength)
                 transaction.requestBody = content
             } else {
-                transaction.isResponseBodyPlainText = false
+                transaction.isRequestBodyPlainText = false
             }
         }
     }
