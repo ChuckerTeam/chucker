@@ -18,8 +18,9 @@ internal val Buffer.isProbablyPlainText
         copyTo(prefix, 0, byteCount)
         sequence { while (!prefix.exhausted()) yield(prefix.readUtf8CodePoint()) }
             .take(CODE_POINT_SIZE)
-            .any { codePoint -> Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint) }
-            .not()
+            .all { codePoint -> codePoint.isPlainTextChar() }
     } catch (_: EOFException) {
         false // Truncated UTF-8 sequence
     }
+
+private fun Int.isPlainTextChar() = Character.isWhitespace(this) || !Character.isISOControl(this)
