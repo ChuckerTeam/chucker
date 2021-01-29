@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import okio.Buffer
 import java.io.EOFException
+import kotlin.math.min
 
 private const val MAX_PREFIX_SIZE = 64L
 private const val CODE_POINT_SIZE = 16
@@ -13,7 +14,7 @@ private const val CODE_POINT_SIZE = 16
 internal val Buffer.isProbablyPlainText
     get() = try {
         val prefix = Buffer()
-        val byteCount = if (size < MAX_PREFIX_SIZE) size else MAX_PREFIX_SIZE
+        val byteCount = min(size, MAX_PREFIX_SIZE)
         copyTo(prefix, 0, byteCount)
         sequence { while (!prefix.exhausted()) yield(prefix.readUtf8CodePoint()) }
             .take(CODE_POINT_SIZE)
