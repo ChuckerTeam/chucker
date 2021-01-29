@@ -15,7 +15,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withWhiteSpace_returnsTrue() {
+    fun isProbablyPlainText_withWhiteSpace_returnsTrue() {
         val buffer = Buffer()
         buffer.writeString(" ", Charset.defaultCharset())
 
@@ -23,7 +23,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withPlainText_returnsTrue() {
+    fun isProbablyPlainText_withPlainText_returnsTrue() {
         val buffer = Buffer()
         buffer.writeString("just a string", Charset.defaultCharset())
 
@@ -31,7 +31,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withCodePoint_returnsFalse() {
+    fun isProbablyPlainText_withCodePoint_returnsFalse() {
         val buffer = Buffer()
         buffer.writeByte(0x11000000)
 
@@ -39,7 +39,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withNonAsciiText_returnsTrue() {
+    fun isProbablyPlainText_withNonAsciiText_returnsTrue() {
         val buffer = Buffer()
         buffer.writeString("ą", Charset.defaultCharset())
 
@@ -47,7 +47,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isPlaintext_withTruncatedUtf_returnsFalse() {
+    fun isProbablyPlainText_withTruncatedUtf_returnsFalse() {
         val bytes = "ą".encodeUtf8().let { it.substring(0, it.size - 1) }
         val buffer = Buffer().write(bytes)
 
