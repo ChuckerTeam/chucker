@@ -35,6 +35,14 @@ internal class RequestProcessor(
 
     private fun processBody(request: Request, transaction: HttpTransaction) {
         val body = request.body ?: return
+        if (body.isOneShot()) {
+            Logger.info("Skipping one shot request body")
+            return
+        }
+        if (body.isDuplex()) {
+            Logger.info("Skipping duplex request body")
+            return
+        }
 
         val isEncodingSupported = request.headers.hasSupportedContentEncoding
         if (!isEncodingSupported) {

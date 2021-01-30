@@ -18,6 +18,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
+import okio.BufferedSink
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
@@ -494,6 +495,45 @@ internal class ChuckerInterceptorTest {
             """.trimIndent()
         )
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun oneShotRequestBody_isNotAvailableToChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val requestBody = "Hello, world!".toRequestBody()
+        val oneShotRequest = object : RequestBody() {
+            override fun isOneShot() = true
+            override fun contentType() = requestBody.contentType()
+            override fun writeTo(sink: BufferedSink) = requestBody.writeTo(sink)
+        }.toServerRequest()
+
+        client.newCall(oneShotRequest).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.isRequestBodyPlainText).isFalse()
+        assertThat(transaction.requestBody).isNull()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun oneShotRequestBody_isAvailableToServer(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val requestBody = "Hello, world!".toRequestBody()
+        val oneShotRequest = object : RequestBody() {
+            override fun isOneShot() = true
+            override fun contentType() = requestBody.contentType()
+            override fun writeTo(sink: BufferedSink) = requestBody.writeTo(sink)
+        }.toServerRequest()
+
+        client.newCall(oneShotRequest).execute().readByteStringBody()
+        val serverRequestContent = server.takeRequest().body.readByteString()
+
+        assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
     }
 
     private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
