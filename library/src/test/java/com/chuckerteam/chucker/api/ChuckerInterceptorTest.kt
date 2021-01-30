@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -503,11 +504,13 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val requestBody = "Hello, world!".toRequestBody()
         val oneShotRequest = object : RequestBody() {
+            private val content = Buffer().writeUtf8("Hello, world!")
             override fun isOneShot() = true
-            override fun contentType() = requestBody.contentType()
-            override fun writeTo(sink: BufferedSink) = requestBody.writeTo(sink)
+            override fun contentType() = "text/plain".toMediaType()
+            override fun writeTo(sink: BufferedSink) {
+                content.readAll(sink)
+            }
         }.toServerRequest()
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
@@ -523,11 +526,13 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val requestBody = "Hello, world!".toRequestBody()
         val oneShotRequest = object : RequestBody() {
+            private val content = Buffer().writeUtf8("Hello, world!")
             override fun isOneShot() = true
-            override fun contentType() = requestBody.contentType()
-            override fun writeTo(sink: BufferedSink) = requestBody.writeTo(sink)
+            override fun contentType() = "text/plain".toMediaType()
+            override fun writeTo(sink: BufferedSink) {
+                content.readAll(sink)
+            }
         }.toServerRequest()
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
