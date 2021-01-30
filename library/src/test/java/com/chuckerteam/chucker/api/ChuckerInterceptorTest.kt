@@ -17,6 +17,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
@@ -494,6 +495,31 @@ internal class ChuckerInterceptorTest {
             """.trimIndent()
         )
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun requestHeaders_areRedacted_whenServerFails(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            maxContentLength = SEGMENT_SIZE,
+            headersToRedact = setOf("Header-To-Redact"),
+            cacheDirectoryProvider = { tempDir },
+        )
+        val client = factory.create(chuckerInterceptor)
+
+        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
+        runCatching { client.newCall(request).execute() }
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.requestHeaders).contains(
+            """
+            |  {
+            |    "name": "Header-To-Redact",
+            |    "value": "**"
+            |  }
+            """.trimMargin()
+        )
     }
 
     private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
