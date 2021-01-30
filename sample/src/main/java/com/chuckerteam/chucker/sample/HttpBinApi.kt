@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.sample
 
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -106,6 +107,9 @@ internal interface HttpBinApi {
     @FormUrlEncoded
     @POST("/post")
     fun postForm(@Field("key1") value1: String, @Field("key2") value2: String): Call<Any?>
+
+    @POST("/post")
+    fun postRawRequestBody(@Body body: RequestBody): Call<Any?>
 
     class Data(val thing: String)
 }
