@@ -5,6 +5,10 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Fixed
+
+* Fixed not setting request body type correctly [#538].
+
 ### Removed
 
 * Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
