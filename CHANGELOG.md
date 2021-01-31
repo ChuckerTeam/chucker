@@ -7,6 +7,7 @@ Please add your entries according to this format.
 
 ### Fixed
 
+* Fixed not setting request body type correctly [#538].
 * Fixed wrongful processing of one shot and duplex requests [#544].
 
 ### Removed
