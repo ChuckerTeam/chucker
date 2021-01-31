@@ -516,7 +516,6 @@ internal class ChuckerInterceptorTest {
         client.newCall(oneShotRequest).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.isRequestBodyPlainText).isFalse()
         assertThat(transaction.requestBody).isNull()
     }
 
