@@ -7,6 +7,7 @@ Please add your entries according to this format.
 
 ### Fixed
 
+* Fixed not setting request body type correctly [#538].
 * Fixed request headers not being redacted in case of failures [#545].
 
 ### Removed
