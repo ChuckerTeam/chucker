@@ -5,6 +5,10 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Fixed
+
+* Fixed wrongful processing of one shot and duplex requests [#544].
+
 ### Removed
 
 * Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
