@@ -16,7 +16,7 @@ Please add your entries according to this format.
 
 ### Changed
 
-* Updated OkHttp to 4.9.0
+* Updated OkHttp to 4.9.1
 
 ## Version 3.4.0 *(2020-11-05)*
 
