@@ -14,11 +14,10 @@ internal class RequestProcessor(
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
 ) {
-    fun process(request: Request, transaction: HttpTransaction): Request {
+    fun process(request: Request, transaction: HttpTransaction) {
         processMetadata(request, transaction)
         processBody(request, transaction)
         collector.onRequestSent(transaction)
-        return request
     }
 
     private fun processMetadata(request: Request, transaction: HttpTransaction) {
