@@ -36,8 +36,7 @@ internal class RequestProcessor(
     private fun processBody(request: Request, transaction: HttpTransaction) {
         val body = request.body ?: return
 
-        val isEncodingSupported = request.headers.hasSupportedContentEncoding
-        if (!isEncodingSupported) {
+        if (!request.headers.hasSupportedContentEncoding) {
             return
         }
 
