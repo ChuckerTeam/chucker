@@ -40,12 +40,13 @@ internal class RequestProcessor(
             return
         }
 
-        val limitingSource = try {
+        val requestSource = try {
             Buffer().apply { body.writeTo(this) }
         } catch (e: IOException) {
             Logger.error("Failed to read request payload", e)
             return
-        }.uncompress(request.headers).let { LimitingSource(it, maxContentLength) }
+        }
+        val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
         if (!contentBuffer.isProbablyPlainText) {
