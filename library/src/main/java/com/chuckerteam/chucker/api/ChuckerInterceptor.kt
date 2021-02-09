@@ -31,32 +31,22 @@ public class ChuckerInterceptor private constructor(
 
     private val headersToRedact = builder.headersToRedact.toMutableSet()
 
-    private val collector: ChuckerCollector
+    private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
-    private val requestProcessor: RequestProcessor
+    private val requestProcessor = RequestProcessor(
+        builder.context,
+        collector,
+        builder.maxContentLength,
+        headersToRedact,
+    )
 
-    private val responseProcessor: ResponseProcessor
-
-    init {
-        val context = builder.context
-        val maxContentLength = builder.maxContentLength
-        val cacheDirectoryProvider = builder.cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir }
-
-        collector = builder.collector ?: ChuckerCollector(context)
-        requestProcessor = RequestProcessor(
-            context,
-            collector,
-            maxContentLength,
-            headersToRedact,
-        )
-        responseProcessor = ResponseProcessor(
-            collector,
-            cacheDirectoryProvider,
-            maxContentLength,
-            headersToRedact,
-            builder.alwaysReadResponseBody
-        )
-    }
+    private val responseProcessor = ResponseProcessor(
+        collector,
+        builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
+        builder.maxContentLength,
+        headersToRedact,
+        builder.alwaysReadResponseBody
+    )
 
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
