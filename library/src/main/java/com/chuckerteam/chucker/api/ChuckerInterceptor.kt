@@ -62,7 +62,9 @@ public class ChuckerInterceptor private constructor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
-        val request = requestProcessor.process(chain.request(), transaction)
+        val request = chain.request()
+
+        requestProcessor.process(request, transaction)
 
         val response = try {
             chain.proceed(request)
