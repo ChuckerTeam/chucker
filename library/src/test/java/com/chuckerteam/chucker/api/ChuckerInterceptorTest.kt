@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -19,6 +20,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
 import okio.Buffer
+import okio.BufferedSink
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
@@ -520,6 +522,48 @@ internal class ChuckerInterceptorTest {
             |  }
             """.trimMargin()
         )
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun oneShotRequestBody_isNotAvailableToChucker(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val oneShotRequest = object : RequestBody() {
+            private val content = Buffer().writeUtf8("Hello, world!")
+            override fun isOneShot() = true
+            override fun contentType() = "text/plain".toMediaType()
+            override fun writeTo(sink: BufferedSink) {
+                content.readAll(sink)
+            }
+        }.toServerRequest()
+
+        client.newCall(oneShotRequest).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.requestBody).isNull()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun oneShotRequestBody_isAvailableToServer(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val client = factory.create(chuckerInterceptor)
+
+        val oneShotRequest = object : RequestBody() {
+            private val content = Buffer().writeUtf8("Hello, world!")
+            override fun isOneShot() = true
+            override fun contentType() = "text/plain".toMediaType()
+            override fun writeTo(sink: BufferedSink) {
+                content.readAll(sink)
+            }
+        }.toServerRequest()
+
+        client.newCall(oneShotRequest).execute().readByteStringBody()
+        val serverRequestContent = server.takeRequest().body.readByteString()
+
+        assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
     }
 
     private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
