@@ -23,14 +23,11 @@ internal class ResponseProcessor(
     }
 
     private fun processResponseMetadata(response: Response, transaction: HttpTransaction) {
-        val responseEncodingIsSupported = response.headers.hasSupportedContentEncoding
-
         transaction.apply {
             // includes headers added later in the chain
             setRequestHeaders(response.request.headers.redact(headersToRedact))
             setResponseHeaders(response.headers.redact(headersToRedact))
 
-            isResponseBodyPlainText = responseEncodingIsSupported
             requestDate = response.sentRequestAtMillis
             responseDate = response.receivedResponseAtMillis
             protocol = response.protocol.toString()
@@ -93,8 +90,6 @@ internal class ResponseProcessor(
                 transaction.responseBody = payload.readString(charset)
             }
         } else {
-            transaction.isResponseBodyPlainText = false
-
             val isImageContentType = contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true
 
             if (isImageContentType && (payload.size < MAX_BLOB_SIZE)) {
