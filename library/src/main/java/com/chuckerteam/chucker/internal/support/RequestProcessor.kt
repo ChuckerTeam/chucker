@@ -13,17 +13,17 @@ internal class RequestProcessor(
     private val context: Context,
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
+    private val headersToRedact: Set<String>,
 ) {
-    fun process(request: Request, transaction: HttpTransaction): Request {
+    fun process(request: Request, transaction: HttpTransaction) {
         processMetadata(request, transaction)
         processBody(request, transaction)
         collector.onRequestSent(transaction)
-        return request
     }
 
     private fun processMetadata(request: Request, transaction: HttpTransaction) {
         transaction.apply {
-            setRequestHeaders(request.headers)
+            setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
 
             requestDate = System.currentTimeMillis()
@@ -44,17 +44,17 @@ internal class RequestProcessor(
             return
         }
 
-        val isEncodingSupported = request.headers.hasSupportedContentEncoding
-        if (!isEncodingSupported) {
+        if (!request.headers.hasSupportedContentEncoding) {
             return
         }
 
-        val limitingSource = try {
+        val requestSource = try {
             Buffer().apply { body.writeTo(this) }
         } catch (e: IOException) {
             Logger.error("Failed to read request payload", e)
             return
-        }.uncompress(request.headers).let { LimitingSource(it, maxContentLength) }
+        }
+        val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
         if (!contentBuffer.isProbablyPlainText) {

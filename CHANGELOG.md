@@ -8,6 +8,7 @@ Please add your entries according to this format.
 ### Fixed
 
 * Fixed not setting request body type correctly [#538].
+* Fixed request headers not being redacted in case of failures [#545].
 * Fixed wrongful processing of one shot and duplex requests [#544].
 
 ### Removed
@@ -17,7 +18,7 @@ Please add your entries according to this format.
 
 ### Changed
 
-* Updated OkHttp to 4.9.0
+* Updated OkHttp to 4.9.1
 
 ## Version 3.4.0 *(2020-11-05)*
 
