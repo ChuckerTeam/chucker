@@ -13,6 +13,7 @@ internal class RequestProcessor(
     private val context: Context,
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
+    private val headersToRedact: Set<String>,
 ) {
     fun process(request: Request, transaction: HttpTransaction) {
         processMetadata(request, transaction)
@@ -22,7 +23,7 @@ internal class RequestProcessor(
 
     private fun processMetadata(request: Request, transaction: HttpTransaction) {
         transaction.apply {
-            setRequestHeaders(request.headers)
+            setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
 
             requestDate = System.currentTimeMillis()

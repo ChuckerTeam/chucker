@@ -14,8 +14,8 @@ import com.chuckerteam.chucker.internal.support.contentType
 import com.chuckerteam.chucker.internal.support.hasBody
 import com.chuckerteam.chucker.internal.support.hasSupportedContentEncoding
 import com.chuckerteam.chucker.internal.support.isProbablyPlainText
+import com.chuckerteam.chucker.internal.support.redact
 import com.chuckerteam.chucker.internal.support.uncompress
-import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
@@ -52,7 +52,7 @@ public class ChuckerInterceptor private constructor(
     private val cacheDirectoryProvider = builder.cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir }
     private val alwaysReadResponseBody = builder.alwaysReadResponseBody
     private val headersToRedact = builder.headersToRedact.toMutableSet()
-    private val requestProcessor = RequestProcessor(context, collector, maxContentLength)
+    private val requestProcessor = RequestProcessor(context, collector, maxContentLength, headersToRedact)
 
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
@@ -89,8 +89,8 @@ public class ChuckerInterceptor private constructor(
 
         transaction.apply {
             // includes headers added later in the chain
-            setRequestHeaders(filterHeaders(response.request.headers))
-            setResponseHeaders(filterHeaders(response.headers))
+            setRequestHeaders(response.request.headers.redact(headersToRedact))
+            setResponseHeaders(response.headers.redact(headersToRedact))
 
             isResponseBodyPlainText = responseEncodingIsSupported
             requestDate = response.sentRequestAtMillis
@@ -176,17 +176,6 @@ public class ChuckerInterceptor private constructor(
                 transaction.responseImageData = payload.readByteArray()
             }
         }
-    }
-
-    /** Overrides all headers from [headersToRedact] with `**` */
-    private fun filterHeaders(headers: Headers): Headers {
-        val builder = headers.newBuilder()
-        for (name in headers.names()) {
-            if (headersToRedact.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
-                builder.set(name, "**")
-            }
-        }
-        return builder.build()
     }
 
     private inner class ChuckerTransactionReportingSinkCallback(
