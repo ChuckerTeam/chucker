@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.sample
 
 import android.content.Context
+import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
@@ -13,6 +14,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.Buffer
 import okio.BufferedSink
+import okio.ByteString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,13 +38,14 @@ class HttpBinClient(
     private val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         .collector(collector)
         .maxContentLength(250000L)
+        .addBodyDecoder(PokemonProtoBodyDecoder())
         .redactHeaders(emptySet())
         .build()
 
     private val httpClient =
         OkHttpClient.Builder()
             // Add a ChuckerInterceptor instance to your OkHttp client
-            .addInterceptor(chuckerInterceptor)
+            .addNetworkInterceptor(chuckerInterceptor)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
@@ -102,6 +105,7 @@ class HttpBinClient(
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")
         getResponsePartially()
+        getProtoResponse()
     }
 
     private fun oneShotRequestBody() = object : RequestBody() {
@@ -144,5 +148,33 @@ class HttpBinClient(
                 }
             }
         )
+    }
+
+    private fun getProtoResponse() {
+        val pokemon = Pokemon("Pikachu", level = 99)
+        val body = pokemon.encodeByteString().toRequestBody("application/protobuf".toMediaType())
+        val request = Request.Builder()
+            .url("https://postman-echo.com/post")
+            .post(body)
+            .build()
+        httpClient.newCall(request).enqueue(
+            object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    response.body?.source()?.use { it.readByteString() }
+                }
+            }
+        )
+    }
+
+    private class PokemonProtoBodyDecoder : BodyDecoder {
+        override fun decodeRequest(request: Request, body: ByteString): String? {
+            return if (request.url.host.contains("postman", ignoreCase = true)) {
+                Pokemon.ADAPTER.decode(body).toString()
+            } else null
+        }
+
+        override fun decodeResponse(response: okhttp3.Response, body: ByteString): String? = null
     }
 }
