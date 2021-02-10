@@ -49,7 +49,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseContentType") var responseContentType: String?,
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
-    @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = true,
+    @ColumnInfo(name = "isResponseBodyPlainText") var isResponseBodyPlainText: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
 ) {
 

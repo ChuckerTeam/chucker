@@ -180,7 +180,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun plainTextResponseBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
+    fun responseBody_withNoContent_isAvailableForChucker(factory: ClientFactory) {
         server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -188,13 +188,12 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
         val transaction = chuckerInterceptor.expectTransaction()
 
-        assertThat(transaction.isResponseBodyPlainText).isTrue()
         assertThat(transaction.responseBody).isNull()
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun plainTextResponseBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
+    fun responseBody_withNoContent_isAvailableForTheEndConsumer(factory: ClientFactory) {
         server.enqueue(MockResponse().setResponseCode(HTTP_NO_CONTENT))
         val request = Request.Builder().url(serverUrl).build()
 
