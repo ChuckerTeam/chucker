@@ -1,10 +1,13 @@
 package com.chuckerteam.chucker.internal.support
 
+import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
+import okio.ByteString
+import okio.IOException
 import okio.Source
 import okio.buffer
 import okio.source
@@ -16,6 +19,7 @@ internal class ResponseProcessor(
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
     private val alwaysReadResponseBody: Boolean,
+    private val bodyDecoders: List<BodyDecoder>,
 ) {
     fun process(response: Response, transaction: HttpTransaction): Response {
         processResponseMetadata(response, transaction)
@@ -78,25 +82,31 @@ internal class ResponseProcessor(
         }
     }
 
-    private fun processResponsePayload(response: Response, payload: Buffer, transaction: HttpTransaction) {
+    private fun processPayload(response: Response, payload: Buffer, transaction: HttpTransaction) {
         val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
-        val charset = contentType?.charset() ?: Charsets.UTF_8
 
-        if (payload.isProbablyPlainText) {
-            transaction.isResponseBodyPlainText = true
-            if (payload.size != 0L) {
-                transaction.responseBody = payload.readString(charset)
-            }
-        } else {
-            val isImageContentType = contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true
-
-            if (isImageContentType && (payload.size < MAX_BLOB_SIZE)) {
+        val isImageContentType = contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true
+        if (isImageContentType) {
+            if (payload.size < MAX_BLOB_SIZE) {
                 transaction.responseImageData = payload.readByteArray()
             }
+        } else if (payload.size != 0L) {
+            transaction.isResponseBodyPlainText = payload.isProbablyPlainText
+            transaction.responseBody = decodePayload(response, payload.readByteString())
         }
     }
+
+    private fun decodePayload(response: Response, body: ByteString) = bodyDecoders.asSequence()
+        .mapNotNull { decoder ->
+            try {
+                decoder.decodeResponse(response, body)
+            } catch (e: IOException) {
+                Logger.error("Failed to process response payload", e)
+                null
+            }
+        }.firstOrNull()
 
     private inner class ResponseReportingSinkCallback(
         private val response: Response,
@@ -105,7 +115,7 @@ internal class ResponseProcessor(
 
         override fun onClosed(file: File?, sourceByteCount: Long) {
             file?.readResponsePayload()?.let { payload ->
-                processResponsePayload(response, payload, transaction)
+                processPayload(response, payload, transaction)
             }
             transaction.responsePayloadSize = sourceByteCount
             collector.onResponseReceived(transaction)

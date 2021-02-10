@@ -268,15 +268,15 @@ internal class TransactionPayloadFragment :
             if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-            } else if (!isBodyPlainText) {
-                requireContext().getString(R.string.chucker_body_omitted).let {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
-                }
-            } else {
-                if (bodyString.isNotBlank()) {
-                    bodyString.lines().forEach {
+            } else if (bodyString.isBlank()) {
+                if (!isBodyPlainText) {
+                    requireContext().getString(R.string.chucker_body_omitted).let {
                         result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                     }
+                }
+            } else {
+                bodyString.lines().forEach {
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             }
             return@withContext result

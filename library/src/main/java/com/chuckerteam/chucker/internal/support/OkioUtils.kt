@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.support
 
 import okio.Buffer
+import okio.ByteString
 import java.io.EOFException
 import kotlin.math.min
 
@@ -21,6 +22,12 @@ internal val Buffer.isProbablyPlainText
             .all { codePoint -> codePoint.isPlainTextChar() }
     } catch (_: EOFException) {
         false // Truncated UTF-8 sequence
+    }
+
+internal val ByteString.isProbablyPlainText: Boolean
+    get() {
+        val byteCount = min(size, MAX_PREFIX_SIZE.toInt())
+        return Buffer().write(this, offset = 0, byteCount).isProbablyPlainText
     }
 
 private fun Int.isPlainTextChar() = Character.isWhitespace(this) || !Character.isISOControl(this)

@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
@@ -24,6 +25,7 @@ import okio.BufferedSink
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
+import okio.IOException
 import okio.buffer
 import org.junit.Rule
 import org.junit.jupiter.api.assertThrows
@@ -566,4 +568,179 @@ internal class ChuckerInterceptorTest {
     }
 
     private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
+
+    @ParameterizedTest
+    @EnumSource
+    fun customBodyDecoder_doesNotChangeRequestBody(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(ReversingDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+        server.enqueue(MockResponse())
+
+        val request = "Hello, world!".toRequestBody().toServerRequest()
+        client.newCall(request).execute().readByteStringBody()
+        val serverRequestContent = server.takeRequest().body.readByteString()
+
+        assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    fun customBodyDecoder_doesNotChangeResponseBody(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(ReversingDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+
+        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        server.enqueue(MockResponse().setBody(body))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val responseBody = client.newCall(request).execute().readByteStringBody()!!
+
+        assertThat(responseBody.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun customBodyDecoder_isUsedForDecoding(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(LiteralBodyDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+        val request = Request.Builder().url(serverUrl)
+            .post("Hello".toRequestBody())
+            .build()
+        server.enqueue(MockResponse().setBody("Goodbye"))
+
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        assertThat(transaction.requestBody).isEqualTo("Request")
+        assertThat(transaction.responseBody).isEqualTo("Response")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun bodyDecoders_areUsedInAppliedOrder(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(ReversingDecoder(), LiteralBodyDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+        val request = Request.Builder().url(serverUrl)
+            .post("Hello".toRequestBody())
+            .build()
+        server.enqueue(MockResponse().setBody("Goodbye"))
+
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        assertThat(transaction.requestBody).isEqualTo("olleH")
+        assertThat(transaction.responseBody).isEqualTo("eybdooG")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun nextBodyDecoder_isUsed_whenPreviousDoesNotDecode(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(NoOpDecoder(), LiteralBodyDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+        val request = Request.Builder().url(serverUrl)
+            .post("Hello".toRequestBody())
+            .build()
+        server.enqueue(MockResponse().setBody("Goodbye"))
+
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        assertThat(transaction.requestBody).isEqualTo("Request")
+        assertThat(transaction.responseBody).isEqualTo("Response")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun bodyDecoder_canThrowIoExceptions(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(IoThrowingDecoder(), LiteralBodyDecoder()),
+        )
+        val client = factory.create(chuckerInterceptor)
+        val request = Request.Builder().url(serverUrl)
+            .post("Hello".toRequestBody())
+            .build()
+        server.enqueue(MockResponse().setBody("Goodbye"))
+
+        client.newCall(request).execute().readByteStringBody()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        assertThat(transaction.requestBody).isEqualTo("Request")
+        assertThat(transaction.responseBody).isEqualTo("Response")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun bodyDecoders_areAppliedLazily(factory: ClientFactory) {
+        val statefulDecoder = StatefulDecoder()
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir },
+            decoders = listOf(LiteralBodyDecoder(), statefulDecoder),
+        )
+        val client = factory.create(chuckerInterceptor)
+        val request = Request.Builder().url(serverUrl)
+            .post("Hello".toRequestBody())
+            .build()
+        server.enqueue(MockResponse().setBody("Goodbye"))
+
+        client.newCall(request).execute().readByteStringBody()
+
+        assertThat(statefulDecoder.didDecodeRequest).isFalse()
+        assertThat(statefulDecoder.didDecodeResponse).isFalse()
+    }
+
+    private class LiteralBodyDecoder : BodyDecoder {
+        override fun decodeRequest(request: Request, body: ByteString) = "Request"
+        override fun decodeResponse(response: Response, body: ByteString) = "Response"
+    }
+
+    private class ReversingDecoder : BodyDecoder {
+        override fun decodeRequest(request: Request, body: ByteString) = body.utf8().reversed()
+        override fun decodeResponse(response: Response, body: ByteString) = body.utf8().reversed()
+    }
+
+    private class NoOpDecoder : BodyDecoder {
+        override fun decodeRequest(request: Request, body: ByteString): String? = null
+        override fun decodeResponse(response: Response, body: ByteString): String? = null
+    }
+
+    private class IoThrowingDecoder : BodyDecoder {
+        override fun decodeRequest(request: Request, body: ByteString) = throw IOException("Request")
+        override fun decodeResponse(response: Response, body: ByteString) = throw IOException("Response")
+    }
+
+    private class StatefulDecoder : BodyDecoder {
+        var didDecodeRequest = false
+
+        override fun decodeRequest(request: Request, body: ByteString): String {
+            didDecodeRequest = true
+            return ""
+        }
+
+        var didDecodeResponse = false
+
+        override fun decodeResponse(response: Response, body: ByteString): String {
+            didDecodeResponse = true
+            return ""
+        }
+    }
 }
