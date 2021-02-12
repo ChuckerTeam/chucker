@@ -33,7 +33,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 internal class TransactionPayloadFragment :
-        Fragment(), SearchView.OnQueryTextListener {
+    Fragment(), SearchView.OnQueryTextListener {
 
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
@@ -55,9 +55,9 @@ internal class TransactionPayloadFragment :
             }
         } else {
             Toast.makeText(
-                    requireContext(),
-                    R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
+                requireContext(),
+                R.string.chucker_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -74,14 +74,14 @@ internal class TransactionPayloadFragment :
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
-                inflater,
-                container,
-                false
+            inflater,
+            container,
+            false
         )
         return payloadBinding.root
     }
@@ -95,28 +95,28 @@ internal class TransactionPayloadFragment :
         }
 
         viewModel.transaction
-                .combineLatest(viewModel.formatRequestBody)
-                .observe(
-                        viewLifecycleOwner,
-                        Observer { (transaction, formatRequestBody) ->
-                            if (transaction == null) return@Observer
-                            lifecycleScope.launch {
-                                payloadBinding.loadingProgress.visibility = View.VISIBLE
+            .combineLatest(viewModel.formatRequestBody)
+            .observe(
+                viewLifecycleOwner,
+                Observer { (transaction, formatRequestBody) ->
+                    if (transaction == null) return@Observer
+                    lifecycleScope.launch {
+                        payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                                val result = processPayload(payloadType, transaction, formatRequestBody)
-                                if (result.isEmpty()) {
-                                    showEmptyState()
-                                } else {
-                                    payloadAdapter.setItems(result)
-                                    showPayloadState()
-                                }
-                                // Invalidating menu, because we need to hide menu items for empty payloads
-                                requireActivity().invalidateOptionsMenu()
-
-                                payloadBinding.loadingProgress.visibility = View.GONE
-                            }
+                        val result = processPayload(payloadType, transaction, formatRequestBody)
+                        if (result.isEmpty()) {
+                            showEmptyState()
+                        } else {
+                            payloadAdapter.setItems(result)
+                            showPayloadState()
                         }
-                )
+                        // Invalidating menu, because we need to hide menu items for empty payloads
+                        requireActivity().invalidateOptionsMenu()
+
+                        payloadBinding.loadingProgress.visibility = View.GONE
+                    }
+                }
+            )
     }
 
     private fun showEmptyState() {
@@ -162,8 +162,8 @@ internal class TransactionPayloadFragment :
 
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
-                    viewLifecycleOwner,
-                    { menu.findItem(R.id.encode_url).isVisible = it }
+                viewLifecycleOwner,
+                { menu.findItem(R.id.encode_url).isVisible = it }
             )
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
@@ -209,9 +209,9 @@ internal class TransactionPayloadFragment :
     }
 
     private suspend fun processPayload(
-            type: PayloadType,
-            transaction: HttpTransaction,
-            formatRequestBody: Boolean
+        type: PayloadType,
+        transaction: HttpTransaction,
+        formatRequestBody: Boolean
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
@@ -236,12 +236,12 @@ internal class TransactionPayloadFragment :
 
             if (headersString.isNotBlank()) {
                 result.add(
-                        TransactionPayloadItem.HeaderItem(
-                                HtmlCompat.fromHtml(
-                                        headersString,
-                                        HtmlCompat.FROM_HTML_MODE_LEGACY
-                                )
+                    TransactionPayloadItem.HeaderItem(
+                        HtmlCompat.fromHtml(
+                            headersString,
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
                         )
+                    )
                 )
             }
 
@@ -273,11 +273,11 @@ internal class TransactionPayloadFragment :
                         when (type) {
                             PayloadType.REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                                        ?: throw IOException(TRANSACTION_EXCEPTION)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                             PayloadType.RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                                        ?: throw IOException(TRANSACTION_EXCEPTION)
+                                    ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
                         }
                     }
@@ -299,10 +299,10 @@ internal class TransactionPayloadFragment :
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
         fun newInstance(type: PayloadType): TransactionPayloadFragment =
-                TransactionPayloadFragment().apply {
-                    arguments = Bundle().apply {
-                        putSerializable(ARG_TYPE, type)
-                    }
+            TransactionPayloadFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(ARG_TYPE, type)
                 }
+            }
     }
 }
