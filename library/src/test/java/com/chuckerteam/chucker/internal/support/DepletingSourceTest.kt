@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.NoLoggerRule
+import com.chuckerteam.chucker.util.NoLoggerRule
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource

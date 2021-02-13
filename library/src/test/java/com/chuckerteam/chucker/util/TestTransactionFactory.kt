@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date

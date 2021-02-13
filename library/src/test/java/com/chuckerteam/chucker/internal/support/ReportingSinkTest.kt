@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.SEGMENT_SIZE
+import com.chuckerteam.chucker.util.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.ByteString
@@ -82,7 +82,7 @@ internal class ReportingSinkTest {
 
     private class TestReportingCallback : ReportingSink.Callback {
         private var file: File? = null
-        val fileContent get() = file?.let { it.source().buffer().readByteString() }
+        val fileContent get() = file?.source()?.buffer()?.readByteString()
         var exception: IOException? = null
         var isSuccess = false
             private set

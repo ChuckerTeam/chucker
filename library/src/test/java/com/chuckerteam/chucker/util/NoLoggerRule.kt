@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.support.Logger

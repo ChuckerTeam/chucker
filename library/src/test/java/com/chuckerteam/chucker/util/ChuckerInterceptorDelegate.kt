@@ -1,6 +1,7 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import android.content.Context
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
