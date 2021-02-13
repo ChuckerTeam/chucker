@@ -103,7 +103,7 @@ internal class ResponseProcessor(
             try {
                 decoder.decodeResponse(response, body)
             } catch (e: IOException) {
-                Logger.error("Failed to process response payload", e)
+                Logger.warn("Decoder $decoder failed to process response payload", e)
                 null
             }
         }.firstOrNull()

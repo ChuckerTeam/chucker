@@ -70,7 +70,7 @@ internal class RequestProcessor(
                 Logger.info("Decoding with: $decoder")
                 decoder.decodeRequest(request, body)
             } catch (e: IOException) {
-                Logger.error("Failed to process request payload", e)
+                Logger.warn("Decoder $decoder failed to process request payload", e)
                 null
             }
         }.firstOrNull()
