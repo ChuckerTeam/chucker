@@ -1,7 +1,6 @@
 package com.chuckerteam.chucker.sample
 
 import android.content.Context
-import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
@@ -14,7 +13,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.Buffer
 import okio.BufferedSink
-import okio.ByteString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -166,15 +164,5 @@ class HttpBinClient(
                 }
             }
         )
-    }
-
-    private class PokemonProtoBodyDecoder : BodyDecoder {
-        override fun decodeRequest(request: Request, body: ByteString): String? {
-            return if (request.url.host.contains("postman", ignoreCase = true)) {
-                Pokemon.ADAPTER.decode(body).toString()
-            } else null
-        }
-
-        override fun decodeResponse(response: okhttp3.Response, body: ByteString): String? = null
     }
 }
