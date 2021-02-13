@@ -41,12 +41,12 @@ public object Chucker {
     internal var logger: Logger = object : Logger {
         val TAG = "Chucker"
 
-        override fun info(message: String) {
-            Log.i(TAG, message)
+        override fun info(message: String, throwable: Throwable?) {
+            Log.i(TAG, message, throwable)
         }
 
-        override fun warn(message: String) {
-            Log.w(TAG, message)
+        override fun warn(message: String, throwable: Throwable?) {
+            Log.w(TAG, message, throwable)
         }
 
         override fun error(message: String, throwable: Throwable?) {
