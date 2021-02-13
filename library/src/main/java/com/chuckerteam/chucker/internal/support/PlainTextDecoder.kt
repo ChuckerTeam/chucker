@@ -24,5 +24,7 @@ internal object PlainTextDecoder : BodyDecoder {
         contentType: MediaType?,
     ) = if (headers.hasSupportedContentEncoding && isProbablyPlainText) {
         string(contentType?.charset() ?: UTF_8)
-    } else null
+    } else {
+        null
+    }
 }

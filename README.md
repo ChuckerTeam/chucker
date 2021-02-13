@@ -146,11 +146,15 @@ Chucker by default handles only plain text bodies. If you use a binary format li
 object ProtoDecoder : BinaryDecoder {
     fun decodeRequest(request: Request, body: ByteString): String? = if (request.isExpectedProtoRequest) {
         decodeProtoBody(body)
-    } else null
+    } else {
+        null
+    }
 
     fun decodeResponse(request: Response, body: ByteString): String? = if (request.isExpectedProtoResponse) {
         decodeProtoBody(body)
-    } else null
+    } else {
+        null
+    }
 }
 interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 ```
