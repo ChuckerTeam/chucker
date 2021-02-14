@@ -2,7 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.chuckerteam.chucker.test
+import com.chuckerteam.chucker.util.test
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test

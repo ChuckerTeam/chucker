@@ -1,8 +1,11 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.internal.support.hasBody
+import okhttp3.HttpUrl
+import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.Response
 import okio.Buffer
 import okio.ByteString
@@ -31,6 +34,8 @@ internal fun Response.readByteStringBody(length: Long? = null): ByteString? {
         null
     }
 }
+
+internal fun RequestBody.toServerRequest(serverUrl: HttpUrl) = Request.Builder().url(serverUrl).post(this).build()
 
 internal fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()

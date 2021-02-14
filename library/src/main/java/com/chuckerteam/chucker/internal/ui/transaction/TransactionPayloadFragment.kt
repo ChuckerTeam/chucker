@@ -245,22 +245,22 @@ internal class TransactionPayloadFragment :
                 )
             }
 
-            // The body could either be an image, binary encoded or plain text.
+            // The body could either be an image, plain text, decoded binary or not decoded binary.
             val responseBitmap = transaction.responseImageBitmap
-            if (type == PayloadType.RESPONSE && responseBitmap != null) {
-                val bitmapLuminance = responseBitmap.calculateLuminance()
-                result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-            } else if (!isBodyPlainText) {
-                requireContext().getString(R.string.chucker_body_omitted).let {
+            when {
+                type == PayloadType.RESPONSE && responseBitmap != null -> {
+                    val bitmapLuminance = responseBitmap.calculateLuminance()
+                    result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
+                }
+                bodyString.isNotBlank() -> bodyString.lines().forEach {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
-            } else {
-                if (bodyString.isNotBlank()) {
-                    bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
-                    }
+                !isBodyPlainText -> {
+                    val text = requireContext().getString(R.string.chucker_body_omitted)
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
             }
+
             return@withContext result
         }
     }

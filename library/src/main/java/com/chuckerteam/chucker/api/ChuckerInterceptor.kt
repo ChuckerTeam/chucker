@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
 import okhttp3.Interceptor
@@ -31,6 +32,8 @@ public class ChuckerInterceptor private constructor(
 
     private val headersToRedact = builder.headersToRedact.toMutableSet()
 
+    private val decoders = builder.decoders + BUILT_IN_DECODERS
+
     private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
     private val requestProcessor = RequestProcessor(
@@ -38,6 +41,7 @@ public class ChuckerInterceptor private constructor(
         collector,
         builder.maxContentLength,
         headersToRedact,
+        decoders,
     )
 
     private val responseProcessor = ResponseProcessor(
@@ -45,7 +49,8 @@ public class ChuckerInterceptor private constructor(
         builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
         builder.maxContentLength,
         headersToRedact,
-        builder.alwaysReadResponseBody
+        builder.alwaysReadResponseBody,
+        decoders,
     )
 
     /** Adds [headerName] into [headersToRedact] */
@@ -82,6 +87,7 @@ public class ChuckerInterceptor private constructor(
         internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
         internal var alwaysReadResponseBody = false
         internal var headersToRedact = emptySet<String>()
+        internal var decoders = emptyList<BodyDecoder>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -127,6 +133,14 @@ public class ChuckerInterceptor private constructor(
         }
 
         /**
+         * Adds a [decoder] into Chucker's processing pipeline. Decoders are applied in an order they were added in.
+         * Request and response bodies are set to the first non–null value returned by any of the decoders.
+         */
+        public fun addBodyDecoder(decoder: BodyDecoder): Builder = apply {
+            this.decoders += decoder
+        }
+
+        /**
          * Sets provider of a directory where Chucker will save temporary responses
          * before processing them.
          */
@@ -143,5 +157,7 @@ public class ChuckerInterceptor private constructor(
 
     private companion object {
         private const val MAX_CONTENT_LENGTH = 250_000L
+
+        private val BUILT_IN_DECODERS = listOf(PlainTextDecoder)
     }
 }

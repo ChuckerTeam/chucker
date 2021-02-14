@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.chuckerteam.chucker.sample;
+
+option java_package = "com.chuckerteam.chucker.sample";
+
+message Pokemon {
+  string name = 1;
+  int32 level = 2;
+}

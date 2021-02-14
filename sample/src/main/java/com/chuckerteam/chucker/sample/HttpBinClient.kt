@@ -36,13 +36,14 @@ class HttpBinClient(
     private val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         .collector(collector)
         .maxContentLength(250000L)
+        .addBodyDecoder(PokemonProtoBodyDecoder())
         .redactHeaders(emptySet())
         .build()
 
     private val httpClient =
         OkHttpClient.Builder()
             // Add a ChuckerInterceptor instance to your OkHttp client
-            .addInterceptor(chuckerInterceptor)
+            .addNetworkInterceptor(chuckerInterceptor)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
@@ -102,6 +103,7 @@ class HttpBinClient(
         downloadSampleImage(colorHex = "fff")
         downloadSampleImage(colorHex = "000")
         getResponsePartially()
+        getProtoResponse()
     }
 
     private fun oneShotRequestBody() = object : RequestBody() {
@@ -141,6 +143,24 @@ class HttpBinClient(
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                     response.body?.source()?.use { it.readByteString(SEGMENT_SIZE) }
+                }
+            }
+        )
+    }
+
+    private fun getProtoResponse() {
+        val pokemon = Pokemon("Pikachu", level = 99)
+        val body = pokemon.encodeByteString().toRequestBody("application/protobuf".toMediaType())
+        val request = Request.Builder()
+            .url("https://postman-echo.com/post")
+            .post(body)
+            .build()
+        httpClient.newCall(request).enqueue(
+            object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
+
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    response.body?.source()?.use { it.readByteString() }
                 }
             }
         )

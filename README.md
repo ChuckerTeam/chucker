@@ -12,6 +12,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
   * [Multi-Window](#multi-window-)
 * [Configure](#configure-)
   * [Redact-Header️](#redact-header-️)
+  * [Decode-Body](#decode-body-)
 * [Migrating](#migrating-)
 * [Snapshots](#snapshots-)
 * [FAQ](#faq-)
@@ -65,7 +66,7 @@ android {
 
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
 
-Historically, Chucker was distributed through JitPack. 
+Historically, Chucker was distributed through JitPack.
 You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/ChuckerTeam/chucker.svg)](https://jitpack.io/#ChuckerTeam/chucker).
 
 ## Features 🧰
@@ -79,6 +80,7 @@ Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the ch
 * **Empty release artifact** 🧼 (no traces of Chucker in your final APK).
 * Support for body text search with **highlighting** 🕵️‍♂️
 * Support for showing **images** in HTTP Responses 🖼
+* Support for custom decoding of HTTP bodies
 
 ### Multi-Window 🚪
 
@@ -112,6 +114,9 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // This is useful in case of parsing errors or when the response body
         // is closed before being read like in Retrofit with Void and Unit types.
         .alwaysReadResponseBody(true)
+        // Use decoder when processing request and response bodies. When multiple decoders are installed they
+        // are applied in an order they were added.
+        .addBodyDecoder(decoder)
         .build()
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
@@ -128,8 +133,30 @@ It is intended for **use during development**, and not in release builds or othe
 
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
+
 ```kotlin
 interceptor.redactHeader("Auth-Token", "User-Session");
+```
+
+### Decode-Body 📖
+
+Chucker by default handles only plain text bodies. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
+
+```kotlin
+object ProtoDecoder : BinaryDecoder {
+    fun decodeRequest(request: Request, body: ByteString): String? = if (request.isExpectedProtoRequest) {
+        decodeProtoBody(body)
+    } else {
+        null
+    }
+
+    fun decodeResponse(request: Response, body: ByteString): String? = if (request.isExpectedProtoResponse) {
+        decodeProtoBody(body)
+    } else {
+        null
+    }
+}
+interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 ```
 
 ## Migrating 🚗

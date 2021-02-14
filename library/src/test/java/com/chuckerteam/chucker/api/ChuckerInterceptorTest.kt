@@ -1,18 +1,18 @@
 package com.chuckerteam.chucker.api
 
-import com.chuckerteam.chucker.ChuckerInterceptorDelegate
-import com.chuckerteam.chucker.NoLoggerRule
-import com.chuckerteam.chucker.SEGMENT_SIZE
-import com.chuckerteam.chucker.getResourceFile
-import com.chuckerteam.chucker.readByteStringBody
+import com.chuckerteam.chucker.util.ChuckerInterceptorDelegate
+import com.chuckerteam.chucker.util.ClientFactory
+import com.chuckerteam.chucker.util.NoLoggerRule
+import com.chuckerteam.chucker.util.SEGMENT_SIZE
+import com.chuckerteam.chucker.util.getResourceFile
+import com.chuckerteam.chucker.util.readByteStringBody
+import com.chuckerteam.chucker.util.toServerRequest
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -36,25 +36,6 @@ import java.net.HttpURLConnection.HTTP_NO_CONTENT
 
 @ExtendWith(NoLoggerRule::class)
 internal class ChuckerInterceptorTest {
-    enum class ClientFactory {
-        APPLICATION {
-            override fun create(interceptor: Interceptor): OkHttpClient {
-                return OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-            }
-        },
-        NETWORK {
-            override fun create(interceptor: Interceptor): OkHttpClient {
-                return OkHttpClient.Builder()
-                    .addNetworkInterceptor(interceptor)
-                    .build()
-            }
-        };
-
-        abstract fun create(interceptor: Interceptor): OkHttpClient
-    }
-
     @get:Rule val server = MockWebServer()
 
     private val serverUrl = server.url("/") // Starts server implicitly
@@ -417,7 +398,7 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val request = "\u0080".encodeUtf8().toRequestBody().toServerRequest()
+        val request = "\u0080".encodeUtf8().toRequestBody().toServerRequest(serverUrl)
         client.newCall(request).execute().body!!.close()
 
         val transaction = chuckerInterceptor.expectTransaction()
@@ -430,7 +411,7 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val request = "Hello, world!".toRequestBody().toServerRequest()
+        val request = "Hello, world!".toRequestBody().toServerRequest(serverUrl)
         client.newCall(request).execute().readByteStringBody()
         val serverRequestContent = server.takeRequest().body.readByteString()
 
@@ -443,7 +424,7 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val request = "Hello, world!".toRequestBody().toServerRequest()
+        val request = "Hello, world!".toRequestBody().toServerRequest(serverUrl)
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
@@ -461,7 +442,7 @@ internal class ChuckerInterceptorTest {
         val gzippedBytes = Buffer().apply {
             GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
         }.readByteString()
-        val request = gzippedBytes.toRequestBody().toServerRequest()
+        val request = gzippedBytes.toRequestBody().toServerRequest(serverUrl)
             .newBuilder()
             .header("Content-Encoding", "gzip")
             .build()
@@ -483,7 +464,7 @@ internal class ChuckerInterceptorTest {
         )
         val client = factory.create(chuckerInterceptor)
 
-        val request = "!".repeat(SEGMENT_SIZE.toInt() * 10).toRequestBody().toServerRequest()
+        val request = "!".repeat(SEGMENT_SIZE.toInt() * 10).toRequestBody().toServerRequest(serverUrl)
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
@@ -536,7 +517,7 @@ internal class ChuckerInterceptorTest {
             override fun writeTo(sink: BufferedSink) {
                 content.readAll(sink)
             }
-        }.toServerRequest()
+        }.toServerRequest(serverUrl)
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
 
@@ -557,13 +538,11 @@ internal class ChuckerInterceptorTest {
             override fun writeTo(sink: BufferedSink) {
                 content.readAll(sink)
             }
-        }.toServerRequest()
+        }.toServerRequest(serverUrl)
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
         val serverRequestContent = server.takeRequest().body.readByteString()
 
         assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
     }
-
-    private fun RequestBody.toServerRequest() = Request.Builder().url(serverUrl).post(this).build()
 }

@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.support.Logger
@@ -11,9 +11,9 @@ internal class NoLoggerRule : BeforeAllCallback, AfterAllCallback {
 
     override fun beforeAll(context: ExtensionContext) {
         Chucker.logger = object : Logger {
-            override fun info(message: String) = Unit
+            override fun info(message: String, throwable: Throwable?) = Unit
 
-            override fun warn(message: String) = Unit
+            override fun warn(message: String, throwable: Throwable?) = Unit
 
             override fun error(message: String, throwable: Throwable?) = Unit
         }

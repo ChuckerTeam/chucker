@@ -42,6 +42,8 @@ public class ChuckerInterceptor private constructor(
 
         public fun alwaysReadResponseBody(enable: Boolean): Builder = this
 
+        public fun addBodyDecoder(decoder: Any): Builder = this
+
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }
 }

@@ -1,3 +1,8 @@
+public abstract interface class com/chuckerteam/chucker/api/BodyDecoder {
+	public abstract fun decodeRequest (Lokhttp3/Request;Lokio/ByteString;)Ljava/lang/String;
+	public abstract fun decodeResponse (Lokhttp3/Response;Lokio/ByteString;)Ljava/lang/String;
+}
+
 public final class com/chuckerteam/chucker/api/Chucker {
 	public static final field INSTANCE Lcom/chuckerteam/chucker/api/Chucker;
 	public static final fun dismissNotifications (Landroid/content/Context;)V
@@ -23,6 +28,7 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Inte
 
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
 	public fun <init> (Landroid/content/Context;)V
+	public final fun addBodyDecoder (Ljava/lang/Object;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun alwaysReadResponseBody (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun build ()Lcom/chuckerteam/chucker/api/ChuckerInterceptor;
 	public final fun collector (Lcom/chuckerteam/chucker/api/ChuckerCollector;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;

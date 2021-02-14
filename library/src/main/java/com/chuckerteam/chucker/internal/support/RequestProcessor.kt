@@ -2,22 +2,24 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import okhttp3.Request
 import okio.Buffer
+import okio.ByteString
 import okio.IOException
-import kotlin.text.Charsets.UTF_8
 
 internal class RequestProcessor(
     private val context: Context,
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
+    private val bodyDecoders: List<BodyDecoder>,
 ) {
     fun process(request: Request, transaction: HttpTransaction) {
         processMetadata(request, transaction)
-        processBody(request, transaction)
+        processPayload(request, transaction)
         collector.onRequestSent(transaction)
     }
 
@@ -33,7 +35,7 @@ internal class RequestProcessor(
         }
     }
 
-    private fun processBody(request: Request, transaction: HttpTransaction) {
+    private fun processPayload(request: Request, transaction: HttpTransaction) {
         val body = request.body ?: return
         if (body.isOneShot()) {
             Logger.info("Skipping one shot request body")
@@ -41,10 +43,6 @@ internal class RequestProcessor(
         }
         if (body.isDuplex()) {
             Logger.info("Skipping duplex request body")
-            return
-        }
-
-        if (!request.headers.hasSupportedContentEncoding) {
             return
         }
 
@@ -57,18 +55,23 @@ internal class RequestProcessor(
         val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
-        if (!contentBuffer.isProbablyPlainText) {
-            return
-        }
+        transaction.isRequestBodyPlainText = contentBuffer.isProbablyPlainText
 
-        transaction.isRequestBodyPlainText = true
-        try {
-            transaction.requestBody = contentBuffer.readString(body.contentType()?.charset() ?: UTF_8)
-        } catch (e: IOException) {
-            Logger.error("Failed to process request payload", e)
-        }
-        if (limitingSource.isThresholdReached) {
+        val decodedContent = decodePayload(request, contentBuffer.readByteString())
+        transaction.requestBody = decodedContent
+        if (decodedContent != null && limitingSource.isThresholdReached) {
             transaction.requestBody += context.getString(R.string.chucker_body_content_truncated)
         }
     }
+
+    private fun decodePayload(request: Request, body: ByteString) = bodyDecoders.asSequence()
+        .mapNotNull { decoder ->
+            try {
+                Logger.info("Decoding with: $decoder")
+                decoder.decodeRequest(request, body)
+            } catch (e: IOException) {
+                Logger.warn("Decoder $decoder failed to process request payload", e)
+                null
+            }
+        }.firstOrNull()
 }

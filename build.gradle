@@ -19,6 +19,7 @@ buildscript {
         gsonVersion = '2.8.6'
         okhttpVersion = '4.9.1'
         retrofitVersion = '2.9.0'
+        wireVersion = '3.6.0'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.2.4'
@@ -52,6 +53,7 @@ buildscript {
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
         classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
+        classpath "com.squareup.wire:wire-gradle-plugin:$wireVersion"
     }
 }
 apply plugin: 'binary-compatibility-validator'
