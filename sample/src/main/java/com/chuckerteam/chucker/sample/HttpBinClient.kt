@@ -86,6 +86,7 @@ class HttpBinClient(
             image("image/png").enqueue(cb)
             gzipResponse().enqueue(cb)
             gzipRequest(Data("Some gzip request")).enqueue(cb)
+            brotliResponse().enqueue(cb)
             xml().enqueue(cb)
             utf8().enqueue(cb)
             deflate().enqueue(cb)

@@ -65,6 +65,9 @@ internal interface HttpBinApi {
     @GET("/gzip")
     fun gzipResponse(): Call<Any?>
 
+    @GET("/brotli")
+    fun brotliResponse(): Call<Any?>
+
     @POST("/post")
     @Headers("Content-Encoding: gzip")
     fun gzipRequest(@Body body: Data): Call<Any?>

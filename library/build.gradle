@@ -69,6 +69,7 @@ dependencies {
 
     api platform("com.squareup.okhttp3:okhttp-bom:$okhttpVersion")
     api "com.squareup.okhttp3:okhttp"
+    api "com.squareup.okhttp3:okhttp-brotli"
     testImplementation "com.squareup.okhttp3:mockwebserver"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
