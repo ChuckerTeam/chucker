@@ -5,6 +5,8 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
+import com.chuckerteam.chucker.sample.InterceptorType.APPLICATION
+import com.chuckerteam.chucker.sample.InterceptorType.NETWORK
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -24,7 +26,8 @@ private const val BASE_URL = "https://httpbin.org"
 private const val SEGMENT_SIZE = 8_192L
 
 class HttpBinClient(
-    context: Context
+    context: Context,
+    interceptorTypeProvider: InterceptorType.Provider,
 ) {
 
     private val collector = ChuckerCollector(
@@ -40,12 +43,14 @@ class HttpBinClient(
         .redactHeaders(emptySet())
         .build()
 
-    private val httpClient =
-        OkHttpClient.Builder()
-            // Add a ChuckerInterceptor instance to your OkHttp client
-            .addNetworkInterceptor(chuckerInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build()
+    private val httpClient = OkHttpClient.Builder()
+        // Add a ChuckerInterceptor instance to your OkHttp client as an application or a network interceptor.
+        // Learn more about interceptor types here – https://square.github.io/okhttp/interceptors.
+        // "activeForType" is needed only in this sample to control it from the UI.
+        .addInterceptor(chuckerInterceptor.activeForType(APPLICATION, interceptorTypeProvider))
+        .addNetworkInterceptor(chuckerInterceptor.activeForType(NETWORK, interceptorTypeProvider))
+        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .build()
 
     private val api: HttpBinApi by lazy {
         Retrofit.Builder()
