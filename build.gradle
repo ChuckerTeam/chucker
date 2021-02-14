@@ -16,6 +16,7 @@ buildscript {
         paletteKtxVersion = '1.0.0'
 
         // Networking
+        brotliVersion = '0.1.2'
         gsonVersion = '2.8.6'
         okhttpVersion = '4.9.1'
         retrofitVersion = '2.9.0'
