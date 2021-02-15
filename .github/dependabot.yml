@@ -8,6 +8,10 @@ updates:
       directory: "/"
       schedule:
         interval: "weekly"
+      reviewers:
+      - "cortinico"
+      - "vbuberen"
+      - "MiSikora"
 # Updates for Gradle dependencies used in the app      
     - package-ecosystem: gradle
       directory: "/"
