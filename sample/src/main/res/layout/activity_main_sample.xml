@@ -53,6 +53,7 @@
         android:id="@+id/interceptor_type_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/norm_grid_size"
         android:checkedButton="@+id/use_application_interceptor"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/do_http"
