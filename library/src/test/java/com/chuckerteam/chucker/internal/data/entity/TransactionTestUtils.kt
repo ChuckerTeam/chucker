@@ -9,7 +9,7 @@ internal fun createRequest(path: String = ""): HttpTransaction =
     HttpTransaction().apply {
         setRequestHeaders(randomHeaders())
         populateUrl("https://www.example.com/$path?query=baz".toHttpUrlOrNull()!!)
-        isRequestBodyPlainText = true
+        isResponseBodyEncoded = true
         requestDate = 300L
         method = "GET"
         requestContentType = "text/plain"
@@ -78,7 +78,7 @@ internal fun assertTransaction(
     assertThat(actual?.path).isEqualTo(expected.path)
     assertThat(actual?.scheme).isEqualTo(expected.scheme)
     assertThat(actual?.requestHeaders).isEqualTo(expected.requestHeaders)
-    assertThat(actual?.isRequestBodyPlainText).isEqualTo(expected.isRequestBodyPlainText)
+    assertThat(actual?.isRequestBodyEncoded).isEqualTo(expected.isRequestBodyEncoded)
     assertThat(actual?.requestDate).isEqualTo(expected.requestDate)
     assertThat(actual?.method).isEqualTo(expected.method)
     assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)

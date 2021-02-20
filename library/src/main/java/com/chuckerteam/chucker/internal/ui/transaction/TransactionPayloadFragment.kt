@@ -180,10 +180,10 @@ internal class TransactionPayloadFragment :
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
         PayloadType.REQUEST -> {
-            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestPayloadSize))
+            (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
         PayloadType.RESPONSE -> {
-            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responsePayloadSize))
+            (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
     }
 
@@ -217,12 +217,12 @@ internal class TransactionPayloadFragment :
             val result = mutableListOf<TransactionPayloadItem>()
 
             val headersString: String
-            val isBodyPlainText: Boolean
+            val isBodyEncoded: Boolean
             val bodyString: String
 
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
-                isBodyPlainText = transaction.isRequestBodyPlainText
+                isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
                 } else {
@@ -230,7 +230,7 @@ internal class TransactionPayloadFragment :
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
-                isBodyPlainText = transaction.isResponseBodyPlainText
+                isBodyEncoded = transaction.isResponseBodyEncoded
                 bodyString = transaction.getFormattedResponseBody()
             }
 
@@ -254,17 +254,17 @@ internal class TransactionPayloadFragment :
                 return@withContext result
             }
 
-            if (bodyString.isBlank()) {
-                val text = requireContext().getString(R.string.chucker_body_empty)
-                result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
-            } else {
-                if (!isBodyPlainText) {
+            when {
+                isBodyEncoded -> {
                     val text = requireContext().getString(R.string.chucker_body_omitted)
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
-                } else {
-                    bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
-                    }
+                }
+                bodyString.isBlank() -> {
+                    val text = requireContext().getString(R.string.chucker_body_empty)
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                }
+                else -> bodyString.lines().forEach {
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             }
 

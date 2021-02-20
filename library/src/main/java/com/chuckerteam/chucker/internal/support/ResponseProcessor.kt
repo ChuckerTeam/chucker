@@ -93,8 +93,9 @@ internal class ResponseProcessor(
                 transaction.responseImageData = payload.readByteArray()
             }
         } else if (payload.size != 0L) {
-            transaction.isResponseBodyPlainText = payload.isProbablyPlainText
-            transaction.responseBody = decodePayload(response, payload.readByteString())
+            val decodedContent = decodePayload(response, payload.readByteString())
+            transaction.responseBody = decodedContent
+            transaction.isResponseBodyEncoded = decodedContent == null
         }
     }
 
