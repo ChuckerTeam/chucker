@@ -14,8 +14,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainBinding: ActivityMainSampleBinding
 
-    private val client: HttpBinClient by lazy {
-        HttpBinClient(applicationContext, interceptorTypeSelector)
+    private val client by lazy {
+        createOkHttpClient(applicationContext, interceptorTypeSelector)
+    }
+
+    private val httpTasks by lazy {
+        listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +29,11 @@ class MainActivity : AppCompatActivity() {
 
         with(mainBinding) {
             setContentView(root)
-            doHttp.setOnClickListener { client.doHttpActivity() }
+            doHttp.setOnClickListener {
+                for (task in httpTasks) {
+                    task.run()
+                }
+            }
 
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
