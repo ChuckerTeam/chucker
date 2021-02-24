@@ -23,7 +23,7 @@ internal object TestTransactionFactory {
             requestContentType = "application/json",
             requestHeaders = null,
             requestBody = null,
-            isRequestBodyPlainText = true,
+            isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
             error = null,
@@ -31,7 +31,7 @@ internal object TestTransactionFactory {
             responseContentType = "application/json",
             responseHeaders = null,
             responseBody = """{"field": "value"}""",
-            isResponseBodyPlainText = true,
+            isResponseBodyEncoded = false,
             responseImageData = null
         )
     }

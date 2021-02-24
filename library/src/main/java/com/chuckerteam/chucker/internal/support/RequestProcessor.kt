@@ -55,10 +55,10 @@ internal class RequestProcessor(
         val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
-        transaction.isRequestBodyPlainText = contentBuffer.isProbablyPlainText
 
         val decodedContent = decodePayload(request, contentBuffer.readByteString())
         transaction.requestBody = decodedContent
+        transaction.isRequestBodyEncoded = decodedContent == null
         if (decodedContent != null && limitingSource.isThresholdReached) {
             transaction.requestBody += context.getString(R.string.chucker_body_content_truncated)
         }

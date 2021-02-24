@@ -38,7 +38,7 @@ internal class TransactionDetailsSharable(
 
         writeUtf8(
             if (transaction.requestBody.isNullOrBlank()) {
-                val resId = if (!transaction.isRequestBodyPlainText) {
+                val resId = if (transaction.isResponseBodyEncoded) {
                     R.string.chucker_body_omitted
                 } else {
                     R.string.chucker_body_empty
@@ -61,7 +61,7 @@ internal class TransactionDetailsSharable(
 
         writeUtf8(
             if (transaction.responseBody.isNullOrBlank()) {
-                val resId = if (!transaction.isResponseBodyPlainText) {
+                val resId = if (transaction.isResponseBodyEncoded) {
                     R.string.chucker_body_omitted
                 } else {
                     R.string.chucker_body_empty

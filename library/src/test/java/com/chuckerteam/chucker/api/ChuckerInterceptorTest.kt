@@ -86,7 +86,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
         val transaction = chuckerInterceptor.expectTransaction()
 
-        assertThat(transaction.isResponseBodyPlainText).isTrue()
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
     }
 
@@ -142,7 +142,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
         val transaction = chuckerInterceptor.expectTransaction()
 
-        assertThat(transaction.isResponseBodyPlainText).isTrue()
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
     }
 
@@ -402,7 +402,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().body!!.close()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.isRequestBodyPlainText).isFalse()
+        assertThat(transaction.isRequestBodyEncoded).isTrue()
     }
 
     @ParameterizedTest
@@ -428,7 +428,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.requestBody).isEqualTo("Hello, world!")
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
     }
@@ -449,7 +449,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.requestBody).isEqualTo("Hello, world!")
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
     }
@@ -468,7 +468,7 @@ internal class ChuckerInterceptorTest {
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.isRequestBodyPlainText).isTrue()
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.requestBody).isEqualTo(
             """
             ${"!".repeat(SEGMENT_SIZE.toInt())}
