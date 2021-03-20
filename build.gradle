@@ -5,7 +5,7 @@ buildscript {
         compileSdkVersion = 30
 
         kotlinVersion = '1.4.31'
-        androidGradleVersion = '4.1.3'
+        androidGradleVersion = '4.1.2'
         coroutineVersion = '1.4.3'
 
         // Google libraries
@@ -27,9 +27,9 @@ buildscript {
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.5.0'
-        detektVersion = '1.16.0'
+        detektVersion = '1.14.0'
         dokkaVersion = '1.4.20'
-        ktLintVersion = '0.41.0'
+        ktLintVersion = '0.40.0'
         ktLintGradleVersion = '10.0.0'
         leakCanaryVersion = '2.6'
 
