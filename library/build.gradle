@@ -5,20 +5,18 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion rootProject.compileSdkVersion
 
-    compileOptions {
-        kotlinOptions.freeCompilerArgs += [
-            '-module-name', "com.github.ChuckerTeam.Chucker.library",
-            "-Xexplicit-api=strict"
-        ]
-    }
-
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8
+        freeCompilerArgs += [
+                '-module-name',
+                "com.github.ChuckerTeam.Chucker.library",
+                "-Xexplicit-api=strict"
+        ]
     }
 
     buildFeatures {
