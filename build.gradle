@@ -1,11 +1,11 @@
 buildscript {
     ext {
-        kotlinVersion = '1.4.30'
-        androidGradleVersion = '4.1.2'
+        kotlinVersion = '1.4.31'
+        androidGradleVersion = '4.1.3'
         coroutineVersion = '1.4.2'
 
         // Google libraries
-        activityVersion = '1.2.0'
+        activityVersion = '1.2.1'
         appCompatVersion = '1.2.0'
         constraintLayoutVersion = '2.0.4'
         materialComponentsVersion = '1.3.0'
@@ -20,12 +20,12 @@ buildscript {
         gsonVersion = '2.8.6'
         okhttpVersion = '4.9.1'
         retrofitVersion = '2.9.0'
-        wireVersion = '3.6.0'
+        wireVersion = '3.6.1'
 
         // Debug and quality control
-        binaryCompatibilityValidator = '0.2.4'
+        binaryCompatibilityValidator = '0.5.0'
         detektVersion = '1.14.0'
-        dokkaVersion = '1.4.20'
+        dokkaVersion = '1.4.30'
         ktLintVersion = '0.40.0'
         ktLintGradleVersion = '9.4.1'
         leakcanaryVersion = '2.6'
@@ -34,7 +34,7 @@ buildscript {
         androidxTestCoreVersion = '1.3.0'
         junitGradlePluignVersion = '1.7.0.0'
         junitVersion = '5.7.1'
-        mockkVersion = '1.10.6'
+        mockkVersion = '1.11.0'
         robolectricVersion = '4.4'
         truthVersion = '1.1.2'
         vintageJunitVersion = '4.13'
