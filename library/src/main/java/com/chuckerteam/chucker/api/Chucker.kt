@@ -41,7 +41,7 @@ public object Chucker {
                 val shortcut = ShortcutInfo.Builder(this, "id1")
                     .setShortLabel("Open chucker activity")
                     .setLongLabel("Open chucker activity")
-                    .setIcon(Icon.createWithResource(this, R.mipmap.ic_launcher_round))
+                    .setIcon(Icon.createWithResource(this, R.mipmap.chucker_ic_launcher_round))
                     .setIntent(getLaunchIntent(this).setAction(Intent.ACTION_VIEW))
                     .build()
                 val allShortcuts = it.dynamicShortcuts.toMutableList()
