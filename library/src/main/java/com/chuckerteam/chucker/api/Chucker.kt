@@ -2,7 +2,12 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.util.Log
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import com.chuckerteam.chucker.internal.ui.MainActivity
@@ -28,6 +33,22 @@ public object Chucker {
     public fun getLaunchIntent(context: Context): Intent {
         return Intent(context, MainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    public fun Context.createShortcut() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            getSystemService(ShortcutManager::class.java)?.let {
+                val shortcut = ShortcutInfo.Builder(this, "id1")
+                    .setShortLabel("Open chucker activity")
+                    .setLongLabel("Open chucker activity")
+                    .setIcon(Icon.createWithResource(this, R.mipmap.ic_launcher_round))
+                    .setIntent(getLaunchIntent(this).setAction(Intent.ACTION_VIEW))
+                    .build()
+                val allShortcuts = it.dynamicShortcuts.toMutableList()
+                allShortcuts.add(shortcut)
+                it.dynamicShortcuts = allShortcuts
+            }
+        }
     }
 
     /**

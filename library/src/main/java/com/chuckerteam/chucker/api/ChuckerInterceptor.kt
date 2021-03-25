@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import com.chuckerteam.chucker.api.Chucker.createShortcut
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
@@ -52,6 +53,10 @@ public class ChuckerInterceptor private constructor(
         builder.alwaysReadResponseBody,
         decoders,
     )
+
+    init {
+        builder.context.createShortcut()
+    }
 
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
