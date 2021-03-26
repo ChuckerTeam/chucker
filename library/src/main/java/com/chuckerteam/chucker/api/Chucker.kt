@@ -17,6 +17,8 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
  */
 public object Chucker {
 
+    private const val SHORTCUT_ID = "shortcutId"
+
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
@@ -35,18 +37,16 @@ public object Chucker {
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
-    public fun Context.createShortcut() {
+    internal fun Context.createShortcut() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             getSystemService(ShortcutManager::class.java)?.let {
-                val shortcut = ShortcutInfo.Builder(this, "id1")
-                    .setShortLabel("Open chucker activity")
-                    .setLongLabel("Open chucker activity")
+                val shortcut = ShortcutInfo.Builder(this, SHORTCUT_ID)
+                    .setShortLabel(getString(R.string.chucker_shortcut_label))
+                    .setLongLabel(getString(R.string.chucker_shortcut_label))
                     .setIcon(Icon.createWithResource(this, R.mipmap.chucker_ic_launcher_round))
                     .setIntent(getLaunchIntent(this).setAction(Intent.ACTION_VIEW))
                     .build()
-                val allShortcuts = it.dynamicShortcuts.toMutableList()
-                allShortcuts.add(shortcut)
-                it.dynamicShortcuts = allShortcuts
+                it.addDynamicShortcuts(listOf(shortcut))
             }
         }
     }
