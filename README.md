@@ -117,6 +117,8 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // Use decoder when processing request and response bodies. When multiple decoders are installed they
         // are applied in an order they were added.
         .addBodyDecoder(decoder)
+        // Controls Android shortcut creation.
+        .createShortcut(true)
         .build()
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
