@@ -43,23 +43,21 @@ public object Chucker {
      */
     internal fun createShortcut(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            run outside@{
-                context.getSystemService(ShortcutManager::class.java)?.let { sm ->
-                    sm.dynamicShortcuts.forEach {
-                        if (it.id == SHORTCUT_ID) return@outside
-                    }
-                    val shortcut = ShortcutInfo.Builder(context, SHORTCUT_ID)
-                        .setShortLabel(context.getString(R.string.chucker_shortcut_label))
-                        .setLongLabel(context.getString(R.string.chucker_shortcut_label))
-                        .setIcon(
-                            Icon.createWithResource(context, R.mipmap.chucker_ic_launcher_round)
-                        )
-                        .setIntent(getLaunchIntent(context).setAction(Intent.ACTION_VIEW))
-                        .build()
-                    try {
-                        sm.addDynamicShortcuts(listOf(shortcut))
-                    } catch (ignored: Throwable) {
-                    }
+            context.getSystemService(ShortcutManager::class.java)?.let { sm ->
+                sm.dynamicShortcuts.forEach {
+                    if (it.id == SHORTCUT_ID) return@let
+                }
+                val shortcut = ShortcutInfo.Builder(context, SHORTCUT_ID)
+                    .setShortLabel(context.getString(R.string.chucker_shortcut_label))
+                    .setLongLabel(context.getString(R.string.chucker_shortcut_label))
+                    .setIcon(
+                        Icon.createWithResource(context, R.mipmap.chucker_ic_launcher_round)
+                    )
+                    .setIntent(getLaunchIntent(context).setAction(Intent.ACTION_VIEW))
+                    .build()
+                try {
+                    sm.addDynamicShortcuts(listOf(shortcut))
+                } catch (ignored: Throwable) {
                 }
             }
         }
