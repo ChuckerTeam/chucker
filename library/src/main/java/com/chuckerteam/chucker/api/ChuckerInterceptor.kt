@@ -2,12 +2,12 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
-import com.chuckerteam.chucker.api.Chucker.createShortcut
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import com.chuckerteam.chucker.internal.ui.MainActivity
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -55,7 +55,9 @@ public class ChuckerInterceptor private constructor(
     )
 
     init {
-        builder.context.createShortcut()
+        if (builder.createShortcut) {
+            Chucker.createShortcut(builder.context)
+        }
     }
 
     /** Adds [headerName] into [headersToRedact] */
@@ -93,6 +95,7 @@ public class ChuckerInterceptor private constructor(
         internal var alwaysReadResponseBody = false
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
+        internal var createShortcut = true
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -143,6 +146,14 @@ public class ChuckerInterceptor private constructor(
          */
         public fun addBodyDecoder(decoder: BodyDecoder): Builder = apply {
             this.decoders += decoder
+        }
+
+        /**
+         * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
+         * just like what `LeakCanary` did, you can easily to access chucker's [MainActivity]
+         */
+        public fun createShortcut(enable: Boolean): Builder = apply {
+            this.createShortcut = enable
         }
 
         /**
