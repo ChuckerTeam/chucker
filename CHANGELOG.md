@@ -7,21 +7,19 @@ Please add your entries according to this format.
 
 ### Added
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
+* Brotli compression support
 
-### Fixed
-
-* Fixed not setting request body type correctly [#538].
-* Fixed request headers not being redacted in case of failures [#545].
-* Fixed wrongful processing of one shot and duplex requests [#544].
+### Changed
+* Updated OkHttp to 4.9.1
 
 ### Removed
-
 * Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
 * Removed the Throwable reporting feature as well as all the @Deprecated related methods.
 
-### Changed
-
-* Updated OkHttp to 4.9.1
+### Fixed
+* Fixed not setting request body type correctly [#538].
+* Fixed request headers not being redacted in case of failures [#545].
+* Fixed wrongful processing of one shot and duplex requests [#544].
 
 ## Version 3.4.0 *(2020-11-05)*
 
@@ -30,22 +28,18 @@ Please add your entries according to this format.
 * `ChuckerInterceptor.Builder` for fluent creation of the interceptor. It will also help us with preserving binary compatibility in future releases of `4.x`. [#462]
 
 ### Changed
-
 * Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
 
-### Removed
+### Deprecated
+* `ChuckerInterceptor` constructor is now deprecated. Unless `Context` is the only parameter that you pass into the constructor you should migrate to builder.
 
+### Removed
 * `kotlin-android-extensions` plugin for better compatibility with Kotlin 1.4.20.
 
 ### Fixed
-
 * Fixed memory leak in MainActivity [#465].
 * Fixed `GzipSource is not closed` error reported by StrictMode [#472].
 * Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
-
-### Deprecated
-
-* `ChuckerInterceptor` constructor is now deprecated. Unless `Context` is the only parameter that you pass into the constructor you should migrate to builder.
 
 ## Version 3.3.0 *(2020-09-30)*
 
