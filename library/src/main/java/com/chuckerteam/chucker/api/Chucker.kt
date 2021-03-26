@@ -37,14 +37,14 @@ public object Chucker {
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
-    internal fun Context.createShortcut() {
+    internal fun createShortcut(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            getSystemService(ShortcutManager::class.java)?.let {
-                val shortcut = ShortcutInfo.Builder(this, SHORTCUT_ID)
-                    .setShortLabel(getString(R.string.chucker_shortcut_label))
-                    .setLongLabel(getString(R.string.chucker_shortcut_label))
-                    .setIcon(Icon.createWithResource(this, R.mipmap.chucker_ic_launcher_round))
-                    .setIntent(getLaunchIntent(this).setAction(Intent.ACTION_VIEW))
+            context.getSystemService(ShortcutManager::class.java)?.let {
+                val shortcut = ShortcutInfo.Builder(context, SHORTCUT_ID)
+                    .setShortLabel(context.getString(R.string.chucker_shortcut_label))
+                    .setLongLabel(context.getString(R.string.chucker_shortcut_label))
+                    .setIcon(Icon.createWithResource(context, R.mipmap.chucker_ic_launcher_round))
+                    .setIntent(getLaunchIntent(context).setAction(Intent.ACTION_VIEW))
                     .build()
                 it.addDynamicShortcuts(listOf(shortcut))
             }
