@@ -57,7 +57,8 @@ public object Chucker {
                     .build()
                 try {
                     sm.addDynamicShortcuts(listOf(shortcut))
-                } catch (ignored: Throwable) {
+                } catch (e: Throwable) {
+                    Logger.warn("ShortcutManager addDynamicShortcuts failed ", e)
                 }
             }
         }
