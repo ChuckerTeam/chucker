@@ -11,6 +11,8 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import com.chuckerteam.chucker.internal.ui.MainActivity
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 /**
  * Chucker methods and utilities to interact with the library.
@@ -57,7 +59,9 @@ public object Chucker {
                     .build()
                 try {
                     sm.addDynamicShortcuts(listOf(shortcut))
-                } catch (e: Throwable) {
+                } catch (e: IllegalArgumentException) {
+                    Logger.warn("ShortcutManager addDynamicShortcuts failed ", e)
+                } catch (e: IllegalStateException) {
                     Logger.warn("ShortcutManager addDynamicShortcuts failed ", e)
                 }
             }
