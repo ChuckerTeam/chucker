@@ -7,7 +7,6 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
-import com.chuckerteam.chucker.internal.ui.MainActivity
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -150,7 +149,7 @@ public class ChuckerInterceptor private constructor(
 
         /**
          * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
-         * which can make you easily to access chucker's [MainActivity]
+         * to access list of transaction in Chucker.
          */
         public fun createShortcut(enable: Boolean): Builder = apply {
             this.createShortcut = enable
