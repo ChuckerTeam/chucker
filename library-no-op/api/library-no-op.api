@@ -32,6 +32,7 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
 	public final fun alwaysReadResponseBody (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun build ()Lcom/chuckerteam/chucker/api/ChuckerInterceptor;
 	public final fun collector (Lcom/chuckerteam/chucker/api/ChuckerCollector;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun createShortcut (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun maxContentLength (J)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun redactHeaders (Ljava/lang/Iterable;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun redactHeaders ([Ljava/lang/String;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
