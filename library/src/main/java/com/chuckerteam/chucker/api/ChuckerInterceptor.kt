@@ -150,7 +150,7 @@ public class ChuckerInterceptor private constructor(
 
         /**
          * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
-         * just like what `LeakCanary` did, you can easily to access chucker's [MainActivity]
+         * which can make you easily to access chucker's [MainActivity]
          */
         public fun createShortcut(enable: Boolean): Builder = apply {
             this.createShortcut = enable

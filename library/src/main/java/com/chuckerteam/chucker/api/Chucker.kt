@@ -37,6 +37,10 @@ public object Chucker {
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
+    /**
+     * Create a shortcut to launch Chucker UI.
+     * @param context An Android [Context].
+     */
     internal fun createShortcut(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             context.getSystemService(ShortcutManager::class.java)?.let {
