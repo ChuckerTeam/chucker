@@ -8,6 +8,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -30,19 +31,21 @@ internal class RepositoryProviderTest {
         RepositoryProvider.close()
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun uninitialzedTransactionRepo() {
-        RepositoryProvider.transaction()
+    @Test
+    fun `fails with uninitialized transaction repository`() {
+        assertThrows<IllegalStateException> {
+            RepositoryProvider.transaction()
+        }
     }
 
     @Test
-    fun transactionRepoAvailableAfterInitialize() {
+    fun `transaction repository is available after initialization`() {
         RepositoryProvider.initialize(context)
         assertThat(RepositoryProvider.transaction()).isNotNull()
     }
 
     @Test
-    fun providerCachesInstancesOfTransactionRepo() {
+    fun `transaction repository is cached`() {
         RepositoryProvider.initialize(context)
         val one = RepositoryProvider.transaction()
         val two = RepositoryProvider.transaction()

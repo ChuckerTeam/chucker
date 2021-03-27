@@ -51,7 +51,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     fun tearDown() = db.close()
 
     @Test
-    fun loadSingleTransaction() = runBlocking {
+    fun `get a single transaction`() = runBlocking {
         val data = createRequest().apply { id = 123L }
         db.transactionDao().insert(data)
 
@@ -71,7 +71,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun insertTransaction() = runBlocking {
+    fun `insert a single transaction`() = runBlocking {
         val data = createRequest()
 
         testObject.insertTransaction(data)
@@ -93,7 +93,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun getAllTransactions() = runBlocking {
+    fun `get all transactions`() = runBlocking {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
 
@@ -108,7 +108,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun getSortedTransactionTuples() = runBlocking {
+    fun `get sorted transaction tuples`() = runBlocking {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
 
@@ -118,7 +118,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun getFilteredTransactionTuple_emptyStringsReturnAll() = runBlocking {
+    fun `transaction tuples are not filtered with empty inputs`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
                 requestDate = 200L
@@ -136,13 +136,13 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples("", "").observeForever { result ->
+        testObject.getFilteredTransactionTuples(code = "", path = "").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne, transactionTwo), result)
         }
     }
 
     @Test
-    fun getFilteredTransactionTuple_filterPath() = runBlocking {
+    fun `transaction tuples are filtered by path`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
                 requestDate = 200L
@@ -160,13 +160,13 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples("", "def").observeForever { result ->
+        testObject.getFilteredTransactionTuples(code = "", path = "def").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionTwo), result)
         }
     }
 
     @Test
-    fun getFilteredTransactionTuple_filterCode() = runBlocking {
+    fun `transaction tuples are filtered by code`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
                 requestDate = 200L
@@ -187,13 +187,13 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples("4", "").observeForever { result ->
+        testObject.getFilteredTransactionTuples(code = "4", path = "").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
         }
     }
 
     @Test
-    fun deleteAllTransactions() = runBlocking {
+    fun `delete all transactions`() = runBlocking {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
 
@@ -206,7 +206,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun deleteOldTransactions() = runBlocking {
+    fun `delete old transactions`() = runBlocking {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
 
@@ -223,7 +223,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
-    fun updateTransaction() = runBlocking {
+    fun `update a transaction`() = runBlocking {
         testObject.insertTransaction(transaction)
 
         val newHost = randomString()
