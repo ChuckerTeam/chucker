@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
@@ -41,10 +40,9 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.transactionTitle.observe(
-            this,
-            Observer { transactionBinding.toolbarTitle.text = it }
-        )
+        viewModel.transactionTitle.observe(this) {
+            transactionBinding.toolbarTitle.text = it
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -59,17 +57,14 @@ internal class TransactionActivity : BaseChuckerActivity() {
             viewModel.switchUrlEncoding()
             return@setOnMenuItemClickListener true
         }
-        viewModel.encodeUrl.observe(
-            this,
-            Observer { encode ->
-                val icon = if (encode) {
-                    R.drawable.chucker_ic_encoded_url_white
-                } else {
-                    R.drawable.chucker_ic_decoded_url_white
-                }
-                encodeUrlMenuItem.setIcon(icon)
+        viewModel.encodeUrl.observe(this) { encode ->
+            val icon = if (encode) {
+                R.drawable.chucker_ic_encoded_url_white
+            } else {
+                R.drawable.chucker_ic_decoded_url_white
             }
-        )
+            encodeUrlMenuItem.setIcon(icon)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

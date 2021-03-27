@@ -53,7 +53,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
     @Test
     fun loadSingleTransaction() = runBlocking {
         val data = createRequest().apply { id = 123L }
-        db.transactionDao().insert(data)
+        db.transactionDao.insert(data)
 
         testObject.getTransaction(data.id).observeForever {
             assertThat(it?.id).isEqualTo(data.id)

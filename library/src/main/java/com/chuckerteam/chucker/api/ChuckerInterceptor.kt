@@ -15,9 +15,7 @@ import java.io.IOException
  * An OkHttp Interceptor which persists and displays HTTP activity
  * in your application for later inspection.
  */
-public class ChuckerInterceptor private constructor(
-    builder: Builder,
-) : Interceptor {
+public class ChuckerInterceptor private constructor(builder: Builder) : Interceptor {
 
     /**
      * An OkHttp Interceptor which persists and displays HTTP activity

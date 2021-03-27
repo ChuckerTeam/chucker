@@ -9,7 +9,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 @Database(entities = [HttpTransaction::class], version = 6, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
-    abstract fun transactionDao(): HttpTransactionDao
+    abstract val transactionDao: HttpTransactionDao
 
     companion object {
         private const val OLD_DB_NAME = "chuck.db"

@@ -55,13 +55,10 @@ internal class MainActivity :
             }
         }
 
-        viewModel.transactions.observe(
-            this,
-            { transactionTuples ->
-                transactionsAdapter.submitList(transactionTuples)
-                mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
-            }
-        )
+        viewModel.transactions.observe(this) { transactionTuples ->
+            transactionsAdapter.submitList(transactionTuples)
+            mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -84,8 +81,7 @@ internal class MainActivity :
                     getClearDialogData(),
                     onPositiveClick = {
                         viewModel.clearTransactions()
-                    },
-                    onNegativeClick = null
+                    }
                 )
                 true
             }
@@ -94,8 +90,7 @@ internal class MainActivity :
                     getExportDialogData(),
                     onPositiveClick = {
                         exportTransactions()
-                    },
-                    onNegativeClick = null
+                    }
                 )
                 true
             }

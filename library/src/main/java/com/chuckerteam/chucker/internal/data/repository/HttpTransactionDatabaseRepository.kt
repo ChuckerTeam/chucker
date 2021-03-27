@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.chuckerteam.chucker.internal.data.room.HttpTransactionDao
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 
-internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
+internal class HttpTransactionDatabaseRepository(database: ChuckerDatabase) :
+    HttpTransactionRepository {
 
-    private val transactionDao get() = database.transactionDao()
+    private val transactionDao: HttpTransactionDao = database.transactionDao
 
     override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"

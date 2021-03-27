@@ -7,9 +7,10 @@ import java.util.concurrent.atomic.AtomicLong
 internal object FileFactory {
     private val uniqueIdGenerator = AtomicLong()
 
-    fun create(directory: File) = create(directory, fileName = "chucker-${uniqueIdGenerator.getAndIncrement()}")
-
-    fun create(directory: File, fileName: String): File? = try {
+    fun create(
+        directory: File,
+        fileName: String = "chucker-${uniqueIdGenerator.getAndIncrement()}"
+    ): File? = try {
         File(directory, fileName).apply {
             if (exists() && !delete()) {
                 throw IOException("Failed to delete file $this")

@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
@@ -96,27 +95,24 @@ internal class TransactionPayloadFragment :
 
         viewModel.transaction
             .combineLatest(viewModel.formatRequestBody)
-            .observe(
-                viewLifecycleOwner,
-                Observer { (transaction, formatRequestBody) ->
-                    if (transaction == null) return@Observer
-                    lifecycleScope.launch {
-                        payloadBinding.loadingProgress.visibility = View.VISIBLE
+            .observe(viewLifecycleOwner) { (transaction, formatRequestBody) ->
+                if (transaction == null) return@observe
+                lifecycleScope.launch {
+                    payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                        val result = processPayload(payloadType, transaction, formatRequestBody)
-                        if (result.isEmpty()) {
-                            showEmptyState()
-                        } else {
-                            payloadAdapter.setItems(result)
-                            showPayloadState()
-                        }
-                        // Invalidating menu, because we need to hide menu items for empty payloads
-                        requireActivity().invalidateOptionsMenu()
-
-                        payloadBinding.loadingProgress.visibility = View.GONE
+                    val result = processPayload(payloadType, transaction, formatRequestBody)
+                    if (result.isEmpty()) {
+                        showEmptyState()
+                    } else {
+                        payloadAdapter.setItems(result)
+                        showPayloadState()
                     }
+                    // Invalidating menu, because we need to hide menu items for empty payloads
+                    requireActivity().invalidateOptionsMenu()
+
+                    payloadBinding.loadingProgress.visibility = View.GONE
                 }
-            )
+            }
     }
 
     private fun showEmptyState() {
@@ -161,10 +157,9 @@ internal class TransactionPayloadFragment :
         }
 
         if (payloadType == PayloadType.REQUEST) {
-            viewModel.doesRequestBodyRequireEncoding.observe(
-                viewLifecycleOwner,
-                { menu.findItem(R.id.encode_url).isVisible = it }
-            )
+            viewModel.doesRequestBodyRequireEncoding.observe(viewLifecycleOwner) {
+                menu.findItem(R.id.encode_url).isVisible = it
+            }
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
         }
@@ -226,7 +221,7 @@ internal class TransactionPayloadFragment :
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
                 } else {
-                    transaction.requestBody ?: ""
+                    transaction.requestBody.orEmpty()
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)

@@ -36,7 +36,7 @@ internal object FormatUtils {
             } else {
                 "${header.name}: ${header.value}\n"
             }
-        } ?: ""
+        }.orEmpty()
     }
 
     fun formatByteCount(bytes: Long, si: Boolean): String {

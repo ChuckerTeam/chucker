@@ -6,17 +6,17 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 internal fun Context.showDialog(
     dialogData: DialogData,
-    onPositiveClick: (() -> Unit)?,
-    onNegativeClick: (() -> Unit)?
+    onPositiveClick: () -> Unit = {},
+    onNegativeClick: () -> Unit = {}
 ) {
     MaterialAlertDialogBuilder(this)
         .setTitle(dialogData.title)
         .setMessage(dialogData.message)
         .setPositiveButton(dialogData.positiveButtonText) { _, _ ->
-            onPositiveClick?.invoke()
+            onPositiveClick()
         }
         .setNegativeButton(dialogData.negativeButtonText) { _, _ ->
-            onNegativeClick?.invoke()
+            onNegativeClick()
         }
         .show()
 }

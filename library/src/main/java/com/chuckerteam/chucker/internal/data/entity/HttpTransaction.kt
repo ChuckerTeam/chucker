@@ -154,16 +154,14 @@ internal class HttpTransaction(
     fun getParsedRequestHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             requestHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
+            object : TypeToken<List<HttpHeader>>() {}.type
         )
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             responseHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
+            object : TypeToken<List<HttpHeader>>() {}.type
         )
     }
 
@@ -207,11 +205,11 @@ internal class HttpTransaction(
     }
 
     fun getFormattedRequestBody(): String {
-        return requestBody?.let { formatBody(it, requestContentType) } ?: ""
+        return requestBody?.let { formatBody(it, requestContentType) }.orEmpty()
     }
 
     fun getFormattedResponseBody(): String {
-        return responseBody?.let { formatBody(it, responseContentType) } ?: ""
+        return responseBody?.let { formatBody(it, responseContentType) }.orEmpty()
     }
 
     fun populateUrl(httpUrl: HttpUrl): HttpTransaction {

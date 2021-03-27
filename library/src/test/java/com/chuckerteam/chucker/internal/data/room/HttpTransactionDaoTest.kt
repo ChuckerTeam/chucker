@@ -34,7 +34,7 @@ internal class HttpTransactionDaoTest {
         db = Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        testObject = db.transactionDao()
+        testObject = db.transactionDao
     }
 
     @After
