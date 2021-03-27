@@ -4,11 +4,8 @@ import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and
@@ -28,7 +25,7 @@ public class ChuckerCollector @JvmOverloads constructor(
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
-    private val scope = CoroutineScope(Dispatchers.Main) + SupervisorJob()
+    private val scope = MainScope()
 
     init {
         RepositoryProvider.initialize(context)
