@@ -5,17 +5,20 @@ import android.content.Intent
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME) {
+    private val scope = CoroutineScope(Dispatchers.Main) + SupervisorJob()
 
     override fun onHandleIntent(intent: Intent?) {
         RepositoryProvider.initialize(applicationContext)
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             RepositoryProvider.transaction().deleteAllTransactions()
+            NotificationHelper.clearBuffer()
+            NotificationHelper(applicationContext).dismissNotifications()
         }
-        NotificationHelper.clearBuffer()
-        NotificationHelper(this).dismissNotifications()
     }
 
     companion object {

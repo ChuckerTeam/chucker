@@ -13,7 +13,7 @@ internal interface HttpTransactionRepository {
 
     suspend fun insertTransaction(transaction: HttpTransaction)
 
-    fun updateTransaction(transaction: HttpTransaction): Int
+    suspend fun updateTransaction(transaction: HttpTransaction): Int
 
     suspend fun deleteOldTransactions(threshold: Long)
 
