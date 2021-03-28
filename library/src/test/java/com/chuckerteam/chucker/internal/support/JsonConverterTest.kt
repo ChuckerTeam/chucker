@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 internal class JsonConverterTest {
 
     @Test
-    fun testInstance_sameInstance() {
+    fun `JSON converter is a singleton`() {
         val instance1 = JsonConverter.instance
         val instance2 = JsonConverter.instance
 
@@ -14,7 +14,7 @@ internal class JsonConverterTest {
     }
 
     @Test
-    fun testGsonConfiguration_willSerializeNulls() {
+    fun `JSON object has null values serialized`() {
         val json = JsonConverter.instance.toJson(NullTestClass(null))
         assertThat(json).isEqualTo(
             """

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class LimitingSourceTest {
     @Test
-    fun limitedBytes_doNotExceedLimit() {
+    fun `upstream bytes do not exceed a limit`() {
         val content = "!".repeat(10 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 2 * SEGMENT_SIZE)
@@ -19,7 +19,7 @@ internal class LimitingSourceTest {
     }
 
     @Test
-    fun originalBytes_areNotDepleted() {
+    fun `upstream byte over a limit are not depleted`() {
         val content = "!".repeat(10 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 2 * SEGMENT_SIZE)
@@ -31,7 +31,7 @@ internal class LimitingSourceTest {
     }
 
     @Test
-    fun bytesLimitIsNotReached_whenBelowThreshold() {
+    fun `byte read limit is not reached with byte count under limit`() {
         val content = "!".repeat(3 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 4 * SEGMENT_SIZE)
@@ -42,7 +42,7 @@ internal class LimitingSourceTest {
     }
 
     @Test
-    fun bytesLimitIsReached_whenEqualToThreshold() {
+    fun `byte read limit is reached with exact byte count`() {
         val content = "!".repeat(3 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 3 * SEGMENT_SIZE)
@@ -53,7 +53,7 @@ internal class LimitingSourceTest {
     }
 
     @Test
-    fun bytesLimitIsReached_whenAboveThreshold() {
+    fun `byte read limit is reached with byte count over limit`() {
         val content = "!".repeat(3 * SEGMENT_SIZE.toInt())
         val originalSource = Buffer().writeUtf8(content)
         val limitingSource = LimitingSource(originalSource, 2 * SEGMENT_SIZE)

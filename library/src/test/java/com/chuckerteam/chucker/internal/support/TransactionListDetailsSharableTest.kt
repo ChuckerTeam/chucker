@@ -13,7 +13,7 @@ internal class TransactionListDetailsSharableTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     @Test
-    fun buildsCorrectSharedContent() {
+    fun `create sharable content for multiple transactions`() {
         val transactions = List(10) {
             TestTransactionFactory.createTransaction(getRandomHttpMethod())
         }

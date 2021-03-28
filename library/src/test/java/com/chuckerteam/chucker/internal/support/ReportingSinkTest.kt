@@ -19,7 +19,7 @@ internal class ReportingSinkTest {
     private val reportingCallback = TestReportingCallback()
 
     @Test
-    fun bytesWrittenToDownstream_areAvailableForConsumer(@TempDir tempDir: File) {
+    fun `downstream bytes are reported`(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val repetitions = Random.nextInt(1, 100)
         val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
@@ -31,7 +31,7 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun bytesWrittenToDownstream_canBeLimited(@TempDir tempDir: File) {
+    fun `downstream bytes can be limited`(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val testSource = TestSource(10_000)
         val reportingSink = ReportingSink(testFile, reportingCallback, writeByteLimit = 9_999)
@@ -43,7 +43,7 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun partiallyConsumedUpstream_hasReadBytesAvailableForConsumer(@TempDir tempDir: File) {
+    fun `partially consumed upstream bytes are reported`(@TempDir tempDir: File) {
         val testFile = File(tempDir, "testFile")
         val testSource = TestSource(2 * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
@@ -55,7 +55,7 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun exceptionWhileCreatingDownstream_areAvailableForConsumer(@TempDir tempDir: File) {
+    fun `exception while creating downstream is reported`(@TempDir tempDir: File) {
         assertThat(tempDir.deleteRecursively()).isTrue()
 
         val testFile = File(tempDir, "testFile")

@@ -31,7 +31,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource
-    fun customBodyDecoder_doesNotChangeRequestBody(factory: ClientFactory) {
+    fun `custom body decoder does not change request body`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(ReversingDecoder()),
@@ -48,7 +48,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource
-    fun customBodyDecoder_doesNotChangeResponseBody(factory: ClientFactory) {
+    fun `custom body decoder does not change response body`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(ReversingDecoder()),
@@ -66,7 +66,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun customBodyDecoder_isUsedForDecoding(factory: ClientFactory) {
+    fun `custom body decoder is used for decoding`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(LiteralBodyDecoder()),
@@ -87,7 +87,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun bodyDecoders_areUsedInAppliedOrder(factory: ClientFactory) {
+    fun `body decoders are used in the applied order`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(ReversingDecoder(), LiteralBodyDecoder()),
@@ -108,7 +108,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun nextBodyDecoder_isUsed_whenPreviousDoesNotDecode(factory: ClientFactory) {
+    fun `next body decoder is used when previous one does not decode`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(NoOpDecoder(), LiteralBodyDecoder()),
@@ -129,7 +129,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun bodyDecoder_canThrowIoExceptions(factory: ClientFactory) {
+    fun `body decoder can throw IO exception`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             decoders = listOf(IoThrowingDecoder(), LiteralBodyDecoder()),
@@ -150,7 +150,7 @@ internal class ChuckerInterceptorDecodingTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun bodyDecoders_areAppliedLazily(factory: ClientFactory) {
+    fun `body decoders are applied lazily`(factory: ClientFactory) {
         val statefulDecoder = StatefulDecoder()
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
