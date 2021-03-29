@@ -4,8 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 /**
@@ -26,6 +25,7 @@ public class ChuckerCollector @JvmOverloads constructor(
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
+    private val scope = MainScope()
 
     init {
         RepositoryProvider.initialize(context)
@@ -36,13 +36,14 @@ public class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The HTTP transaction sent
      */
     internal fun onRequestSent(transaction: HttpTransaction) {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             RepositoryProvider.transaction().insertTransaction(transaction)
+
+            if (showNotification) {
+                notificationHelper.show(transaction)
+            }
+            retentionManager.doMaintenance()
         }
-        if (showNotification) {
-            notificationHelper.show(transaction)
-        }
-        retentionManager.doMaintenance()
     }
 
     /**
@@ -51,9 +52,11 @@ public class ChuckerCollector @JvmOverloads constructor(
      * @param transaction The sent HTTP transaction completed with the response
      */
     internal fun onResponseReceived(transaction: HttpTransaction) {
-        val updated = RepositoryProvider.transaction().updateTransaction(transaction)
-        if (showNotification && updated > 0) {
-            notificationHelper.show(transaction)
+        scope.launch {
+            val updated = RepositoryProvider.transaction().updateTransaction(transaction)
+            if (showNotification && updated > 0) {
+                notificationHelper.show(transaction)
+            }
         }
     }
 }

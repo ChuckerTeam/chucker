@@ -2,11 +2,12 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.chuckerteam.chucker.api.RetentionManager.Period
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,6 +28,7 @@ public class RetentionManager @JvmOverloads constructor(
     // How often the cleanup should happen
     private val cleanupFrequency: Long
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
+    private val maintenanceMutex = Mutex()
 
     init {
         cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR) {
@@ -40,8 +42,7 @@ public class RetentionManager @JvmOverloads constructor(
      * Call this function to check and eventually trigger a cleanup.
      * Please note that this method is not forcing a cleanup.
      */
-    @Synchronized
-    internal fun doMaintenance() {
+    internal suspend fun doMaintenance() = maintenanceMutex.withLock {
         if (period > 0) {
             val now = System.currentTimeMillis()
             if (isCleanupDue(now)) {
@@ -61,13 +62,11 @@ public class RetentionManager @JvmOverloads constructor(
 
     private fun updateLastCleanup(time: Long) {
         lastCleanup = time
-        prefs.edit().putLong(KEY_LAST_CLEANUP, time).apply()
+        prefs.edit { putLong(KEY_LAST_CLEANUP, time) }
     }
 
-    private fun deleteSince(threshold: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            RepositoryProvider.transaction().deleteOldTransactions(threshold)
-        }
+    private suspend fun deleteSince(threshold: Long) {
+        RepositoryProvider.transaction().deleteOldTransactions(threshold)
     }
 
     private fun isCleanupDue(now: Long) = now - getLastCleanup(now) > cleanupFrequency
