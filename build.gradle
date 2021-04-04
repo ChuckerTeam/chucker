@@ -40,7 +40,6 @@ buildscript {
     }
 
     repositories {
-        jcenter()
         google()
         gradlePluginPortal()
     }
@@ -71,8 +70,9 @@ allprojects {
     group = GROUP
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        gradlePluginPortal()
     }
 
     tasks.withType(Test) {
