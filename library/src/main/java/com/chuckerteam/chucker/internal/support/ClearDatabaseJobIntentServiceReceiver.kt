@@ -7,6 +7,6 @@ import android.content.Intent
 internal class ClearDatabaseJobIntentServiceReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        ClearDatabaseService().enqueueWork(context, intent)
+        ClearDatabaseService.enqueueWork(context, intent)
     }
 }
