@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.api
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -42,6 +43,7 @@ public object Chucker {
      * Create a shortcut to launch Chucker UI.
      * @param context An Android [Context].
      */
+    @TargetApi(Build.VERSION_CODES.N_MR1)
     internal fun createShortcut(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
             return
