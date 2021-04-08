@@ -9,7 +9,9 @@
         </intent>
     </queries>
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        android:maxSdkVersion="25" />
 
     <application>
         <activity
