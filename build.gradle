@@ -23,7 +23,7 @@ buildscript {
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.5.0'
-        detektVersion = '1.14.0'
+        detektVersion = '1.16.0'
         dokkaVersion = '1.4.30'
         ktLintVersion = '0.40.0'
         ktLintGradleVersion = '9.4.1'
@@ -40,7 +40,6 @@ buildscript {
     }
 
     repositories {
-        jcenter()
         google()
         gradlePluginPortal()
     }
@@ -71,8 +70,14 @@ allprojects {
     group = GROUP
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+            }
+        }
     }
 
     tasks.withType(Test) {
