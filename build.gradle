@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlinVersion = '1.4.32'
         androidGradleVersion = '4.1.3'
-        coroutineVersion = '1.4.2'
+        coroutineVersion = '1.4.3-native-mt'
 
         // Google libraries
         activityVersion = '1.2.2'
@@ -40,7 +40,6 @@ buildscript {
     }
 
     repositories {
-        jcenter()
         google()
         gradlePluginPortal()
     }
@@ -71,8 +70,14 @@ allprojects {
     group = GROUP
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+            }
+        }
     }
 
     tasks.withType(Test) {
