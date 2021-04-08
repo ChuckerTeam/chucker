@@ -72,7 +72,12 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+            }
+        }
     }
 
     tasks.withType(Test) {
