@@ -113,14 +113,19 @@ internal class NotificationHelper(val context: Context) {
     private fun createClearAction():
         NotificationCompat.Action {
             val clearTitle = context.getString(R.string.chucker_clear)
-            val deleteIntent = Intent(context, ClearDatabaseService::class.java)
-            val intent = PendingIntent.getService(
+            val clearTransactionsBroadcastIntent =
+                Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
+            val pendingBroadcastIntent = PendingIntent.getBroadcast(
                 context,
                 INTENT_REQUEST_CODE,
-                deleteIntent,
+                clearTransactionsBroadcastIntent,
                 PendingIntent.FLAG_ONE_SHOT or immutableFlag()
             )
-            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white, clearTitle, intent)
+            return NotificationCompat.Action(
+                R.drawable.chucker_ic_delete_white,
+                clearTitle,
+                pendingBroadcastIntent
+            )
         }
 
     fun dismissNotifications() {
