@@ -6,6 +6,7 @@ import android.content.Intent
 /**
  * No-op implementation.
  */
+@Suppress("UnusedPrivateMember")
 public object Chucker {
 
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
