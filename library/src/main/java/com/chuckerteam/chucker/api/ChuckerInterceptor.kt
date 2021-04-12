@@ -4,29 +4,12 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
-import com.chuckerteam.chucker.internal.support.DepletingSource
-import com.chuckerteam.chucker.internal.support.FileFactory
-import com.chuckerteam.chucker.internal.support.IOUtils
-import com.chuckerteam.chucker.internal.support.Logger
-import com.chuckerteam.chucker.internal.support.ReportingSink
-import com.chuckerteam.chucker.internal.support.TeeSource
-import com.chuckerteam.chucker.internal.support.contentType
-import com.chuckerteam.chucker.internal.support.hasBody
-import com.chuckerteam.chucker.internal.support.isGzipped
-import okhttp3.Headers
+import com.chuckerteam.chucker.internal.support.PlainTextDecoder
+import com.chuckerteam.chucker.internal.support.RequestProcessor
+import com.chuckerteam.chucker.internal.support.ResponseProcessor
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody.Companion.asResponseBody
-import okio.Buffer
-import okio.GzipSource
-import okio.Source
-import okio.buffer
-import okio.source
-import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
-import kotlin.jvm.Throws
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -47,13 +30,34 @@ public class ChuckerInterceptor private constructor(
      */
     public constructor(context: Context) : this(Builder(context))
 
-    private val context = builder.context
-    private val collector = builder.collector ?: ChuckerCollector(context)
-    private val maxContentLength = builder.maxContentLength
-    private val cacheDirectoryProvider = builder.cacheDirectoryProvider ?: CacheDirectoryProvider { context.filesDir }
-    private val alwaysReadResponseBody = builder.alwaysReadResponseBody
-    private val io = IOUtils(builder.context)
     private val headersToRedact = builder.headersToRedact.toMutableSet()
+
+    private val decoders = builder.decoders + BUILT_IN_DECODERS
+
+    private val collector = builder.collector ?: ChuckerCollector(builder.context)
+
+    private val requestProcessor = RequestProcessor(
+        builder.context,
+        collector,
+        builder.maxContentLength,
+        headersToRedact,
+        decoders,
+    )
+
+    private val responseProcessor = ResponseProcessor(
+        collector,
+        builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
+        builder.maxContentLength,
+        headersToRedact,
+        builder.alwaysReadResponseBody,
+        decoders,
+    )
+
+    init {
+        if (builder.createShortcut) {
+            Chucker.createShortcut(builder.context)
+        }
+    }
 
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
@@ -62,206 +66,20 @@ public class ChuckerInterceptor private constructor(
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val response: Response
         val transaction = HttpTransaction()
+        val request = chain.request()
 
-        processRequest(request, transaction)
-        collector.onRequestSent(transaction)
+        requestProcessor.process(request, transaction)
 
-        try {
-            response = chain.proceed(request)
+        val response = try {
+            chain.proceed(request)
         } catch (e: IOException) {
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
             throw e
         }
 
-        processResponseMetadata(response, transaction)
-        return multiCastResponseBody(response, transaction)
-    }
-
-    /**
-     * Processes a [Request] and populates corresponding fields of a [HttpTransaction].
-     */
-    private fun processRequest(request: Request, transaction: HttpTransaction) {
-        val requestBody = request.body
-
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers[CONTENT_ENCODING])
-
-        transaction.apply {
-            setRequestHeaders(request.headers)
-            populateUrl(request.url)
-
-            isRequestBodyPlainText = encodingIsSupported
-            requestDate = System.currentTimeMillis()
-            method = request.method
-            requestContentType = requestBody?.contentType()?.toString()
-            requestPayloadSize = requestBody?.contentLength() ?: 0L
-        }
-
-        if (requestBody != null && encodingIsSupported) {
-            val source = io.getNativeSource(Buffer(), request.isGzipped)
-            val buffer = source.buffer
-            requestBody.writeTo(buffer)
-            var charset: Charset = UTF8
-            val contentType = requestBody.contentType()
-            if (contentType != null) {
-                charset = contentType.charset(UTF8) ?: UTF8
-            }
-            if (io.isPlaintext(buffer)) {
-                val content = io.readFromBuffer(buffer, charset, maxContentLength)
-                transaction.requestBody = content
-            } else {
-                transaction.isResponseBodyPlainText = false
-            }
-        }
-    }
-
-    /**
-     * Processes [Response] metadata and populates corresponding fields of a [HttpTransaction].
-     */
-    private fun processResponseMetadata(
-        response: Response,
-        transaction: HttpTransaction
-    ) {
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers[CONTENT_ENCODING])
-
-        transaction.apply {
-            // includes headers added later in the chain
-            setRequestHeaders(filterHeaders(response.request.headers))
-            setResponseHeaders(filterHeaders(response.headers))
-
-            isResponseBodyPlainText = responseEncodingIsSupported
-            requestDate = response.sentRequestAtMillis
-            responseDate = response.receivedResponseAtMillis
-            protocol = response.protocol.toString()
-            responseCode = response.code
-            responseMessage = response.message
-
-            response.handshake?.let { handshake ->
-                responseTlsVersion = handshake.tlsVersion.javaName
-                responseCipherSuite = handshake.cipherSuite.javaName
-            }
-
-            responseContentType = response.contentType
-
-            tookMs = (response.receivedResponseAtMillis - response.sentRequestAtMillis)
-        }
-    }
-
-    /**
-     * Multi casts a [Response] body if it is available and downstreams it to a file which will
-     * be available for Chucker to consume and save in the [transaction] at some point in the future
-     * when the end user reads bytes form the [response].
-     */
-    private fun multiCastResponseBody(
-        response: Response,
-        transaction: HttpTransaction
-    ): Response {
-        val responseBody = response.body
-        if (!response.hasBody() || responseBody == null) {
-            collector.onResponseReceived(transaction)
-            return response
-        }
-
-        val contentType = responseBody.contentType()
-        val contentLength = responseBody.contentLength()
-
-        val sideStream = ReportingSink(
-            createTempTransactionFile(),
-            ChuckerTransactionReportingSinkCallback(response, transaction),
-            maxContentLength
-        )
-        var upstream: Source = TeeSource(responseBody.source(), sideStream)
-        if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
-
-        return response.newBuilder()
-            .body(upstream.buffer().asResponseBody(contentType, contentLength))
-            .build()
-    }
-
-    private fun createTempTransactionFile(): File? {
-        val cache = cacheDirectoryProvider.provide()
-        return if (cache == null) {
-            Logger.warn("Failed to obtain a valid cache directory for transaction files")
-            null
-        } else {
-            FileFactory.create(cache)
-        }
-    }
-
-    private fun processResponseBody(
-        response: Response,
-        responseBodyBuffer: Buffer,
-        transaction: HttpTransaction
-    ) {
-        val responseBody = response.body ?: return
-
-        val contentType = responseBody.contentType()
-        val charset = contentType?.charset(UTF8) ?: UTF8
-
-        if (io.isPlaintext(responseBodyBuffer)) {
-            transaction.isResponseBodyPlainText = true
-            if (responseBodyBuffer.size != 0L) {
-                transaction.responseBody = responseBodyBuffer.readString(charset)
-            }
-        } else {
-            transaction.isResponseBodyPlainText = false
-
-            val isImageContentType =
-                (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
-
-            if (isImageContentType && (responseBodyBuffer.size < MAX_BLOB_SIZE)) {
-                transaction.responseImageData = responseBodyBuffer.readByteArray()
-            }
-        }
-    }
-
-    /** Overrides all headers from [headersToRedact] with `**` */
-    private fun filterHeaders(headers: Headers): Headers {
-        val builder = headers.newBuilder()
-        for (name in headers.names()) {
-            if (headersToRedact.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
-                builder.set(name, "**")
-            }
-        }
-        return builder.build()
-    }
-
-    private inner class ChuckerTransactionReportingSinkCallback(
-        private val response: Response,
-        private val transaction: HttpTransaction
-    ) : ReportingSink.Callback {
-
-        override fun onClosed(file: File?, sourceByteCount: Long) {
-            if (file != null) {
-                val buffer = readResponseBuffer(file, response.isGzipped)
-                if (buffer != null) {
-                    processResponseBody(response, buffer, transaction)
-                }
-            }
-            transaction.responsePayloadSize = sourceByteCount
-            collector.onResponseReceived(transaction)
-            file?.delete()
-        }
-
-        override fun onFailure(file: File?, exception: IOException) {
-            Logger.error("Failed to read response payload", exception)
-        }
-
-        private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
-            val bufferedSource = responseBody.source().buffer()
-            val source = if (isGzipped) {
-                GzipSource(bufferedSource)
-            } else {
-                bufferedSource
-            }
-            Buffer().apply { source.use { writeAll(it) } }
-        } catch (e: IOException) {
-            Logger.error("Response payload couldn't be processed", e)
-            null
-        }
+        return responseProcessor.process(response, transaction)
     }
 
     /**
@@ -275,6 +93,8 @@ public class ChuckerInterceptor private constructor(
         internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
         internal var alwaysReadResponseBody = false
         internal var headersToRedact = emptySet<String>()
+        internal var decoders = emptyList<BodyDecoder>()
+        internal var createShortcut = true
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -320,6 +140,22 @@ public class ChuckerInterceptor private constructor(
         }
 
         /**
+         * Adds a [decoder] into Chucker's processing pipeline. Decoders are applied in an order they were added in.
+         * Request and response bodies are set to the first non–null value returned by any of the decoders.
+         */
+        public fun addBodyDecoder(decoder: BodyDecoder): Builder = apply {
+            this.decoders += decoder
+        }
+
+        /**
+         * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
+         * to access list of transaction in Chucker.
+         */
+        public fun createShortcut(enable: Boolean): Builder = apply {
+            this.createShortcut = enable
+        }
+
+        /**
          * Sets provider of a directory where Chucker will save temporary responses
          * before processing them.
          */
@@ -335,12 +171,8 @@ public class ChuckerInterceptor private constructor(
     }
 
     private companion object {
-        private val UTF8 = Charset.forName("UTF-8")
-
         private const val MAX_CONTENT_LENGTH = 250_000L
-        private const val MAX_BLOB_SIZE = 1_000_000L
 
-        private const val CONTENT_TYPE_IMAGE = "image"
-        private const val CONTENT_ENCODING = "Content-Encoding"
+        private val BUILT_IN_DECODERS = listOf(PlainTextDecoder)
     }
 }

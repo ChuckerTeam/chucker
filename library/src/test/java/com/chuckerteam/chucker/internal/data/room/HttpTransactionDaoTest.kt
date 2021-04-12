@@ -41,7 +41,7 @@ internal class HttpTransactionDaoTest {
     fun tearDown() = db.close()
 
     @Test
-    fun insertedDataMakesItToTheDatabase() = runBlocking {
+    fun `insert a transaction`() = runBlocking {
         val data = createRequest().withResponseData()
         val id = testObject.insert(data)
 
@@ -72,7 +72,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun loadSpecificTransactionById() = runBlocking {
+    fun `get a transaction by ID`() = runBlocking {
         val disregardedTransaction = createRequest()
         insertTransaction(disregardedTransaction)
         val transaction = createRequest().withResponseData()
@@ -84,7 +84,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun loadAllTransactions() = runBlocking {
+    fun `get all transactions`() = runBlocking {
         val older = createRequest().apply { requestDate = 100L }
         val newer = createRequest().apply { requestDate = 200L }
         insertTransaction(older)
@@ -103,7 +103,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun updateTransaction() = runBlocking {
+    fun `update a transaction`() = runBlocking {
         val older = createRequest().apply { requestDate = 100L }
         val newer = createRequest().apply { requestDate = 200L }
         insertTransaction(older)
@@ -118,7 +118,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun deleteAllTheData() = runBlocking {
+    fun `delete all transactions`() = runBlocking {
         testObject.insert(createRequest())
         assertRowCount(1)
 
@@ -127,7 +127,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun deleteDataBefore() = runBlocking {
+    fun `delete old transactions`() = runBlocking {
         val older = createRequest().apply { requestDate = 100L }
         val newer = createRequest().apply { requestDate = 200L }
         insertTransaction(older)
@@ -142,7 +142,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun deleteDataBefore_timestampExactlyMatchesThreshold() = runBlocking {
+    fun `old data threshold is inclusive`() = runBlocking {
         val older = createRequest().apply { requestDate = 100L }
         val newer = createRequest().apply { requestDate = 200L }
         insertTransaction(older)
@@ -157,7 +157,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun loadSortedTuples() = runBlocking {
+    fun `get sorted transaction tuples`() = runBlocking {
         val older = createRequest().withResponseData().apply { requestDate = 100L }
         val newer = createRequest().withResponseData().apply { requestDate = 200L }
         insertTransaction(older)
@@ -169,7 +169,7 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
-    fun filterTuplesByPath() = runBlocking {
+    fun `transaction tuples are filtered by path`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
                 requestDate = 200L
@@ -187,13 +187,13 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples("418", "%abc%").observeForever { result ->
+        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
             assertTuples(listOf(transactionOne, transactionTwo), result)
         }
     }
 
     @Test
-    fun filterTuplesByCode() = runBlocking {
+    fun `transaction tuples are filtered by code`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
                 requestDate = 200L
@@ -214,7 +214,7 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples("4%", "%").observeForever { result ->
+        testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
         }
     }

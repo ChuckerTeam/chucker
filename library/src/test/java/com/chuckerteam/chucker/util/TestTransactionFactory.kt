@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker
+package com.chuckerteam.chucker.util
 
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date
@@ -23,16 +23,15 @@ internal object TestTransactionFactory {
             requestContentType = "application/json",
             requestHeaders = null,
             requestBody = null,
-            isRequestBodyPlainText = true,
+            isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
             error = null,
             responsePayloadSize = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
-            responseBody =
-                """{"field": "value"}""",
-            isResponseBodyPlainText = true,
+            responseBody = """{"field": "value"}""",
+            isResponseBodyEncoded = false,
             responseImageData = null
         )
     }

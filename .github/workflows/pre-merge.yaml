@@ -15,8 +15,15 @@ jobs:
     runs-on: [ubuntu-latest]
 
     steps:
+    - name: Cancel Previous Runs
+      if: github.event_name == 'pull_request'
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        access_token: ${{ github.token }}
+
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -40,6 +47,7 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -61,6 +69,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+
       - name: Cache Gradle Folders
         uses: actions/cache@v2
         with:
@@ -82,6 +91,7 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -103,6 +113,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+
       - name: Cache Gradle Folders
         uses: actions/cache@v2
         with:
@@ -124,6 +135,7 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:

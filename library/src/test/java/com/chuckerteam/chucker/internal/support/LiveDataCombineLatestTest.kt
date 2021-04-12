@@ -2,7 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.chuckerteam.chucker.test
+import com.chuckerteam.chucker.util.test
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +16,7 @@ internal class LiveDataCombineLatestTest {
     private val upstream = inputA.combineLatest(inputB)
 
     @Test
-    fun firstEmptyValue_preventsDownstreamEmissions() {
+    fun `downstream does not emit if the first source has no values`() {
         upstream.test {
             inputB.value = 1
             inputB.value = 2
@@ -27,7 +27,7 @@ internal class LiveDataCombineLatestTest {
     }
 
     @Test
-    fun secondEmptyValue_preventsDownstreamEmissions() {
+    fun `downstream does not emit if the second source has no values`() {
         upstream.test {
             inputA.value = true
             inputA.value = false
@@ -37,7 +37,7 @@ internal class LiveDataCombineLatestTest {
     }
 
     @Test
-    fun bothEmittedValues_areCombinedDownstream() {
+    fun `downstream combines source values`() {
         upstream.test {
             inputA.value = true
             inputB.value = 1
@@ -47,7 +47,7 @@ internal class LiveDataCombineLatestTest {
     }
 
     @Test
-    fun lastFirstValue_isCombinedWithNewestSecondValues() {
+    fun `downstream updates with updates to the second source`() {
         upstream.test {
             inputA.value = true
             inputB.value = 1
@@ -59,7 +59,7 @@ internal class LiveDataCombineLatestTest {
     }
 
     @Test
-    fun lastSecondValue_isCombinedWithNewestFirstValues() {
+    fun `downstream updates with updates to the first source`() {
         upstream.test {
             inputA.value = true
             inputB.value = 1

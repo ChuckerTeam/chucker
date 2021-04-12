@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.NoLoggerRule
+import com.chuckerteam.chucker.util.NoLoggerRule
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource
@@ -17,7 +17,7 @@ import java.io.IOException
 @ExtendWith(NoLoggerRule::class)
 internal class DepletingSourceTest {
     @Test
-    fun delegateContent_isMovedToDownstream() {
+    fun `upstream content is forwarded downstream`() {
         val delegate = Buffer().writeUtf8("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
@@ -27,7 +27,7 @@ internal class DepletingSourceTest {
     }
 
     @Test
-    fun delegateIsNotDepleted_whenReadingFails() {
+    fun `upstream does not deplete in case of a reading failure`() {
         val delegate = ThrowOnFirstReadSource("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
@@ -42,7 +42,7 @@ internal class DepletingSourceTest {
     }
 
     @Test
-    fun delegateIsDepleted_whenSourceIsClosed() {
+    fun `upstream is depleted if source is closed`() {
         val delegate = Buffer().writeUtf8("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
@@ -52,7 +52,7 @@ internal class DepletingSourceTest {
     }
 
     @Test
-    fun readingFailures_areNotPropagated_whenSourceIsClosed() {
+    fun `reading failures are not propagated if source is closed`() {
         val delegate = ThrowOnFirstReadSource("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
@@ -60,7 +60,7 @@ internal class DepletingSourceTest {
     }
 
     @Test
-    fun delegateIsNotDepleted_whenReadingFails_duringClose() {
+    fun `upstream is not depleted if reading fails on close`() {
         val delegate = ThrowOnFirstReadSource("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
@@ -70,7 +70,7 @@ internal class DepletingSourceTest {
     }
 
     @Test
-    fun delegateCannotBeDepleted_multipleTimes() {
+    fun `upstream is not depleted multiple times`() {
         val delegate = Buffer().writeUtf8("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 

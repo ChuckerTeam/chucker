@@ -37,14 +37,15 @@ internal class TransactionDetailsSharable(
         }
 
         writeUtf8(
-            if (transaction.isRequestBodyPlainText) {
-                if (transaction.requestBody.isNullOrBlank()) {
-                    context.getString(R.string.chucker_body_empty)
+            if (transaction.requestBody.isNullOrBlank()) {
+                val resId = if (transaction.isResponseBodyEncoded) {
+                    R.string.chucker_body_omitted
                 } else {
-                    transaction.getFormattedRequestBody()
+                    R.string.chucker_body_empty
                 }
+                context.getString(resId)
             } else {
-                context.getString(R.string.chucker_body_omitted)
+                transaction.getFormattedRequestBody()
             }
         )
 
@@ -59,14 +60,15 @@ internal class TransactionDetailsSharable(
         }
 
         writeUtf8(
-            if (transaction.isResponseBodyPlainText) {
-                if (transaction.responseBody.isNullOrBlank()) {
-                    context.getString(R.string.chucker_body_empty)
+            if (transaction.responseBody.isNullOrBlank()) {
+                val resId = if (transaction.isResponseBodyEncoded) {
+                    R.string.chucker_body_omitted
                 } else {
-                    transaction.getFormattedResponseBody()
+                    R.string.chucker_body_empty
                 }
+                context.getString(resId)
             } else {
-                context.getString(R.string.chucker_body_omitted)
+                transaction.getFormattedResponseBody()
             }
         )
     }

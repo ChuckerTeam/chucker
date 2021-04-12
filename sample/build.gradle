@@ -1,7 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.squareup.wire'
+
+wire {
+    kotlin {}
+}
 
 android {
+    sourceSets {
+        getByName("main").java.srcDirs += "$buildDir/generated/source/wire/"
+    }
+
     compileSdkVersion rootProject.compileSdkVersion
 
     defaultConfig {

@@ -4,11 +4,11 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import kotlin.jvm.Throws
 
 /**
  * No-op implementation.
  */
+@Suppress("UnusedPrivateMember")
 public class ChuckerInterceptor private constructor(
     builder: Builder,
 ) : Interceptor {
@@ -41,6 +41,10 @@ public class ChuckerInterceptor private constructor(
         public fun redactHeaders(vararg headerNames: String): Builder = this
 
         public fun alwaysReadResponseBody(enable: Boolean): Builder = this
+
+        public fun addBodyDecoder(decoder: Any): Builder = this
+
+        public fun createShortcut(enable: Boolean): Builder = this
 
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }

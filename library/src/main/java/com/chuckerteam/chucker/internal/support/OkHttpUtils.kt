@@ -1,11 +1,13 @@
 package com.chuckerteam.chucker.internal.support
 
 import okhttp3.Headers
-import okhttp3.Request
 import okhttp3.Response
+import okio.Source
+import okio.gzip
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import java.net.HttpURLConnection.HTTP_OK
+import java.util.Locale
 
 private const val HTTP_CONTINUE = 100
 
@@ -44,19 +46,31 @@ internal val Response.contentType: String?
         return this.header("Content-Type")
     }
 
-/** Checks if the OkHttp response uses gzip encoding. */
-internal val Response.isGzipped: Boolean
-    get() {
-        return this.headers.containsGzip
-    }
-
-/** Checks if the OkHttp request uses gzip encoding. */
-internal val Request.isGzipped: Boolean
-    get() {
-        return this.headers.containsGzip
-    }
-
 private val Headers.containsGzip: Boolean
     get() {
         return this["Content-Encoding"].equals("gzip", ignoreCase = true)
     }
+
+private val supportedEncodings = listOf("identity", "gzip")
+
+internal val Headers.hasSupportedContentEncoding: Boolean
+    get() = get("Content-Encoding")
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { it.toLowerCase(Locale.ROOT) in supportedEncodings }
+        ?: true
+
+internal fun Source.uncompress(headers: Headers) = if (headers.containsGzip) {
+    gzip()
+} else {
+    this
+}
+
+internal fun Headers.redact(names: Iterable<String>): Headers {
+    val builder = newBuilder()
+    for (name in names()) {
+        if (names.any { userHeader -> userHeader.equals(name, ignoreCase = true) }) {
+            builder[name] = "**"
+        }
+    }
+    return builder.build()
+}

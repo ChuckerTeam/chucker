@@ -2,7 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.chuckerteam.chucker.TestTransactionFactory
+import com.chuckerteam.chucker.util.TestTransactionFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,7 +13,7 @@ internal class TransactionListDetailsSharableTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     @Test
-    fun buildsCorrectSharedContent() {
+    fun `create sharable content for multiple transactions`() {
         val transactions = List(10) {
             TestTransactionFactory.createTransaction(getRandomHttpMethod())
         }

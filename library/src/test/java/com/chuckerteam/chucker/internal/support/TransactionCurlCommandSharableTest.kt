@@ -2,8 +2,8 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.chuckerteam.chucker.TestTransactionFactory
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
+import com.chuckerteam.chucker.util.TestTransactionFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +16,7 @@ internal class TransactionCurlCommandSharableTest {
     private val requestMethods = listOf("GET", "POST", "PUT", "DELETE")
 
     @Test
-    fun curlCommandWithoutHeaders() {
+    fun `create cURL command without headers`() {
         requestMethods.forEach { method ->
             val transaction = TestTransactionFactory.createTransaction(method)
             val sharableTransaction = TransactionCurlCommandSharable(transaction)
@@ -28,7 +28,7 @@ internal class TransactionCurlCommandSharableTest {
     }
 
     @Test
-    fun curlCommandWithHeaders() {
+    fun `create cURL command with headers`() {
         val headers = List(5) { index -> HttpHeader("name$index", "value$index") }
         val convertedHeaders = JsonConverter.instance.toJson(headers)
 
@@ -52,7 +52,7 @@ internal class TransactionCurlCommandSharableTest {
     }
 
     @Test
-    fun curlPostAndPutCommandsWithRequestBodies() {
+    fun `create cURL command with request bodies for PUT and POST methods`() {
         requestMethods.filter { it in listOf("POST", "PUT") }.forEach { method ->
             val dummyRequestBody = "{thing:put}"
             val transaction = TestTransactionFactory.createTransaction(method).apply {

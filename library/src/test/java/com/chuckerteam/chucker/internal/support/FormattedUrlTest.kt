@@ -6,7 +6,7 @@ import org.junit.Test
 
 internal class FormattedUrlTest {
     @Test
-    fun encodedUrl_withAllParams_isFormattedProperly() {
+    fun `encoded url with all parameters is formatted`() {
         val url = "https://www.example.com/path/to some/resource?q=\"Hello, world!\"".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = true)
@@ -21,7 +21,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun encodedUrl_withoutPath_isFormattedProperly() {
+    fun `encoded url without a path is formatted`() {
         val url = "https://www.example.com?q=\"Hello, world!\"".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = true)
@@ -36,7 +36,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun encodedUrl_withoutQuery_isFormattedProperly() {
+    fun `encoded url without a query is formatted`() {
         val url = "https://www.example.com/path/to some/resource".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = true)
@@ -51,7 +51,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withAllParams_isFormattedProperly() {
+    fun `decoded url with all parameters is formatted`() {
         val url = "https://www.example.com/path/to some/resource?q=\"Hello, world!\"".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
@@ -66,7 +66,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withoutPath_isFormattedProperly() {
+    fun `decoded url without a path is formatted`() {
         val url = "https://www.example.com?q=\"Hello, world!\"".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
@@ -81,7 +81,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withoutQuery_isFormattedProperly() {
+    fun `decoded url without a query is formatted`() {
         val url = "https://www.example.com/path/to some/resource".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
@@ -96,7 +96,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withNonStandardHttpsPort_isFormattedProperly() {
+    fun `decoded url with a HTTPS port is formatted`() {
         val url = "https://www.example.com:8443/path/to some/resource".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
@@ -111,7 +111,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withNonStandardHttpPort_isFormattedProperly() {
+    fun `decoded url with a HTTP port is formatted`() {
         val url = "https://www.example.com:8080/path/to some/resource".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)
@@ -126,7 +126,7 @@ internal class FormattedUrlTest {
     }
 
     @Test
-    fun decodedUrl_withStandardHttpPort_isFormattedProperly() {
+    fun `decoded url without a specified HTTP port is formatted`() {
         val url = "http://www.example.com/path/to some/resource".toHttpUrl()
 
         val formattedUrl = FormattedUrl.fromHttpUrl(url, encoded = false)

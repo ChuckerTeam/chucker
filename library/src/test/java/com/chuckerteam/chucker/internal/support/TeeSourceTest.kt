@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.SEGMENT_SIZE
+import com.chuckerteam.chucker.util.SEGMENT_SIZE
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import okio.BufferedSource
@@ -15,7 +15,7 @@ import kotlin.random.Random
 
 internal class TeeSourceTest {
     @Test
-    fun bytesReadFromUpstream_areAvailableDownstream() {
+    fun `upstream bytes are forwarded`() {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = Buffer())
@@ -25,7 +25,7 @@ internal class TeeSourceTest {
     }
 
     @Test
-    fun bytesReadFromUpstream_areAvailableToSideChannel() {
+    fun `upstream bytes are side streamed`() {
         val testSource = TestSource()
         val sideStream = Buffer()
 
@@ -36,7 +36,7 @@ internal class TeeSourceTest {
     }
 
     @Test
-    fun bytesPulledFromUpstream_arePulledToSideChannel_alongTheDownstream() {
+    fun `upstream bytes are available in side strean while being pulled`() {
         val repetitions = Random.nextInt(1, 100)
         val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
         val sideStream = Buffer()
@@ -53,7 +53,7 @@ internal class TeeSourceTest {
     }
 
     @Test
-    fun sideStreamThatFailsToWrite_doesNotFailDownstream() {
+    fun `side stream failing to write does not affect downstream`() {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForWrite = true))
@@ -63,7 +63,7 @@ internal class TeeSourceTest {
     }
 
     @Test
-    fun sideStreamThatFailsToFlush_doesNotFailDownstream() {
+    fun `side stream failing to flush does not affect downstream`() {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForFlush = true))
@@ -73,7 +73,7 @@ internal class TeeSourceTest {
     }
 
     @Test
-    fun sideStreamThatFailsToClose_doesNotFailDownstream() {
+    fun `side stream failing to close does not affect downstream`() {
         val testSource = TestSource()
 
         val teeSource = TeeSource(testSource, sideStream = ThrowingSink(throwForClose = true))

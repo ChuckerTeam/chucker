@@ -1,12 +1,9 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -15,7 +12,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -35,8 +32,6 @@ import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import java.io.IOException
 
-private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
-
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
@@ -44,6 +39,27 @@ internal class TransactionPayloadFragment :
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
+    }
+
+    private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+        val transaction = viewModel.transaction.value
+        if (uri != null && transaction != null) {
+            lifecycleScope.launch {
+                val result = saveToFile(payloadType, uri, transaction)
+                val toastMessageId = if (result) {
+                    R.string.chucker_file_saved
+                } else {
+                    R.string.chucker_file_not_saved
+                }
+                Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.chucker_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
@@ -164,10 +180,10 @@ internal class TransactionPayloadFragment :
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
         PayloadType.REQUEST -> {
-            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestPayloadSize))
+            (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
         PayloadType.RESPONSE -> {
-            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responsePayloadSize))
+            (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
     }
 
@@ -177,42 +193,8 @@ internal class TransactionPayloadFragment :
         foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createFileToSaveBody() {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
-            type = "*/*"
-        }
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
-        } else {
-            Toast.makeText(
-                requireContext(),
-                R.string.chucker_save_failed_to_open_document,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val uri = resultData?.data
-            val transaction = viewModel.transaction.value
-            if (uri != null && transaction != null) {
-                lifecycleScope.launch {
-                    val result = saveToFile(payloadType, uri, transaction)
-                    val toastMessageId = if (result) {
-                        R.string.chucker_file_saved
-                    } else {
-                        R.string.chucker_file_not_saved
-                    }
-                    Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, R.string.chucker_file_not_saved, Toast.LENGTH_SHORT).show()
-            }
-        }
+        saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = false
@@ -235,12 +217,12 @@ internal class TransactionPayloadFragment :
             val result = mutableListOf<TransactionPayloadItem>()
 
             val headersString: String
-            val isBodyPlainText: Boolean
+            val isBodyEncoded: Boolean
             val bodyString: String
 
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
-                isBodyPlainText = transaction.isRequestBodyPlainText
+                isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
                 } else {
@@ -248,7 +230,7 @@ internal class TransactionPayloadFragment :
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
-                isBodyPlainText = transaction.isResponseBodyPlainText
+                isBodyEncoded = transaction.isResponseBodyEncoded
                 bodyString = transaction.getFormattedResponseBody()
             }
 
@@ -263,22 +245,29 @@ internal class TransactionPayloadFragment :
                 )
             }
 
-            // The body could either be an image, binary encoded or plain text.
+            // The body could either be an image, plain text, decoded binary or not decoded binary.
             val responseBitmap = transaction.responseImageBitmap
+
             if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-            } else if (!isBodyPlainText) {
-                requireContext().getString(R.string.chucker_body_omitted).let {
+                return@withContext result
+            }
+
+            when {
+                isBodyEncoded -> {
+                    val text = requireContext().getString(R.string.chucker_body_omitted)
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                }
+                bodyString.isBlank() -> {
+                    val text = requireContext().getString(R.string.chucker_body_empty)
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                }
+                else -> bodyString.lines().forEach {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
-            } else {
-                if (bodyString.isNotBlank()) {
-                    bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
-                    }
-                }
             }
+
             return@withContext result
         }
     }

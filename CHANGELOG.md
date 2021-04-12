@@ -1,9 +1,20 @@
 # Change Log
 
-This file follows [Keepachangelog](https://keepachangelog.com/) format. 
+This file follows [Keepachangelog](https://keepachangelog.com/) format.
 Please add your entries according to this format.
 
 ## Unreleased
+
+### Added
+* Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
+* Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
+
+### Fixed
+
+* Fixed not setting request body type correctly [#538].
+* Fixed request headers not being redacted in case of failures [#545].
+* Fixed wrongful processing of one shot and duplex requests [#544].
+* Fixed writing to database on the main thread [#487]. 
 
 ### Removed
 
@@ -12,7 +23,7 @@ Please add your entries according to this format.
 
 ### Changed
 
-* Updated OkHttp to 4.9.0
+* Updated OkHttp to 4.9.1
 
 ## Version 3.4.0 *(2020-11-05)*
 
@@ -40,8 +51,8 @@ Please add your entries according to this format.
 
 ## Version 3.3.0 *(2020-09-30)*
 
-This is a new minor release with multiple fixes and improvements. 
-After this release we are starting to work on a new major release 4.x with minSDK 21. 
+This is a new minor release with multiple fixes and improvements.
+After this release we are starting to work on a new major release 4.x with minSDK 21.
 Bumping minSDK to 21 is required to keep up with [newer versions of OkHttp](https://medium.com/square-corner-blog/okhttp-3-13-requires-android-5-818bb78d07ce).
 Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes and minor improvements.
 
@@ -49,7 +60,7 @@ Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes a
 
 * Added a new flag `alwaysReadResponseBody` into Chucker configuration to read the whole response body even if consumer fails to consume it.
 * Added port numbers as part of the URL. Numbers appear if they are different from default 80 or 443.
-* Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI. 
+* Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI.
 * Transaction size is defined by actual payload size now, not by `Content-length` header.
 * Added empty state UI for payloads, so no more guessing if there is some error or the payload is really empty.
 * Added ability to export list of transactions.
@@ -192,7 +203,7 @@ This release was possible thanks to the contribution of:
 
 ### This version shouldn't be used as dependency due to [#203](https://github.com/ChuckerTeam/chucker/issues/203). Use 3.1.1 instead.
 
-This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
+This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes.
 
 ### Summary of Changes
 
@@ -229,11 +240,11 @@ This is a new minor release of Chucker. Please note that this minor release cont
 This release was possible thanks to the contribution of:
 
 @christopherniksch
-@yoavst 
+@yoavst
 @psh
 @kmayoral
 @vbuberen
-@dcampogiani 
+@dcampogiani
 @ullas-jain
 @rakshit444
 @olivierperez
@@ -243,8 +254,8 @@ This release was possible thanks to the contribution of:
 @koral--
 @redwarp
 @uOOOO
-@sprohaszka 
-@PaulWoitaschek 
+@sprohaszka
+@PaulWoitaschek
 
 
 ## Version 3.0.1 *(2019-08-16)*
