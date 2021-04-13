@@ -42,4 +42,6 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     }
 
     override suspend fun getAllTransactions(): List<HttpTransaction> = transactionDao.getAll()
+
+    override suspend fun getByUrl(url: String): HttpTransaction? = transactionDao.getByUrl(url)
 }

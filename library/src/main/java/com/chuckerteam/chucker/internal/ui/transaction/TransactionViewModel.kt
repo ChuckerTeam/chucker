@@ -5,11 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.combineLatest
-import kotlinx.coroutines.launch
 
 internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
@@ -52,13 +50,13 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
         mutableEncodeUrl.value = encode
     }
 
-    fun onBodyLineItemClicked(url: String, onRequestFound: (Long) -> Unit, onRequestNotFound: () -> Unit) {
-        viewModelScope.launch {
-            val request = RepositoryProvider.transaction()
-                .getAllTransactions()
-                .firstOrNull { it.url == url }
+    suspend fun onBodyLineItemClicked(url: String): Action {
+        val request = RepositoryProvider.transaction().getByUrl(url)
 
-            request?.id?.let(onRequestFound) ?: onRequestNotFound.invoke()
+        return if (request != null) {
+            Action.OpenTransaction(request.id)
+        } else {
+            Action.OpenUrl
         }
     }
 }
@@ -66,9 +64,17 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 internal class TransactionViewModelFactory(
     private val transactionId: Long = 0L
 ) : ViewModelProvider.NewInstanceFactory() {
+
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
         @Suppress("UNCHECKED_CAST")
         return TransactionViewModel(transactionId) as T
     }
+}
+
+internal sealed class Action {
+
+    class OpenTransaction(val transactionId: Long) : Action()
+
+    object OpenUrl : Action()
 }

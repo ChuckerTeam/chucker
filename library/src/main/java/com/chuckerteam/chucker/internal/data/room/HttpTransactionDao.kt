@@ -44,4 +44,7 @@ internal interface HttpTransactionDao {
 
     @Query("SELECT * FROM transactions")
     suspend fun getAll(): List<HttpTransaction>
+
+    @Query("SELECT * FROM transactions WHERE url = :url LIMIT 1")
+    suspend fun getByUrl(url: String): HttpTransaction?
 }

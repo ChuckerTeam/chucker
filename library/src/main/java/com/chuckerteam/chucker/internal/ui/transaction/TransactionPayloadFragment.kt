@@ -265,13 +265,7 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                    val bodyLineItemCreator = BodyLineItemCreator(it) { url ->
-                        viewModel.onBodyLineItemClicked(
-                            url,
-                            { transactionId -> TransactionActivity.start(requireContext(), transactionId) },
-                            { startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }) }
-                        )
-                    }
+                    val bodyLineItemCreator = BodyLineItemCreator(it, ::onBodyLineItemClicked)
                     result.add(TransactionPayloadItem.BodyLineItem(bodyLineItemCreator.create()))
                 }
             }
@@ -302,6 +296,13 @@ internal class TransactionPayloadFragment :
                 return@withContext false
             }
             return@withContext true
+        }
+    }
+
+    private fun onBodyLineItemClicked(url: String) = lifecycleScope.launch {
+        when(val action = viewModel.onBodyLineItemClicked(url)) {
+            is Action.OpenTransaction -> TransactionActivity.start(requireContext(), action.transactionId)
+            is Action.OpenUrl -> startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) })
         }
     }
 
