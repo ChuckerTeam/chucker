@@ -219,6 +219,28 @@ internal class HttpTransactionDaoTest {
         }
     }
 
+    @Test
+    fun `get a transaction by URL`() = runBlocking {
+        val firstTransaction = createRequest("abc")
+        insertTransaction(firstTransaction)
+        val secondTransaction = createRequest()
+        insertTransaction(secondTransaction)
+
+        val result = testObject.getByUrl(firstTransaction.url!!)
+        assertTransaction(firstTransaction.id, firstTransaction, result)
+    }
+
+    @Test
+    fun `do not get a transaction by URL`() = runBlocking {
+        val firstTransaction = createRequest("abc")
+        insertTransaction(firstTransaction)
+        val secondTransaction = createRequest()
+        insertTransaction(secondTransaction)
+
+        val result = testObject.getByUrl("abcdef")
+        assertThat(result).isNull()
+    }
+
     private suspend fun insertTransaction(transaction: HttpTransaction) {
         transaction.id = testObject.insert(transaction)!!
     }
