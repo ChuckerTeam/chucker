@@ -27,11 +27,11 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
-import java.io.FileOutputStream
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileOutputStream
+import java.io.IOException
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
@@ -300,7 +300,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun onBodyLineItemClicked(url: String) = lifecycleScope.launch {
-        when(val action = viewModel.onBodyLineItemClicked(url)) {
+        when (val action = viewModel.onBodyLineItemClicked(url)) {
             is Action.OpenTransaction -> TransactionActivity.start(requireContext(), action.transactionId)
             is Action.OpenUrl -> startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) })
         }
