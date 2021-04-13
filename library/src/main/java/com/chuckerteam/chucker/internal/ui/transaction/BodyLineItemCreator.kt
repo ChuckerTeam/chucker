@@ -33,11 +33,14 @@ internal class BodyLineItemCreator(private val bodyLine: String, private val onU
         }
     }
 
-    private fun getValue(): MatchGroup? = KEY_VALUE_SEPARATOR.toRegex().matchEntire(bodyLine)?.groups?.get(2)
+    private fun getValue(): MatchGroup? {
+        val groups = KEY_VALUE_SEPARATOR.toRegex().matchEntire(bodyLine)?.groups.orEmpty().toList()
+        return groups.getOrNull(2) ?: groups.getOrNull(1)
+    }
 
     companion object {
 
-        private const val KEY_VALUE_SEPARATOR = "(.*)?\".*\":\\s\"(.*)\"(.*)?"
+        private const val KEY_VALUE_SEPARATOR = "\\s*\".*\":\\s\"(.*)\"|<.*>(.*)</.*?"
         private const val URL_MATCHER = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     }
 }
