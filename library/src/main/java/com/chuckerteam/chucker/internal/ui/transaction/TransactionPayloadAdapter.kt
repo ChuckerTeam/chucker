@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,6 +118,10 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     internal class BodyLineViewHolder(
         private val bodyBinding: ChuckerTransactionItemBodyLineBinding
     ) : TransactionPayloadViewHolder(bodyBinding.root) {
+        init {
+            bodyBinding.bodyLine.movementMethod = LinkMovementMethod.getInstance()
+        }
+
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
                 bodyBinding.bodyLine.text = item.line

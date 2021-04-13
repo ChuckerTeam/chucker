@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.combineLatest
+import kotlinx.coroutines.launch
 
 internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
@@ -48,6 +50,16 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     fun encodeUrl(encode: Boolean) {
         mutableEncodeUrl.value = encode
+    }
+
+    fun onBodyLineItemClicked(url: String, onRequestFound: (Long) -> Unit, onRequestNotFound: () -> Unit) {
+        viewModelScope.launch {
+            val request = RepositoryProvider.transaction()
+                .getAllTransactions()
+                .firstOrNull { it.url == url }
+
+            request?.id?.let(onRequestFound) ?: onRequestNotFound.invoke()
+        }
     }
 }
 

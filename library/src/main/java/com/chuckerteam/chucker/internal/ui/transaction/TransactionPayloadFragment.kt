@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -26,11 +27,11 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileOutputStream
-import java.io.IOException
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
@@ -264,7 +265,14 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                    val bodyLineItemCreator = BodyLineItemCreator(it) { url ->
+                        viewModel.onBodyLineItemClicked(
+                            url,
+                            { transactionId -> TransactionActivity.start(requireContext(), transactionId) },
+                            { startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }) }
+                        )
+                    }
+                    result.add(TransactionPayloadItem.BodyLineItem(bodyLineItemCreator.create()))
                 }
             }
 
