@@ -40,7 +40,7 @@ internal class BodyLineItemCreator(private val bodyLine: String, private val onU
 
     companion object {
 
-        private const val KEY_VALUE_SEPARATOR = "\\s*\".*\":\\s\"(.*)\"|<.*>(.*)</.*?"
+        private const val KEY_VALUE_SEPARATOR = "\\s*\".*\":\\s\"(.*)\",?|<.*>(.*)</.*?"
         private const val URL_MATCHER = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     }
 }
