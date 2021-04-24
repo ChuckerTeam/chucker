@@ -25,8 +25,7 @@ buildscript {
         binaryCompatibilityValidator = '0.5.0'
         detektVersion = '1.16.0'
         dokkaVersion = '1.4.30'
-        ktLintVersion = '0.40.0'
-        ktLintGradleVersion = '9.4.1'
+        ktLintGradleVersion = '10.0.0'
         leakcanaryVersion = '2.7'
 
         // Testing
