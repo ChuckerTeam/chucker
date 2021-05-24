@@ -14,6 +14,9 @@ complexity:
   ComplexCondition:
     active: true
     threshold: 5
+  LongParameterList:
+    active: true
+    ignoreDefaultParameters: true
   TooManyFunctions:
     active: true
     ignoreOverridden: true
