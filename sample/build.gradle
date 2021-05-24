@@ -52,6 +52,8 @@ android {
         warningsAsErrors true
         abortOnError true
         disable 'AcceptsUserCertificates'
+        // Don't fail build if some dependencies outdated
+        disable 'GradleDependency'
     }
 
     compileOptions {
