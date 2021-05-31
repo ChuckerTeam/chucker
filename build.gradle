@@ -16,7 +16,7 @@ buildscript {
         paletteKtxVersion = '1.0.0'
 
         // Networking
-        gsonVersion = '2.8.6'
+        gsonVersion = '2.8.7'
         okhttpVersion = '4.9.1'
         retrofitVersion = '2.9.0'
         wireVersion = '3.7.0'
