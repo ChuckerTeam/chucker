@@ -11,6 +11,10 @@ android {
         ]
     }
 
+    buildFeatures {
+        buildConfig = false
+    }
+
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
     }
@@ -18,11 +22,15 @@ android {
     lintOptions {
         warningsAsErrors true
         abortOnError true
+        // We don't want to impose RTL on consuming applications.
+        disable 'RtlEnabled'
+        // Don't fail build if some dependencies outdated
+        disable 'GradleDependency'
     }
 }
 
 dependencies {
-    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    api "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 

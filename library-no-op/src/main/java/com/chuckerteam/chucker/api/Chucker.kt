@@ -6,10 +6,12 @@ import android.content.Intent
 /**
  * No-op implementation.
  */
+@Suppress("UnusedPrivateMember")
 public object Chucker {
 
     @Deprecated("This variable will be removed in 4.x release")
     public const val SCREEN_HTTP: Int = 1
+
     @Deprecated("This variable will be removed in 4.x release")
     public const val SCREEN_ERROR: Int = 2
 

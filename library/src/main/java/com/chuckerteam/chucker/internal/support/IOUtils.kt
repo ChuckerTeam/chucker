@@ -19,6 +19,7 @@ internal class IOUtils(private val context: Context) {
      * Returns true if the body in question probably contains human readable text. Uses a small sample
      * of code points to detect unicode control characters commonly used in binary file signatures.
      */
+    @Suppress("UnusedPrivateMember")
     fun isPlaintext(buffer: Buffer): Boolean {
         try {
             val prefix = Buffer()
@@ -34,7 +35,7 @@ internal class IOUtils(private val context: Context) {
                 }
             }
             return true
-        } catch (e: EOFException) {
+        } catch (_: EOFException) {
             return false // Truncated UTF-8 sequence.
         }
     }
@@ -45,7 +46,7 @@ internal class IOUtils(private val context: Context) {
         var body = ""
         try {
             body = buffer.readString(maxBytes, charset)
-        } catch (e: EOFException) {
+        } catch (_: EOFException) {
             body += context.getString(R.string.chucker_body_unexpected_eof)
         }
 
