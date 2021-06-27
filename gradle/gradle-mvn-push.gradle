@@ -95,6 +95,10 @@ afterEvaluate {
                             name = 'Olivier Perez'
                             email = 'olivier@olivierperez.fr'
                         }
+                        developer {
+                            id = 'michalsikora90'
+                            name = 'Michal Sikora'
+                        }
                     }
                 }
             }
