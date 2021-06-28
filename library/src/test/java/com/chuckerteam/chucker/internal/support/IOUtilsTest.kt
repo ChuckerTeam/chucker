@@ -74,6 +74,7 @@ internal class IOUtilsTest {
     }
 
     @Test
+    @Suppress("MaxLineLength")
     fun readFromBuffer_contentTruncated() {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size() } returns 100L
@@ -87,6 +88,7 @@ internal class IOUtilsTest {
     }
 
     @Test
+    @Suppress("MaxLineLength")
     fun readFromBuffer_unexpectedEOF() {
         val mockBuffer = mockk<Buffer>()
         every { mockBuffer.size() } returns 100L

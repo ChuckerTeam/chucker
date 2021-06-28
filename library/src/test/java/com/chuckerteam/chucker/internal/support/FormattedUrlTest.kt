@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import okhttp3.HttpUrl
 import org.junit.Test
 
+@Suppress("MaxLineLength")
 internal class FormattedUrlTest {
     @Test
     fun encodedUrl_withAllParams_isFormattedProperly() {

@@ -2,8 +2,7 @@ name: Pre Merge Checks
 on: 
   push:
     branches:
-      - develop 
-      - main
+      - develop
   pull_request:
     branches: 
       - '*'
@@ -16,8 +15,15 @@ jobs:
     runs-on: [ubuntu-latest]
 
     steps:
+    - name: Cancel Previous Runs
+      if: github.event_name == 'pull_request'
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        access_token: ${{ github.token }}
+
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -41,6 +47,7 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -56,12 +63,35 @@ jobs:
     - name: Stop Gradle
       run: ./gradlew --stop
 
+  lint:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ hashFiles('build.gradle') }}
+          restore-keys: cache-gradle-
+
+      - name: Run lint
+        run: ./gradlew lint
+
+      - name: Stop Gradle
+        run: ./gradlew --stop
+
   ktlint:
     runs-on: [ubuntu-latest]
 
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:
@@ -83,6 +113,7 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
     - name: Cache Gradle Folders
       uses: actions/cache@v2
       with:

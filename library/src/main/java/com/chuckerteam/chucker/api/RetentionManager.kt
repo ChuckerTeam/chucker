@@ -23,6 +23,7 @@ public class RetentionManager @JvmOverloads constructor(
 
     // The actual retention period in milliseconds (default to ONE_WEEK)
     private val period: Long = toMillis(retentionPeriod)
+
     // How often the cleanup should happen
     private val cleanupFrequency: Long
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
@@ -86,10 +87,13 @@ public class RetentionManager @JvmOverloads constructor(
     public enum class Period {
         /** Retain data for the last hour. */
         ONE_HOUR,
+
         /** Retain data for the last day. */
         ONE_DAY,
+
         /** Retain data for the last week. */
         ONE_WEEK,
+
         /** Retain data forever. */
         FOREVER
     }

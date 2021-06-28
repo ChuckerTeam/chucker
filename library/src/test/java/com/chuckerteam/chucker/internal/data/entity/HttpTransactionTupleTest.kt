@@ -106,6 +106,7 @@ internal class HttpTransactionTupleTest {
             .isEqualTo("")
     }
 
+    @Suppress("LongParameterList")
     private fun createTuple(
         id: Long = 0,
         requestDate: Long? = null,

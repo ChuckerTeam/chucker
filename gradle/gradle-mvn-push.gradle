@@ -15,7 +15,7 @@ dokkaJavadoc {
             skipEmptyPackages.set(true)
 
             perPackageOption {
-                prefix.set("com.chuckerteam.chucker.internal")
+                matchingRegex.set(".*\\.internal.*")
                 suppress.set(true)
             }
         }
@@ -94,6 +94,10 @@ afterEvaluate {
                             id = 'olivierperez'
                             name = 'Olivier Perez'
                             email = 'olivier@olivierperez.fr'
+                        }
+                        developer {
+                            id = 'michalsikora90'
+                            name = 'Michal Sikora'
                         }
                     }
                 }

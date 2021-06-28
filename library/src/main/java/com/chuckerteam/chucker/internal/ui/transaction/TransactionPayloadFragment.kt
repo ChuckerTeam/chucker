@@ -1,9 +1,7 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -15,7 +13,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -35,8 +33,6 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
-private const val GET_FILE_FOR_SAVING_REQUEST_CODE: Int = 43
-
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
@@ -44,6 +40,27 @@ internal class TransactionPayloadFragment :
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
+    }
+
+    private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+        val transaction = viewModel.transaction.value
+        if (uri != null && transaction != null) {
+            lifecycleScope.launch {
+                val result = saveToFile(payloadType, uri, transaction)
+                val toastMessageId = if (result) {
+                    R.string.chucker_file_saved
+                } else {
+                    R.string.chucker_file_not_saved
+                }
+                Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.chucker_save_failed_to_open_document,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
@@ -179,42 +196,8 @@ internal class TransactionPayloadFragment :
         foregroundSpanColor = ContextCompat.getColor(context, R.color.chucker_foreground_span_color)
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createFileToSaveBody() {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, "$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
-            type = "*/*"
-        }
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivityForResult(intent, GET_FILE_FOR_SAVING_REQUEST_CODE)
-        } else {
-            Toast.makeText(
-                requireContext(),
-                R.string.chucker_save_failed_to_open_document,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val uri = resultData?.data
-            val transaction = viewModel.transaction.value
-            if (uri != null && transaction != null) {
-                lifecycleScope.launch {
-                    val result = saveToFile(payloadType, uri, transaction)
-                    val toastMessageId = if (result) {
-                        R.string.chucker_file_saved
-                    } else {
-                        R.string.chucker_file_not_saved
-                    }
-                    Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, R.string.chucker_file_not_saved, Toast.LENGTH_SHORT).show()
-            }
-        }
+        saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = false

@@ -45,10 +45,16 @@ internal class ChuckerInterceptorTest {
         abstract fun create(interceptor: Interceptor): OkHttpClient
     }
 
-    @get:Rule val server = MockWebServer()
-    private val serverUrl = server.url("/") // Starts server implicitly
-    @TempDir lateinit var tempDir: File
-    private val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
+    @get:Rule
+    val server = MockWebServer()
+
+    // Starts server implicitly
+    private val serverUrl = server.url("/")
+
+    @TempDir
+    lateinit var tempDir: File
+    private val chuckerInterceptor =
+        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -60,7 +66,8 @@ internal class ChuckerInterceptorTest {
 
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
-        val responseBody = ByteString.of(*chuckerInterceptor.expectTransaction().responseImageData!!)
+        val responseBody =
+            ByteString.of(*chuckerInterceptor.expectTransaction().responseImageData!!)
 
         assertThat(responseBody).isEqualTo(expectedBody)
     }
@@ -116,7 +123,9 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun gzippedBody_withNoContent_isTransparentForChucker(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
+        server.enqueue(
+            MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT)
+        )
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
@@ -129,7 +138,11 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun gzippedBody_withNoContent_isTransparentForEndConsumer(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
+        server.enqueue(
+            MockResponse()
+                .addHeader("Content-Encoding: gzip")
+                .setResponseCode(HTTP_NO_CONTENT)
+        )
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
@@ -210,7 +223,12 @@ internal class ChuckerInterceptorTest {
         //
         // It is only best effort attempt and if we download less than 8KiB reading will continue
         // in 8KiB batches until at least 8KiB is downloaded.
-        assertThat(transaction.responsePayloadSize).isIn(Range.closed(SEGMENT_SIZE, 2 * SEGMENT_SIZE))
+        assertThat(transaction.responsePayloadSize).isIn(
+            Range.closed(
+                SEGMENT_SIZE,
+                2 * SEGMENT_SIZE
+            )
+        )
     }
 
     @ParameterizedTest
@@ -346,7 +364,9 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun alwaysReadResponseBodyFlag_withoutClientConsumingBytes_makesResponseBodyAvailableForChucker(factory: ClientFactory) {
+    fun alwaysReadResponseBodyFlag_withoutClientConsumingBytes_makesResponseBodyAvailableForChucker(
+        factory: ClientFactory
+    ) {
         val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()

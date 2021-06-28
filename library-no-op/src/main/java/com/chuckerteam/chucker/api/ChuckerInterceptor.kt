@@ -9,6 +9,7 @@ import kotlin.jvm.Throws
 /**
  * No-op implementation.
  */
+@Suppress("UnusedPrivateMember")
 public class ChuckerInterceptor @JvmOverloads constructor(
     context: Context,
     collector: Any? = null,

@@ -33,6 +33,10 @@ internal class ClearDatabaseService : IntentService(CLEAN_DATABASE_SERVICE_NAME)
     sealed class ClearAction : Serializable {
         object Transaction : ClearAction()
         object Error : ClearAction()
+
+        companion object {
+            private const val serialVersionUID: Long = 987654321
+        }
     }
 
     companion object {

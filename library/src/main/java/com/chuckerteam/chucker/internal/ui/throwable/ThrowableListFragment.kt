@@ -79,7 +79,7 @@ internal class ThrowableListFragment : Fragment(), ThrowableAdapter.ThrowableCli
         val confirmationDialogData = DialogData(
             title = getString(R.string.chucker_clear),
             message = getString(R.string.chucker_clear_throwable_confirmation),
-            postiveButtonText = getString(R.string.chucker_clear),
+            positiveButtonText = getString(R.string.chucker_clear),
             negativeButtonText = getString(R.string.chucker_cancel)
         )
         requireContext().showDialog(
