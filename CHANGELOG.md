@@ -28,11 +28,11 @@ Please add your entries according to this format.
 
 ### Added
 
-* Android 12 support
+* Android 12 support.
 
 ### Fixed
 
-* Fix crash on Android 12 due to missing immutability flags [#593]
+* Fix crash on Android 12 due to missing immutability flags [#593].
 * Fix not setting request body type correctly [#538].
 
 ## Version 3.4.0 *(2020-11-05)*
