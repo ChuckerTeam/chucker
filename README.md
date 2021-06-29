@@ -37,8 +37,8 @@ Please note that you should add both the `library` and the the `library-no-op` v
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.4.0"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.5.0"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.0"
 }
 ```
 
@@ -117,7 +117,7 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // Use decoder when processing request and response bodies. When multiple decoders are installed they
         // are applied in an order they were added.
         .addBodyDecoder(decoder)
-        // Controls Android shortcut creation.
+        // Controls Android shortcut creation. Available in SNAPSHOTS versions only at the moment
         .createShortcut(true)
         .build()
 
@@ -141,6 +141,8 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 ```
 
 ### Decode-Body 📖
+
+**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.0
 
 Chucker by default handles only plain text bodies. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
 
@@ -177,8 +179,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.4.1-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.1-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:4.0.0-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0-SNAPSHOT"
 }
 ```
 

@@ -11,7 +11,6 @@ Please add your entries according to this format.
 
 ### Fixed
 
-* Fixed not setting request body type correctly [#538].
 * Fixed request headers not being redacted in case of failures [#545].
 * Fixed wrongful processing of one shot and duplex requests [#544].
 * Fixed writing to database on the main thread [#487]. 
@@ -24,6 +23,17 @@ Please add your entries according to this format.
 ### Changed
 
 * Updated OkHttp to 4.9.1
+
+## Version 3.5.0 *(2021-06-29)*
+
+### Added
+
+* Android 12 support.
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags [#593].
+* Fix not setting request body type correctly [#538].
 
 ## Version 3.4.0 *(2020-11-05)*
 
@@ -488,3 +498,8 @@ Initial release.
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
 [#472]: https://github.com/ChuckerTeam/chucker/issues/472
 [#480]: https://github.com/ChuckerTeam/chucker/issues/480
+[#487]: https://github.com/ChuckerTeam/chucker/issues/487
+[#538]: https://github.com/ChuckerTeam/chucker/issues/538
+[#544]: https://github.com/ChuckerTeam/chucker/issues/544
+[#545]: https://github.com/ChuckerTeam/chucker/issues/545
+[#593]: https://github.com/ChuckerTeam/chucker/issues/593
