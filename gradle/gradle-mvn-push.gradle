@@ -97,7 +97,7 @@ afterEvaluate {
                         }
                         developer {
                             id = 'michalsikora90'
-                            name = 'Michal Sikora'
+                            name = 'Michał Sikora'
                         }
                     }
                 }
