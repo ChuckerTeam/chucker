@@ -26,7 +26,7 @@ jobs:
         path: '~/.m2/repository/'
 
     - name: Publish to the Staging Repository
-      run: ./gradlew publishReleasePublicationToStagingRepository
+      run: ./gradlew publishReleasePublicationToStagingRepository --no-parallel
       env:
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
