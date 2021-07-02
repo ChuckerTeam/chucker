@@ -91,4 +91,16 @@
         app:layout_constraintStart_toEndOf="@+id/duration"
         app:layout_constraintTop_toTopOf="@+id/duration"
         tools:text="16.45 KB" />
+
+    <TextView
+        android:id="@+id/queryName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/size"
+        app:layout_constraintStart_toStartOf="@+id/timeStart"
+        app:layout_constraintEnd_toEndOf="@id/path"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="query: asdasdasd"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

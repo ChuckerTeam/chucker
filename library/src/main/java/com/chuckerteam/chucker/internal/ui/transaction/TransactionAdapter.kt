@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.ui.transaction
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
@@ -15,6 +16,11 @@ import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonSyntaxException
+import java.io.StringReader
+import java.lang.reflect.Type
 import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
@@ -52,6 +58,15 @@ internal class TransactionAdapter internal constructor(
             }
         }
 
+        @Throws(JsonSyntaxException::class)
+        fun <T> fromJson(json: String?, typeOfT: Type?): T? {
+            if (json == null) {
+                return null
+            }
+            val reader = StringReader(json)
+            return Gson().fromJson<Any>(reader, typeOfT) as T
+        }
+
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
             transactionId = transaction.id
@@ -60,6 +75,20 @@ internal class TransactionAdapter internal constructor(
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
+                val request = transaction.requestBody?.replace("\n","")?.replace(" ", "") ?: ""
+
+                val a: JsonArray = fromJson(transaction.requestBody, JsonArray::class.java)!!
+                val queryObject = a.asJsonArray[0].asJsonObject.get("query").toString()
+
+                queryName.text = if (request.isEmpty()) {
+                    "Request is Empty"
+                } else {
+                    if (queryObject.isEmpty()) {
+                        request
+                    } else {
+                        queryObject
+                    }
+                }
 
                 setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
 

@@ -14,7 +14,7 @@ internal interface HttpTransactionDao {
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, " +
-            "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+            "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, requestBody, error FROM " +
             "transactions ORDER BY requestDate DESC"
     )
     fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
