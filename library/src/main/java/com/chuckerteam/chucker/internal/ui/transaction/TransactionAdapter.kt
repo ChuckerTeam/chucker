@@ -25,8 +25,8 @@ import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
-    context: Context,
-    private val onTransactionClick: (Long) -> Unit,
+        context: Context,
+        private val onTransactionClick: (Long) -> Unit,
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(TransactionDiffCallback) {
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -75,10 +75,16 @@ internal class TransactionAdapter internal constructor(
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
-                val request = transaction.requestBody?.replace("\n","")?.replace(" ", "") ?: ""
+                val request = transaction.requestBody?.replace("\n", "")?.replace(" ", "") ?: ""
 
-                val a: JsonArray = fromJson(transaction.requestBody, JsonArray::class.java)!!
-                val queryObject = a.asJsonArray[0].asJsonObject.get("query").toString()
+                val queryObject = try {
+                    val a: JsonArray? = fromJson(transaction.requestBody, JsonArray::class.java)
+                    a?.let {
+                        it.asJsonArray[0]?.asJsonObject?.get("query").toString()
+                    } ?: ""
+                } catch (e: Throwable) {
+                    ""
+                }
 
                 queryName.text = if (request.isEmpty()) {
                     "Request is Empty"

@@ -10,9 +10,8 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     private val transactionDao get() = database.transactionDao()
 
-    override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
-        val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
-        return transactionDao.getFilteredTuples("$code%", pathQuery)
+    override fun getFilteredTransactionTuples(code: String): LiveData<List<HttpTransactionTuple>> {
+        return transactionDao.getFilteredQuery("%$code%")
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {

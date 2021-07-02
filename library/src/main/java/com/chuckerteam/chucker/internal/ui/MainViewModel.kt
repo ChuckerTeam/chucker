@@ -22,11 +22,8 @@ internal class MainViewModel : ViewModel() {
                 searchQuery.isNullOrBlank() -> {
                     getSortedTransactionTuples()
                 }
-                TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
-                }
                 else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+                    getFilteredTransactionTuples(searchQuery)
                 }
             }
         }
