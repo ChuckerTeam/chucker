@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlinVersion = '1.5.20'
-        androidGradleVersion = '4.2.1'
+        androidGradleVersion = '4.2.2'
         coroutineVersion = '1.4.3'
 
         // Google libraries
