@@ -29,7 +29,7 @@ internal class TransactionOverviewFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         overviewBinding = ChuckerFragmentTransactionOverviewBinding.inflate(inflater, container, false)
         return overviewBinding.root
     }
@@ -38,7 +38,7 @@ internal class TransactionOverviewFragment : Fragment() {
         menu.findItem(R.id.save_body).isVisible = false
         viewModel.doesUrlRequireEncoding.observe(
             viewLifecycleOwner,
-            Observer { menu.findItem(R.id.encode_url).isVisible = it }
+            { menu.findItem(R.id.encode_url).isVisible = it }
         )
 
         super.onCreateOptionsMenu(menu, inflater)
@@ -51,7 +51,7 @@ internal class TransactionOverviewFragment : Fragment() {
             .combineLatest(viewModel.encodeUrl)
             .observe(
                 viewLifecycleOwner,
-                Observer { (transaction, encodeUrl) ->
+                { (transaction, encodeUrl) ->
                     populateUI(transaction, encodeUrl)
                 }
             )
@@ -91,6 +91,12 @@ internal class TransactionOverviewFragment : Fragment() {
             requestSize.text = transaction?.requestSizeString
             responseSize.text = transaction?.responseSizeString
             totalSize.text = transaction?.totalSizeString
+            if (transaction?.requestTag?.isNotEmpty() == true) {
+                tag.text = transaction.requestTag!!
+            } else {
+                tagLabel.visibility = View.GONE
+                tag.visibility = View.GONE
+            }
         }
     }
 }

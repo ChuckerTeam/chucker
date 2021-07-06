@@ -340,6 +340,7 @@
       app:constraint_referenced_ids="responseSizeLabel,responseSize" />
 
     <TextView
+      android:id="@+id/totalSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -358,5 +359,25 @@
       app:layout_constraintTop_toBottomOf="@id/barrierResponseSize"
       tools:text="201 KB" />
 
+    <TextView
+      android:id="@+id/tagLabel"
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/chucker_tag"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/totalSizeLabel" />
+
+    <TextView
+      android:id="@+id/tag"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintBaseline_toBaselineOf="@id/tagLabel"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/overviewGuideline"
+      tools:text="TAG" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

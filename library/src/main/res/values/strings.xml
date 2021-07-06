@@ -21,6 +21,7 @@
     <string name="chucker_request_size">Request size</string>
     <string name="chucker_response_size">Response size</string>
     <string name="chucker_total_size">Total size</string>
+    <string name="chucker_tag">Tag</string>
     <string name="chucker_yes">Yes</string>
     <string name="chucker_no">No</string>
     <string name="chucker_share">Share</string>

@@ -46,12 +46,25 @@
         android:layout_marginStart="@dimen/chucker_half_grid"
         android:ellipsize="end"
         android:maxLines="2"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="start"
+        app:layout_constraintEnd_toStartOf="@id/tag"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toBottomOf="@+id/path"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tag"
+        style="@style/Chucker.Button.Tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/chucker_half_grid"
+        android:paddingVertical="0dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/host"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/host"
+        tools:text="TAG" />
 
     <ImageView
         android:id="@+id/ssl"

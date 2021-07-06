@@ -149,18 +149,22 @@ class HttpBinHttpTask(
         fun utf8(): Call<Any?>
 
         @GET("/deflate")
+        @Headers("chucker-tag: deflate")
         fun deflate(): Call<Any?>
 
         @GET("/cookies/set")
+        @Headers("chucker-tag: cookieSet")
         fun cookieSet(@Query("k1") value: String): Call<Any?>
 
         @GET("/basic-auth/{user}/{passwd}")
+        @Headers("chucker-tag: basicAuth")
         fun basicAuth(
             @Path("user") user: String,
             @Path("passwd") passwd: String
         ): Call<Any?>
 
         @GET("/drip")
+        @Headers("chucker-tag: drip")
         fun drip(
             @Query("numbytes") bytes: Int,
             @Query("duration") seconds: Int,
@@ -169,19 +173,24 @@ class HttpBinHttpTask(
         ): Call<Any?>
 
         @GET("/deny")
+        @Headers("chucker-tag: deny")
         fun deny(): Call<Any?>
 
         @GET("/cache")
+        @Headers("chucker-tag: cache")
         fun cache(@Header("If-Modified-Since") ifModifiedSince: String): Call<Any?>
 
         @GET("/cache/{seconds}")
+        @Headers("chucker-tag: cache")
         fun cache(@Path("seconds") seconds: Int): Call<Any?>
 
         @FormUrlEncoded
         @POST("/post")
+        @Headers("chucker-tag: postForm")
         fun postForm(@Field("key1") value1: String, @Field("key2") value2: String): Call<Any?>
 
         @POST("/post")
+        @Headers("chucker-tag: postRawRequestBody")
         fun postRawRequestBody(@Body body: RequestBody): Call<Any?>
 
         class Data(val thing: String)

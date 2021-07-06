@@ -32,7 +32,8 @@ internal object TestTransactionFactory {
             responseHeaders = null,
             responseBody = """{"field": "value"}""",
             isResponseBodyEncoded = false,
-            responseImageData = null
+            responseImageData = null,
+            requestTag = null
         )
     }
 

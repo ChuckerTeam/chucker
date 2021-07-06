@@ -17,13 +17,13 @@ internal class RequestProcessor(
     private val headersToRedact: Set<String>,
     private val bodyDecoders: List<BodyDecoder>,
 ) {
-    fun process(request: Request, transaction: HttpTransaction) {
-        processMetadata(request, transaction)
+    fun process(request: Request, transaction: HttpTransaction, requestTag: String?) {
+        processMetadata(request, transaction, requestTag)
         processPayload(request, transaction)
         collector.onRequestSent(transaction)
     }
 
-    private fun processMetadata(request: Request, transaction: HttpTransaction) {
+    private fun processMetadata(request: Request, transaction: HttpTransaction, requestTag: String?) {
         transaction.apply {
             setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
@@ -32,6 +32,7 @@ internal class RequestProcessor(
             method = request.method
             requestContentType = request.body?.contentType()?.toString()
             requestPayloadSize = request.body?.contentLength()
+            this.requestTag = requestTag
         }
     }
 

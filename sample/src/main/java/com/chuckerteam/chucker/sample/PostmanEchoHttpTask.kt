@@ -18,6 +18,7 @@ class PostmanEchoHttpTask(
         val request = Request.Builder()
             .url("https://postman-echo.com/post")
             .post(body)
+            .header("chucker-tag", "partially")
             .build()
         client.newCall(request).enqueue(ReadBytesCallback(SEGMENT_SIZE))
     }
@@ -28,6 +29,7 @@ class PostmanEchoHttpTask(
         val request = Request.Builder()
             .url("https://postman-echo.com/post")
             .post(body)
+            .header("chucker-tag", "proto")
             .build()
         client.newCall(request).enqueue(ReadBytesCallback())
     }

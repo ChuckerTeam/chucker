@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.ChuckerHeaderFilter
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
@@ -68,11 +69,13 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
+        val requestTag = ChuckerHeaderFilter.getTag(request)
+        val filteredRequest = ChuckerHeaderFilter.removeAllChuckerHeadersFromRequest(request)
 
-        requestProcessor.process(request, transaction)
+        requestProcessor.process(filteredRequest, transaction, requestTag)
 
         val response = try {
-            chain.proceed(request)
+            chain.proceed(filteredRequest)
         } catch (e: IOException) {
             transaction.error = e.toString()
             collector.onResponseReceived(transaction)
