@@ -1,42 +1,44 @@
 buildscript {
     ext {
-        kotlinVersion = '1.4.32'
-        androidGradleVersion = '4.1.3'
-        coroutineVersion = '1.4.2'
+        kotlinVersion = '1.5.20'
+        androidGradleVersion = '4.2.1'
+        coroutineVersion = '1.4.3'
 
         // Google libraries
-        activityVersion = '1.2.2'
-        appCompatVersion = '1.2.0'
+        activityVersion = '1.2.3'
+        appCompatVersion = '1.3.0'
         constraintLayoutVersion = '2.0.4'
         materialComponentsVersion = '1.3.0'
-        roomVersion = '2.2.6'
-        fragmentVersion = '1.3.2'
+        roomVersion = '2.3.0'
+        fragmentVersion = '1.3.5'
         lifecycleVersion = '2.3.1'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
 
         // Networking
-        gsonVersion = '2.8.6'
+        gsonVersion = '2.8.7'
         okhttpVersion = '4.9.1'
         retrofitVersion = '2.9.0'
         wireVersion = '3.7.0'
 
         // Debug and quality control
-        binaryCompatibilityValidator = '0.5.0'
-        detektVersion = '1.14.0'
-        dokkaVersion = '1.4.30'
-        ktLintVersion = '0.40.0'
-        ktLintGradleVersion = '9.4.1'
+        binaryCompatibilityValidator = '0.6.0'
+        detektVersion = '1.17.1'
+        dokkaVersion = '1.4.32'
+        ktLintGradleVersion = '10.0.0'
         leakcanaryVersion = '2.7'
 
         // Testing
         androidxTestCoreVersion = '1.3.0'
         junitGradlePluignVersion = '1.7.1.1'
-        junitVersion = '5.7.1'
+        junitVersion = '5.7.2'
         mockkVersion = '1.11.0'
-        robolectricVersion = '4.4'
-        truthVersion = '1.1.2'
+        robolectricVersion = '4.5.1'
+        truthVersion = '1.1.3'
         vintageJunitVersion = '4.13'
+
+        // Publishing
+        nexusStagingPlugin = '0.30.0'
     }
 
     repositories {
@@ -53,9 +55,11 @@ buildscript {
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
         classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
         classpath "com.squareup.wire:wire-gradle-plugin:$wireVersion"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$nexusStagingPlugin"
     }
 }
 apply plugin: 'binary-compatibility-validator'
+apply plugin: 'io.codearte.nexus-staging'
 
 apiValidation {
     ignoredProjects += ["sample"]
@@ -102,4 +106,10 @@ ext {
     minSdkVersion = 21
     targetSdkVersion = 30
     compileSdkVersion = 30
+}
+
+nexusStaging {
+    username = findProperty("NEXUS_USERNAME")
+    password = findProperty("NEXUS_PASSWORD")
+    stagingProfileId = "ea09119de9f4"
 }
