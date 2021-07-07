@@ -29,6 +29,7 @@ internal fun HttpTransaction.withResponseData(): HttpTransaction = this.apply {
     responseMessage = randomString()
     responseBody = randomString()
     error = randomString()
+    requestTag = randomString()
 }
 
 private fun randomHeaders(): Headers = Headers.Builder()
@@ -65,6 +66,7 @@ internal fun assertTuple(
     assertThat(actual?.requestPayloadSize).isEqualTo(expected.requestPayloadSize)
     assertThat(actual?.responsePayloadSize).isEqualTo(expected.responsePayloadSize)
     assertThat(actual?.error).isEqualTo(expected.error)
+    assertThat(actual?.requestTag).isEqualTo(expected.requestTag)
 }
 
 internal fun assertTransaction(
@@ -95,4 +97,5 @@ internal fun assertTransaction(
     assertThat(actual?.responseMessage).isEqualTo(expected.responseMessage)
     assertThat(actual?.responseBody).isEqualTo(expected.responseBody)
     assertThat(actual?.error).isEqualTo(expected.error)
+    assertThat(actual?.requestTag).isEqualTo(expected.requestTag)
 }

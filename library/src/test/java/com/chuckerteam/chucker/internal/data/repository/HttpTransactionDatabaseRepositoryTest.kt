@@ -20,6 +20,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class HttpTransactionDatabaseRepositoryTest {
+
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -112,7 +113,7 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
 
-        testObject.getSortedTransactionTuples().observeForever { result ->
+        testObject.getSortedTransactionTuples(emptyList()).observeForever { result ->
             assertTuples(listOf(otherTransaction, transaction), result)
         }
     }
@@ -136,9 +137,10 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples(code = "", path = "").observeForever { result ->
-            assertTuples(listOf(transactionThree, transactionOne, transactionTwo), result)
-        }
+        testObject.getFilteredTransactionTuples(code = "", path = "", requestTags = emptyList())
+            .observeForever { result ->
+                assertTuples(listOf(transactionThree, transactionOne, transactionTwo), result)
+            }
     }
 
     @Test
@@ -160,9 +162,10 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples(code = "", path = "def").observeForever { result ->
-            assertTuples(listOf(transactionThree, transactionTwo), result)
-        }
+        testObject.getFilteredTransactionTuples(code = "", path = "def", requestTags = emptyList())
+            .observeForever { result ->
+                assertTuples(listOf(transactionThree, transactionTwo), result)
+            }
     }
 
     @Test
@@ -187,9 +190,40 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples(code = "4", path = "").observeForever { result ->
-            assertTuples(listOf(transactionThree, transactionOne), result)
-        }
+        testObject.getFilteredTransactionTuples(code = "4", path = "", requestTags = emptyList())
+            .observeForever { result ->
+                assertTuples(listOf(transactionThree, transactionOne), result)
+            }
+    }
+
+    @Test
+    fun `transaction tuples are filtered by requestTag`() = runBlocking {
+        val transactionOne =
+            createRequest("abc").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 418
+                requestTag = "abc"
+            }
+        val transactionTwo =
+            createRequest("abcdef").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+                requestTag = "abcdef"
+            }
+        val transactionThree =
+            createRequest("def").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 400
+            }
+
+        testObject.insertTransaction(transactionOne)
+        testObject.insertTransaction(transactionTwo)
+        testObject.insertTransaction(transactionThree)
+
+        testObject.getFilteredTransactionTuples(code = "", path = "", requestTags = listOf("abc", "abcdef"))
+            .observeForever { result ->
+                assertTuples(listOf(transactionOne, transactionTwo), result)
+            }
     }
 
     @Test

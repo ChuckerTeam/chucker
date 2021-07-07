@@ -8,25 +8,34 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.model.SearchQueryAndRequestTags
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
 
-    private val currentFilter = MutableLiveData("")
+    private val currentFilter = MutableLiveData(SearchQueryAndRequestTags("", emptyList()))
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
+    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQueryAndRequestTags ->
         with(RepositoryProvider.transaction()) {
             when {
-                searchQuery.isNullOrBlank() -> {
-                    getSortedTransactionTuples()
+                searchQueryAndRequestTags.searchQuery.isBlank() -> {
+                    getSortedTransactionTuples(searchQueryAndRequestTags.requestTags)
                 }
-                TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
+                TextUtils.isDigitsOnly(searchQueryAndRequestTags.searchQuery) -> {
+                    getFilteredTransactionTuples(
+                        searchQueryAndRequestTags.searchQuery,
+                        "",
+                        searchQueryAndRequestTags.requestTags
+                    )
                 }
                 else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+                    getFilteredTransactionTuples(
+                        "",
+                        searchQueryAndRequestTags.searchQuery,
+                        searchQueryAndRequestTags.requestTags
+                    )
                 }
             }
         }
@@ -35,7 +44,11 @@ internal class MainViewModel : ViewModel() {
     suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
-        currentFilter.value = searchQuery
+        currentFilter.value = currentFilter.value?.copy(searchQuery = searchQuery)
+    }
+
+    fun updateRequestTags(requestTags: List<String?>) {
+        currentFilter.value = currentFilter.value?.copy(requestTags = requestTags)
     }
 
     fun clearTransactions() {

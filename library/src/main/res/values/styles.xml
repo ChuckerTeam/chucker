@@ -2,22 +2,22 @@
 <resources>
 
     <style name="Chucker.BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-      <item name="colorPrimary">@color/chucker_color_primary</item>
-      <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
-      <item name="colorSecondary">@color/chucker_color_secondary</item>
-      <item name="android:colorBackground">@color/chucker_color_background</item>
-      <item name="colorSurface">@color/chucker_color_surface</item>
-      <item name="colorError">@color/chucker_status_error</item>
-      <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
-      <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
-      <item name="colorOnBackground">@color/chucker_color_on_background</item>
-      <item name="colorOnSurface">@color/chucker_color_on_surface</item>
-      <item name="colorOnError">@color/chucker_color_on_error</item>
-      <item name="android:textDirection">locale</item>
-      <item name="android:textAlignment">viewStart</item>
+        <item name="colorPrimary">@color/chucker_color_primary</item>
+        <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
+        <item name="colorSecondary">@color/chucker_color_secondary</item>
+        <item name="android:colorBackground">@color/chucker_color_background</item>
+        <item name="colorSurface">@color/chucker_color_surface</item>
+        <item name="colorError">@color/chucker_status_error</item>
+        <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
+        <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
+        <item name="colorOnBackground">@color/chucker_color_on_background</item>
+        <item name="colorOnSurface">@color/chucker_color_on_surface</item>
+        <item name="colorOnError">@color/chucker_color_on_error</item>
+        <item name="android:textDirection">locale</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <style name="Chucker.Theme" parent="Chucker.BaseTheme"/>
+    <style name="Chucker.Theme" parent="Chucker.BaseTheme" />
 
     <style name="Chucker.TextAppearance.ListItem" parent="android:TextAppearance">
         <item name="android:textStyle">bold</item>
@@ -45,5 +45,19 @@
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Chucker.Theme.FilterDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/chucker_color_primary</item>
+        <item name="colorPrimaryDark">@color/chucker_color_primary_variant</item>
+        <item name="colorSecondary">@color/chucker_color_secondary</item>
+        <item name="android:colorBackground">@color/chucker_color_background</item>
+        <item name="colorSurface">@color/chucker_color_surface</item>
+        <item name="colorOnPrimary">@color/chucker_color_on_primary</item>
+        <item name="colorOnSecondary">@color/chucker_color_on_secondary</item>
+        <item name="colorOnBackground">@color/chucker_color_on_background</item>
+        <item name="colorOnSurface">@color/chucker_color_on_surface</item>
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
     </style>
 </resources>

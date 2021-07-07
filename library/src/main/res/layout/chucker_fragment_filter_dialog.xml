@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/chucker_doub_grid"
+    app:cardElevation="0dp"
+    app:contentPadding="@dimen/chucker_base_grid">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutFilterDialogRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/requestTagRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_max="400dp"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonSelectAll"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/chucker_list_item_request_tag" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSelectAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_filter_select_all"
+            app:layout_constraintBottom_toTopOf="@id/buttonFilterRequests"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/requestTagRecyclerView" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonFilterRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+            android:layout_marginTop="@dimen/chucker_base_grid"
+            android:text="@string/chucker_filter_requests"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonSelectAll" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

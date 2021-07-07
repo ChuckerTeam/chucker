@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionOverviewBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction

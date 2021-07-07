@@ -10,9 +10,21 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     private val transactionDao get() = database.transactionDao()
 
-    override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
+    override fun getFilteredTransactionTuples(
+        code: String,
+        path: String,
+        requestTags: List<String?>
+    ): LiveData<List<HttpTransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
-        return transactionDao.getFilteredTuples("$code%", pathQuery)
+        return if (requestTags.isEmpty()) {
+            transactionDao.getFilteredTuples("$code%", pathQuery)
+        } else {
+            if (requestTags.any { it == null }) {
+                transactionDao.getFilteredTuplesWithNoRequestTags("$code%", pathQuery, requestTags)
+            } else {
+                transactionDao.getFilteredTuples("$code%", pathQuery, requestTags)
+            }
+        }
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {
@@ -20,8 +32,16 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
             .distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }
 
-    override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {
-        return transactionDao.getSortedTuples()
+    override fun getSortedTransactionTuples(requestTags: List<String?>): LiveData<List<HttpTransactionTuple>> {
+        return if (requestTags.isEmpty()) {
+            transactionDao.getSortedTuples()
+        } else {
+            if (requestTags.any { it == null }) {
+                transactionDao.getSortedTuplesWithNoRequestTags(requestTags)
+            } else {
+                transactionDao.getSortedTuples(requestTags)
+            }
+        }
     }
 
     override suspend fun deleteAllTransactions() {
@@ -44,4 +64,6 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     override suspend fun getAllTransactions(): List<HttpTransaction> = transactionDao.getAll()
 
     override suspend fun getByUrl(url: String): HttpTransaction? = transactionDao.getByUrl(url)
+
+    override suspend fun getAllRequestTags(): List<String> = transactionDao.getAllRequestTags()
 }

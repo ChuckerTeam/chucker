@@ -19,13 +19,19 @@ internal interface HttpTransactionRepository {
 
     suspend fun deleteAllTransactions()
 
-    fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>>
+    fun getSortedTransactionTuples(requestTags: List<String?>): LiveData<List<HttpTransactionTuple>>
 
-    fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>>
+    fun getFilteredTransactionTuples(
+        code: String,
+        path: String,
+        requestTags: List<String?>
+    ): LiveData<List<HttpTransactionTuple>>
 
     fun getTransaction(transactionId: Long): LiveData<HttpTransaction?>
 
     suspend fun getAllTransactions(): List<HttpTransaction>
 
     suspend fun getByUrl(url: String): HttpTransaction?
+
+    suspend fun getAllRequestTags(): List<String>
 }

@@ -6,6 +6,10 @@
         android:icon="@drawable/chucker_ic_search_white"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item android:id="@+id/filter"
+        android:title="@string/chucker_filter"
+        android:icon="@drawable/chucker_ic_filter_white"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/export"
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_export"

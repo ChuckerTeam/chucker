@@ -38,6 +38,7 @@
     <string name="chucker_body_empty">(body is empty)</string>
     <string name="chucker_body_omitted">(encoded or binary body omitted)</string>
     <string name="chucker_search">Search</string>
+    <string name="chucker_filter">Filter</string>
     <string name="chucker_body_content_truncated">\n\n--- Content truncated ---</string>
     <string name="chucker_tab_network">Network</string>
     <string name="chucker_tab_errors">Errors</string>
@@ -59,4 +60,6 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_shortcut_label">Open Chucker</string>
+    <string name="chucker_filter_requests">Filter Requests</string>
+    <string name="chucker_filter_select_all">De/Select All</string>
 </resources>
