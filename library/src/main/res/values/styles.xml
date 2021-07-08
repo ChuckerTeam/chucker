@@ -38,6 +38,10 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="Chucker.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="Chucker.Button.Tag" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">@dimen/chucker_base_grid</item>
         <item name="android:inset">0dp</item>

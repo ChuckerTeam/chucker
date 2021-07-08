@@ -32,6 +32,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSelectAll"
+            style="@style/Chucker.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/chucker_doub_grid"
@@ -44,6 +45,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonFilterRequests"
+            style="@style/Chucker.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/chucker_doub_grid"
