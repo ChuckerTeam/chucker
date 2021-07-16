@@ -57,7 +57,7 @@ internal class NotificationHelper(val context: Context) {
             context,
             ERROR_NOTIFICATION_ID,
             Chucker.getLaunchIntent(context, Chucker.SCREEN_ERROR),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
         )
     }
 
