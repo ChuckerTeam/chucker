@@ -3,6 +3,25 @@
 This file follows [Keepachangelog](https://keepachangelog.com/) format. 
 Please add your entries according to this format.
 
+## Version 3.5.1 *(2021-07-19)*
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
+
+## Version 3.5.0 *(2021-06-29)*
+
+Note: this release has issue with Android 12 support, so update to 3.5.1 is highly recommended.
+
+### Added
+
+* Android 12 support.
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags [#593].
+* Fix not setting request body type correctly [#538].
+
 ## Version 3.4.0 *(2020-11-05)*
 
 ### Added
@@ -466,3 +485,9 @@ Initial release.
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
 [#472]: https://github.com/ChuckerTeam/chucker/issues/472
 [#480]: https://github.com/ChuckerTeam/chucker/issues/480
+[#487]: https://github.com/ChuckerTeam/chucker/issues/487
+[#538]: https://github.com/ChuckerTeam/chucker/issues/538
+[#544]: https://github.com/ChuckerTeam/chucker/issues/544
+[#545]: https://github.com/ChuckerTeam/chucker/issues/545
+[#593]: https://github.com/ChuckerTeam/chucker/issues/593
+[#653]: https://github.com/ChuckerTeam/chucker/pull/653
