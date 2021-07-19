@@ -24,7 +24,15 @@ Please add your entries according to this format.
 
 * Updated OkHttp to 4.9.1
 
+## Version 3.5.1 *(2021-07-19)*
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
+
 ## Version 3.5.0 *(2021-06-29)*
+
+Note: this release has issue with Android 12 support, so update to 3.5.1 is highly recommended.
 
 ### Added
 
@@ -503,3 +511,4 @@ Initial release.
 [#544]: https://github.com/ChuckerTeam/chucker/issues/544
 [#545]: https://github.com/ChuckerTeam/chucker/issues/545
 [#593]: https://github.com/ChuckerTeam/chucker/issues/593
+[#653]: https://github.com/ChuckerTeam/chucker/pull/653
