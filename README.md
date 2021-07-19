@@ -37,8 +37,8 @@ Please note that you should add both the `library` and the the `library-no-op` v
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.5.0"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.0"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.5.1"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.1"
 }
 ```
 
@@ -142,7 +142,7 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 
 ### Decode-Body 📖
 
-**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.0
+**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.1
 
 Chucker by default handles only plain text bodies. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
 
