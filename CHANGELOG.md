@@ -27,6 +27,7 @@ Please add your entries according to this format.
 ## Version 3.5.1 *(2021-07-19)*
 
 ### Fixed
+
 * Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
 
 ## Version 3.5.0 *(2021-06-29)*
