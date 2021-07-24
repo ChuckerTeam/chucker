@@ -9,6 +9,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.assertTransaction
 import com.chuckerteam.chucker.internal.data.entity.assertTuples
 import com.chuckerteam.chucker.internal.data.entity.createRequest
+import com.chuckerteam.chucker.internal.data.entity.createRequestByURL
 import com.chuckerteam.chucker.internal.data.entity.withResponseData
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -216,6 +217,39 @@ internal class HttpTransactionDaoTest {
 
         testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
+        }
+    }
+
+    @Test
+    fun `transaction tzuples are filtered by url`() = runBlocking {
+        val transactionOne =
+            createRequestByURL("https://www.testing.com/wishlist/product").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 400
+            }
+        val transactionTwo =
+            createRequestByURL("https://www.twitter.com").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 418 // I am still a teapot
+            }
+        val transactionThree =
+            createRequestByURL("https://www.google.com/test").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+            }
+        val transactionFour =
+            createRequest("https://stackoverflow.com/questions/").withResponseData().apply {
+                requestDate = 400L
+                responseCode = 418 // I am still a teapot
+            }
+
+        insertTransaction(transactionOne)
+        insertTransaction(transactionTwo)
+        insertTransaction(transactionThree)
+        insertTransaction(transactionFour)
+
+        testObject.getFilteredTuples(url = listOf("%test%")).observeForever { result ->
+            assertTuples(listOf(transactionOne, transactionThree), result)
         }
     }
 

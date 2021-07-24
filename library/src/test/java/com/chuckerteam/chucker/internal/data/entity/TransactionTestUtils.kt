@@ -17,6 +17,18 @@ internal fun createRequest(path: String = ""): HttpTransaction =
         requestBody = randomString()
     }
 
+internal fun createRequestByURL(url: String = ""): HttpTransaction =
+    HttpTransaction().apply {
+        setRequestHeaders(randomHeaders())
+        populateUrl(url.toHttpUrlOrNull()!!)
+        isResponseBodyEncoded = true
+        requestDate = 300L
+        method = "GET"
+        requestContentType = "text/plain"
+        requestPayloadSize = 0L
+        requestBody = randomString()
+    }
+
 internal fun HttpTransaction.withResponseData(): HttpTransaction = this.apply {
     setResponseHeaders(randomHeaders())
     responseCode = 418 // I'm a teapot
