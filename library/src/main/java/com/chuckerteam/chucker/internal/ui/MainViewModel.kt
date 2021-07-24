@@ -17,7 +17,8 @@ import java.util.UUID
 internal class MainViewModel(private val transaction: HttpTransactionRepository) : ViewModel() {
 
     private val currentFilter = MutableLiveData("")
-    private val groups = MutableLiveData<MutableList<Group>>()
+    private val _groups = MutableLiveData<List<Group>>()
+    val groups: LiveData<List<Group>> = _groups
 
     private val liveDataMerger = MediatorLiveData<String>()
 
@@ -28,7 +29,7 @@ internal class MainViewModel(private val transaction: HttpTransactionRepository)
             fetchTransactions()
         }
         liveDataMerger.addSource(
-            groups
+            _groups
         ) {
             fetchTransactions()
         }
@@ -47,7 +48,7 @@ internal class MainViewModel(private val transaction: HttpTransactionRepository)
 
     val transactions: LiveData<List<HttpTransactionTuple>> = liveDataMerger.switchMap {
         val searchQuery = currentFilter.value
-        val groups = groups.value ?: listOf()
+        val groups = _groups.value ?: listOf()
         with(transaction) {
             when {
                 searchQuery.isNullOrBlank() && groups.isNullOrEmpty() -> {
@@ -78,16 +79,16 @@ internal class MainViewModel(private val transaction: HttpTransactionRepository)
 
     @Suppress("SpreadOperator")
     fun addGroup(group: Group) {
-        val groupValue = groups.value ?: mutableListOf()
-        groups.value = mutableListOf(*groupValue.toTypedArray(), group)
+        val groupValue = _groups.value ?: mutableListOf()
+        _groups.value = mutableListOf(*groupValue.toTypedArray(), group)
     }
 
     @Suppress("SpreadOperator")
     fun removeGroup(group: Group) {
-        val groupValue = groups.value ?: mutableListOf()
+        val groupValue = _groups.value ?: mutableListOf()
         val listOfGroups = mutableListOf(*groupValue.toTypedArray())
         listOfGroups.remove(group)
-        groups.value = listOfGroups
+        _groups.value = listOfGroups
     }
 
     private fun String.isDigitsOnly(): Boolean {

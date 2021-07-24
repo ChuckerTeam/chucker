@@ -1,3 +1,9 @@
 package com.chuckerteam.chucker.api
 
-public data class Group(val name: String, val urls: List<String>)
+import java.io.Serializable
+import java.util.UUID
+
+public data class Group(val name: String, val urls: List<String>) : Serializable {
+    internal val id = UUID.randomUUID().toString()
+    internal var isChecked: Boolean = false
+}

@@ -16,6 +16,7 @@ import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
+import com.chuckerteam.chucker.internal.ui.group.FilterByGroupDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import kotlinx.coroutines.launch
@@ -101,10 +102,18 @@ internal class MainActivity :
                 )
                 true
             }
+            R.id.filter_by_group -> {
+                showFilterByGroupDialog()
+                true
+            }
             else -> {
                 super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    private fun showFilterByGroupDialog() {
+        FilterByGroupDialog.newInstance().show(supportFragmentManager, null)
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = true

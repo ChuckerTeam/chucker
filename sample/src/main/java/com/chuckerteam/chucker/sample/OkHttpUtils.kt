@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.sample
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.Group
 import com.chuckerteam.chucker.api.RetentionManager
 import okhttp3.Call
 import okhttp3.Callback
@@ -20,7 +21,8 @@ fun createOkHttpClient(
     val collector = ChuckerCollector(
         context = context,
         showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
+        retentionPeriod = RetentionManager.Period.ONE_HOUR,
+        groups = listOf(Group("Delay", listOf("%delay%")), Group("Cookies", listOf("%cookies%")))
     )
 
     @Suppress("MagicNumber")
