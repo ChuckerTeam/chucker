@@ -188,9 +188,10 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%", urls = listOf("%")).observeForever { result ->
-            assertTuples(listOf(transactionOne, transactionTwo), result)
-        }
+        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%", urls = listOf("%"))
+            .observeForever { result ->
+                assertTuples(listOf(transactionOne, transactionTwo), result)
+            }
     }
 
     @Test
@@ -248,9 +249,10 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(urls = listOf("%test%"), codeQuery = "%", pathQuery = "%").observeForever { result ->
-            assertTuples(listOf(transactionOne, transactionThree), result)
-        }
+        testObject.getFilteredTuples(urls = listOf("%test%"), codeQuery = "%", pathQuery = "%")
+            .observeForever { result ->
+                assertTuples(listOf(transactionOne, transactionThree), result)
+            }
     }
 
     @Test
@@ -281,9 +283,10 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(urls = listOf("%google%"), codeQuery = "%", pathQuery = "%test%").observeForever { result ->
-            assertTuples(listOf(transactionThree), result)
-        }
+        testObject.getFilteredTuples(urls = listOf("%google%"), codeQuery = "%", pathQuery = "%test%")
+            .observeForever { result ->
+                assertTuples(listOf(transactionThree), result)
+            }
     }
 
     private suspend fun insertTransaction(transaction: HttpTransaction) {
