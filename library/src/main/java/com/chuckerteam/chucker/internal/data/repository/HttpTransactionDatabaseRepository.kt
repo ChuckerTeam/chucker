@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
@@ -15,9 +16,35 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         code: String,
         urls: List<String>
     ): LiveData<List<HttpTransactionTuple>> {
+        val query = getFilteredTransactionQuery(path, code, urls)
+        return transactionDao.getFilteredTuples(query)
+    }
+
+    private fun getFilteredTransactionQuery(
+        path: String,
+        code: String,
+        urls: List<String>
+    ): SimpleSQLiteQuery {
+        val codeQuery = "$code%"
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
         val urlsQuery = if (urls.isEmpty()) listOf("%") else urls
-        return transactionDao.getFilteredTuples("$code%", pathQuery, urls = urlsQuery)
+
+        val builder = StringBuilder(
+            "SELECT id, requestDate, tookMs, protocol, method, host, " +
+                "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+                "transactions WHERE responseCode LIKE (?) AND path LIKE (?) AND ("
+        )
+        urlsQuery.forEachIndexed { index, _ ->
+            builder.append(" url LIKE (?) ")
+            if (index != urlsQuery.count() - 1) {
+                builder.append("OR")
+            }
+        }
+        builder.append(") ORDER BY requestDate DESC")
+        return SimpleSQLiteQuery(
+            builder.toString(),
+            arrayOf(codeQuery, pathQuery, *urlsQuery.toTypedArray())
+        )
     }
 
     override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {
