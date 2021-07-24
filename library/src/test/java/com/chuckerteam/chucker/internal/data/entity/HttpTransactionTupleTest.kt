@@ -118,7 +118,8 @@ internal class HttpTransactionTupleTest {
         responseCode: Int? = null,
         requestPayloadSize: Long? = null,
         responsePayloadSize: Long? = null,
-        error: String? = null
+        error: String? = null,
+        url: String? = null
     ) = HttpTransactionTuple(
         id,
         requestDate,
@@ -131,6 +132,7 @@ internal class HttpTransactionTupleTest {
         responseCode,
         requestPayloadSize,
         responsePayloadSize,
-        error
+        error,
+        url
     )
 }

@@ -22,7 +22,8 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
-    @ColumnInfo(name = "error") var error: String?
+    @ColumnInfo(name = "error") var error: String?,
+    @ColumnInfo(name = "url") var url: String?
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
