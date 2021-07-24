@@ -26,7 +26,9 @@ internal class MainActivity :
     BaseChuckerActivity(),
     SearchView.OnQueryTextListener {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModelFactory()
+    }
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter

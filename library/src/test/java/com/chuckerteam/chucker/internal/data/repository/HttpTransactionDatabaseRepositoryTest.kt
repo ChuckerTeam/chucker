@@ -216,9 +216,10 @@ internal class HttpTransactionDatabaseRepositoryTest {
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
 
-        testObject.getFilteredTransactionTuples(urls = listOf("%google%"), path = "", code = "").observeForever { result ->
-            assertTuples(listOf(transactionOne, transactionTwo), result)
-        }
+        testObject.getFilteredTransactionTuples(urls = listOf("%google%"), path = "", code = "")
+            .observeForever { result ->
+                assertTuples(listOf(transactionOne, transactionTwo), result)
+            }
     }
 
     @Test
