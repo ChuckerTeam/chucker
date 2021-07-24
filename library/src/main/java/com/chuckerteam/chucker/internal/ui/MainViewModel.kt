@@ -82,6 +82,14 @@ internal class MainViewModel(private val transaction: HttpTransactionRepository)
         groups.value = mutableListOf(*groupValue.toTypedArray(), group)
     }
 
+    @Suppress("SpreadOperator")
+    fun removeGroup(group: Group) {
+        val groupValue = groups.value ?: mutableListOf()
+        val listOfGroups = mutableListOf(*groupValue.toTypedArray())
+        listOfGroups.remove(group)
+        groups.value = listOfGroups
+    }
+
     private fun String.isDigitsOnly(): Boolean {
         return this.all { it in '0'..'9' }
     }

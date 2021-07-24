@@ -64,6 +64,30 @@ internal class MainViewModelTest {
         Truth.assertThat(value).hasSize(2)
     }
 
+    @Test
+    fun `WHEN remove group is called THEN Transaction getFilteredTransactionTuples is called`() {
+        val groupOne = Group(name = "Group 1", urls = listOf("url1"))
+        val groupTwo = Group(name = "Group 2", urls = listOf("url2"))
+
+        every { transaction.getFilteredTransactionTuples(any(), any(), any()) } returns MutableLiveData()
+        sut.transactions.observeForTesting {
+            sut.addGroup(groupOne)
+            sut.addGroup(groupTwo)
+            sut.removeGroup(groupTwo)
+
+            verify(exactly = 2) {
+                transaction.getFilteredTransactionTuples("", "", groupOne.urls)
+            }
+            verify(exactly = 1) {
+                transaction.getFilteredTransactionTuples(
+                    "",
+                    "",
+                    listOf(groupOne, groupTwo).map { it.urls }.flatten()
+                )
+            }
+        }
+    }
+
     private fun createTransactionTupple(id: Long) = HttpTransactionTuple(
         id = id,
         requestDate = null,
