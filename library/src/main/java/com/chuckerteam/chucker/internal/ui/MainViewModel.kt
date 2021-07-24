@@ -23,10 +23,10 @@ internal class MainViewModel : ViewModel() {
                     getSortedTransactionTuples()
                 }
                 TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
+                    getFilteredTransactionTuples("", searchQuery, listOf())
                 }
                 else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+                    getFilteredTransactionTuples(searchQuery, "", listOf())
                 }
             }
         }

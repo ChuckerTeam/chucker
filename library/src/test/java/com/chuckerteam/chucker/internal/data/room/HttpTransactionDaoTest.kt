@@ -188,7 +188,7 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
+        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%", urls = listOf("%")).observeForever { result ->
             assertTuples(listOf(transactionOne, transactionTwo), result)
         }
     }
@@ -215,13 +215,13 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%").observeForever { result ->
+        testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%", urls = listOf("%")).observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
         }
     }
 
     @Test
-    fun `transaction tzuples are filtered by url`() = runBlocking {
+    fun `transaction tuples are filtered by url`() = runBlocking {
         val transactionOne =
             createRequestByURL("https://www.testing.com/wishlist/product").withResponseData().apply {
                 requestDate = 200L
@@ -248,8 +248,41 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(url = listOf("%test%")).observeForever { result ->
+        testObject.getFilteredTuples(urls = listOf("%test%"), codeQuery = "%", pathQuery = "%").observeForever { result ->
             assertTuples(listOf(transactionOne, transactionThree), result)
+        }
+    }
+
+    @Test
+    fun `transaction tuples are filtered by url and path`() = runBlocking {
+        val transactionOne =
+            createRequestByURL("https://www.testing.com/wishlist/product").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 400
+            }
+        val transactionTwo =
+            createRequestByURL("https://www.google.com/search").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 418 // I am still a teapot
+            }
+        val transactionThree =
+            createRequestByURL("https://www.google.com/test").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+            }
+        val transactionFour =
+            createRequest("https://stackoverflow.com/questions/").withResponseData().apply {
+                requestDate = 400L
+                responseCode = 418 // I am still a teapot
+            }
+
+        insertTransaction(transactionOne)
+        insertTransaction(transactionTwo)
+        insertTransaction(transactionThree)
+        insertTransaction(transactionFour)
+
+        testObject.getFilteredTuples(urls = listOf("%google%"), codeQuery = "%", pathQuery = "%test%").observeForever { result ->
+            assertTuples(listOf(transactionThree), result)
         }
     }
 
