@@ -25,6 +25,7 @@ internal class GroupAdapter internal constructor(
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(item: Group) {
             itemView.setOnClickListener {
+                itemBinding.checkbox.isChecked = !itemBinding.checkbox.isChecked
                 onGroupItemClick.invoke(item)
             }
             itemBinding.apply {

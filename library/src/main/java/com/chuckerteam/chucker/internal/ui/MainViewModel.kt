@@ -18,7 +18,6 @@ internal class MainViewModel(private val transaction: HttpTransactionRepository)
 
     private val currentFilter = MutableLiveData("")
     private val _groups = MutableLiveData<List<Group>>()
-    val groups: LiveData<List<Group>> = _groups
 
     private val liveDataMerger = MediatorLiveData<String>()
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.chuckerteam.chucker.databinding.ChuckerFilterByGroupDialogBinding
 import com.chuckerteam.chucker.internal.support.GroupSingleton
 import com.chuckerteam.chucker.internal.ui.MainViewModel
@@ -15,7 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 internal class FilterByGroupDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: ChuckerFilterByGroupDialogBinding
-    private lateinit var adapter: GroupAdapter
+    private lateinit var groupAdapter: GroupAdapter
 
     private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory()
@@ -34,7 +35,8 @@ internal class FilterByGroupDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter()
         with(binding) {
-            groupRecyclerView.apply {
+            this.groupRecyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                 setHasFixedSize(true)
                 addItemDecoration(
                     DividerItemDecoration(
@@ -42,20 +44,13 @@ internal class FilterByGroupDialog : BottomSheetDialogFragment() {
                         DividerItemDecoration.VERTICAL
                     )
                 )
-                adapter = adapter
+                adapter = groupAdapter
             }
         }
-
-        viewModel.groups.observe(
-            viewLifecycleOwner,
-            {
-                adapter.submitList(GroupSingleton.getMergedGroups(it))
-            }
-        )
     }
 
     private fun setupAdapter() {
-        adapter = GroupAdapter {
+        groupAdapter = GroupAdapter {
             it.isChecked = !it.isChecked
             if (it.isChecked) {
                 viewModel.addGroup(it)
@@ -63,6 +58,7 @@ internal class FilterByGroupDialog : BottomSheetDialogFragment() {
                 viewModel.removeGroup(it)
             }
         }
+        groupAdapter.submitList(GroupSingleton.groups)
     }
 
     companion object {

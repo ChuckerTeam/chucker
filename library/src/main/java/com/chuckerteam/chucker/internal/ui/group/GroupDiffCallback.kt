@@ -9,6 +9,6 @@ internal object GroupDiffCallback : DiffUtil.ItemCallback<Group>() {
     }
 
     override fun areContentsTheSame(oldItem: Group, newItem: Group): Boolean {
-        return oldItem == newItem
+        return oldItem.isChecked == newItem.isChecked
     }
 }
