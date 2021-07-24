@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.internal.data.entity.assertTuples
 import com.chuckerteam.chucker.internal.data.entity.createRequest
+import com.chuckerteam.chucker.internal.data.entity.createRequestByURL
 import com.chuckerteam.chucker.internal.data.entity.randomString
 import com.chuckerteam.chucker.internal.data.entity.withResponseData
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
@@ -189,6 +190,33 @@ internal class HttpTransactionDatabaseRepositoryTest {
 
         testObject.getFilteredTransactionTuples(code = "4", path = "").observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
+        }
+    }
+
+    @Test
+    fun `transaction tuples are filtered by url`() = runBlocking {
+        val transactionOne =
+            createRequestByURL("https://www.google.com").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 418
+            }
+        val transactionTwo =
+            createRequestByURL("https://www.google.com/search/test").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+            }
+        val transactionThree =
+            createRequestByURL("https://stackoverflow.com/questions").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 400
+            }
+
+        testObject.insertTransaction(transactionOne)
+        testObject.insertTransaction(transactionTwo)
+        testObject.insertTransaction(transactionThree)
+
+        testObject.getFilteredTransactionTuples(listOf("%google%")).observeForever { result ->
+            assertTuples(listOf(transactionOne, transactionTwo), result)
         }
     }
 
