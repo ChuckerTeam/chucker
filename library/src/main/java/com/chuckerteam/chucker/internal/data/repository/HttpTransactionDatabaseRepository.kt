@@ -20,6 +20,7 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         return transactionDao.getFilteredTuples(query)
     }
 
+    @Suppress("SpreadOperator")
     private fun getFilteredTransactionQuery(
         path: String,
         code: String,
