@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.assertTransaction
@@ -188,7 +189,16 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%", urls = listOf("%"))
+        val query = SimpleSQLiteQuery(
+            "SELECT id, requestDate, tookMs, protocol, method, host, " +
+                "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+                "transactions WHERE responseCode LIKE (?) AND path LIKE (?) AND url LIKE (?)" +
+                "ORDER BY requestDate DESC",
+            arrayOf("418", "%abc%", "%")
+        )
+
+        testObject
+            .getFilteredTuples(query)
             .observeForever { result ->
                 assertTuples(listOf(transactionOne, transactionTwo), result)
             }
@@ -216,7 +226,15 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
 
-        testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%", urls = listOf("%")).observeForever { result ->
+        val query = SimpleSQLiteQuery(
+            "SELECT id, requestDate, tookMs, protocol, method, host, " +
+                "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+                "transactions WHERE responseCode LIKE (?) AND path LIKE (?) AND url LIKE (?)" +
+                "ORDER BY requestDate DESC",
+            arrayOf("4%", "%", "%")
+        )
+
+        testObject.getFilteredTuples(query).observeForever { result ->
             assertTuples(listOf(transactionThree, transactionOne), result)
         }
     }
@@ -249,9 +267,17 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(urls = listOf("%test%"), codeQuery = "%", pathQuery = "%")
+        val query = SimpleSQLiteQuery(
+            "SELECT id, requestDate, tookMs, protocol, method, host, " +
+                "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+                "transactions WHERE responseCode LIKE (?) AND path LIKE (?) AND " +
+                "(url LIKE (?) OR url LIKE (?)) ORDER BY requestDate DESC",
+            arrayOf("%", "%", "%test%", "%stack%")
+        )
+
+        testObject.getFilteredTuples(query)
             .observeForever { result ->
-                assertTuples(listOf(transactionOne, transactionThree), result)
+                assertTuples(listOf(transactionFour, transactionOne, transactionThree), result)
             }
     }
 
@@ -283,7 +309,15 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(urls = listOf("%google%"), codeQuery = "%", pathQuery = "%test%")
+        val query = SimpleSQLiteQuery(
+            "SELECT id, requestDate, tookMs, protocol, method, host, " +
+                "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
+                "transactions WHERE responseCode LIKE (?) AND path LIKE (?) AND url LIKE (?)" +
+                "ORDER BY requestDate DESC",
+            arrayOf("%", "%test%", "%google%")
+        )
+
+        testObject.getFilteredTuples(query)
             .observeForever { result ->
                 assertTuples(listOf(transactionThree), result)
             }
