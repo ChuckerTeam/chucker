@@ -24,7 +24,13 @@ Please add your entries according to this format.
 
 * Updated OkHttp to 4.9.1
 
+## Version 3.5.2 *(2021-07-28)*
+
+This release is a re-deployment of 3.5.1, since 3.5.1 aar didn't upload properly on Maven Central.
+
 ## Version 3.5.1 *(2021-07-19)*
+
+Note: this release wasn't properly uploaded to Maven Central, so update to a newer verion is required.
 
 ### Fixed
 
@@ -32,7 +38,7 @@ Please add your entries according to this format.
 
 ## Version 3.5.0 *(2021-06-29)*
 
-Note: this release has issue with Android 12 support, so update to 3.5.1 is highly recommended.
+Note: this release has issue with Android 12 support, so update to 3.5.2 is highly recommended.
 
 ### Added
 
