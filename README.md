@@ -37,8 +37,8 @@ Please note that you should add both the `library` and the the `library-no-op` v
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.4.0"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 }
 ```
 

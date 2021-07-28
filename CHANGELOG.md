@@ -3,6 +3,10 @@
 This file follows [Keepachangelog](https://keepachangelog.com/) format. 
 Please add your entries according to this format.
 
+## Version 3.5.2 *(2021-07-28)*
+
+This release is a re-deployment of 3.5.1, since 3.5.1 aar didn't upload properly on Maven Central.
+
 ## Version 3.5.1 *(2021-07-19)*
 
 ### Fixed
