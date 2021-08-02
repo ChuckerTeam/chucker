@@ -72,8 +72,8 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation "junit:junit:$vintageJunitVersion"
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$vintageJunitVersion"
+    testImplementation "junit:junit:$junit4Version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "androidx.test:core:$androidxTestCoreVersion"
