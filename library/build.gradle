@@ -1,29 +1,22 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+apply from: "$rootDir/gradle/base.gradle"
+
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-
-    compileOptions {
-        kotlinOptions.freeCompilerArgs += [
-            '-module-name', "com.github.ChuckerTeam.Chucker.library",
-            "-Xexplicit-api=strict"
-        ]
-    }
-
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 
     buildFeatures {
         viewBinding = true
-        buildConfig = false
+    }
+
+    kotlinOptions {
+        freeCompilerArgs += [
+            '-module-name', "com.github.ChuckerTeam.Chucker.library",
+            "-Xexplicit-api=strict"
+        ]
     }
 
     lintOptions {
@@ -48,8 +41,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.palette:palette-ktx:$paletteKtxVersion"

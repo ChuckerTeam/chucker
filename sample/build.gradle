@@ -1,21 +1,14 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.squareup.wire'
 
 wire {
     kotlin {}
 }
 
+apply from: "$rootDir/gradle/base.gradle"
+
 android {
-    sourceSets {
-        getByName("main").java.srcDirs += "$buildDir/generated/source/wire/"
-    }
-
-    compileSdkVersion rootProject.compileSdkVersion
-
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
         applicationId "com.chuckerteam.chucker.sample"
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
@@ -23,7 +16,10 @@ android {
 
     buildFeatures {
         viewBinding = true
-        buildConfig = false
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs += "$buildDir/generated/source/wire/"
     }
 
     buildTypes {
@@ -55,20 +51,11 @@ android {
         // Don't fail build if some dependencies outdated
         disable 'GradleDependency'
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 dependencies {
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"

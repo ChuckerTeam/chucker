@@ -1,22 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+apply from: "$rootDir/gradle/base.gradle"
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-
-    compileOptions {
-        kotlinOptions.freeCompilerArgs += [
+    kotlinOptions {
+        freeCompilerArgs += [
             '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
             "-Xexplicit-api=strict"
         ]
-    }
-
-    buildFeatures {
-        buildConfig = false
-    }
-
-    defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
     }
 
     lintOptions {
@@ -31,7 +22,6 @@ android {
 
 dependencies {
     api "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

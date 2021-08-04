@@ -102,12 +102,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-ext {
-    minSdkVersion = 21
-    targetSdkVersion = 30
-    compileSdkVersion = 30
-}
-
 nexusStaging {
     username = findProperty("NEXUS_USERNAME")
     password = findProperty("NEXUS_PASSWORD")

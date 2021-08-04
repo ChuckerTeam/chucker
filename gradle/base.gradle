@@ -1,0 +1,16 @@
+apply plugin: "kotlin-android"
+
+android {
+    compileSdkVersion 30
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+    }
+    buildFeatures {
+        buildConfig = false
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+}
