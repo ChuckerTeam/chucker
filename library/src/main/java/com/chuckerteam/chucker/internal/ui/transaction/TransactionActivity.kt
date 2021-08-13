@@ -84,6 +84,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
             val encodeUrls = viewModel.encodeUrl.value!!
             TransactionDetailsSharable(transaction, encodeUrls)
         }
+        R.id.repeat_request -> {
+            viewModel.repeatRequest(this)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 

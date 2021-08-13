@@ -40,4 +40,10 @@
         android:visible="false"
         app:showAsAction="ifRoom">
     </item>
+    <item
+        android:icon="@drawable/chucker_ic_repeat_white"
+        android:title="@string/chucker_repeat_request"
+        android:id="@+id/repeat_request"
+        app:showAsAction="ifRoom">
+    </item>
 </menu>

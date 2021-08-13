@@ -56,4 +56,7 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_shortcut_label">Open Chucker</string>
+    <string name="chucker_repeat_request">Repeat Request</string>
+    <string name="chucker_request_failed">Request Failed</string>
+    <string name="chucker_request_complete">Request Complete</string>
 </resources>
