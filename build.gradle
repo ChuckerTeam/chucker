@@ -22,7 +22,7 @@ buildscript {
         wireVersion = '3.7.0'
 
         // Debug and quality control
-        binaryCompatibilityValidator = '0.6.0'
+        binaryCompatibilityValidator = '0.7.0'
         detektVersion = '1.18.0'
         dokkaVersion = '1.5.0'
         ktLintGradleVersion = '10.0.0'
