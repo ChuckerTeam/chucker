@@ -24,6 +24,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
+import com.chuckerteam.chucker.internal.support.PrefUtils
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
@@ -221,7 +222,7 @@ internal class TransactionPayloadFragment :
             val bodyString: String
 
             if (type == PayloadType.REQUEST) {
-                headersString = transaction.getRequestHeadersString(true)
+                headersString = transaction.getRequestHeadersString(true, PrefUtils.getInstance(requireContext()).getRedactedHeaders())
                 isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
@@ -229,7 +230,7 @@ internal class TransactionPayloadFragment :
                     transaction.requestBody ?: ""
                 }
             } else {
-                headersString = transaction.getResponseHeadersString(true)
+                headersString = transaction.getResponseHeadersString(true, PrefUtils.getInstance(requireContext()).getRedactedHeaders())
                 isBodyEncoded = transaction.isResponseBodyEncoded
                 bodyString = transaction.getFormattedResponseBody()
             }

@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.*
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
@@ -36,19 +37,21 @@ public class ChuckerInterceptor private constructor(
 
     private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
+    // Empty set is added as headers to redact to save headers in db for data repeating API calls
     private val requestProcessor = RequestProcessor(
         builder.context,
         collector,
         builder.maxContentLength,
-        headersToRedact,
+        emptySet(),
         decoders,
     )
 
+    // Empty set is added as headers to redact to save headers in db for data repeating API calls
     private val responseProcessor = ResponseProcessor(
         collector,
         builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
         builder.maxContentLength,
-        headersToRedact,
+        emptySet(),
         builder.alwaysReadResponseBody,
         decoders,
     )
@@ -118,6 +121,7 @@ public class ChuckerInterceptor private constructor(
          */
         public fun redactHeaders(headerNames: Iterable<String>): Builder = apply {
             this.headersToRedact = headerNames.toSet()
+            PrefUtils.getInstance(context).setRedactedHeaders(this.headersToRedact)
         }
 
         /**

@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.redact
 import okio.Buffer
 import okio.Source
 
@@ -11,7 +12,8 @@ internal class TransactionCurlCommandSharable(
     override fun toSharableContent(context: Context): Source = Buffer().apply {
         var compressed = false
         writeUtf8("curl -X ${transaction.method}")
-        val headers = transaction.getParsedRequestHeaders()
+        val headersToRedact = PrefUtils.getInstance(context).getRedactedHeaders()
+        val headers = transaction.getParsedRequestHeaders()?.redact(headersToRedact)
 
         headers?.forEach { header ->
             if ("Accept-Encoding".equals(header.name, ignoreCase = true) &&

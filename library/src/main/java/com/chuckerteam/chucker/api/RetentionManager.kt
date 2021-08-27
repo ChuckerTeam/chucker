@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import com.chuckerteam.chucker.api.RetentionManager.Period
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.Logger
+import com.chuckerteam.chucker.internal.support.PrefUtils
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
@@ -31,6 +32,7 @@ public class RetentionManager @JvmOverloads constructor(
     private val maintenanceMutex = Mutex()
 
     init {
+        PrefUtils.getInstance(context).setRetentionPeriod(retentionPeriod)
         cleanupFrequency = if (retentionPeriod == Period.ONE_HOUR) {
             TimeUnit.MINUTES.toMillis(30)
         } else {

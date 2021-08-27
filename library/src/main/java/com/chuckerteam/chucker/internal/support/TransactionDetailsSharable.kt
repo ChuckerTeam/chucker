@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.redact
 import okio.Buffer
 import okio.Source
 
@@ -29,7 +30,8 @@ internal class TransactionDetailsSharable(
         writeUtf8("\n")
         writeUtf8("---------- ${context.getString(R.string.chucker_request)} ----------\n\n")
 
-        var headers = FormatUtils.formatHeaders(transaction.getParsedRequestHeaders(), false)
+        val headersToRedact = PrefUtils.getInstance(context).getRedactedHeaders()
+        var headers = FormatUtils.formatHeaders(transaction.getParsedRequestHeaders()?.redact(headersToRedact), false)
 
         if (headers.isNotBlank()) {
             writeUtf8(headers)
@@ -52,7 +54,7 @@ internal class TransactionDetailsSharable(
         writeUtf8("\n\n")
         writeUtf8("---------- ${context.getString(R.string.chucker_response)} ----------\n\n")
 
-        headers = FormatUtils.formatHeaders(transaction.getParsedResponseHeaders(), false)
+        headers = FormatUtils.formatHeaders(transaction.getParsedResponseHeaders()?.redact(headersToRedact), false)
 
         if (headers.isNotBlank()) {
             writeUtf8(headers)
