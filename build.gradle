@@ -23,7 +23,7 @@ buildscript {
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.7.1'
-        detektVersion = '1.18.0'
+        detektVersion = '1.18.1'
         dokkaVersion = '1.5.0'
         ktLintGradleVersion = '10.0.0'
         leakcanaryVersion = '2.7'
