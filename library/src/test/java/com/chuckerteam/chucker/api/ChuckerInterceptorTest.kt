@@ -472,7 +472,7 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.requestBody).isEqualTo(
             """
             ${"!".repeat(SEGMENT_SIZE.toInt())}
-            
+
             --- Content truncated ---
             """.trimIndent()
         )
@@ -481,7 +481,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `request headers are redacted in case of server failures`(factory: ClientFactory) {
+    fun `repeated request contains same headers as original request`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             maxContentLength = SEGMENT_SIZE,
             headersToRedact = setOf("Header-To-Redact"),
@@ -493,15 +493,15 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
         runCatching { client.newCall(request).execute() }
 
-        val transaction = chuckerInterceptor.expectTransaction()
-        assertThat(transaction.requestHeaders).contains(
-            """
-            |  {
-            |    "name": "Header-To-Redact",
-            |    "value": "**"
-            |  }
-            """.trimMargin()
-        )
+        val originalTransaction = chuckerInterceptor.expectTransaction()
+        val originalHeaders = originalTransaction.getParsedRequestHeaders()
+        assert(!originalHeaders.isNullOrEmpty())
+        val repeatRequest = Request.Builder().url(originalTransaction.getFormattedUrl(false)).header(originalHeaders!![0].name, originalHeaders!![0].value).build()
+        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
+        runCatching { client.newCall(repeatRequest).execute() }
+
+        val repeatedTransaction = chuckerInterceptor.expectTransaction()
+        assertThat(originalTransaction.requestHeaders).contains(repeatedTransaction.requestHeaders)
     }
 
     @ParameterizedTest

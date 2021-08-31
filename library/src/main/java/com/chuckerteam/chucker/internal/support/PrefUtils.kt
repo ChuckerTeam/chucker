@@ -61,6 +61,8 @@ private fun Set<String>.toCSV(): String {
         builder.append(value)
         builder.append(",")
     }
-    builder.delete(builder.length - 1, builder.length)
+    if (builder.isNotEmpty()) {
+        builder.delete(builder.length - 1, builder.length)
+    }
     return builder.toString()
 }
