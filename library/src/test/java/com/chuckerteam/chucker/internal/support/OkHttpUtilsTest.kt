@@ -20,7 +20,7 @@ import java.util.stream.Stream
 internal class OkHttpUtilsTest {
 
     @Test
-    fun isChunked_withNotChunked() {
+    fun `response is not chunked without chunked encoding`() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Transfer-Encoding") } returns "gzip"
 
@@ -28,7 +28,7 @@ internal class OkHttpUtilsTest {
     }
 
     @Test
-    fun isChunked_withNoTransferEncoding() {
+    fun `response is not chunked with no encoding`() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Content-Length") } returns null
         every { mockResponse.header("Transfer-Encoding") } returns null
@@ -37,7 +37,7 @@ internal class OkHttpUtilsTest {
     }
 
     @Test
-    fun isChunked_withChunked() {
+    fun `response is chunked with chunked encoding`() {
         val mockResponse = mockk<Response>()
         every { mockResponse.header("Transfer-Encoding") } returns "chunked"
 
@@ -45,7 +45,7 @@ internal class OkHttpUtilsTest {
     }
 
     @Test
-    fun uncompressSource_withGzippedContent() {
+    fun `gizpped response is gunzipped`() {
         val content = "Hello there!"
         val source = Buffer()
         GzipSink(source).buffer().use { it.writeUtf8(content) }
@@ -58,7 +58,7 @@ internal class OkHttpUtilsTest {
     }
 
     @Test
-    fun uncompressSource_withPlainTextContent() {
+    fun `plain text response is not affected by uncompressing`() {
         val content = "Hello there!"
         val source = Buffer().writeUtf8(content)
 
@@ -72,7 +72,7 @@ internal class OkHttpUtilsTest {
     @ParameterizedTest(name = "\"{0}\" must be supported: {1}")
     @MethodSource("supportedEncodingSource")
     @DisplayName("Check if body encoding is supported")
-    fun headersHaveSupportedEncoding(headers: Headers, isSupported: Boolean) {
+    fun `recognizes supported encodings`(headers: Headers, isSupported: Boolean) {
         val result = headers.hasSupportedContentEncoding
 
         assertThat(result).isEqualTo(isSupported)

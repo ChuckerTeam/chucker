@@ -33,7 +33,7 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         transaction.id = id ?: 0
     }
 
-    override fun updateTransaction(transaction: HttpTransaction): Int {
+    override suspend fun updateTransaction(transaction: HttpTransaction): Int {
         return transactionDao.update(transaction)
     }
 

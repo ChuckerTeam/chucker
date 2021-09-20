@@ -9,6 +9,10 @@
         </intent>
     </queries>
 
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        android:maxSdkVersion="25" />
+
     <application>
         <activity
             android:name="com.chuckerteam.chucker.internal.ui.MainActivity"
@@ -17,14 +21,20 @@
             android:taskAffinity="com.chuckerteam.chucker.task"
             android:theme="@style/Chucker.Theme" />
 
-        <activity android:name="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity"
-            android:theme="@style/Chucker.Theme"
-            android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity"/>
+        <activity
+            android:name="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity"
+            android:parentActivityName="com.chuckerteam.chucker.internal.ui.MainActivity"
+            android:theme="@style/Chucker.Theme" />
 
         <service
             android:name="com.chuckerteam.chucker.internal.support.ClearDatabaseService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name="com.chuckerteam.chucker.internal.support.ClearDatabaseJobIntentServiceReceiver"
             android:exported="false" />
-    
+
         <provider
             android:name="com.chuckerteam.chucker.internal.support.ChuckerFileProvider"
             android:authorities="${applicationId}.com.chuckerteam.chucker.provider"

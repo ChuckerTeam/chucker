@@ -31,7 +31,7 @@ internal interface HttpTransactionDao {
     suspend fun insert(transaction: HttpTransaction): Long?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(transaction: HttpTransaction): Int
+    suspend fun update(transaction: HttpTransaction): Int
 
     @Query("DELETE FROM transactions")
     suspend fun deleteAll()

@@ -25,9 +25,11 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
+        val previousItemCount = items.size
         items.clear()
         items.addAll(bodyItems)
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, previousItemCount)
+        notifyItemRangeInserted(0, items.size)
     }
 
     override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {

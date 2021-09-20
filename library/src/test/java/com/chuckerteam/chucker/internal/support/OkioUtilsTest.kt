@@ -8,14 +8,14 @@ import java.nio.charset.Charset
 
 internal class OkioUtilsTest {
     @Test
-    fun isProbablyPlainText_withEmptyBuffer_returnsTrue() {
+    fun `no content is probably plain text`() {
         val buffer = Buffer()
 
         assertThat(buffer.isProbablyPlainText).isTrue()
     }
 
     @Test
-    fun isProbablyPlainText_withWhiteSpace_returnsTrue() {
+    fun `blank content is probably plain text`() {
         val buffer = Buffer()
         buffer.writeString(" ", Charset.defaultCharset())
 
@@ -23,7 +23,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isProbablyPlainText_withPlainText_returnsTrue() {
+    fun `plain text content is probably plain text`() {
         val buffer = Buffer()
         buffer.writeString("just a string", Charset.defaultCharset())
 
@@ -31,7 +31,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isProbablyPlainText_withCodePoint_returnsFalse() {
+    fun `non plain text content is probably not plain text`() {
         val buffer = Buffer()
         buffer.writeByte(0x11000000)
 
@@ -39,7 +39,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isProbablyPlainText_withNonAsciiText_returnsTrue() {
+    fun `non-ASCII content is probably plain text`() {
         val buffer = Buffer()
         buffer.writeString("ą", Charset.defaultCharset())
 
@@ -47,7 +47,7 @@ internal class OkioUtilsTest {
     }
 
     @Test
-    fun isProbablyPlainText_withTruncatedUtf_returnsFalse() {
+    fun `truncated UTF-8 content is probably not plain text`() {
         val bytes = "ą".encodeUtf8().let { it.substring(0, it.size - 1) }
         val buffer = Buffer().write(bytes)
 

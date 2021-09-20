@@ -53,6 +53,12 @@ public class ChuckerInterceptor private constructor(
         decoders,
     )
 
+    init {
+        if (builder.createShortcut) {
+            Chucker.createShortcut(builder.context)
+        }
+    }
+
     /** Adds [headerName] into [headersToRedact] */
     public fun redactHeader(vararg headerName: String) {
         headersToRedact.addAll(headerName)
@@ -88,6 +94,7 @@ public class ChuckerInterceptor private constructor(
         internal var alwaysReadResponseBody = false
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
+        internal var createShortcut = true
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -138,6 +145,14 @@ public class ChuckerInterceptor private constructor(
          */
         public fun addBodyDecoder(decoder: BodyDecoder): Builder = apply {
             this.decoders += decoder
+        }
+
+        /**
+         * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
+         * to access list of transaction in Chucker.
+         */
+        public fun createShortcut(enable: Boolean): Builder = apply {
+            this.createShortcut = enable
         }
 
         /**

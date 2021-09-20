@@ -13,7 +13,7 @@ internal class TransactionDetailsSharableTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     @Test
-    fun buildCorrectGetTransactionContent() {
+    fun `create sharable GET transaction content`() {
         val transaction = TestTransactionFactory.createTransaction("GET")
         val sharableTransaction = TransactionDetailsSharable(transaction, encodeUrls = false)
 
@@ -23,7 +23,7 @@ internal class TransactionDetailsSharableTest {
     }
 
     @Test
-    fun buildCorrectPostTransactionContent() {
+    fun `create sharable POST transaction content`() {
         val transaction = TestTransactionFactory.createTransaction("POST")
         val sharableTransaction = TransactionDetailsSharable(transaction, encodeUrls = false)
 

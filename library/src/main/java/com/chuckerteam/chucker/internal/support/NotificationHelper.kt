@@ -43,7 +43,7 @@ internal class NotificationHelper(val context: Context) {
             context,
             TRANSACTION_NOTIFICATION_ID,
             Chucker.getLaunchIntent(context),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
         )
     }
 
@@ -113,17 +113,28 @@ internal class NotificationHelper(val context: Context) {
     private fun createClearAction():
         NotificationCompat.Action {
             val clearTitle = context.getString(R.string.chucker_clear)
-            val deleteIntent = Intent(context, ClearDatabaseService::class.java)
-            val intent = PendingIntent.getService(
+            val clearTransactionsBroadcastIntent =
+                Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
+            val pendingBroadcastIntent = PendingIntent.getBroadcast(
                 context,
                 INTENT_REQUEST_CODE,
-                deleteIntent,
-                PendingIntent.FLAG_ONE_SHOT
+                clearTransactionsBroadcastIntent,
+                PendingIntent.FLAG_ONE_SHOT or immutableFlag()
             )
-            return NotificationCompat.Action(R.drawable.chucker_ic_delete_white, clearTitle, intent)
+            return NotificationCompat.Action(
+                R.drawable.chucker_ic_delete_white,
+                clearTitle,
+                pendingBroadcastIntent
+            )
         }
 
     fun dismissNotifications() {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
+    }
+
+    private fun immutableFlag() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
     }
 }

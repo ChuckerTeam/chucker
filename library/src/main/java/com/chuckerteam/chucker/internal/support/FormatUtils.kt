@@ -83,11 +83,11 @@ internal object FormatUtils {
                 transform(domSource, result)
             }
             writer.toString()
-        } catch (e: SAXParseException) {
+        } catch (ignore: SAXParseException) {
             xml
-        } catch (io: IOException) {
+        } catch (ignore: IOException) {
             xml
-        } catch (t: TransformerException) {
+        } catch (ignore: TransformerException) {
             xml
         }
     }
@@ -103,9 +103,9 @@ internal object FormatUtils {
                 val value = if (keyValue.size > 1) URLDecoder.decode(keyValue[1], "UTF-8") else ""
                 "$key: $value"
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (ignore: IllegalArgumentException) {
             form
-        } catch (e: UnsupportedEncodingException) {
+        } catch (ignore: UnsupportedEncodingException) {
             form
         }
     }

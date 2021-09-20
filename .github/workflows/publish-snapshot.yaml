@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.8.0
+      uses: styfle/cancel-workflow-action@0.9.1
       with:
         access_token: ${{ github.token }}
 
@@ -31,7 +31,7 @@ jobs:
         path: '~/.m2/repository/'
 
     - name: Publish to the Snapshot Repository
-      run: ./gradlew publishReleasePublicationToSnapshotRepository
+      run: ./gradlew publishReleasePublicationToSnapshotRepository --no-parallel
       env:
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}

@@ -9,7 +9,7 @@ internal class FileFactoryTest {
     @TempDir lateinit var tempDir: File
 
     @Test
-    fun fileIsCreated_evenIfParentDirectory_isDeleted() {
+    fun `file is created if parent does not exist`() {
         assertThat(tempDir.deleteRecursively()).isTrue()
 
         assertThat(FileFactory.create(tempDir)!!.isFile).isTrue()
