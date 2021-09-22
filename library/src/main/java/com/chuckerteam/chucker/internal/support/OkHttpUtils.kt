@@ -64,7 +64,7 @@ private val supportedEncodings = listOf("identity", "gzip", "br")
 internal val Headers.hasSupportedContentEncoding: Boolean
     get() = get("Content-Encoding")
         ?.takeIf { it.isNotEmpty() }
-        ?.let { it.toLowerCase(Locale.ROOT) in supportedEncodings }
+        ?.let { it.lowercase(Locale.ROOT) in supportedEncodings }
         ?: true
 
 internal fun Source.uncompress(headers: Headers) = when {

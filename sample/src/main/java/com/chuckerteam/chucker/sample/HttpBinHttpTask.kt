@@ -137,9 +137,11 @@ class HttpBinHttpTask(
         fun image(@Header("Accept") accept: String): Call<Any?>
 
         @GET("/brotli")
+        @Headers("Accept-Encoding: br")
         fun brotliResponse(): Call<Any?>
 
         @GET("/gzip")
+        @Headers("Accept-Encoding: gzip")
         fun gzipResponse(): Call<Any?>
 
         @POST("/post")

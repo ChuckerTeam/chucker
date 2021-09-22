@@ -59,11 +59,50 @@ internal class TransactionCurlCommandSharableTest {
                 requestBody = dummyRequestBody
             }
             val shareableTransaction = TransactionCurlCommandSharable(transaction)
-            val expectedCurlCommand = "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
+            val expectedCurlCommand =
+                "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
 
             val sharedContent = shareableTransaction.toSharableUtf8Content(context)
 
             assertThat(sharedContent).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun `create cURL command with gzip header`() {
+        val headers = listOf(HttpHeader("Accept-Encoding", "gzip"))
+        val convertedHeader = JsonConverter.instance.toJson(headers)
+
+        requestMethods.forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method).apply {
+                requestHeaders = convertedHeader
+            }
+            val sharableTransaction = TransactionCurlCommandSharable(transaction)
+
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
+
+            val expected = "curl -X $method -H \"Accept-Encoding: gzip\" --compressed http://localhost/getUsers"
+
+            assertThat(sharedContent).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `create cURL command with brotli header`() {
+        val headers = listOf(HttpHeader("Accept-Encoding", "br"))
+        val convertedHeader = JsonConverter.instance.toJson(headers)
+
+        requestMethods.forEach { method ->
+            val transaction = TestTransactionFactory.createTransaction(method).apply {
+                requestHeaders = convertedHeader
+            }
+            val sharableTransaction = TransactionCurlCommandSharable(transaction)
+
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
+
+            val expected = "curl -X $method -H \"Accept-Encoding: br\" --compressed http://localhost/getUsers"
+
+            assertThat(sharedContent).isEqualTo(expected)
         }
     }
 }
