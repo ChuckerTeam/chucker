@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="chucker_name">Chucker</string>
+    <string name="chucker_version">3.5.2</string>
     <string name="chucker_http_notification_title">Recording HTTP activity</string>
     <string name="chucker_clear">Clear</string>
     <string name="chucker_encode_url">Encode URL</string>
@@ -30,6 +31,7 @@
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
     <string name="chucker_share_as_file">Share as file</string>
+    <string name="chucker_share_as_har">Share as har file</string>
     <string name="chucker_save">Save body to file</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>
@@ -46,6 +48,8 @@
     <string name="chucker_share_all_transactions_subject">All transactions</string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
     <string name="chucker_export_http_confirmation">Do you want to export all network transactions?</string>
+    <string name="chucker_export_text_http_confirmation">Do you want to export all network transactions as a text file?</string>
+    <string name="chucker_export_har_http_confirmation">Do you want to export all network transactions as a .har file?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Export Start */</string>
     <string name="chucker_export_postfix">/*  Export End  */</string>

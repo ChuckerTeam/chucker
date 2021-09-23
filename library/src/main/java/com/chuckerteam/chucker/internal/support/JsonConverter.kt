@@ -12,4 +12,11 @@ internal object JsonConverter {
             .setPrettyPrinting()
             .create()
     }
+
+    val nonNullSerializerInstance: Gson by lazy {
+        GsonBuilder()
+            .disableHtmlEscaping()
+            .setPrettyPrinting()
+            .create()
+    }
 }

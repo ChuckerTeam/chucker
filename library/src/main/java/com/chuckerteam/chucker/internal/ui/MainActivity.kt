@@ -6,21 +6,26 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.data.model.DialogData
+import com.chuckerteam.chucker.internal.support.HarUtils
+import com.chuckerteam.chucker.internal.support.Sharable
+import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import kotlinx.coroutines.launch
-
-private const val EXPORT_FILE_NAME = "transactions.txt"
+import kotlinx.coroutines.runBlocking
 
 internal class MainActivity :
     BaseChuckerActivity(),
@@ -89,11 +94,35 @@ internal class MainActivity :
                 )
                 true
             }
-            R.id.export -> {
+            R.id.share_text -> {
                 showDialog(
-                    getExportDialogData(),
+                    getExportDialogData(R.string.chucker_export_text_http_confirmation),
                     onPositiveClick = {
-                        exportTransactions()
+                        exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
+                            TransactionListDetailsSharable(transactions, encodeUrls = false)
+                        }
+                    },
+                    onNegativeClick = null
+                )
+                true
+            }
+            R.id.share_har -> {
+                showDialog(
+                    getExportDialogData(R.string.chucker_export_har_http_confirmation),
+                    onPositiveClick = {
+                        exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
+                            TransactionDetailsHarSharable(
+                                runBlocking {
+                                    HarUtils.harStringFromTransactions(
+                                        transactions,
+                                        Creator(
+                                            getString(R.string.chucker_name),
+                                            getString(R.string.chucker_version)
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     },
                     onNegativeClick = null
                 )
@@ -112,23 +141,27 @@ internal class MainActivity :
         return true
     }
 
-    private fun exportTransactions() = lifecycleScope.launch {
-        val transactions = viewModel.getAllTransactions()
-        if (transactions.isNullOrEmpty()) {
-            Toast.makeText(this@MainActivity, R.string.chucker_export_empty_text, Toast.LENGTH_SHORT).show()
-            return@launch
-        }
+    private fun exportTransactions(fileName: String, block: (List<HttpTransaction>) -> Sharable) {
+        lifecycleScope.launch {
+            val transactions = viewModel.getAllTransactions()
+            if (transactions.isNullOrEmpty()) {
+                Toast
+                    .makeText(this@MainActivity, R.string.chucker_export_empty_text, Toast.LENGTH_SHORT)
+                    .show()
+                return@launch
+            }
 
-        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
-        val shareIntent = sharableTransactions.shareAsFile(
-            activity = this@MainActivity,
-            fileName = EXPORT_FILE_NAME,
-            intentTitle = getString(R.string.chucker_share_all_transactions_title),
-            intentSubject = getString(R.string.chucker_share_all_transactions_subject),
-            clipDataLabel = "transactions"
-        )
-        if (shareIntent != null) {
-            startActivity(shareIntent)
+            val sharableTransactions = block(transactions)
+            val shareIntent = sharableTransactions.shareAsFile(
+                activity = this@MainActivity,
+                fileName = fileName,
+                intentTitle = getString(R.string.chucker_share_all_transactions_title),
+                intentSubject = getString(R.string.chucker_share_all_transactions_subject),
+                clipDataLabel = "transactions"
+            )
+            if (shareIntent != null) {
+                startActivity(shareIntent)
+            }
         }
     }
 
@@ -139,10 +172,15 @@ internal class MainActivity :
         negativeButtonText = getString(R.string.chucker_cancel)
     )
 
-    private fun getExportDialogData(): DialogData = DialogData(
+    private fun getExportDialogData(@StringRes dialogMessage: Int): DialogData = DialogData(
         title = getString(R.string.chucker_export),
-        message = getString(R.string.chucker_export_http_confirmation),
+        message = getString(dialogMessage),
         positiveButtonText = getString(R.string.chucker_export),
         negativeButtonText = getString(R.string.chucker_cancel)
     )
+
+    companion object {
+        private const val EXPORT_TXT_FILE_NAME = "transactions.txt"
+        private const val EXPORT_HAR_FILE_NAME = "transactions.har"
+    }
 }
