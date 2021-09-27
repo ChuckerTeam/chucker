@@ -203,7 +203,7 @@ If you're looking for the **latest stable version**, you can always find it in `
 
 ## FAQ ❓
 
-* Why are some of my request headers missing?
+* Why are some of my request headers (e.g. `Content-Encoding` or `Accept-Encoding`) missing?
 * Why are retries and redirects not being captured discretely?
 * Why are my encoded request/response bodies not appearing as plain text?
 
