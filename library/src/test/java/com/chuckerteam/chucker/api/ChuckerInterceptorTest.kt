@@ -22,6 +22,7 @@ import okhttp3.mockwebserver.SocketPolicy
 import okio.Buffer
 import okio.BufferedSink
 import okio.ByteString
+import okio.ByteString.Companion.decodeHex
 import okio.ByteString.Companion.encodeUtf8
 import okio.GzipSink
 import okio.buffer
@@ -36,12 +37,15 @@ import java.net.HttpURLConnection.HTTP_NO_CONTENT
 
 @ExtendWith(NoLoggerRule::class)
 internal class ChuckerInterceptorTest {
-    @get:Rule val server = MockWebServer()
+    @get:Rule
+    val server = MockWebServer()
 
     private val serverUrl = server.url("/") // Starts server implicitly
 
-    @TempDir lateinit var tempDir: File
-    private val chuckerInterceptor = ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
+    @TempDir
+    lateinit var tempDir: File
+    private val chuckerInterceptor =
+        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -53,7 +57,8 @@ internal class ChuckerInterceptorTest {
 
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
-        val responseBody = ByteString.of(*chuckerInterceptor.expectTransaction().responseImageData!!)
+        val responseBody =
+            ByteString.of(*chuckerInterceptor.expectTransaction().responseImageData!!)
 
         assertThat(responseBody).isEqualTo(expectedBody)
     }
@@ -108,8 +113,10 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `gzipped response body without content is transparent to Chucker`(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
+    fun `compressed response body without content is transparent to Chucker`(factory: ClientFactory) {
+        server.enqueue(
+            MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT)
+        )
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
@@ -121,14 +128,59 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `gzipped response body without content is transparent to consumer`(factory: ClientFactory) {
-        server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT))
+    fun `compressed response body without content is transparent to consumer`(factory: ClientFactory) {
+        server.enqueue(
+            MockResponse().addHeader("Content-Encoding: br").setResponseCode(HTTP_NO_CONTENT)
+        )
         val request = Request.Builder().url(serverUrl).build()
 
         val client = factory.create(chuckerInterceptor)
         val responseBody = client.newCall(request).execute().readByteStringBody()
 
         assertThat(responseBody).isNull()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun `brotli response body is uncompressed for Chucker`(factory: ClientFactory) {
+        val brotliEncodedString =
+            "1bce00009c05ceb9f028d14e416230f718960a537b0922d2f7b6adef56532c08dff44551516690131494db" +
+                "6021c7e3616c82c1bc2416abb919aaa06e8d30d82cc2981c2f5c900bfb8ee29d5c03deb1c0dacff80e" +
+                "abe82ba64ed250a497162006824684db917963ecebe041b352a3e62d629cc97b95cac24265b175171e" +
+                "5cb384cd0912aeb5b5dd9555f2dd1a9b20688201"
+
+        val brotliSource = Buffer().write(brotliEncodedString.decodeHex())
+
+        server.enqueue(MockResponse().addHeader("Content-Encoding: br").setBody(brotliSource))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        assertThat(transaction.isRequestBodyEncoded).isFalse()
+        assertThat(transaction.responseBody).contains("\"brotli\": true")
+        assertThat(transaction.responseBody).contains("\"Accept-Encoding\": \"br\"")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun `brotli response body is not changed for consumer`(factory: ClientFactory) {
+        val brotliEncodedString =
+            "1bce00009c05ceb9f028d14e416230f718960a537b0922d2f7b6adef56532c08dff44551516690131494db" +
+                "6021c7e3616c82c1bc2416abb919aaa06e8d30d82cc2981c2f5c900bfb8ee29d5c03deb1c0dacff80e" +
+                "abe82ba64ed250a497162006824684db917963ecebe041b352a3e62d629cc97b95cac24265b175171e" +
+                "5cb384cd0912aeb5b5dd9555f2dd1a9b20688201"
+
+        val brotliSource = Buffer().write(brotliEncodedString.decodeHex())
+
+        server.enqueue(MockResponse().addHeader("Content-Encoding: br").setBody(brotliSource))
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chuckerInterceptor)
+        val responseBody = client.newCall(request).execute().readByteStringBody()!!
+
+        assertThat(responseBody.hex()).isEqualTo(brotliEncodedString)
     }
 
     @ParameterizedTest
@@ -202,7 +254,12 @@ internal class ChuckerInterceptorTest {
         //
         // It is only best effort attempt and if we download less than 8KiB reading will continue
         // in 8KiB batches until at least 8KiB is downloaded.
-        assertThat(transaction.responsePayloadSize).isIn(Range.closed(SEGMENT_SIZE, 2 * SEGMENT_SIZE))
+        assertThat(transaction.responsePayloadSize).isIn(
+            Range.closed(
+                SEGMENT_SIZE,
+                2 * SEGMENT_SIZE
+            )
+        )
     }
 
     @ParameterizedTest
@@ -464,7 +521,8 @@ internal class ChuckerInterceptorTest {
         )
         val client = factory.create(chuckerInterceptor)
 
-        val request = "!".repeat(SEGMENT_SIZE.toInt() * 10).toRequestBody().toServerRequest(serverUrl)
+        val request =
+            "!".repeat(SEGMENT_SIZE.toInt() * 10).toRequestBody().toServerRequest(serverUrl)
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
@@ -472,7 +530,7 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.requestBody).isEqualTo(
             """
             ${"!".repeat(SEGMENT_SIZE.toInt())}
-            
+
             --- Content truncated ---
             """.trimIndent()
         )

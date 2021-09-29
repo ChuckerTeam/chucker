@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
+import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import okio.Buffer
 import okio.Source
@@ -14,9 +15,7 @@ internal class TransactionCurlCommandSharable(
         val headers = transaction.getParsedRequestHeaders()
 
         headers?.forEach { header ->
-            if ("Accept-Encoding".equals(header.name, ignoreCase = true) &&
-                "gzip".equals(header.value, ignoreCase = true)
-            ) {
+            if (isCompressed(header)) {
                 compressed = true
             }
             writeUtf8(" -H \"${header.name}: ${header.value}\"")
@@ -28,5 +27,13 @@ internal class TransactionCurlCommandSharable(
             writeUtf8(" --data $'${requestBody.replace("\n", "\\n")}'")
         }
         writeUtf8((if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(encode = false))
+    }
+
+    private fun isCompressed(header: HttpHeader): Boolean {
+        return (
+            "Accept-Encoding".equals(header.name, ignoreCase = true) &&
+                "gzip".contains(header.value, ignoreCase = true) ||
+                "br".contains(header.value, ignoreCase = true)
+            )
     }
 }

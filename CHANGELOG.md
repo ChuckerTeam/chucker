@@ -8,12 +8,13 @@ Please add your entries according to this format.
 ### Added
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
 * Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
+* Brotli compression support
 
 ### Fixed
 
 * Fixed request headers not being redacted in case of failures [#545].
 * Fixed wrongful processing of one shot and duplex requests [#544].
-* Fixed writing to database on the main thread [#487]. 
+* Fixed writing to database on the main thread [#487].
 
 ### Removed
 
@@ -26,7 +27,7 @@ Please add your entries according to this format.
 
 ## Version 3.5.2 *(2021-07-28)*
 
-This release is a re-deployment of 3.5.1, since 3.5.1 aar didn't upload properly on Maven Central.
+This release is a re-deployment of 3.5.1, since 3.5.1 `aar` didn't upload properly on Maven Central.
 
 ## Version 3.5.1 *(2021-07-19)*
 

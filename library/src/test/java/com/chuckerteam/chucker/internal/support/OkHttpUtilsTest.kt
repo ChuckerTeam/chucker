@@ -8,6 +8,7 @@ import okhttp3.Headers.Companion.headersOf
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSource
+import okio.ByteString.Companion.decodeHex
 import okio.GzipSink
 import okio.buffer
 import org.junit.jupiter.api.DisplayName
@@ -45,7 +46,7 @@ internal class OkHttpUtilsTest {
     }
 
     @Test
-    fun `gizpped response is gunzipped`() {
+    fun `gzip compressed response is uncompressed`() {
         val content = "Hello there!"
         val source = Buffer()
         GzipSink(source).buffer().use { it.writeUtf8(content) }
@@ -55,6 +56,24 @@ internal class OkHttpUtilsTest {
             .use(BufferedSource::readUtf8)
 
         assertThat(result).isEqualTo(content)
+    }
+
+    @Test
+    fun `brotli compressed response is uncompressed`() {
+        val brotliEncodedString =
+            "1bce00009c05ceb9f028d14e416230f718960a537b0922d2f7b6adef56532c08dff44551516690131494db" +
+                "6021c7e3616c82c1bc2416abb919aaa06e8d30d82cc2981c2f5c900bfb8ee29d5c03deb1c0dacff80e" +
+                "abe82ba64ed250a497162006824684db917963ecebe041b352a3e62d629cc97b95cac24265b175171e" +
+                "5cb384cd0912aeb5b5dd9555f2dd1a9b20688201"
+
+        val brotliSource = Buffer().write(brotliEncodedString.decodeHex())
+
+        val result = brotliSource.uncompress(headersOf("Content-Encoding", "br"))
+            .buffer()
+            .use(BufferedSource::readUtf8)
+
+        assertThat(result).contains("\"brotli\": true,")
+        assertThat(result).contains("\"Accept-Encoding\": \"br\"")
     }
 
     @Test
@@ -83,6 +102,7 @@ internal class OkHttpUtilsTest {
         fun supportedEncodingSource(): Stream<Arguments> = Stream.of(
             null to true,
             "" to true,
+            "br" to true,
             "identity" to true,
             "gzip" to true,
             "other" to false,
