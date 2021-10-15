@@ -94,29 +94,27 @@ internal class TransactionPayloadFragment :
             adapter = payloadAdapter
         }
 
-        viewModel.transaction
-            .combineLatest(viewModel.formatRequestBody)
-            .observe(
-                viewLifecycleOwner,
-                Observer { (transaction, formatRequestBody) ->
-                    if (transaction == null) return@Observer
-                    lifecycleScope.launch {
-                        payloadBinding.loadingProgress.visibility = View.VISIBLE
+        viewModel.transaction.combineLatest(viewModel.formatRequestBody).observe(
+            viewLifecycleOwner,
+            Observer { (transaction, formatRequestBody) ->
+                if (transaction == null) return@Observer
+                lifecycleScope.launch {
+                    payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                        val result = processPayload(payloadType, transaction, formatRequestBody)
-                        if (result.isEmpty()) {
-                            showEmptyState()
-                        } else {
-                            payloadAdapter.setItems(result)
-                            showPayloadState()
-                        }
-                        // Invalidating menu, because we need to hide menu items for empty payloads
-                        requireActivity().invalidateOptionsMenu()
-
-                        payloadBinding.loadingProgress.visibility = View.GONE
+                    val result = processPayload(payloadType, transaction, formatRequestBody)
+                    if (result.isEmpty()) {
+                        showEmptyState()
+                    } else {
+                        payloadAdapter.setItems(result)
+                        showPayloadState()
                     }
+                    // Invalidating menu, because we need to hide menu items for empty payloads
+                    requireActivity().invalidateOptionsMenu()
+
+                    payloadBinding.loadingProgress.visibility = View.GONE
                 }
-            )
+            }
+        )
     }
 
     private fun showEmptyState() {
