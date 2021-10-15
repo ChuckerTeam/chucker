@@ -47,14 +47,10 @@ internal class TransactionOverviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.transaction
-            .combineLatest(viewModel.encodeUrl)
-            .observe(
-                viewLifecycleOwner,
-                Observer { (transaction, encodeUrl) ->
-                    populateUI(transaction, encodeUrl)
-                }
-            )
+        viewModel.transaction.combineLatest(viewModel.encodeUrl).observe(
+            viewLifecycleOwner,
+            Observer { (transaction, encodeUrl) -> populateUI(transaction, encodeUrl) }
+        )
     }
 
     private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {

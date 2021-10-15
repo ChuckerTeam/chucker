@@ -112,21 +112,21 @@ internal class NotificationHelper(val context: Context) {
 
     private fun createClearAction():
         NotificationCompat.Action {
-            val clearTitle = context.getString(R.string.chucker_clear)
-            val clearTransactionsBroadcastIntent =
-                Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
-            val pendingBroadcastIntent = PendingIntent.getBroadcast(
-                context,
-                INTENT_REQUEST_CODE,
-                clearTransactionsBroadcastIntent,
-                PendingIntent.FLAG_ONE_SHOT or immutableFlag()
-            )
-            return NotificationCompat.Action(
-                R.drawable.chucker_ic_delete_white,
-                clearTitle,
-                pendingBroadcastIntent
-            )
-        }
+        val clearTitle = context.getString(R.string.chucker_clear)
+        val clearTransactionsBroadcastIntent =
+            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
+        val pendingBroadcastIntent = PendingIntent.getBroadcast(
+            context,
+            INTENT_REQUEST_CODE,
+            clearTransactionsBroadcastIntent,
+            PendingIntent.FLAG_ONE_SHOT or immutableFlag()
+        )
+        return NotificationCompat.Action(
+            R.drawable.chucker_ic_delete_white,
+            clearTitle,
+            pendingBroadcastIntent
+        )
+    }
 
     fun dismissNotifications() {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
