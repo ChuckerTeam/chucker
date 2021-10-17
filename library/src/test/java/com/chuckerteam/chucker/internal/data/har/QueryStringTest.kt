@@ -7,7 +7,7 @@ import org.junit.Test
 
 internal class QueryStringTest {
     @Test
-    fun fromUrl_createsCorrectListOfQueryStrings() {
+    fun `query string list is created correctly with url with queries`() {
         val url = "https://fake.url.com/path?query1=a&query2=b#the-fragment-part".toHttpUrl()
         val queryStringList = QueryString.fromUrl(url)
         assertThat(queryStringList).hasSize(2)
@@ -16,7 +16,7 @@ internal class QueryStringTest {
     }
 
     @Test
-    fun fromUrl_createsCorrectEmptyListWhenNoQueryStringsPresent() {
+    fun `query string list is created correctly with url with no query`() {
         val url = "https://fake.url.com/path#the-fragment-part".toHttpUrl()
         val queryStringList = QueryString.fromUrl(url)
         assertThat(queryStringList).isEmpty()

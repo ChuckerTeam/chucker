@@ -6,37 +6,35 @@ import com.chuckerteam.chucker.internal.data.har.log.entry.Response
 import com.chuckerteam.chucker.internal.data.har.log.entry.Timings
 import com.chuckerteam.chucker.internal.data.har.log.entry.request.PostData
 import com.chuckerteam.chucker.internal.data.har.log.entry.response.Content
-import com.chuckerteam.chucker.util.TestTransactionFactory
+import com.chuckerteam.chucker.util.HarTestUtils
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.util.Date
 
 internal class EntryTest {
     @Test
-    fun fromHttpTransaction_createsEntryWithCorrectStartedDateTime() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val entry = Entry(transaction)
+    fun `entry is created correctly with start datetime`() {
+        val transaction = HarTestUtils.createTransaction("GET")
+        val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(Entry.DateFormat.get()!!.parse(entry.startedDateTime)).isEqualTo(Date(transaction.requestDate!!))
-        assertThat(entry.time).isEqualTo(1000)
+        assertThat(Entry.DateFormat.get()!!.parse(entry?.startedDateTime))
+            .isEqualTo(Date(transaction.requestDate!!))
     }
 
     @Test
-    fun fromHttpTransaction_createsEntryWithCorrectTime() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val entry = Entry(transaction)
+    fun `entry is created correctly with time`() {
+        val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(entry.time).isEqualTo(1000)
+        assertThat(entry?.time).isEqualTo(1000)
     }
 
     @Test
-    fun fromHttpTransaction_createsEntryWithCorrectRequest() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val entry = Entry(transaction)
+    fun `entry is created correctly with request`() {
+        val entry = HarTestUtils.createEntry("POST")
 
-        assertThat(entry.request).isEqualTo(
+        assertThat(entry?.request).isEqualTo(
             Request(
-                method = "GET",
+                method = "POST",
                 url = "http://localhost:80/getUsers",
                 httpVersion = "HTTP",
                 cookies = emptyList(),
@@ -51,11 +49,10 @@ internal class EntryTest {
     }
 
     @Test
-    fun fromHttpTransaction_createsEntryWithCorrectResponse() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val entry = Entry(transaction)
+    fun `entry is created correctly with response`() {
+        val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(entry.response).isEqualTo(
+        assertThat(entry?.response).isEqualTo(
             Response(
                 status = 200,
                 statusText = "OK",
@@ -78,10 +75,10 @@ internal class EntryTest {
     }
 
     @Test
-    fun fromHttpTransaction_createsEntryWithCorrectTimings() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val entry = Entry(transaction)
+    fun `entry is created correctly with timing`() {
+        val transaction = HarTestUtils.createTransaction("GET")
+        val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(entry.timings).isEqualTo(Timings(transaction))
+        assertThat(entry?.timings).isEqualTo(Timings(transaction))
     }
 }

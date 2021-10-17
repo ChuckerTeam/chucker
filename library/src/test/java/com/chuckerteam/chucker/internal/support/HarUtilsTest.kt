@@ -1,45 +1,61 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.internal.data.har.log.Creator
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.har.log.Entry
-import com.chuckerteam.chucker.util.TestTransactionFactory
+import com.chuckerteam.chucker.util.HarTestUtils
+import com.chuckerteam.chucker.util.HarTestUtils.createHar2
+import com.chuckerteam.chucker.util.HarTestUtils.createHarString
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import java.util.Date
 
+@RunWith(RobolectricTestRunner::class)
 internal class HarUtilsTest {
+    private lateinit var context: Context
+
+    @Before
+    fun setUp() {
+        context = ApplicationProvider.getApplicationContext()
+    }
+
     @Test
-    fun fromHttpTransactions_createsHarWithMultipleEntries() {
-        val getTransaction = TestTransactionFactory.createTransaction("GET")
-        val postTransaction = TestTransactionFactory.createTransaction("POST")
-        val creator = Creator("Chucker", "3.5.2")
-        val har = HarUtils.fromHttpTransactions(listOf(getTransaction, postTransaction), creator)
+    fun `entry list is created correctly with different methods`() {
+        val har = context.createHar2()
+
         assertThat(har.log.entries).hasSize(2)
         assertThat(har.log.entries[0].request.method).isEqualTo("GET")
         assertThat(har.log.entries[1].request.method).isEqualTo("POST")
     }
 
     @Test
-    fun harString_createsJsonString(): Unit = runBlocking {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val result = HarUtils.harStringFromTransactions(listOf(transaction), "Chucker", "3.5.2")
+    fun `har content is created correctly`(): Unit = runBlocking {
+        val transaction = HarTestUtils.createTransaction("POST")
+        val result = context.createHarString()
+        val chuckerName = context.getString(R.string.chucker_name)
+        val chuckerVersion = context.getString(R.string.chucker_version)
         val startedDateTime = Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
+
         assertThat(result).isEqualTo(
             """
                 {
                   "log": {
                     "version": "1.2",
                     "creator": {
-                      "name": "Chucker",
-                      "version": "3.5.2"
+                      "name": "$chuckerName",
+                      "version": "$chuckerVersion"
                     },
                     "entries": [
                       {
                         "startedDateTime": "$startedDateTime",
                         "time": 1000,
                         "request": {
-                          "method": "GET",
+                          "method": "POST",
                           "url": "http://localhost:80/getUsers",
                           "httpVersion": "HTTP",
                           "cookies": [],

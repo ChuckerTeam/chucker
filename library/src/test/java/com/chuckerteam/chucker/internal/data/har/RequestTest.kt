@@ -1,50 +1,44 @@
 package com.chuckerteam.chucker.internal.data.har
 
-import com.chuckerteam.chucker.internal.data.har.log.entry.Request
 import com.chuckerteam.chucker.internal.data.har.log.entry.request.PostData
-import com.chuckerteam.chucker.util.TestTransactionFactory
+import com.chuckerteam.chucker.util.HarTestUtils
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 internal class RequestTest {
     @Test
-    fun fromHttpTransaction_createsRequestWithCorrectMethod() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val request = Request(transaction)
+    fun `request is created correctly with method`() {
+        val request = HarTestUtils.createRequest("GET")
 
-        assertThat(request.method).isEqualTo("GET")
+        assertThat(request?.method).isEqualTo("GET")
     }
 
     @Test
-    fun fromHttpTransaction_createsRequestWithCorrectUrl() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val request = Request(transaction)
+    fun `request is created correctly with url`() {
+        val request = HarTestUtils.createRequest("GET")
 
-        assertThat(request.url).isEqualTo("http://localhost:80/getUsers")
+        assertThat(request?.url).isEqualTo("http://localhost:80/getUsers")
     }
 
     @Test
-    fun fromHttpTransaction_createsRequestWithCorrectHttpVersion() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val request = Request(transaction)
+    fun `request is created correctly with http version`() {
+        val request = HarTestUtils.createRequest("GET")
 
-        assertThat(request.httpVersion).isEqualTo("HTTP")
+        assertThat(request?.httpVersion).isEqualTo("HTTP")
     }
 
     @Test
-    fun fromHttpTransaction_createsRequestWithCorrectPostData() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val request = Request(transaction)
+    fun `request is created correctly with post data`() {
+        val request = HarTestUtils.createRequest("POST")
 
-        assertThat(request.postData)
+        assertThat(request?.postData)
             .isEqualTo(PostData(mimeType = "application/json", params = null, text = null))
     }
 
     @Test
-    fun fromHttpTransaction_createsRequestWithCorrectBodySize() {
-        val transaction = TestTransactionFactory.createTransaction("GET")
-        val request = Request(transaction)
+    fun `request is created correctly with body size`() {
+        val request = HarTestUtils.createRequest("POST")
 
-        assertThat(request.bodySize).isEqualTo(1000)
+        assertThat(request?.bodySize).isEqualTo(1000)
     }
 }
