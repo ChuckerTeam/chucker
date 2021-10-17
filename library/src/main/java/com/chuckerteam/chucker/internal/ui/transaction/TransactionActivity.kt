@@ -12,7 +12,6 @@ import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionCurlCommandSharable
@@ -93,10 +92,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 runBlocking {
                     HarUtils.harStringFromTransactions(
                         listOf(transaction),
-                        Creator(
-                            getString(R.string.chucker_name),
-                            getString(R.string.chucker_version)
-                        )
+                        getString(R.string.chucker_name),
+                        getString(R.string.chucker_version)
                     )
                 }
             )

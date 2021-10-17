@@ -23,8 +23,7 @@ internal class HarUtilsTest {
     @Test
     fun harString_createsJsonString(): Unit = runBlocking {
         val transaction = TestTransactionFactory.createTransaction("GET")
-        val creator = Creator("Chucker", "3.5.2")
-        val result = HarUtils.harStringFromTransactions(listOf(transaction), creator)
+        val result = HarUtils.harStringFromTransactions(listOf(transaction), "Chucker", "3.5.2")
         val startedDateTime = Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
         assertThat(result).isEqualTo(
             """
@@ -71,10 +70,7 @@ internal class HarUtilsTest {
                         },
                         "cache": {},
                         "timings": {
-                          "blocked": -1,
-                          "dns": -1,
-                          "ssl": -1,
-                          "connect": -1,
+                          "connect": 0,
                           "send": 0,
                           "wait": 0,
                           "receive": 1000

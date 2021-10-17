@@ -12,9 +12,11 @@ import kotlinx.coroutines.withContext
 internal object HarUtils {
     suspend fun harStringFromTransactions(
         transactions: List<HttpTransaction>,
-        creator: Creator
+        name: String,
+        version: String,
     ): String = withContext(Dispatchers.Default) {
-        JsonConverter.nonNullSerializerInstance.toJson(fromHttpTransactions(transactions, creator))
+        JsonConverter.nonNullSerializerInstance
+            .toJson(fromHttpTransactions(transactions, Creator(name, version)))
     }
 
     @VisibleForTesting

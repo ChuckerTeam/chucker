@@ -15,7 +15,9 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import java.net.HttpURLConnection
 import java.util.Date
+import kotlin.collections.ArrayList
 
 /**
  * Represent a full HTTP transaction (with Request and Response). Instances of this classes
@@ -231,6 +233,19 @@ internal class HttpTransaction(
     fun getFormattedPath(encode: Boolean): String {
         val httpUrl = url?.toHttpUrl() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
+    }
+
+    fun getHarRequestTotalSize(): Long {
+        return (requestHeaders?.length ?: 0) + (requestPayloadSize ?: 0)
+    }
+
+    fun getHarResponseTotalSize(): Long {
+        return (responseHeaders?.length ?: 0) + getHarResponseBodySize()
+    }
+
+    fun getHarResponseBodySize(): Long {
+        return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) 0
+        else responsePayloadSize ?: -1
     }
 
     // Not relying on 'equals' because comparison be long due to request and response sizes

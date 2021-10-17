@@ -19,7 +19,7 @@ internal object FileShareHelper {
     suspend fun share(activity: Activity, exportFilename: String, fileContentsFactory: suspend () -> String) {
         val cache = activity.cacheDir
         if (cache == null) {
-            println("Failed to obtain a valid cache directory for Chucker file export")
+            Logger.error("Failed to obtain a valid cache directory for Chucker file export")
             Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
             return
         }
@@ -27,7 +27,7 @@ internal object FileShareHelper {
         val file = createExportFile(cache, exportFilename, fileContentsFactory())
 
         if (file == null) {
-            println("Failed to create an export file for Chucker")
+            Logger.error("Failed to create an export file for Chucker")
             Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
             return
         }

@@ -12,28 +12,25 @@ import java.util.Date
 import java.util.Locale
 
 // https://github.com/ahmadnassri/har-spec/blob/master/versions/1.2.md#entries
+// http://www.softwareishard.com/blog/har-12-spec/#entries
 internal data class Entry(
-    @SerializedName("pageref") val pageref: String?,
+    @SerializedName("pageref") val pageref: String? = null,
     @SerializedName("startedDateTime") val startedDateTime: String,
-    @SerializedName("time") var time: Long,
+    @SerializedName("time") var time: Long = 0,
     @SerializedName("request") val request: Request,
     @SerializedName("response") val response: Response,
     @SerializedName("cache") val cache: Cache,
     @SerializedName("timings") val timings: Timings,
-    @SerializedName("serverIPAddress") val serverIPAddress: String?,
-    @SerializedName("connection") val connection: String?,
+    @SerializedName("serverIPAddress") val serverIPAddress: String? = null,
+    @SerializedName("connection") val connection: String? = null,
     @SerializedName("comment") val comment: String? = null
 ) {
     constructor(transaction: HttpTransaction) : this(
-        pageref = null,
         startedDateTime = transaction.requestDate.harFormatted(),
-        time = -1,
         request = Request(transaction),
         response = Response(transaction),
         cache = Cache(),
         timings = Timings(transaction),
-        serverIPAddress = null,
-        connection = null
     ) {
         time = timings.getTime()
     }
