@@ -41,7 +41,7 @@ internal data class Entry(
     }
 
     companion object {
-        private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         private fun Long?.harFormatted(): String {
             val date = if (this == null) Date() else Date(this)
