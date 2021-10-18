@@ -37,6 +37,7 @@ internal object HarTestUtils {
             requestPayloadSize = requestPayloadSize,
             requestContentType = "application/json",
             requestHeaders = null,
+            requestHeadersSize = null,
             requestBody = null,
             isRequestBodyEncoded = false,
             responseCode = 200,
@@ -45,6 +46,7 @@ internal object HarTestUtils {
             responsePayloadSize = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
+            responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
             isResponseBodyEncoded = false,
             responseImageData = null

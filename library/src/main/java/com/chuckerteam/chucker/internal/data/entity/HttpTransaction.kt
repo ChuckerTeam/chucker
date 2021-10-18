@@ -42,6 +42,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
+    @ColumnInfo(name = "requestHeadersSize") var requestHeadersSize: Long?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
     @ColumnInfo(name = "isRequestBodyEncoded") var isRequestBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
@@ -50,6 +51,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "responseContentType") var responseContentType: String?,
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
+    @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
@@ -71,6 +73,7 @@ internal class HttpTransaction(
         requestPayloadSize = null,
         requestContentType = null,
         requestHeaders = null,
+        requestHeadersSize = null,
         requestBody = null,
         responseCode = null,
         responseMessage = null,
@@ -78,6 +81,7 @@ internal class HttpTransaction(
         responsePayloadSize = null,
         responseContentType = null,
         responseHeaders = null,
+        responseHeadersSize = null,
         responseBody = null,
         responseImageData = null
     )
@@ -146,6 +150,7 @@ internal class HttpTransaction(
         }
 
     fun setRequestHeaders(headers: Headers) {
+        requestHeadersSize = headers.byteCount()
         setRequestHeaders(toHttpHeaderList(headers))
     }
 
@@ -174,6 +179,7 @@ internal class HttpTransaction(
     }
 
     fun setResponseHeaders(headers: Headers) {
+        responseHeadersSize = headers.byteCount()
         setResponseHeaders(toHttpHeaderList(headers))
     }
 

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 
-@Database(entities = [HttpTransaction::class], version = 6, exportSchema = false)
+@Database(entities = [HttpTransaction::class], version = 7, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun transactionDao(): HttpTransactionDao

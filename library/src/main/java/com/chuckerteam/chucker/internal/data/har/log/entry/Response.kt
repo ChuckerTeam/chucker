@@ -14,7 +14,7 @@ internal data class Response(
     @SerializedName("headers") val headers: List<Header>,
     @SerializedName("content") val content: Content? = null,
     @SerializedName("redirectURL") val redirectUrl: String = "",
-    @SerializedName("headersSize") val headersSize: Int,
+    @SerializedName("headersSize") val headersSize: Long,
     @SerializedName("bodySize") val bodySize: Long,
     @SerializedName("totalSize") val totalSize: Long,
     @SerializedName("comment") val comment: String? = null
@@ -25,7 +25,7 @@ internal data class Response(
         httpVersion = transaction.protocol ?: "",
         headers = transaction.getParsedResponseHeaders()?.map { Header(it) } ?: emptyList(),
         content = transaction.responsePayloadSize?.run { Content(transaction) },
-        headersSize = transaction.responseHeaders?.length ?: -1,
+        headersSize = transaction.responseHeadersSize ?: -1,
         bodySize = transaction.getHarResponseBodySize(),
         totalSize = transaction.getHarResponseTotalSize()
     )

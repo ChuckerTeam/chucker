@@ -22,6 +22,7 @@ internal object TestTransactionFactory {
             requestPayloadSize = 1000L,
             requestContentType = "application/json",
             requestHeaders = null,
+            requestHeadersSize = null,
             requestBody = null,
             isRequestBodyEncoded = false,
             responseCode = 200,
@@ -30,6 +31,7 @@ internal object TestTransactionFactory {
             responsePayloadSize = 1000L,
             responseContentType = "application/json",
             responseHeaders = null,
+            responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
             isResponseBodyEncoded = false,
             responseImageData = null
@@ -44,21 +46,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-        
+
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-        
+
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-        
+
         ---------- Request ----------
-        
+
         (body is empty)
-        
+
         ---------- Response ----------
-        
+
         {
           "field": "value"
         }
@@ -72,21 +74,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-        
+
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-        
+
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-        
+
         ---------- Request ----------
-        
+
         (body is empty)
-        
+
         ---------- Response ----------
-        
+
         {
           "field": "value"
         }

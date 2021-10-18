@@ -16,7 +16,7 @@ internal data class Request(
     @SerializedName("headers") val headers: List<Header>,
     @SerializedName("queryString") val queryString: List<QueryString>,
     @SerializedName("postData") val postData: PostData? = null,
-    @SerializedName("headersSize") val headersSize: Int,
+    @SerializedName("headersSize") val headersSize: Long,
     @SerializedName("bodySize") val bodySize: Long,
     @SerializedName("totalSize") val totalSize: Long,
     @SerializedName("comment") val comment: String? = null
@@ -28,7 +28,7 @@ internal data class Request(
         headers = transaction.getParsedRequestHeaders()?.map { Header(it) } ?: emptyList(),
         queryString = transaction.url?.let { QueryString.fromUrl(it.toHttpUrl()) } ?: emptyList(),
         postData = transaction.requestPayloadSize?.run { PostData(transaction) },
-        headersSize = transaction.requestHeaders?.length ?: -1,
+        headersSize = transaction.requestHeadersSize ?: -1,
         bodySize = transaction.requestPayloadSize ?: -1,
         totalSize = transaction.getHarRequestTotalSize()
     )
