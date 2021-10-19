@@ -88,8 +88,9 @@ internal class HarUtilsTest {
                         "timings": {
                           "connect": 0,
                           "send": 0,
-                          "wait": 0,
-                          "receive": 1000
+                          "wait": 1000,
+                          "receive": 0,
+                          "comment": "The information described by this object is incomplete."
                         }
                       }
                     ]

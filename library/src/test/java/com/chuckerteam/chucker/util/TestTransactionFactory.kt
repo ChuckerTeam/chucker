@@ -46,21 +46,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-
+        
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-
+        
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-
+        
         ---------- Request ----------
-
+        
         (body is empty)
-
+        
         ---------- Response ----------
-
+        
         {
           "field": "value"
         }
@@ -74,21 +74,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-
+        
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-
+        
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-
+        
         ---------- Request ----------
-
+        
         (body is empty)
-
+        
         ---------- Response ----------
-
+        
         {
           "field": "value"
         }

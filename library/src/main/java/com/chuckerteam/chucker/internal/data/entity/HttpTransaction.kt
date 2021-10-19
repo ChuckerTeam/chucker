@@ -276,6 +276,7 @@ internal class HttpTransaction(
             (requestPayloadSize == other.requestPayloadSize) &&
             (requestContentType == other.requestContentType) &&
             (requestHeaders == other.requestHeaders) &&
+            (requestHeadersSize == other.requestHeadersSize) &&
             (requestBody == other.requestBody) &&
             (isRequestBodyEncoded == other.isRequestBodyEncoded) &&
             (responseCode == other.responseCode) &&
@@ -284,6 +285,7 @@ internal class HttpTransaction(
             (responsePayloadSize == other.responsePayloadSize) &&
             (responseContentType == other.responseContentType) &&
             (responseHeaders == other.responseHeaders) &&
+            (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
