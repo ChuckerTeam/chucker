@@ -12,11 +12,10 @@ internal data class QueryString(
 ) {
     companion object {
         fun fromUrl(url: HttpUrl): List<QueryString> {
-            val querySize = url.querySize
-            return (0 until querySize).map { index ->
+            return List(url.querySize) { index ->
                 QueryString(
                     name = url.queryParameterName(index),
-                    value = url.queryParameterValue(index) ?: ""
+                    value = url.queryParameterValue(index).orEmpty()
                 )
             }
         }
