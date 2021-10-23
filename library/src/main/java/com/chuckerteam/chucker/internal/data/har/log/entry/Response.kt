@@ -26,7 +26,7 @@ internal data class Response(
         headers = transaction.getParsedResponseHeaders()?.map { Header(it) } ?: emptyList(),
         content = transaction.responsePayloadSize?.run { Content(transaction) },
         headersSize = transaction.responseHeadersSize ?: -1,
-        bodySize = transaction.getHarResponseBodySize(),
-        totalSize = transaction.getHarResponseTotalSize()
+        bodySize = transaction.getResponseBodySize(),
+        totalSize = transaction.getResponseTotalSize()
     )
 }

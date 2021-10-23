@@ -30,6 +30,6 @@ internal data class Request(
         postData = transaction.requestPayloadSize?.run { PostData(transaction) },
         headersSize = transaction.requestHeadersSize ?: -1,
         bodySize = transaction.requestPayloadSize ?: -1,
-        totalSize = transaction.getHarRequestTotalSize()
+        totalSize = transaction.getRequestTotalSize()
     )
 }

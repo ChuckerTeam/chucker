@@ -241,15 +241,15 @@ internal class HttpTransaction(
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 
-    fun getHarRequestTotalSize(): Long {
+    fun getRequestTotalSize(): Long {
         return (requestHeaders?.length ?: 0) + (requestPayloadSize ?: 0)
     }
 
-    fun getHarResponseTotalSize(): Long {
-        return (responseHeaders?.length ?: 0) + getHarResponseBodySize()
+    fun getResponseTotalSize(): Long {
+        return (responseHeaders?.length ?: 0) + getResponseBodySize()
     }
 
-    fun getHarResponseBodySize(): Long {
+    fun getResponseBodySize(): Long {
         return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) 0
         else responsePayloadSize ?: -1
     }
