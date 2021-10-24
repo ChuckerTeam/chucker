@@ -14,7 +14,7 @@ internal data class PostData(
     @SerializedName("comment") val comment: String? = null,
 ) {
     constructor(transaction: HttpTransaction) : this(
-        mimeType = transaction.requestContentType ?: "x-unknown",
-        text = if (transaction.isRequestBodyEncoded) null else transaction.requestBody
+        mimeType = transaction.requestContentType ?: "application/octet-stream",
+        text = transaction.requestBody
     )
 }

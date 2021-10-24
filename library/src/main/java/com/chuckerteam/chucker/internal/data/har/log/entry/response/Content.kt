@@ -15,7 +15,7 @@ internal data class Content(
 ) {
     constructor(transaction: HttpTransaction) : this(
         size = transaction.responsePayloadSize,
-        mimeType = transaction.responseContentType ?: "x-unknown",
+        mimeType = transaction.responseContentType ?: "application/octet-stream",
         text = transaction.responseBody,
     )
 }

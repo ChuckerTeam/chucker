@@ -44,6 +44,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "requestHeadersSize") var requestHeadersSize: Long?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
+    @ColumnInfo(name = "requestBodySize") var requestBodySize: Long?,
     @ColumnInfo(name = "isRequestBodyEncoded") var isRequestBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "responseMessage") var responseMessage: String?,
@@ -53,6 +54,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
     @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
+    @ColumnInfo(name = "responseBodySize") var responseBodySize: Long?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
 ) {
@@ -75,6 +77,7 @@ internal class HttpTransaction(
         requestHeaders = null,
         requestHeadersSize = null,
         requestBody = null,
+        requestBodySize = null,
         responseCode = null,
         responseMessage = null,
         error = null,
@@ -83,6 +86,7 @@ internal class HttpTransaction(
         responseHeaders = null,
         responseHeadersSize = null,
         responseBody = null,
+        responseBodySize = null,
         responseImageData = null
     )
 
@@ -242,16 +246,16 @@ internal class HttpTransaction(
     }
 
     fun getRequestTotalSize(): Long {
-        return (requestHeaders?.length ?: 0) + (requestPayloadSize ?: 0)
+        return (requestHeadersSize ?: 0) + (requestBodySize ?: 0)
     }
 
     fun getResponseTotalSize(): Long {
-        return (responseHeaders?.length ?: 0) + getResponseBodySize()
+        return (responseHeadersSize ?: 0) + getHarResponseBodySize()
     }
 
-    fun getResponseBodySize(): Long {
+    fun getHarResponseBodySize(): Long {
         return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) 0
-        else responsePayloadSize ?: -1
+        else responseBodySize ?: -1
     }
 
     // Not relying on 'equals' because comparison be long due to request and response sizes
@@ -278,6 +282,7 @@ internal class HttpTransaction(
             (requestHeaders == other.requestHeaders) &&
             (requestHeadersSize == other.requestHeadersSize) &&
             (requestBody == other.requestBody) &&
+            (requestBodySize == other.requestBodySize) &&
             (isRequestBodyEncoded == other.isRequestBodyEncoded) &&
             (responseCode == other.responseCode) &&
             (responseMessage == other.responseMessage) &&
@@ -287,6 +292,7 @@ internal class HttpTransaction(
             (responseHeaders == other.responseHeaders) &&
             (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
+            (responseBodySize == other.responseBodySize) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
     }

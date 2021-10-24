@@ -26,7 +26,7 @@ internal data class Entry(
     @SerializedName("comment") val comment: String? = null
 ) {
     constructor(transaction: HttpTransaction) : this(
-        startedDateTime = transaction.requestDate.harFormatted(),
+        startedDateTime = transaction.requestDate?.harFormatted().orEmpty(),
         request = Request(transaction),
         response = Response(transaction),
         cache = Cache(),
@@ -43,9 +43,8 @@ internal data class Entry(
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
-        private fun Long?.harFormatted(): String {
-            val date = if (this == null) Date() else Date(this)
-            return DateFormat.get()?.format(date) ?: ""
+        private fun Long.harFormatted(): String {
+            return DateFormat.get()?.format(Date(this)) ?: ""
         }
     }
 }
