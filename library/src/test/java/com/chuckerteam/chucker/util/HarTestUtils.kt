@@ -17,7 +17,7 @@ import java.util.Date
 internal object HarTestUtils {
 
     internal fun createTransaction(method: String): HttpTransaction {
-        val requestPayloadSize = when (method) {
+        val requestBodySize = when (method) {
             "GET" -> null
             else -> 1000L
         }
@@ -34,11 +34,12 @@ internal object HarTestUtils {
             scheme = "",
             responseTlsVersion = "",
             responseCipherSuite = "",
-            requestPayloadSize = requestPayloadSize,
+            requestPayloadSize = 1000L,
             requestContentType = "application/json",
             requestHeaders = null,
             requestHeadersSize = null,
             requestBody = null,
+            requestBodySize = requestBodySize,
             isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
@@ -48,6 +49,7 @@ internal object HarTestUtils {
             responseHeaders = null,
             responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
+            responseBodySize = 1000L,
             isResponseBodyEncoded = false,
             responseImageData = null
         )

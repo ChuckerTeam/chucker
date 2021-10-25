@@ -24,7 +24,7 @@ internal data class Response(
         statusText = transaction.responseMessage ?: "",
         httpVersion = transaction.protocol ?: "",
         headers = transaction.getParsedResponseHeaders()?.map { Header(it) } ?: emptyList(),
-        content = transaction.responsePayloadSize?.run { Content(transaction) },
+        content = transaction.responseBodySize?.run { Content(transaction) },
         headersSize = transaction.responseHeadersSize ?: -1,
         bodySize = transaction.getHarResponseBodySize(),
         totalSize = transaction.getResponseTotalSize()

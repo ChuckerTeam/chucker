@@ -24,6 +24,7 @@ internal object TestTransactionFactory {
             requestHeaders = null,
             requestHeadersSize = null,
             requestBody = null,
+            requestBodySize = null,
             isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
@@ -33,6 +34,7 @@ internal object TestTransactionFactory {
             responseHeaders = null,
             responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
+            responseBodySize = null,
             isResponseBodyEncoded = false,
             responseImageData = null
         )
@@ -46,21 +48,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-        
+
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-        
+
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-        
+
         ---------- Request ----------
-        
+
         (body is empty)
-        
+
         ---------- Response ----------
-        
+
         {
           "field": "value"
         }
@@ -74,21 +76,21 @@ internal object TestTransactionFactory {
         Status: Complete
         Response: 200 OK
         SSL: No
-        
+
         Request time: ${Date(1300000)}
         Response time: ${Date(1300300)}
         Duration: 1000 ms
-        
+
         Request size: 1.0 kB
         Response size: 1.0 kB
         Total size: 2.0 kB
-        
+
         ---------- Request ----------
-        
+
         (body is empty)
-        
+
         ---------- Response ----------
-        
+
         {
           "field": "value"
         }

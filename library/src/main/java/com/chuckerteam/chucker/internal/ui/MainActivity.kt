@@ -13,10 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.HarUtils
-import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
@@ -24,7 +22,6 @@ import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 internal class MainActivity :
     BaseChuckerActivity(),
@@ -97,9 +94,7 @@ internal class MainActivity :
                 showDialog(
                     getExportDialogData(R.string.chucker_export_text_http_confirmation),
                     onPositiveClick = {
-                        exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
-                            TransactionListDetailsSharable(transactions, encodeUrls = false)
-                        }
+                        exportTransactions(EXPORT_TXT_FILE_NAME)
                     },
                     onNegativeClick = null
                 )
@@ -109,17 +104,7 @@ internal class MainActivity :
                 showDialog(
                     getExportDialogData(R.string.chucker_export_har_http_confirmation),
                     onPositiveClick = {
-                        exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
-                            TransactionDetailsHarSharable(
-                                runBlocking {
-                                    HarUtils.harStringFromTransactions(
-                                        transactions,
-                                        getString(R.string.chucker_name),
-                                        getString(R.string.chucker_version)
-                                    )
-                                }
-                            )
-                        }
+                        exportTransactions(EXPORT_HAR_FILE_NAME)
                     },
                     onNegativeClick = null
                 )
@@ -138,7 +123,7 @@ internal class MainActivity :
         return true
     }
 
-    private fun exportTransactions(fileName: String, block: (List<HttpTransaction>) -> Sharable) {
+    private fun exportTransactions(fileName: String) {
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
             if (transactions.isNullOrEmpty()) {
@@ -148,7 +133,21 @@ internal class MainActivity :
                 return@launch
             }
 
-            val sharableTransactions = block(transactions)
+            val sharableTransactions = when (fileName) {
+                EXPORT_HAR_FILE_NAME -> {
+                    TransactionDetailsHarSharable(
+                        HarUtils.harStringFromTransactions(
+                            transactions,
+                            getString(R.string.chucker_name),
+                            getString(R.string.chucker_version)
+                        )
+                    )
+                }
+                else -> {
+                    TransactionListDetailsSharable(transactions, encodeUrls = false)
+                }
+            }
+
             val shareIntent = sharableTransactions.shareAsFile(
                 activity = this@MainActivity,
                 fileName = fileName,

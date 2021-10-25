@@ -5,18 +5,16 @@ import com.google.gson.GsonBuilder
 
 internal object JsonConverter {
 
-    val instance: Gson by lazy {
-        GsonBuilder()
-            .disableHtmlEscaping()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .create()
-    }
-
     val nonNullSerializerInstance: Gson by lazy {
         GsonBuilder()
             .disableHtmlEscaping()
             .setPrettyPrinting()
+            .create()
+    }
+
+    val instance: Gson by lazy {
+        nonNullSerializerInstance.newBuilder()
+            .serializeNulls()
             .create()
     }
 }
