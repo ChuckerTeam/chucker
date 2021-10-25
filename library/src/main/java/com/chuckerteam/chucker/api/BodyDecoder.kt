@@ -13,7 +13,7 @@ public interface BodyDecoder {
      * Returns a text representation of [body] that will be displayed in Chucker UI transaction,
      * or `null` if [request] cannot be handled by this decoder. [Body][body] is no longer than
      * [max content length][ChuckerInterceptor.Builder.maxContentLength] and is guaranteed to be
-     * gunzipped even if [request] has gzip header.
+     * uncompressed even if [request] has gzip or br header.
      */
     @Throws(IOException::class)
     public fun decodeRequest(request: Request, body: ByteString): String?
@@ -22,7 +22,7 @@ public interface BodyDecoder {
      * Returns a text representation of [body] that will be displayed in Chucker UI transaction,
      * or `null` if [response] cannot be handled by this decoder. [Body][body] is no longer than
      * [max content length][ChuckerInterceptor.Builder.maxContentLength] and is guaranteed to be
-     * gunzipped even if [response] has gzip header.
+     * uncompressed even if [response] has gzip or br header.
      */
     @Throws(IOException::class)
     public fun decodeResponse(response: Response, body: ByteString): String?

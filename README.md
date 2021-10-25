@@ -144,7 +144,7 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 
 **Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.2
 
-Chucker by default handles only plain text bodies. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
+Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
 
 ```kotlin
 object ProtoDecoder : BinaryDecoder {
@@ -203,7 +203,7 @@ If you're looking for the **latest stable version**, you can always find it in `
 
 ## FAQ ❓
 
-* Why are some of my request headers missing?
+* Why are some of my request headers (e.g. `Content-Encoding` or `Accept-Encoding`) missing?
 * Why are retries and redirects not being captured discretely?
 * Why are my encoded request/response bodies not appearing as plain text?
 

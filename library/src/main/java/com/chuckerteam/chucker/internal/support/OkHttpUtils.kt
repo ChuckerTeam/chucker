@@ -3,7 +3,10 @@ package com.chuckerteam.chucker.internal.support
 import okhttp3.Headers
 import okhttp3.Response
 import okio.Source
+import okio.buffer
 import okio.gzip
+import okio.source
+import org.brotli.dec.BrotliInputStream
 import java.net.HttpURLConnection.HTTP_NOT_MODIFIED
 import java.net.HttpURLConnection.HTTP_NO_CONTENT
 import java.net.HttpURLConnection.HTTP_OK
@@ -51,18 +54,23 @@ private val Headers.containsGzip: Boolean
         return this["Content-Encoding"].equals("gzip", ignoreCase = true)
     }
 
-private val supportedEncodings = listOf("identity", "gzip")
+private val Headers.containsBrotli: Boolean
+    get() {
+        return this["Content-Encoding"].equals("br", ignoreCase = true)
+    }
+
+private val supportedEncodings = listOf("identity", "gzip", "br")
 
 internal val Headers.hasSupportedContentEncoding: Boolean
     get() = get("Content-Encoding")
         ?.takeIf { it.isNotEmpty() }
-        ?.let { it.toLowerCase(Locale.ROOT) in supportedEncodings }
+        ?.let { it.lowercase(Locale.ROOT) in supportedEncodings }
         ?: true
 
-internal fun Source.uncompress(headers: Headers) = if (headers.containsGzip) {
-    gzip()
-} else {
-    this
+internal fun Source.uncompress(headers: Headers) = when {
+    headers.containsGzip -> gzip()
+    headers.containsBrotli -> BrotliInputStream(this.buffer().inputStream()).source()
+    else -> this
 }
 
 internal fun Headers.redact(names: Iterable<String>): Headers {

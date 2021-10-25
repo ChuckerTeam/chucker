@@ -1,13 +1,13 @@
 buildscript {
     ext {
         kotlinVersion = '1.5.31'
-        androidGradleVersion = '7.0.2'
+        androidGradleVersion = '7.0.3'
         coroutineVersion = '1.5.2'
 
         // Google libraries
         activityVersion = '1.3.1'
         appCompatVersion = '1.3.1'
-        constraintLayoutVersion = '2.1.0'
+        constraintLayoutVersion = '2.1.1'
         materialComponentsVersion = '1.4.0'
         roomVersion = '2.3.0'
         fragmentVersion = '1.3.6'
@@ -16,22 +16,23 @@ buildscript {
         paletteKtxVersion = '1.0.0'
 
         // Networking
+        brotliVersion = '0.1.2'
         gsonVersion = '2.8.8'
-        okhttpVersion = '4.9.1'
+        okhttpVersion = '4.9.2'
         retrofitVersion = '2.9.0'
         wireVersion = '3.7.0'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.7.1'
         detektVersion = '1.18.1'
-        dokkaVersion = '1.5.30'
-        ktLintGradleVersion = '10.0.0'
+        dokkaVersion = '1.5.31'
+        ktLintGradleVersion = '10.2.0'
         leakcanaryVersion = '2.7'
 
         // Testing
         androidxTestCoreVersion = '1.4.0'
         junitGradlePluignVersion = '1.8.0.0'
-        junitVersion = '5.8.0'
+        junitVersion = '5.8.1'
         junit4Version = '4.13.2'
         mockkVersion = '1.12.0'
         robolectricVersion = '4.6.1'

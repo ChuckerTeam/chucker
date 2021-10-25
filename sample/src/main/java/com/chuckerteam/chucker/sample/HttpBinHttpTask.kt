@@ -62,6 +62,7 @@ class HttpBinHttpTask(
         stream(500).enqueue(noOpCallback)
         streamBytes(2048).enqueue(noOpCallback)
         image("image/png").enqueue(noOpCallback)
+        brotliResponse().enqueue(noOpCallback)
         gzipResponse().enqueue(noOpCallback)
         gzipRequest(Data("Some gzip request")).enqueue(noOpCallback)
         xml().enqueue(noOpCallback)
@@ -135,7 +136,12 @@ class HttpBinHttpTask(
         @GET("/image")
         fun image(@Header("Accept") accept: String): Call<Any?>
 
+        @GET("/brotli")
+        @Headers("Accept-Encoding: br")
+        fun brotliResponse(): Call<Any?>
+
         @GET("/gzip")
+        @Headers("Accept-Encoding: gzip")
         fun gzipResponse(): Call<Any?>
 
         @POST("/post")
