@@ -43,7 +43,7 @@ internal data class Entry(
         private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         private fun Long.harFormatted(): String {
-            return DateFormat.get()?.format(Date(this)) ?: ""
+            return DateFormat.get()!!.format(Date(this))
         }
     }
 }

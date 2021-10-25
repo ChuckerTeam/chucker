@@ -24,7 +24,6 @@ internal object TestTransactionFactory {
             requestHeaders = null,
             requestHeadersSize = null,
             requestBody = null,
-            requestBodySize = null,
             isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
@@ -34,7 +33,6 @@ internal object TestTransactionFactory {
             responseHeaders = null,
             responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
-            responseBodySize = null,
             isResponseBodyEncoded = false,
             responseImageData = null
         )

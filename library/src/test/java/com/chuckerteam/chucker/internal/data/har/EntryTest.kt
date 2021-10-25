@@ -41,7 +41,7 @@ internal class EntryTest {
                 headers = emptyList(),
                 queryString = emptyList(),
                 postData = PostData(mimeType = "application/json", params = null, text = null),
-                headersSize = -1,
+                headersSize = 0,
                 bodySize = 1000,
                 totalSize = 1000
             )
@@ -67,7 +67,7 @@ internal class EntryTest {
                     encoding = null
                 ),
                 redirectUrl = "",
-                headersSize = -1,
+                headersSize = 0,
                 bodySize = 1000,
                 totalSize = 1000
             )

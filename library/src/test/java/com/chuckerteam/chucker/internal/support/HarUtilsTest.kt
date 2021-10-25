@@ -5,8 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.har.log.Entry
 import com.chuckerteam.chucker.util.HarTestUtils
-import com.chuckerteam.chucker.util.HarTestUtils.createHar2
 import com.chuckerteam.chucker.util.HarTestUtils.createHarString
+import com.chuckerteam.chucker.util.HarTestUtils.createListTransactionHar
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -26,7 +26,7 @@ internal class HarUtilsTest {
 
     @Test
     fun `entry list is created correctly with different methods`() {
-        val har = context.createHar2()
+        val har = context.createListTransactionHar()
 
         assertThat(har.log.entries).hasSize(2)
         assertThat(har.log.entries[0].request.method).isEqualTo("GET")
@@ -64,7 +64,7 @@ internal class HarUtilsTest {
                           "postData": {
                             "mimeType": "application/json"
                           },
-                          "headersSize": -1,
+                          "headersSize": 0,
                           "bodySize": 1000,
                           "totalSize": 1000
                         },
@@ -80,7 +80,7 @@ internal class HarUtilsTest {
                             "text": "{\"field\": \"value\"}"
                           },
                           "redirectURL": "",
-                          "headersSize": -1,
+                          "headersSize": 0,
                           "bodySize": 1000,
                           "totalSize": 1000
                         },

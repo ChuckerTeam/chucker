@@ -34,12 +34,11 @@ internal object HarTestUtils {
             scheme = "",
             responseTlsVersion = "",
             responseCipherSuite = "",
-            requestPayloadSize = 1000L,
+            requestPayloadSize = requestBodySize,
             requestContentType = "application/json",
             requestHeaders = null,
             requestHeadersSize = null,
             requestBody = null,
-            requestBodySize = requestBodySize,
             isRequestBodyEncoded = false,
             responseCode = 200,
             responseMessage = "OK",
@@ -49,15 +48,21 @@ internal object HarTestUtils {
             responseHeaders = null,
             responseHeadersSize = null,
             responseBody = """{"field": "value"}""",
-            responseBodySize = 1000L,
             isResponseBodyEncoded = false,
             responseImageData = null
         )
     }
 
-    internal fun Context.createHar(method: String): Har {
+    internal fun Context.createSingleTransactionHar(method: String): Har {
         return HarUtils.fromHttpTransactions(
             listOf(createTransaction(method)),
+            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version))
+        )
+    }
+
+    internal fun Context.createListTransactionHar(): Har {
+        return HarUtils.fromHttpTransactions(
+            listOf(createTransaction("GET"), createTransaction("POST")),
             Creator(getString(R.string.chucker_name), getString(R.string.chucker_version))
         )
     }
@@ -70,13 +75,6 @@ internal object HarTestUtils {
                 getString(R.string.chucker_version)
             )
         }
-    }
-
-    internal fun Context.createHar2(): Har {
-        return HarUtils.fromHttpTransactions(
-            listOf(createTransaction("GET"), createTransaction("POST")),
-            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version))
-        )
     }
 
     internal fun createContent(method: String): Content {

@@ -27,9 +27,9 @@ internal data class Request(
         httpVersion = transaction.protocol ?: "",
         headers = transaction.getParsedRequestHeaders()?.map { Header(it) } ?: emptyList(),
         queryString = transaction.url?.let { QueryString.fromUrl(it.toHttpUrl()) } ?: emptyList(),
-        postData = transaction.requestBodySize?.run { PostData(transaction) },
-        headersSize = transaction.requestHeadersSize ?: -1,
-        bodySize = transaction.requestBodySize ?: -1,
+        postData = transaction.requestPayloadSize?.run { PostData(transaction) },
+        headersSize = transaction.requestHeadersSize ?: 0,
+        bodySize = transaction.requestPayloadSize ?: 0,
         totalSize = transaction.getRequestTotalSize()
     )
 }

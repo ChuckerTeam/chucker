@@ -14,7 +14,7 @@ internal data class Content(
     @SerializedName("comment") val comment: String? = null
 ) {
     constructor(transaction: HttpTransaction) : this(
-        size = transaction.responseBodySize,
+        size = transaction.responsePayloadSize,
         mimeType = transaction.responseContentType ?: "application/octet-stream",
         text = transaction.responseBody,
     )

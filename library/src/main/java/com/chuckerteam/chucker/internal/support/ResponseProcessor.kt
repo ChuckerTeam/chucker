@@ -95,7 +95,6 @@ internal class ResponseProcessor(
         } else if (payload.size != 0L) {
             val decodedContent = decodePayload(response, payload.readByteString())
             transaction.responseBody = decodedContent
-            transaction.responseBodySize = response.body?.contentLength()
             transaction.isResponseBodyEncoded = decodedContent == null
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.har.log.Creator
-import com.chuckerteam.chucker.util.HarTestUtils.createHar
+import com.chuckerteam.chucker.util.HarTestUtils.createSingleTransactionHar
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -22,14 +22,14 @@ public class HarTest {
 
     @Test
     public fun `har is created correctly with har version`() {
-        val har = context.createHar("GET")
+        val har = context.createSingleTransactionHar("GET")
 
         assertThat(har.log.version).isEqualTo("1.2")
     }
 
     @Test
     public fun `har is created correctly with creator`() {
-        val har = context.createHar("GET")
+        val har = context.createSingleTransactionHar("GET")
         val creator = Creator(
             context.getString(R.string.chucker_name),
             context.getString(R.string.chucker_version),
@@ -40,7 +40,7 @@ public class HarTest {
 
     @Test
     public fun `har is created correctly with entries`() {
-        val har = context.createHar("GET")
+        val har = context.createSingleTransactionHar("GET")
 
         assertThat(har.log.entries).hasSize(1)
     }
