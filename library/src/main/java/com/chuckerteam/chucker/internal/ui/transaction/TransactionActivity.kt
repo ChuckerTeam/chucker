@@ -21,7 +21,6 @@ import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
@@ -89,13 +88,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
         R.id.share_har -> shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
             TransactionDetailsHarSharable(
-                runBlocking {
-                    HarUtils.harStringFromTransactions(
-                        listOf(transaction),
-                        getString(R.string.chucker_name),
-                        getString(R.string.chucker_version)
-                    )
-                }
+                HarUtils.harStringFromTransactions(
+                    listOf(transaction),
+                    getString(R.string.chucker_name),
+                    getString(R.string.chucker_version)
+                )
             )
         }
         else -> super.onOptionsItemSelected(item)
@@ -119,24 +116,26 @@ internal class TransactionActivity : BaseChuckerActivity() {
         return true
     }
 
-    private fun shareTransactionAsFile(fileName: String, block: (HttpTransaction) -> Sharable): Boolean {
-        val transaction = viewModel.transaction.value
-        if (transaction == null) {
-            showToast(getString(R.string.chucker_request_not_ready))
-            return true
-        }
-
-        val sharable = block(transaction)
+    private fun shareTransactionAsFile(fileName: String, block: suspend (HttpTransaction) -> Sharable): Boolean {
         lifecycleScope.launch {
-            val shareIntent = sharable.shareAsFile(
-                activity = this@TransactionActivity,
-                fileName = fileName,
-                intentTitle = getString(R.string.chucker_share_transaction_title),
-                intentSubject = getString(R.string.chucker_share_transaction_subject),
-                clipDataLabel = "transaction"
-            )
-            if (shareIntent != null) {
-                startActivity(shareIntent)
+            val transaction = viewModel.transaction.value
+            if (transaction == null) {
+                showToast(getString(R.string.chucker_request_not_ready))
+                return@launch
+            }
+
+            val sharable = block(transaction)
+            lifecycleScope.launch {
+                val shareIntent = sharable.shareAsFile(
+                    activity = this@TransactionActivity,
+                    fileName = fileName,
+                    intentTitle = getString(R.string.chucker_share_transaction_title),
+                    intentSubject = getString(R.string.chucker_share_transaction_subject),
+                    clipDataLabel = "transaction"
+                )
+                if (shareIntent != null) {
+                    startActivity(shareIntent)
+                }
             }
         }
         return true
