@@ -7,7 +7,7 @@ import java.util.UUID
 
 internal fun createRequest(path: String = ""): HttpTransaction =
     HttpTransaction().apply {
-        setRequestHeaders(randomHeaders())
+        setRequestHeaders(randomHeaders(), emptySet())
         populateUrl("https://www.example.com/$path?query=baz".toHttpUrlOrNull()!!)
         isResponseBodyEncoded = true
         requestDate = 300L
@@ -18,7 +18,7 @@ internal fun createRequest(path: String = ""): HttpTransaction =
     }
 
 internal fun HttpTransaction.withResponseData(): HttpTransaction = this.apply {
-    setResponseHeaders(randomHeaders())
+    setResponseHeaders(randomHeaders(), emptySet())
     responseCode = 418 // I'm a teapot
     responseDate = 321L
     tookMs = 21L

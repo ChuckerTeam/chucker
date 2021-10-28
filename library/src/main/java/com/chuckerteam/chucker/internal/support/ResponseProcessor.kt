@@ -29,8 +29,8 @@ internal class ResponseProcessor(
     private fun processResponseMetadata(response: Response, transaction: HttpTransaction) {
         transaction.apply {
             // includes headers added later in the chain
-            setRequestHeaders(response.request.headers.redact(headersToRedact))
-            setResponseHeaders(response.headers.redact(headersToRedact))
+            setRequestHeaders(response.request.headers, headersToRedact)
+            setResponseHeaders(response.headers, headersToRedact)
 
             requestDate = response.sentRequestAtMillis
             responseDate = response.receivedResponseAtMillis
