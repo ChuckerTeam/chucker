@@ -25,7 +25,8 @@ internal class RequestProcessor(
 
     private fun processMetadata(request: Request, transaction: HttpTransaction) {
         transaction.apply {
-            setRequestHeaders(request.headers, headersToRedact)
+            requestHeadersSize = request.headers.byteCount()
+            setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
 
             requestDate = System.currentTimeMillis()

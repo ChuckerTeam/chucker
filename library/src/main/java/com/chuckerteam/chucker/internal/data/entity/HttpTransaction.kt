@@ -11,7 +11,6 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
-import com.chuckerteam.chucker.internal.support.redact
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -149,9 +148,8 @@ internal class HttpTransaction(
             }
         }
 
-    fun setRequestHeaders(headers: Headers, headersToRedact: Set<String>) {
-        requestHeadersSize = headers.byteCount()
-        setRequestHeaders(toHttpHeaderList(headers.redact(headersToRedact)))
+    fun setRequestHeaders(headers: Headers) {
+        setRequestHeaders(toHttpHeaderList(headers))
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
@@ -178,9 +176,8 @@ internal class HttpTransaction(
         return FormatUtils.formatHeaders(getParsedRequestHeaders(), withMarkup)
     }
 
-    fun setResponseHeaders(headers: Headers, headersToRedact: Set<String>) {
-        responseHeadersSize = headers.byteCount()
-        setResponseHeaders(toHttpHeaderList(headers.redact(headersToRedact)))
+    fun setResponseHeaders(headers: Headers) {
+        setResponseHeaders(toHttpHeaderList(headers))
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {

@@ -564,6 +564,33 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
+    fun `headers size are computed before being redacted`(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate(
+            maxContentLength = SEGMENT_SIZE,
+            headersToRedact = setOf("Header-To-Redact"),
+            cacheDirectoryProvider = { tempDir },
+        )
+        val client = factory.create(chuckerInterceptor)
+
+        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        val call = client.newCall(request)
+
+        server.enqueue(
+            MockResponse().addHeader("Header-To-Redact", "Goodbye").setResponseCode(HTTP_NO_CONTENT)
+        )
+        val response = call.execute()
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        if (factory == ClientFactory.APPLICATION) {
+            assertThat(transaction.requestHeadersSize).isEqualTo(response.request.headers.byteCount())
+            assertThat(transaction.responseHeadersSize).isEqualTo(response.headers.byteCount())
+        } else {
+            assert(true)
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
     fun `one shot request body is not available to Chucker`(factory: ClientFactory) {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
