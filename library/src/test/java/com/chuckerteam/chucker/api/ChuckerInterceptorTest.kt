@@ -585,7 +585,8 @@ internal class ChuckerInterceptorTest {
             assertThat(transaction.requestHeadersSize).isEqualTo(response.request.headers.byteCount())
             assertThat(transaction.responseHeadersSize).isEqualTo(response.headers.byteCount())
         } else {
-            assert(true)
+            assertThat(transaction.requestHeadersSize).isEqualTo(server.takeRequest().headers.byteCount())
+            assertThat(transaction.responseHeadersSize).isEqualTo(response.networkResponse!!.headers.byteCount())
         }
     }
 
