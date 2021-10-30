@@ -46,7 +46,7 @@ To start using Chucker, just plug it a new `ChuckerInterceptor` to your OkHttp C
 
 ```kotlin
 val client = OkHttpClient.Builder()
-                .addInterceptor(ChuckerInterceptor.Builder(context))
+                .addInterceptor(ChuckerInterceptor.Builder(context).build())
                 .build()
 ```
 
