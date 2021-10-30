@@ -580,14 +580,18 @@ internal class ChuckerInterceptorTest {
         )
         val response = call.execute()
 
-        val transaction = chuckerInterceptor.expectTransaction()
-        if (factory == ClientFactory.APPLICATION) {
-            assertThat(transaction.requestHeadersSize).isEqualTo(response.request.headers.byteCount())
-            assertThat(transaction.responseHeadersSize).isEqualTo(response.headers.byteCount())
-        } else {
-            assertThat(transaction.requestHeadersSize).isEqualTo(server.takeRequest().headers.byteCount())
-            assertThat(transaction.responseHeadersSize).isEqualTo(response.networkResponse!!.headers.byteCount())
+        val (originalRequestHeadersSize, originalResponseHeadersSize) = when (factory) {
+            ClientFactory.APPLICATION -> {
+                Pair(response.request.headers.byteCount(), response.headers.byteCount())
+            }
+            ClientFactory.NETWORK -> {
+                Pair(server.takeRequest().headers.byteCount(), response.networkResponse!!.headers.byteCount())
+            }
         }
+
+        val transaction = chuckerInterceptor.expectTransaction()
+        assertThat(transaction.requestHeadersSize).isEqualTo(originalRequestHeadersSize)
+        assertThat(transaction.responseHeadersSize).isEqualTo(originalResponseHeadersSize)
     }
 
     @ParameterizedTest
