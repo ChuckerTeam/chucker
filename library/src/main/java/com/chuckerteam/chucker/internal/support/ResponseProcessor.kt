@@ -29,7 +29,9 @@ internal class ResponseProcessor(
     private fun processResponseMetadata(response: Response, transaction: HttpTransaction) {
         transaction.apply {
             // includes headers added later in the chain
+            requestHeadersSize = response.request.headers.byteCount()
             setRequestHeaders(response.request.headers.redact(headersToRedact))
+            responseHeadersSize = response.headers.byteCount()
             setResponseHeaders(response.headers.redact(headersToRedact))
 
             requestDate = response.sentRequestAtMillis

@@ -9,6 +9,8 @@ Please add your entries according to this format.
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
 * Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
 * Brotli compression support
+* Added ability to export list of transactions as .har file.
+* Added ability to save single transaction as .har file.
 
 ### Fixed
 

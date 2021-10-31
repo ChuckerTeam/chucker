@@ -15,6 +15,7 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
+        resValue("string", "chucker_version", "$VERSION_NAME")
     }
 
     kotlinOptions {

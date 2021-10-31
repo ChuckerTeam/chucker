@@ -25,6 +25,7 @@ internal class RequestProcessor(
 
     private fun processMetadata(request: Request, transaction: HttpTransaction) {
         transaction.apply {
+            requestHeadersSize = request.headers.byteCount()
             setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
 

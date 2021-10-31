@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item android:id="@+id/search"
-        android:title="@string/chucker_search"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search"
         android:icon="@drawable/chucker_ic_search_white"
-        app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
-    <item android:id="@+id/export"
+        android:title="@string/chucker_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/export"
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_export"
-        app:showAsAction="ifRoom" />
-    <item android:title="@string/chucker_clear"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/share_text"
+                    android:title="@string/chucker_share_as_text" />
+                <item
+                    android:id="@+id/share_har"
+                    android:title="@string/chucker_share_as_har" />
+            </group>
+        </menu>
+    </item>
+    <item
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white"
+        android:title="@string/chucker_clear"
         app:showAsAction="ifRoom" />
 </menu>

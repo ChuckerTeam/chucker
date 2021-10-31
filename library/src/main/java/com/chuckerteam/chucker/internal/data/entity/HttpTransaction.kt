@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import java.net.HttpURLConnection
 import java.util.Date
 
 /**
@@ -40,6 +41,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
+    @ColumnInfo(name = "requestHeadersSize") var requestHeadersSize: Long?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
     @ColumnInfo(name = "isRequestBodyEncoded") var isRequestBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
@@ -48,6 +50,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "responseContentType") var responseContentType: String?,
     @ColumnInfo(name = "responseHeaders") var responseHeaders: String?,
+    @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
@@ -69,6 +72,7 @@ internal class HttpTransaction(
         requestPayloadSize = null,
         requestContentType = null,
         requestHeaders = null,
+        requestHeadersSize = null,
         requestBody = null,
         responseCode = null,
         responseMessage = null,
@@ -76,6 +80,7 @@ internal class HttpTransaction(
         responsePayloadSize = null,
         responseContentType = null,
         responseHeaders = null,
+        responseHeadersSize = null,
         responseBody = null,
         responseImageData = null
     )
@@ -233,6 +238,19 @@ internal class HttpTransaction(
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 
+    fun getRequestTotalSize(): Long {
+        return (requestHeadersSize ?: 0) + (requestPayloadSize ?: 0)
+    }
+
+    fun getResponseTotalSize(): Long {
+        return (responseHeadersSize ?: 0) + getHarResponseBodySize()
+    }
+
+    fun getHarResponseBodySize(): Long {
+        return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) 0
+        else responsePayloadSize ?: 0
+    }
+
     // Not relying on 'equals' because comparison be long due to request and response sizes
     // and it would be unwise to do this every time 'equals' is called.
     @Suppress("ComplexMethod")
@@ -255,6 +273,7 @@ internal class HttpTransaction(
             (requestPayloadSize == other.requestPayloadSize) &&
             (requestContentType == other.requestContentType) &&
             (requestHeaders == other.requestHeaders) &&
+            (requestHeadersSize == other.requestHeadersSize) &&
             (requestBody == other.requestBody) &&
             (isRequestBodyEncoded == other.isRequestBodyEncoded) &&
             (responseCode == other.responseCode) &&
@@ -263,6 +282,7 @@ internal class HttpTransaction(
             (responsePayloadSize == other.responsePayloadSize) &&
             (responseContentType == other.responseContentType) &&
             (responseHeaders == other.responseHeaders) &&
+            (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
