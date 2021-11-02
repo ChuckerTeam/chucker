@@ -17,7 +17,7 @@ buildscript {
 
         // Networking
         brotliVersion = '0.1.2'
-        gsonVersion = '2.8.8'
+        gsonVersion = '2.8.9'
         okhttpVersion = '4.9.2'
         retrofitVersion = '2.9.0'
         wireVersion = '3.7.0'
