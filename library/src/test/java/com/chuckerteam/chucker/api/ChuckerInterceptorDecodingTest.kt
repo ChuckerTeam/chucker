@@ -55,7 +55,7 @@ internal class ChuckerInterceptorDecodingTest {
         )
         val client = factory.create(chuckerInterceptor)
 
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 

@@ -80,7 +80,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `gzipped response body is gunzipped for Chucker`(factory: ClientFactory) {
-        val bytes = Buffer().apply { writeUtf8("Hello, world!") }
+        val bytes = Buffer().writeUtf8("Hello, world!")
         val gzippedBytes = Buffer().apply {
             GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
         }
@@ -98,7 +98,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `gzipped response body is gunzipped for consumer`(factory: ClientFactory) {
-        val bytes = Buffer().apply { writeUtf8("Hello, world!") }
+        val bytes = Buffer().writeUtf8("Hello, world!")
         val gzippedBytes = Buffer().apply {
             GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
         }
@@ -186,7 +186,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `plain text response body is available to Chucker`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -201,7 +201,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `plain text response body is available to consumer`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -328,7 +328,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response is available to consumer if Chucker fails to save data`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -346,7 +346,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `transaction is available to Chucker if it fails to save data`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -366,7 +366,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `transaction is available to Chucker if it has no data cache`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -382,7 +382,7 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response is available to consumer if Chucker has no data cache`(factory: ClientFactory) {
-        val body = Buffer().apply { writeUtf8("Hello, world!") }
+        val body = Buffer().writeUtf8("Hello, world!")
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -564,7 +564,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `headers size are computed before being redacted`(factory: ClientFactory) {
+    fun `header sizes are computed before being redacted`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             maxContentLength = SEGMENT_SIZE,
             headersToRedact = setOf("Header-To-Redact"),
@@ -612,7 +612,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `one short request body is available to server`(factory: ClientFactory) {
+    fun `one shot request body is available to server`(factory: ClientFactory) {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
