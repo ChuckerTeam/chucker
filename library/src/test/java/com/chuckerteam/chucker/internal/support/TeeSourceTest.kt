@@ -84,7 +84,7 @@ internal class TeeSourceTest {
 
     private class TestSource(contentLength: Int = 1_000) : Source {
         val content: ByteString = ByteString.of(*Random.nextBytes(contentLength))
-        private val buffer = Buffer().apply { write(content) }
+        private val buffer = Buffer().write(content)
 
         override fun read(sink: Buffer, byteCount: Long): Long = buffer.read(sink, byteCount)
 
