@@ -564,7 +564,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `headers size are computed before being redacted`(factory: ClientFactory) {
+    fun `header sizes are computed before being redacted`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             maxContentLength = SEGMENT_SIZE,
             headersToRedact = setOf("Header-To-Redact"),
@@ -612,7 +612,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `one short request body is available to server`(factory: ClientFactory) {
+    fun `one shot request body is available to server`(factory: ClientFactory) {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
