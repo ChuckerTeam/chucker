@@ -54,7 +54,7 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 internal class TransactionViewModelFactory(
     private val transactionId: Long = 0L
 ) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         require(modelClass == TransactionViewModel::class.java) { "Cannot create $modelClass" }
         @Suppress("UNCHECKED_CAST")
         return TransactionViewModel(transactionId) as T
