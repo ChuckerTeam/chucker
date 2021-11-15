@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.5.31'
+        kotlinVersion = '1.6.0'
         androidGradleVersion = '7.0.3'
         coroutineVersion = '1.5.2'
 
