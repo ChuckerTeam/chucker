@@ -7,10 +7,6 @@ wire {
 }
 
 android {
-    sourceSets {
-        getByName("main").java.srcDirs += "$buildDir/generated/source/wire/"
-    }
-
     compileSdkVersion rootProject.compileSdkVersion
 
     defaultConfig {
