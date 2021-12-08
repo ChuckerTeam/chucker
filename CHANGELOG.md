@@ -17,6 +17,7 @@ Please add your entries according to this format.
 * Fixed request headers not being redacted in case of failures [#545].
 * Fixed wrongful processing of one shot and duplex requests [#544].
 * Fixed writing to database on the main thread [#487].
+* Fixed RTL issue in payload view
 
 ### Removed
 
