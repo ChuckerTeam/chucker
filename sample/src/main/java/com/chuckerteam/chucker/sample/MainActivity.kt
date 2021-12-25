@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
+                .penaltyLog()
                 .penaltyDeath()
                 .build()
         )
