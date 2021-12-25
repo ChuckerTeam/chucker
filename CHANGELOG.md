@@ -18,7 +18,7 @@ Please add your entries according to this format.
 * Fixed wrongful processing of one shot and duplex requests [#544].
 * Fixed writing to database on the main thread [#487].
 * Fixed RTL issue in payload view
-* Fixed ThreadPolicy violations during initialisation
+* Fixed StrictMode ThreadPolicy violations
 
 ### Removed
 
