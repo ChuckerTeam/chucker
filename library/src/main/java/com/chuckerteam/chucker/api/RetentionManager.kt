@@ -27,7 +27,9 @@ public class RetentionManager @JvmOverloads constructor(
 
     // How often the cleanup should happen
     private val cleanupFrequency: Long
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, 0)
+    private val prefs: SharedPreferences by lazy {
+        context.getSharedPreferences(PREFS_NAME, 0)
+    }
     private val maintenanceMutex = Mutex()
 
     init {
