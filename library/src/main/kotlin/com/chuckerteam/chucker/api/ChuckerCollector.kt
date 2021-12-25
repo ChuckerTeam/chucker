@@ -4,8 +4,10 @@ import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * The collector responsible of collecting data from a [ChuckerInterceptor] and
@@ -42,7 +44,9 @@ public class ChuckerCollector @JvmOverloads constructor(
             if (showNotification) {
                 notificationHelper.show(transaction)
             }
-            retentionManager.doMaintenance()
+            withContext(Dispatchers.IO) {
+                retentionManager.doMaintenance()
+            }
         }
     }
 

@@ -58,6 +58,15 @@ class MainActivity : AppCompatActivity() {
                 .penaltyDeath()
                 .build()
         )
+
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .penaltyLog()
+                .penaltyDeath()
+                .build()
+        )
     }
 
     private fun launchChuckerDirectly() {
