@@ -27,7 +27,7 @@ buildscript {
         detektVersion = '1.19.0'
         dokkaVersion = '1.6.10'
         ktLintGradleVersion = '10.2.1'
-        leakcanaryVersion = '2.7'
+        leakcanaryVersion = '2.8.1'
 
         // Testing
         androidxTestCoreVersion = '1.4.0'
