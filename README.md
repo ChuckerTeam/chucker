@@ -23,7 +23,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 
 Chucker simplifies the inspection of **HTTP(S) requests/responses** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
-Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
+Apps using Chucker will display a **notification** showing a summary of ongoing HTTP activity. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
 <p align="center">
   <img src="assets/chucker-http.gif" alt="chucker http sample" width="50%"/>
