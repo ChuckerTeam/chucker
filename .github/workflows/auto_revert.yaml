@@ -9,7 +9,7 @@ jobs:
     if: contains(github.event.comment.body, '/revert')
     steps:
       - name: Checkout the latest code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Automatic Revert
         uses: srt32/revert@v0.0.1
         env:
