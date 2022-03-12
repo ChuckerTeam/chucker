@@ -8,6 +8,7 @@ public final class com/chuckerteam/chucker/api/Chucker {
 	public static final fun dismissNotifications (Landroid/content/Context;)V
 	public static final fun getLaunchIntent (Landroid/content/Context;)Landroid/content/Intent;
 	public final fun isOp ()Z
+	public static final fun writeTransactions (Landroid/content/Context;Ljava/lang/Long;Ljava/lang/Long;)Landroid/net/Uri;
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerCollector {

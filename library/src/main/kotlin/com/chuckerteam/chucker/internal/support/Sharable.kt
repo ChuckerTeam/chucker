@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
@@ -14,6 +15,7 @@ import okio.BufferedSource
 import okio.Source
 import okio.buffer
 import okio.sink
+import java.io.File
 
 internal interface Sharable {
     fun toSharableContent(context: Context): Source
@@ -37,6 +39,39 @@ internal suspend fun Sharable.shareAsUtf8Text(
         .createChooserIntent()
 }
 
+internal suspend fun Sharable.writeToFile(
+    context: Context,
+    fileName: String,
+    intentTitle: String,
+    intentSubject: String,
+    clipDataLabel: String,
+): Uri? {
+    val cache = context.cacheDir
+    if (cache == null) {
+        Logger.warn("Failed to obtain a valid cache directory for file export")
+        Toast.makeText(context, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+        return null
+    }
+
+    val file = FileFactory.create(cache, fileName)
+    if (file == null) {
+        Logger.warn("Failed to create an export file")
+        Toast.makeText(context, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+        return null
+    }
+
+    val fileContent = withContext(Dispatchers.Default) { toSharableContent(context) }
+    withContext(Dispatchers.IO) {
+        file.sink().buffer().use { it.writeAll(fileContent) }
+    }
+
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.com.chuckerteam.chucker.provider",
+        file
+    )
+}
+
 internal suspend fun Sharable.shareAsFile(
     activity: Activity,
     fileName: String,
@@ -44,31 +79,7 @@ internal suspend fun Sharable.shareAsFile(
     intentSubject: String,
     clipDataLabel: String,
 ): Intent? {
-    val cache = activity.cacheDir
-    val applicationContext = activity.applicationContext
-    if (cache == null) {
-        Logger.warn("Failed to obtain a valid cache directory for file export")
-        Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-        return null
-    }
-
-    val file = FileFactory.create(cache, fileName)
-    if (file == null) {
-        Logger.warn("Failed to create an export file")
-        Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
-        return null
-    }
-
-    val fileContent = withContext(Dispatchers.Default) { toSharableContent(activity) }
-    withContext(Dispatchers.IO) {
-        file.sink().buffer().use { it.writeAll(fileContent) }
-    }
-
-    val uri = FileProvider.getUriForFile(
-        activity,
-        "${activity.packageName}.com.chuckerteam.chucker.provider",
-        file
-    )
+    val uri = writeToFile(activity, fileName) ?: return null
     val shareIntent = ShareCompat.IntentBuilder(activity)
         .setType(activity.contentResolver.getType(uri))
         .setChooserTitle(intentTitle)

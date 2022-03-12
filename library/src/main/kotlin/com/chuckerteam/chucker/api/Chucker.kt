@@ -5,13 +5,19 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.getSystemService
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
+import com.chuckerteam.chucker.internal.support.writeToFile
 import com.chuckerteam.chucker.internal.ui.MainActivity
+import kotlinx.coroutines.runBlocking
 
 /**
  * Chucker methods and utilities to interact with the library.
@@ -73,6 +79,43 @@ public object Chucker {
     @JvmStatic
     public fun dismissNotifications(context: Context) {
         NotificationHelper(context).dismissNotifications()
+    }
+
+    /**
+     * Export the chucker transactions to a file.
+     *
+     * This must be called on a background thread.
+     *
+     * @param context Application context
+     * @param maxTransactions Maximum number of transactions to return in the file. Passing null
+     * means no limit on the number of transactions
+     * @param startTimestamp The timestamp to read transactions from. Passing null means
+     * transactions will not be limited by timestamp
+     * @return The content uri of a file with the transactions in
+     */
+    @JvmStatic
+    public fun writeTransactions(
+        context: Context,
+        maxTransactions: Long?,
+        startTimestamp: Long?,
+    ): Uri? {
+        RepositoryProvider.initialize(context)
+        val transactions =
+            RepositoryProvider.transaction().getTransactions(maxTransactions, startTimestamp)
+        if (transactions.isEmpty()) {
+            Toast
+                .makeText(context, R.string.chucker_export_empty_text, Toast.LENGTH_SHORT)
+                .show()
+            return null
+        }
+
+        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
+        return runBlocking {
+            sharableTransactions.writeToFile(
+                context = context,
+                fileName = "api_transactions.txt",
+            )
+        }
     }
 
     internal var logger: Logger = object : Logger {

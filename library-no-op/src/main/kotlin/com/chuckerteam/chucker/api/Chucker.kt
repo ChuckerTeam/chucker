@@ -2,6 +2,9 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import com.chuckerteam.chucker.R
 
 /**
  * No-op implementation.
@@ -19,4 +22,11 @@ public object Chucker {
     public fun dismissNotifications(context: Context) {
         // Empty method for the library-no-op artifact
     }
+
+    @JvmStatic
+    public fun writeTransactions(
+        context: Context,
+        maxTransactions: Long?,
+        startTimestamp: Long?,
+    ): Uri? = null
 }
