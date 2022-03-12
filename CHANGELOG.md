@@ -11,6 +11,7 @@ Please add your entries according to this format.
 * Brotli compression support
 * Added ability to export list of transactions as .har file.
 * Added ability to save single transaction as .har file.
+* Added ability to export transactions to a file triggered in code.
 
 ### Fixed
 
