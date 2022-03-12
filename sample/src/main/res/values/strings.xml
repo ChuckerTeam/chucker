@@ -5,6 +5,7 @@
     <string name="network_type">Network</string>
     <string name="do_http_activity">Do HTTP activity</string>
     <string name="launch_chucker_directly">Launch Chucker directly</string>
+    <string name="export_to_file">Export to file</string>
 
     <string name="intro_title">Welcome to Chucker Sample App</string>
     <string name="intro_body">You can use this sample app to do some HTTP networking and to see how Chucker can help you inspect your networking calls.</string>

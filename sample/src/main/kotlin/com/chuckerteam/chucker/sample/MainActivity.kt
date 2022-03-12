@@ -38,6 +38,13 @@ class MainActivity : AppCompatActivity() {
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
 
+            exportToFile?.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFile?.setOnClickListener {
+                Thread {
+                    Chucker.writeTransactions(this@MainActivity, 1, null)
+                }.start()
+            }
+
             interceptorTypeLabel.movementMethod = LinkMovementMethod.getInstance()
             useApplicationInterceptor.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
