@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlinVersion = '1.6.10'
-        androidGradleVersion = '7.1.1'
+        androidGradleVersion = '7.1.2'
         coroutineVersion = '1.5.2'
 
         // Google libraries
@@ -14,6 +14,7 @@ buildscript {
         lifecycleVersion = '2.4.1'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
+        jsonhandleviewVersion = '1.2.2'
 
         // Networking
         brotliVersion = '0.1.2'
@@ -65,8 +66,8 @@ apply plugin: 'io.codearte.nexus-staging'
 apiValidation {
     ignoredProjects += ["sample"]
     ignoredPackages += [
-            "com.chuckerteam.chucker.internal",
-            "com.chuckerteam.chucker.databinding"
+        "com.chuckerteam.chucker.internal",
+        "com.chuckerteam.chucker.databinding"
     ]
 }
 
@@ -75,6 +76,7 @@ allprojects {
     group = GROUP
 
     repositories {
+        jcenter()
         google()
         mavenCentral()
         jcenter {

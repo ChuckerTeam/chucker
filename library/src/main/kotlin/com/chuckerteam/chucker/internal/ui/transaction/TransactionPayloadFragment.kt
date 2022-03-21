@@ -6,11 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -20,12 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.chuckerteam.chucker.GsonInstance
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +36,9 @@ internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+
+    var plain = true
+    private lateinit var result: MutableList<TransactionPayloadItem>
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
@@ -101,7 +104,7 @@ internal class TransactionPayloadFragment :
                 lifecycleScope.launch {
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                    val result = processPayload(payloadType, transaction, formatRequestBody)
+                    result = processPayload(payloadType, transaction, formatRequestBody)
                     if (result.isEmpty()) {
                         showEmptyState()
                     } else {
@@ -115,6 +118,84 @@ internal class TransactionPayloadFragment :
                 }
             }
         )
+
+        payloadBinding.expandBtn.setOnClickListener {
+            expand()
+        }
+
+        payloadBinding.collapseBtn.setOnClickListener {
+            collapse()
+        }
+
+        payloadBinding.plainHighlightedToggle.setOnClickListener {
+            togglePlainHighlighted()
+        }
+
+    }
+
+    private fun expand() {
+        payloadBinding.jsonView.expandAll()
+        payloadBinding.collapseBtn.visibility = View.VISIBLE
+        payloadBinding.expandBtn.visibility = View.GONE
+    }
+
+    private fun collapse() {
+        payloadBinding.jsonView.collapseAll()
+        payloadBinding.expandBtn.visibility = View.VISIBLE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun togglePlainHighlighted() {
+        if (plain) {
+            bindJson()
+        } else {
+            showPlainText()
+        }
+    }
+
+    private fun bindJson() {
+        plain = false
+        payloadBinding.payloadRecyclerView.visibility = View.GONE
+        payloadBinding.jsonView.visibility = View.VISIBLE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_show_plain)
+        payloadBinding.expandBtn.visibility = View.VISIBLE
+    }
+
+    private fun showPlainText() {
+        plain = true
+        if (result.isEmpty()) {
+            showEmptyState()
+        } else {
+            payloadBinding.payloadRecyclerView.visibility = View.VISIBLE
+        }
+        payloadBinding.jsonView.visibility = View.GONE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_highlight)
+        payloadBinding.expandBtn.visibility = View.GONE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun isJson(body: String): Boolean {
+        return try {
+            val element = JsonParser.parseString(body)
+            element.isJsonObject || element.isJsonArray
+        } catch (e: JsonSyntaxException) {
+            false
+        }
+    }
+
+    private fun prettyPrint(str: String): String? {
+        val parser: JsonElement = JsonParser.parseString(str)
+        return when {
+            parser.isJsonObject -> {
+                GsonInstance.get()?.toJson(parser.asJsonObject)
+            }
+            parser.isJsonArray -> {
+                GsonInstance.get()?.toJson(parser.asJsonArray)
+            }
+            else -> {
+                str
+            }
+        }
     }
 
     private fun showEmptyState() {
@@ -261,8 +342,18 @@ internal class TransactionPayloadFragment :
                     val text = requireContext().getString(R.string.chucker_body_empty)
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
-                else -> bodyString.lines().forEach {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                else -> {
+
+                    withContext(Dispatchers.Main) {
+                        if (isJson(bodyString)) {
+                            payloadBinding.jsonView.bindJson(prettyPrint(bodyString))
+                            payloadBinding.plainHighlightedToggle.visibility = View.VISIBLE
+                        }
+                    }
+
+                    bodyString.lines().forEach {
+                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                    }
                 }
             }
 

@@ -69,6 +69,8 @@ dependencies {
 
     implementation "org.brotli:dec:$brotliVersion"
 
+    implementation"com.tzx.json:jsonhandleview:$jsonhandleviewVersion"
+
     api platform("com.squareup.okhttp3:okhttp-bom:$okhttpVersion")
     api "com.squareup.okhttp3:okhttp"
     testImplementation "com.squareup.okhttp3:mockwebserver"
