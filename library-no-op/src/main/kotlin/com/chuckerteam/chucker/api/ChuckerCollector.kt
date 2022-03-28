@@ -14,7 +14,6 @@ public class ChuckerCollector @JvmOverloads constructor(
 ) {
     public suspend fun writeTransactions(
         context: Context,
-        maxTransactions: Long?,
         startTimestamp: Long?,
     ): Uri? = null
 }

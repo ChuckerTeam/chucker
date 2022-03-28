@@ -74,19 +74,16 @@ public class ChuckerCollector @JvmOverloads constructor(
      * Export the chucker transactions to a file.
      *
      * @param context Application context
-     * @param maxTransactions Maximum number of transactions to return in the file. Passing null
-     * means no limit on the number of transactions
      * @param startTimestamp The timestamp to read transactions from. Passing null means
      * transactions will not be limited by timestamp
      * @return The content uri of a file with the transactions in
      */
     public suspend fun writeTransactions(
         context: Context,
-        maxTransactions: Long?,
         startTimestamp: Long?,
     ): Uri? {
         val transactions =
-            RepositoryProvider.transaction().getTransactions(maxTransactions, startTimestamp)
+            RepositoryProvider.transaction().getTransactionsInTimeRange(startTimestamp)
         if (transactions.isEmpty()) {
             return null
         }

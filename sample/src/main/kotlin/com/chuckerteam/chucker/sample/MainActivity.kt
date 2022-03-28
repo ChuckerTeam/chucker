@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             exportToFile?.setOnClickListener {
                 lifecycleScope.launch {
                     ChuckerCollector(this@MainActivity)
-                        .writeTransactions(this@MainActivity, 1, null)
+                        .writeTransactions(this@MainActivity, null)
                 }
             }
 
