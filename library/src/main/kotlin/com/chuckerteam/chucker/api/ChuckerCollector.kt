@@ -1,12 +1,18 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import android.net.Uri
+import android.widget.Toast
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
+import com.chuckerteam.chucker.internal.support.writeToFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -63,4 +69,33 @@ public class ChuckerCollector @JvmOverloads constructor(
             }
         }
     }
+
+    /**
+     * Export the chucker transactions to a file.
+     *
+     * @param context Application context
+     * @param maxTransactions Maximum number of transactions to return in the file. Passing null
+     * means no limit on the number of transactions
+     * @param startTimestamp The timestamp to read transactions from. Passing null means
+     * transactions will not be limited by timestamp
+     * @return The content uri of a file with the transactions in
+     */
+    public suspend fun writeTransactions(
+        context: Context,
+        maxTransactions: Long?,
+        startTimestamp: Long?,
+    ): Uri? {
+        val transactions =
+            RepositoryProvider.transaction().getTransactions(maxTransactions, startTimestamp)
+        if (transactions.isEmpty()) {
+            return null
+        }
+
+        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
+        return sharableTransactions.writeToFile(
+                context = context,
+                fileName = "api_transactions.txt",
+            )
+    }
+
 }

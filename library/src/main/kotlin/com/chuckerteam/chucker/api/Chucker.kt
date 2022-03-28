@@ -81,43 +81,6 @@ public object Chucker {
         NotificationHelper(context).dismissNotifications()
     }
 
-    /**
-     * Export the chucker transactions to a file.
-     *
-     * This must be called on a background thread.
-     *
-     * @param context Application context
-     * @param maxTransactions Maximum number of transactions to return in the file. Passing null
-     * means no limit on the number of transactions
-     * @param startTimestamp The timestamp to read transactions from. Passing null means
-     * transactions will not be limited by timestamp
-     * @return The content uri of a file with the transactions in
-     */
-    @JvmStatic
-    public fun writeTransactions(
-        context: Context,
-        maxTransactions: Long?,
-        startTimestamp: Long?,
-    ): Uri? {
-        RepositoryProvider.initialize(context)
-        val transactions =
-            RepositoryProvider.transaction().getTransactions(maxTransactions, startTimestamp)
-        if (transactions.isEmpty()) {
-            Toast
-                .makeText(context, R.string.chucker_export_empty_text, Toast.LENGTH_SHORT)
-                .show()
-            return null
-        }
-
-        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
-        return runBlocking {
-            sharableTransactions.writeToFile(
-                context = context,
-                fileName = "api_transactions.txt",
-            )
-        }
-    }
-
     internal var logger: Logger = object : Logger {
         val TAG = "Chucker"
 

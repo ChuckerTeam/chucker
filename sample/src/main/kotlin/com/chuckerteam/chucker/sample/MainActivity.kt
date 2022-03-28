@@ -5,8 +5,11 @@ import android.os.StrictMode
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
+import kotlinx.coroutines.launch
 
 private val interceptorTypeSelector = InterceptorTypeSelector()
 
@@ -40,9 +43,10 @@ class MainActivity : AppCompatActivity() {
 
             exportToFile?.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             exportToFile?.setOnClickListener {
-                Thread {
-                    Chucker.writeTransactions(this@MainActivity, 1, null)
-                }.start()
+                lifecycleScope.launch {
+                    ChuckerCollector(this@MainActivity)
+                        .writeTransactions(this@MainActivity, 1, null)
+                }
             }
 
             interceptorTypeLabel.movementMethod = LinkMovementMethod.getInstance()

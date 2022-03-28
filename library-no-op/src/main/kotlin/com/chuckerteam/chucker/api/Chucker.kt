@@ -22,11 +22,4 @@ public object Chucker {
     public fun dismissNotifications(context: Context) {
         // Empty method for the library-no-op artifact
     }
-
-    @JvmStatic
-    public fun writeTransactions(
-        context: Context,
-        maxTransactions: Long?,
-        startTimestamp: Long?,
-    ): Uri? = null
 }

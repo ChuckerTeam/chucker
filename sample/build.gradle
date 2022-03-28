@@ -67,6 +67,8 @@ dependencies {
     releaseImplementation project(':library-no-op')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+    implementation "androidx.activity:activity-ktx:$activityVersion"
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"

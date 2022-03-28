@@ -46,5 +46,5 @@ internal interface HttpTransactionDao {
     suspend fun getAll(): List<HttpTransaction>
 
     @Query("SELECT * FROM transactions WHERE requestDate >= :timestamp LIMIT :limit")
-    fun getTransactions(limit: Long, timestamp: Long): List<HttpTransaction>
+    suspend fun getTransactions(limit: Long, timestamp: Long): List<HttpTransaction>
 }
