@@ -96,7 +96,7 @@ You can customize chucker providing an instance of a `ChuckerCollector`:
 // Create the Collector
 val chuckerCollector = ChuckerCollector(
         context = this,
-        // Toggles visibility of the push notification
+        // Toggles visibility of the notification
         showNotification = true,
         // Allows to customize the retention period of collected data
         retentionPeriod = RetentionManager.Period.ONE_HOUR
