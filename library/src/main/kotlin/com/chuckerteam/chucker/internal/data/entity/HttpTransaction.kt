@@ -53,7 +53,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
-    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
+    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
+    @ColumnInfo(name = "gqlOperationName") var gqlOperationName: String?,
 ) {
 
     @Ignore
@@ -82,7 +83,8 @@ internal class HttpTransaction(
         responseHeaders = null,
         responseHeadersSize = null,
         responseBody = null,
-        responseImageData = null
+        responseImageData = null,
+        gqlOperationName = null
     )
 
     enum class Status {
@@ -134,9 +136,12 @@ internal class HttpTransaction(
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"
                 Status.Requested -> " . . .  $method $path"
-                else -> "$responseCode $method $path"
+                else -> "$responseCode $method $path ${isGraphqlRequest.takeIf { true } ?: ""}"
             }
         }
+
+    val isGraphqlRequest: Boolean
+        get() = !gqlOperationName.isNullOrEmpty()
 
     val isSsl: Boolean
         get() = scheme.equals("https", ignoreCase = true)
@@ -268,6 +273,7 @@ internal class HttpTransaction(
             (host == other.host) &&
             (path == other.path) &&
             (scheme == other.scheme) &&
+            (gqlOperationName == other.gqlOperationName) &&
             (responseTlsVersion == other.responseTlsVersion) &&
             (responseCipherSuite == other.responseCipherSuite) &&
             (requestPayloadSize == other.requestPayloadSize) &&
