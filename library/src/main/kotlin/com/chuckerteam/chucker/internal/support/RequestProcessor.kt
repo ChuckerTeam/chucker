@@ -5,6 +5,8 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.model.GqlRequestBody
+import com.google.gson.reflect.TypeToken
 import okhttp3.Request
 import okio.Buffer
 import okio.ByteString
@@ -53,7 +55,8 @@ internal class RequestProcessor(
             Logger.error("Failed to read request payload", e)
             return
         }
-        val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
+        val limitingSource =
+            LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
 
@@ -62,6 +65,10 @@ internal class RequestProcessor(
         transaction.isRequestBodyEncoded = decodedContent == null
         if (decodedContent != null && limitingSource.isThresholdReached) {
             transaction.requestBody += context.getString(R.string.chucker_body_content_truncated)
+        } else {
+            decodedContent?.let { content ->
+                transaction.gqlOperationName = inferGqlRequest(content)
+            }
         }
     }
 
@@ -75,4 +82,15 @@ internal class RequestProcessor(
                 null
             }
         }.firstOrNull()
+
+    private fun inferGqlRequest(body: String): String? {
+        return try {
+            val gqlRequestBody = JsonConverter.instance.fromJson<GqlRequestBody>(
+                body, object : TypeToken<GqlRequestBody>() {}.type
+            )
+            gqlRequestBody.operationName
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
