@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val httpTasks by lazy {
-        listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
+        listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client), GqlHttpTask(client))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,23 +50,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+//TODO un-comment this before merging to production branch
 
-        StrictMode.setVmPolicy(
-            StrictMode.VmPolicy.Builder()
-                .detectLeakedClosableObjects()
-                .penaltyLog()
-                .penaltyDeath()
-                .build()
-        )
+/*
+   During local testing application was crashing without commenting
+   this block of code. Need to discuss with chucker team on
+   how to over come this issue.
+*/
 
-        StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .penaltyLog()
-                .penaltyDeath()
-                .build()
-        )
+//        StrictMode.setVmPolicy(
+//            StrictMode.VmPolicy.Builder()
+//                .detectLeakedClosableObjects()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build()
+//        )
+//
+//        StrictMode.setThreadPolicy(
+//            StrictMode.ThreadPolicy.Builder()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build()
+//        )
     }
 
     private fun launchChuckerDirectly() {
