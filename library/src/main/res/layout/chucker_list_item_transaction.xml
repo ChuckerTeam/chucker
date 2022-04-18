@@ -63,13 +63,37 @@
         app:layout_constraintBottom_toBottomOf="@id/host"
         tools:src="@drawable/chucker_ic_https" />
 
+
+    <TextView
+        android:id="@+id/gqlOperationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:padding="@dimen/chucker_half_grid"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ssl"
+        tools:text="getBatchDetails"
+        app:layout_constraintStart_toEndOf="@+id/ssl" />
+
+    <ImageView
+        android:id="@+id/gql"
+        android:layout_width="@dimen/chucker_doub_grid"
+        android:layout_height="@dimen/chucker_doub_grid"
+        android:contentDescription="@string/chucker_ssl"
+        tools:src="@drawable/chucker_ic_graphql"
+        app:layout_constraintStart_toStartOf="@+id/ssl"
+        app:layout_constraintTop_toTopOf="@+id/gqlOperationName"
+        app:layout_constraintBottom_toBottomOf="@id/gqlOperationName" />
+
     <TextView
         android:id="@+id/timeStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/duration"
         app:layout_constraintStart_toStartOf="@+id/path"
-        app:layout_constraintTop_toBottomOf="@+id/host"
+        app:layout_constraintTop_toBottomOf="@+id/gqlOperationName"
         tools:text="18:29:07 PM" />
 
     <TextView
@@ -91,4 +115,11 @@
         app:layout_constraintStart_toEndOf="@+id/duration"
         app:layout_constraintTop_toTopOf="@+id/duration"
         tools:text="16.45 KB" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gqlVisibiltyGroup"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="gqlOperationName, gql"
+        android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
