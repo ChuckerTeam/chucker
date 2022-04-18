@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -21,17 +22,24 @@ import javax.net.ssl.HttpsURLConnection
 internal class TransactionAdapter internal constructor(
     context: Context,
     private val onTransactionClick: (Long) -> Unit,
-) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(TransactionDiffCallback) {
+) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
+    TransactionDiffCallback
+) {
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
-    private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
+    private val colorRequested: Int =
+        ContextCompat.getColor(context, R.color.chucker_status_requested)
     private val colorError: Int = ContextCompat.getColor(context, R.color.chucker_status_error)
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val viewBinding = ChuckerListItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ChuckerListItemTransactionBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return TransactionViewHolder(viewBinding)
     }
 
@@ -75,17 +83,54 @@ internal class TransactionAdapter internal constructor(
                 if (transaction.status === HttpTransaction.Status.Failed) {
                     code.text = "!!!"
                 }
+
+                gqlVisibiltyGroup.visibility = if (transaction.isGqlRequest) {
+                    transaction.gqlOperationName?.let { opName ->
+                        setGqlInfo(
+                            operationName = opName,
+                            ProtocolResources.Gql()
+                        )
+                        View.VISIBLE
+                    } ?: View.GONE
+                } else View.GONE
+
             }
 
             setStatusColor(transaction)
         }
 
         private fun setProtocolImage(resources: ProtocolResources) {
-            itemBinding.ssl.setImageDrawable(AppCompatResources.getDrawable(itemView.context, resources.icon))
+            itemBinding.ssl.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    itemView.context,
+                    resources.icon
+                )
+            )
             ImageViewCompat.setImageTintList(
                 itemBinding.ssl,
                 ColorStateList.valueOf(ContextCompat.getColor(itemView.context, resources.color))
             )
+        }
+
+        private fun setGqlInfo(operationName: String, gqlResources: ProtocolResources) {
+            itemBinding.apply {
+                gqlOperationName.text = operationName
+                gql.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        itemView.context,
+                        gqlResources.icon
+                    )
+                )
+                ImageViewCompat.setImageTintList(
+                    gql,
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            gqlResources.color
+                        )
+                    )
+                )
+            }
         }
 
         private fun setStatusColor(transaction: HttpTransactionTuple) {
