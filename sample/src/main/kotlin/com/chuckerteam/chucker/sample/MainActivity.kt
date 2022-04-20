@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
+    private val graphqlTasks by lazy {
+        listOf(GraphQlTask(client))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,6 +41,11 @@ class MainActivity : AppCompatActivity() {
             setContentView(root)
             doHttp.setOnClickListener {
                 for (task in httpTasks) {
+                    task.run()
+                }
+            }
+            doGraphql.setOnClickListener {
+                for (task in graphqlTasks) {
                     task.run()
                 }
             }
