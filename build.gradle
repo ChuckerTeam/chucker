@@ -28,6 +28,9 @@ buildscript {
         ktLintGradleVersion = '11.0.0'
         leakcanaryVersion = '2.9.1'
 
+        // Apollo
+        apolloVersion = '3.2.1'
+
         // Testing
         androidxTestCoreVersion = '1.4.0'
         junitGradlePluignVersion = '1.8.2.1'
@@ -50,6 +53,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$androidGradleVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.apollographql.apollo3:apollo-gradle-plugin:$apolloVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
         classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
