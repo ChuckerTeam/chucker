@@ -57,7 +57,7 @@ internal class TransactionAdapter internal constructor(
             transactionId = transaction.id
 
             itemBinding.apply {
-                path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
+                path.text = "${transaction.method} ${transaction.getDisplayPath()}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
@@ -103,3 +103,14 @@ internal class TransactionAdapter internal constructor(
         }
     }
 }
+
+private fun HttpTransactionTuple.getDisplayPath(): String =
+    this.getFormattedPath(encode = false)
+        .let { formattedPath ->
+            if (formattedPath.lowercase() == "/graphql")
+                formattedPath +
+                (this.getParsedRequestHeaders()
+                     ?.find { it.name.lowercase().contains("operation-name") }
+                     ?.value?.let { operationName -> " - $operationName" } ?: "")
+            else formattedPath
+        }

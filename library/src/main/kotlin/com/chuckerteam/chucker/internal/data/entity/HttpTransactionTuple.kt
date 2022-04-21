@@ -3,6 +3,8 @@ package com.chuckerteam.chucker.internal.data.entity
 import androidx.room.ColumnInfo
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
+import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.google.gson.reflect.TypeToken
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /**
@@ -17,6 +19,7 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "protocol") var protocol: String?,
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "host") var host: String?,
+    @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
@@ -44,6 +47,13 @@ internal data class HttpTransactionTuple(
 
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
+    }
+
+    fun getParsedRequestHeaders(): List<HttpHeader>? {
+        return JsonConverter.instance.fromJson<List<HttpHeader>>(
+            requestHeaders,
+            object : TypeToken<List<HttpHeader>>() {}.type
+        )
     }
 
     fun getFormattedPath(encode: Boolean): String {
