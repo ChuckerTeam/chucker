@@ -11,8 +11,7 @@ updates:
       reviewers:
       - "cortinico"
       - "vbuberen"
-      - "MiSikora"
-# Updates for Gradle dependencies used in the app      
+# Updates for Gradle dependencies used in the app
     - package-ecosystem: gradle
       directory: "/"
       schedule:
@@ -21,4 +20,3 @@ updates:
       reviewers:
       - "cortinico"
       - "vbuberen"
-      - "MiSikora"
