@@ -47,14 +47,14 @@ internal suspend fun Sharable.shareAsFile(
     val cache = activity.cacheDir
     if (cache == null) {
         Logger.warn("Failed to obtain a valid cache directory for file export")
-        Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity.applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
     val file = FileFactory.create(cache, fileName)
     if (file == null) {
         Logger.warn("Failed to create an export file")
-        Toast.makeText(activity, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity.applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 

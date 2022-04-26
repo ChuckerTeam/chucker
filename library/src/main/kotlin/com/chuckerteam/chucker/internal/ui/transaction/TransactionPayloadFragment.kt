@@ -51,11 +51,11 @@ internal class TransactionPayloadFragment :
                 } else {
                     R.string.chucker_file_not_saved
                 }
-                Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext().applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(
-                requireContext(),
+                requireContext().applicationContext,
                 R.string.chucker_save_failed_to_open_document,
                 Toast.LENGTH_SHORT
             ).show()

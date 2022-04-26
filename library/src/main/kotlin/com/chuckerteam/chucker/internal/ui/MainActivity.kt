@@ -136,12 +136,11 @@ internal class MainActivity :
     }
 
     private fun exportTransactions(fileName: String, block: suspend (List<HttpTransaction>) -> Sharable) {
+        val applicationContext = this.applicationContext
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
             if (transactions.isNullOrEmpty()) {
-                Toast
-                    .makeText(this@MainActivity, R.string.chucker_export_empty_text, Toast.LENGTH_SHORT)
-                    .show()
+                showToast(applicationContext.getString(R.string.chucker_export_empty_text))
                 return@launch
             }
 
