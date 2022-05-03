@@ -43,6 +43,7 @@ internal class TransactionPayloadFragment :
 
     private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
         val transaction = viewModel.transaction.value
+        val applicationContext = requireContext().applicationContext
         if (uri != null && transaction != null) {
             lifecycleScope.launch {
                 val result = saveToFile(payloadType, uri, transaction)
@@ -51,11 +52,11 @@ internal class TransactionPayloadFragment :
                 } else {
                     R.string.chucker_file_not_saved
                 }
-                Toast.makeText(context, toastMessageId, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(
-                requireContext(),
+                applicationContext,
                 R.string.chucker_save_failed_to_open_document,
                 Toast.LENGTH_SHORT
             ).show()
