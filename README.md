@@ -41,6 +41,24 @@ dependencies {
   releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 }
 ```
+If you're using different build types for your project for example `releaseDebug` like below
+```
+releaseDebug {
+      minifyEnabled false
+      debuggable true
+      shrinkResources false
+      versionNameSuffix "-releaseDebug"
+    }
+```
+then, you need to add dependency by following the format `[buildType]Implementation`
+for example : buildType above is `releaseDebug`
+then add dependency like :-
+```groovy
+dependencies {
+    releaseDebugImplementation "com.github.chuckerteam.chucker:library:3.5.2"           // for chucker enabled
+    releaseDebugImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"     // for chucker disabled
+}
+```
 
 To start using Chucker, just plug it a new `ChuckerInterceptor` to your OkHttp Client Builder:
 
