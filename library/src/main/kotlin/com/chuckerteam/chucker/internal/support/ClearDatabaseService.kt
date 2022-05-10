@@ -14,6 +14,7 @@ internal class ClearDatabaseService : JobIntentService() {
         RepositoryProvider.initialize(applicationContext)
         scope.launch {
             RepositoryProvider.transaction().deleteAllTransactions()
+            RepositoryProvider.eventTransaction().deleteAllTransactions()
             NotificationHelper.clearBuffer()
             NotificationHelper(applicationContext).dismissNotifications()
         }
