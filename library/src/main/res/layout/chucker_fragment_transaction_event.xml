@@ -32,12 +32,14 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollHorizontally="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
             android:id="@+id/payloadText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollHorizontally="true"
             android:padding="@dimen/chucker_base_grid"/>
 
     </androidx.core.widget.NestedScrollView>

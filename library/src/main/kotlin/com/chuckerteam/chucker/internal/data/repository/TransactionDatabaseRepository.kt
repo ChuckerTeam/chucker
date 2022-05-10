@@ -44,7 +44,7 @@ internal class TransactionDatabaseRepository(
             val combinedList = mutableListOf<Transaction>()
             combinedList.addAll(a)
             combinedList.addAll(b)
-            combinedList.sortBy { it.time }
+            combinedList.sortByDescending { it.time }
             return@combine combinedList
         }
     }
@@ -63,7 +63,7 @@ internal class TransactionDatabaseRepository(
 
             combinedList.addAll(a)
             combinedList.addAll(b)
-            combinedList.sortBy { it.time }
+            combinedList.sortByDescending { it.time }
             return@combine combinedList
         }
     }
@@ -75,7 +75,7 @@ internal class TransactionDatabaseRepository(
         val allTransactions = mutableListOf<Transaction>()
         allTransactions.addAll(httpTransactions)
         allTransactions.addAll(eventTransactions)
-        allTransactions.sortBy { return@sortBy it.id }
+        allTransactions.sortByDescending { it.time }
 
         return allTransactions
     }
