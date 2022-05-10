@@ -8,15 +8,14 @@ import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
 import kotlinx.coroutines.flow.*
 
 internal class HttpTransactionViewModel(
-    private val sharedViewModel: TransactionViewModel
+    sharedViewModel: TransactionViewModel
 ) : ViewModel() {
     private val mutableEncodeUrl = MutableStateFlow(false)
     val encodeUrl: StateFlow<Boolean> = mutableEncodeUrl
 
-    val transaction: StateFlow<HttpTransaction?>
-        get() = sharedViewModel.transaction
-            .map { it as HttpTransaction? }
-            .stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val transaction: StateFlow<HttpTransaction?> = sharedViewModel.transaction
+        .map { it as HttpTransaction? }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val transactionTitle: Flow<String> = sharedViewModel.transaction
         .map { it as HttpTransaction? }

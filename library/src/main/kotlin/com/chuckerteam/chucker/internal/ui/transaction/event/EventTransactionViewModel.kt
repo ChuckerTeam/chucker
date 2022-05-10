@@ -16,7 +16,7 @@ internal class EventTransactionViewModel(
     val transaction: StateFlow<EventTransaction?>
         get() = sharedViewModel.transaction
             .map { it as EventTransaction? }
-            .stateIn(viewModelScope, SharingStarted.Lazily, null)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
 }
 

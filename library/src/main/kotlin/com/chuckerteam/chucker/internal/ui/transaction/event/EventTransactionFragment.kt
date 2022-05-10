@@ -52,4 +52,6 @@ internal class EventTransactionFragment : Fragment() {
             }
         }
     }
+
+
 }
