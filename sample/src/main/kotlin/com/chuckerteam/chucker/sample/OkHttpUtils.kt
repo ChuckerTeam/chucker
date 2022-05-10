@@ -16,13 +16,8 @@ const val SEGMENT_SIZE = 8_192L
 fun createOkHttpClient(
     context: Context,
     interceptorTypeProvider: InterceptorType.Provider,
+    collector: ChuckerCollector,
 ): OkHttpClient {
-    val collector = ChuckerCollector(
-        context = context,
-        showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
-    )
-
     @Suppress("MagicNumber")
     val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         .collector(collector)
