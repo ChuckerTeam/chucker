@@ -8,6 +8,7 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
+    suspend fun getAllTransactions(): List<Transaction> = RepositoryProvider.transactionRepo().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery

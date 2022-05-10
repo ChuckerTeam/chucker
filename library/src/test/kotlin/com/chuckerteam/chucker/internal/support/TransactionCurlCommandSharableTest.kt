@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
+import com.chuckerteam.chucker.internal.support.share.TransactionCurlCommandSharable
 import com.chuckerteam.chucker.util.TestTransactionFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

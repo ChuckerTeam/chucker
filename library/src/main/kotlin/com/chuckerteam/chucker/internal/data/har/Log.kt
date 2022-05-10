@@ -1,9 +1,14 @@
 package com.chuckerteam.chucker.internal.data.har
 
+import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
+import com.chuckerteam.chucker.internal.data.har.log.*
 import com.chuckerteam.chucker.internal.data.har.log.Browser
 import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.data.har.log.Entry
+import com.chuckerteam.chucker.internal.data.har.log.EventEntry
+import com.chuckerteam.chucker.internal.data.har.log.HttpEntry
 import com.chuckerteam.chucker.internal.data.har.log.Page
 import com.google.gson.annotations.SerializedName
 
@@ -17,8 +22,13 @@ internal data class Log(
     @SerializedName("entries") val entries: List<Entry>,
     @SerializedName("comment") val comment: String? = null,
 ) {
-    constructor(transactions: List<HttpTransaction>, creator: Creator) : this(
+    constructor(transactions: List<Transaction>, creator: Creator) : this(
         creator = creator,
-        entries = transactions.map { Entry(it) }
+        entries = transactions.map {
+            return@map when(it) {
+                is EventTransaction -> EventEntry(it)
+                is HttpTransaction -> HttpEntry(it)
+            }
+        }
     )
 }

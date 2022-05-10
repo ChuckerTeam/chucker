@@ -1,12 +1,14 @@
-package com.chuckerteam.chucker.internal.support
+package com.chuckerteam.chucker.internal.support.share
 
 import android.content.Context
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FormatUtils
+import com.chuckerteam.chucker.internal.support.Sharable
 import okio.Buffer
 import okio.Source
 
-internal class TransactionDetailsSharable(
+internal class HttpTransactionDetailsSharable(
     private val transaction: HttpTransaction,
     private val encodeUrls: Boolean,
 ) : Sharable {

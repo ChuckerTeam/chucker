@@ -2,19 +2,23 @@
 
 package com.chuckerteam.chucker.internal.data.entity
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.chuckerteam.chucker.internal.support.Sharable
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okio.Source
 import java.net.HttpURLConnection
 import java.util.Date
 

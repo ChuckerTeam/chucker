@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.data.har
 
-import com.chuckerteam.chucker.internal.data.har.log.Entry
+import com.chuckerteam.chucker.internal.data.har.log.HttpEntry
 import com.chuckerteam.chucker.internal.data.har.log.entry.Request
 import com.chuckerteam.chucker.internal.data.har.log.entry.Response
 import com.chuckerteam.chucker.internal.data.har.log.entry.Timings
@@ -11,13 +11,13 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.util.Date
 
-internal class EntryTest {
+internal class HttpEntryTest {
     @Test
     fun `entry is created correctly with start datetime`() {
         val transaction = HarTestUtils.createTransaction("GET")
         val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(Entry.DateFormat.get()!!.parse(entry?.startedDateTime))
+        assertThat(HttpEntry.DateFormat.get()!!.parse(entry?.startedDateTime))
             .isEqualTo(Date(transaction.requestDate!!))
     }
 

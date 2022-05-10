@@ -5,7 +5,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.har.Har
 import com.chuckerteam.chucker.internal.data.har.log.Creator
-import com.chuckerteam.chucker.internal.data.har.log.Entry
+import com.chuckerteam.chucker.internal.data.har.log.HttpEntry
 import com.chuckerteam.chucker.internal.data.har.log.entry.Request
 import com.chuckerteam.chucker.internal.data.har.log.entry.Response
 import com.chuckerteam.chucker.internal.data.har.log.entry.request.PostData
@@ -81,8 +81,8 @@ internal object HarTestUtils {
         return Content(createTransaction(method))
     }
 
-    internal fun createEntry(method: String): Entry? {
-        return Entry(createTransaction(method))
+    internal fun createEntry(method: String): HttpEntry? {
+        return HttpEntry(createTransaction(method))
     }
 
     internal fun createPostData(method: String): PostData? {

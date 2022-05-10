@@ -1,8 +1,9 @@
-package com.chuckerteam.chucker.internal.support
+package com.chuckerteam.chucker.internal.support.share
 
 import android.content.Context
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.Sharable
 import okio.Buffer
 import okio.Source
 

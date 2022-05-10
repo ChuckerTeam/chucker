@@ -13,4 +13,7 @@ internal interface EventTransactionDao {
 
     @Query("DELETE FROM event_transactions")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM event_transactions")
+    suspend fun getAll(): List<EventTransaction>
 }

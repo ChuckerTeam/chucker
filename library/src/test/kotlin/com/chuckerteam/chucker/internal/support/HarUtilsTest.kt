@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.support
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.data.har.log.Entry
+import com.chuckerteam.chucker.internal.data.har.log.HttpEntry
 import com.chuckerteam.chucker.util.HarTestUtils
 import com.chuckerteam.chucker.util.HarTestUtils.createHarString
 import com.chuckerteam.chucker.util.HarTestUtils.createListTransactionHar
@@ -28,9 +28,9 @@ internal class HarUtilsTest {
     fun `entry list is created correctly with different methods`() {
         val har = context.createListTransactionHar()
 
-        assertThat(har.log.entries).hasSize(2)
-        assertThat(har.log.entries[0].request.method).isEqualTo("GET")
-        assertThat(har.log.entries[1].request.method).isEqualTo("POST")
+        assertThat(har.log.httpEntries).hasSize(2)
+        assertThat(har.log.httpEntries[0].request.method).isEqualTo("GET")
+        assertThat(har.log.httpEntries[1].request.method).isEqualTo("POST")
     }
 
     @Test
@@ -39,7 +39,7 @@ internal class HarUtilsTest {
         val result = context.createHarString()
         val chuckerName = context.getString(R.string.chucker_name)
         val chuckerVersion = context.getString(R.string.chucker_version)
-        val startedDateTime = Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
+        val startedDateTime = HttpEntry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
 
         assertThat(result).isEqualTo(
             """

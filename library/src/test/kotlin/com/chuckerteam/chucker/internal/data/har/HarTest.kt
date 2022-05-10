@@ -42,6 +42,6 @@ public class HarTest {
     public fun `har is created correctly with entries`() {
         val har = context.createSingleTransactionHar("GET")
 
-        assertThat(har.log.entries).hasSize(1)
+        assertThat(har.log.httpEntries).hasSize(1)
     }
 }

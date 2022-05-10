@@ -1,16 +1,25 @@
-package com.chuckerteam.chucker.internal.support
+package com.chuckerteam.chucker.internal.support.share
 
 import android.content.Context
 import com.chuckerteam.chucker.R.string
+import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
+import com.chuckerteam.chucker.internal.support.Sharable
+import com.chuckerteam.chucker.internal.support.toSharableUtf8Content
 import okio.Buffer
 import okio.Source
 
 internal class TransactionListDetailsSharable(
-    transactions: List<HttpTransaction>,
+    transactions: List<Transaction>,
     encodeUrls: Boolean,
 ) : Sharable {
-    private val transactions = transactions.map { TransactionDetailsSharable(it, encodeUrls) }
+    private val transactions = transactions.map {
+        return@map when (it) {
+            is HttpTransaction -> HttpTransactionDetailsSharable(it, encodeUrls)
+            is EventTransaction -> EventTransactionDetailsSharable(it)
+        }
+    }
 
     override fun toSharableContent(context: Context): Source = Buffer().writeUtf8(
         transactions.joinToString(

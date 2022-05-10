@@ -14,9 +14,9 @@ import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
-import com.chuckerteam.chucker.internal.support.TransactionCurlCommandSharable
-import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
-import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
+import com.chuckerteam.chucker.internal.support.share.TransactionCurlCommandSharable
+import com.chuckerteam.chucker.internal.support.share.TransactionDetailsHarSharable
+import com.chuckerteam.chucker.internal.support.share.HttpTransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
@@ -77,14 +77,14 @@ internal class TransactionActivity : BaseChuckerActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.share_text -> shareTransactionAsText { transaction ->
             val encodeUrls = viewModel.encodeUrl.value!!
-            TransactionDetailsSharable(transaction, encodeUrls)
+            HttpTransactionDetailsSharable(transaction, encodeUrls)
         }
         R.id.share_curl -> shareTransactionAsText { transaction ->
             TransactionCurlCommandSharable(transaction)
         }
         R.id.share_file -> shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
             val encodeUrls = viewModel.encodeUrl.value!!
-            TransactionDetailsSharable(transaction, encodeUrls)
+            HttpTransactionDetailsSharable(transaction, encodeUrls)
         }
         R.id.share_har -> shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
             TransactionDetailsHarSharable(

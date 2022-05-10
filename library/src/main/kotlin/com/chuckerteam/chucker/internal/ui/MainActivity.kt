@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
@@ -14,11 +13,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
-import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
-import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
+import com.chuckerteam.chucker.internal.support.share.TransactionDetailsHarSharable
+import com.chuckerteam.chucker.internal.support.share.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
@@ -135,7 +135,7 @@ internal class MainActivity :
         return true
     }
 
-    private fun exportTransactions(fileName: String, block: suspend (List<HttpTransaction>) -> Sharable) {
+    private fun exportTransactions(fileName: String, block: suspend (List<Transaction>) -> Sharable) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()

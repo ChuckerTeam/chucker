@@ -2,6 +2,8 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.chuckerteam.chucker.internal.support.share.HttpTransactionDetailsSharable
+import com.chuckerteam.chucker.internal.support.share.TransactionListDetailsSharable
 import com.chuckerteam.chucker.util.TestTransactionFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -21,7 +23,7 @@ internal class TransactionListDetailsSharableTest {
             separator = "\n==================\n",
             prefix = "/* Export Start */\n",
             postfix = "\n/* Export End */\n"
-        ) { TransactionDetailsSharable(it, encodeUrls = false).toSharableUtf8Content(context) }
+        ) { HttpTransactionDetailsSharable(it, encodeUrls = false).toSharableUtf8Content(context) }
 
         val sharedContent = TransactionListDetailsSharable(
             transactions,

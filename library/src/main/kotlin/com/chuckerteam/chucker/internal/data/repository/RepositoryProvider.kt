@@ -15,6 +15,8 @@ internal object RepositoryProvider {
 
     private var eventTransactionRepository: EventTransactionRepository? = null
 
+    private var transactionRepo: TransactionRepository? = null
+
     fun transaction(): HttpTransactionRepository {
         return checkNotNull(transactionRepository) {
             "You can't access the transaction repository if you don't initialize it!"
@@ -27,6 +29,12 @@ internal object RepositoryProvider {
         }
     }
 
+    fun transactionRepo(): TransactionRepository {
+        return checkNotNull(transactionRepo) {
+            "You can't access the transaction repository if you don't initialize it!"
+        }
+    }
+
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
@@ -35,6 +43,7 @@ internal object RepositoryProvider {
             val db = ChuckerDatabase.create(applicationContext)
             transactionRepository = HttpTransactionDatabaseRepository(db)
             eventTransactionRepository = EventTransactionDatabaseRepository(db)
+            transactionRepo = TransactionDatabaseRepository(db)
         }
     }
 
