@@ -26,4 +26,18 @@ internal class EventTransaction(
 
     override val time: Long
         get() = receivedDate ?: 0
+
+    override fun hasTheSameContent(other: Transaction?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+
+        if (other !is EventTransaction) {
+            return false
+        }
+
+        return (id == other.id) &&
+            (title == other.title) &&
+            (receivedDate == other.receivedDate) &&
+            (payload == other.payload)
+    }
 }

@@ -261,9 +261,13 @@ internal class HttpTransaction(
     // Not relying on 'equals' because comparison be long due to request and response sizes
     // and it would be unwise to do this every time 'equals' is called.
     @Suppress("ComplexMethod")
-    fun hasTheSameContent(other: HttpTransaction?): Boolean {
+    override fun hasTheSameContent(other: Transaction?): Boolean {
         if (this === other) return true
         if (other == null) return false
+
+        if (other !is HttpTransaction) {
+            return false
+        }
 
         return (id == other.id) &&
             (requestDate == other.requestDate) &&

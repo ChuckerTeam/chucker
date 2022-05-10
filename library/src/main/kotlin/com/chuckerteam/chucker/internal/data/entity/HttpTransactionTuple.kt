@@ -67,4 +67,26 @@ internal data class HttpTransactionTuple(
         }
     override val time: Long
         get() = requestDate ?: 0
+
+    override fun hasTheSameContent(other: Transaction?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+
+        if (other !is HttpTransactionTuple) {
+            return false
+        }
+
+        return (id == other.id) &&
+            (requestDate == other.requestDate) &&
+            (tookMs == other.tookMs) &&
+            (protocol == other.protocol) &&
+            (method == other.method) &&
+            (host == other.host) &&
+            (path == other.path) &&
+            (scheme == other.scheme) &&
+            (requestPayloadSize == other.requestPayloadSize) &&
+            (responseCode == other.responseCode) &&
+            (error == other.error) &&
+            (responsePayloadSize == other.responsePayloadSize)
+    }
 }

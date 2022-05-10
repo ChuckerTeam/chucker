@@ -35,5 +35,5 @@ internal interface EventTransactionDao {
     suspend fun getAll(): List<EventTransaction>
 
     @Query("SELECT * FROM event_transactions WHERE id = :id")
-    fun getById(id: Long): Flow<HttpTransaction?>
+    fun getById(id: Long): Flow<EventTransaction?>
 }

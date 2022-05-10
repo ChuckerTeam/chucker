@@ -68,7 +68,7 @@ public class RetentionManager @JvmOverloads constructor(
     }
 
     private suspend fun deleteSince(threshold: Long) {
-        RepositoryProvider.transactionRepo().deleteOldTransactions(threshold)
+        RepositoryProvider.transaction().deleteOldTransactions(threshold)
     }
 
     private fun isCleanupDue(now: Long) = now - getLastCleanup(now) > cleanupFrequency
