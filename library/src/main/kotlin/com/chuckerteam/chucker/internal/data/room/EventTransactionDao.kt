@@ -1,9 +1,7 @@
 package com.chuckerteam.chucker.internal.data.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,6 +26,9 @@ internal interface EventTransactionDao {
 
     @Query("DELETE FROM event_transactions")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM event_transactions WHERE receivedDate <= :threshold")
+    suspend fun deleteBefore(threshold: Long)
 
     @Query("SELECT * FROM event_transactions")
     suspend fun getAll(): List<EventTransaction>

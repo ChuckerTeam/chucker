@@ -57,4 +57,9 @@ internal class TransactionDatabaseRepository(
         requestsDao.deleteAll()
         eventsDao.deleteAll()
     }
+
+    override suspend fun deleteOldTransactions(threshold: Long) {
+        requestsDao.deleteBefore(threshold)
+        eventsDao.deleteBefore(threshold)
+    }
 }
