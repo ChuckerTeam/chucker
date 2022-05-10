@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface EventTransactionDao {
@@ -13,7 +14,14 @@ internal interface EventTransactionDao {
     @Query(
         "SELECT * FROM event_transactions ORDER BY receivedDate DESC"
     )
-    suspend fun getAllSorted(): List<EventTransaction>
+    fun getAllSorted(): Flow<List<EventTransaction>>
+
+    @Query(
+        "SELECT * FROM " +
+            "event_transactions WHERE title LIKE :query AND payload LIKE :query " +
+            "ORDER BY receivedDate DESC"
+    )
+    fun getFiltered(query: String): Flow<List<EventTransaction>>
 
     @Insert
     suspend fun insert(transaction: EventTransaction): Long?

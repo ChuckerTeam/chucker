@@ -1,7 +1,10 @@
 package com.chuckerteam.chucker.internal.data.repository
 
+import android.text.TextUtils
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 internal class TransactionDatabaseRepository(
     roomDatabase: ChuckerDatabase
@@ -9,28 +12,33 @@ internal class TransactionDatabaseRepository(
     private val requestsDao = roomDatabase.transactionDao()
     private val eventsDao = roomDatabase.eventTransactionDao()
 
-    override suspend fun getSortedTransactionTuples(): List<Transaction> {
-        val httpTransactions = requestsDao.getSortedTuples()
-        val eventTransactions = eventsDao.getAllSorted()
-
-        val sortedTransactions = mutableListOf<Transaction>()
-        sortedTransactions.addAll(httpTransactions)
-        sortedTransactions.addAll(eventTransactions)
-        sortedTransactions.sortBy {
-            return@sortBy it.time
+    override fun getSortedTransactions(): Flow<List<Transaction>> {
+        return requestsDao.getSortedTuples().combine(eventsDao.getAllSorted()) { a,b ->
+            val combinedList = mutableListOf<Transaction>()
+            combinedList.addAll(a)
+            combinedList.addAll(b)
+            combinedList.sortBy { it.time }
+            return@combine combinedList
         }
-
-        return sortedTransactions
     }
 
-    override suspend fun getFilteredTransactionTuples(
-        code: String,
-        path: String
-    ): List<Transaction> {
-        val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
-        val httpTransactions = requestsDao.getFilteredTuples("$code%", pathQuery)
+    override fun getFilteredTransactions(
+        query : String
+    ): Flow<List<Transaction>> {
+        val httpFlow = if (TextUtils.isDigitsOnly(query)) {
+            requestsDao.getFilteredTuples("$query%", "%")
+        } else {
+            requestsDao.getFilteredTuples("%", "%$query%")
+        }
 
-        return httpTransactions
+        return httpFlow.combine(eventsDao.getFiltered("%$query%")) { a,b ->
+            val combinedList = mutableListOf<Transaction>()
+
+            combinedList.addAll(a)
+            combinedList.addAll(b)
+            combinedList.sortBy { it.time }
+            return@combine combinedList
+        }
     }
 
     override suspend fun getAllTransactions(): List<Transaction> {

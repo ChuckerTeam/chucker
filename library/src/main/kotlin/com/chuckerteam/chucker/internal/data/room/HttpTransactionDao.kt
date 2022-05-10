@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface HttpTransactionDao {
@@ -17,7 +18,7 @@ internal interface HttpTransactionDao {
             "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
             "transactions ORDER BY requestDate DESC"
     )
-    suspend fun getSortedTuples(): List<HttpTransactionTuple>
+    fun getSortedTuples(): Flow<List<HttpTransactionTuple>>
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, " +
@@ -25,7 +26,7 @@ internal interface HttpTransactionDao {
             "transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
             "ORDER BY requestDate DESC"
     )
-    suspend fun getFilteredTuples(codeQuery: String, pathQuery: String): List<HttpTransactionTuple>
+    fun getFilteredTuples(codeQuery: String, pathQuery: String): Flow<List<HttpTransactionTuple>>
 
     @Insert
     suspend fun insert(transaction: HttpTransaction): Long?

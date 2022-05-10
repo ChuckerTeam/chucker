@@ -65,7 +65,7 @@ public class ChuckerCollector @JvmOverloads constructor(
         }
     }
 
-    public fun onEventReceived(title: String?, payload: String,receiveDate: Long? = 0) {
+    public fun onEventReceived(title: String?, payload: String,receiveDate: Long? = System.currentTimeMillis()) {
         scope.launch {
             val eventTransaction = EventTransaction(title = title,
                 receivedDate = receiveDate,

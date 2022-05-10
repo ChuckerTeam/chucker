@@ -1,45 +1,33 @@
 package com.chuckerteam.chucker.internal.ui
 
-import android.text.TextUtils
 import androidx.lifecycle.*
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
 
-    val transactions = MutableSharedFlow<List<Transaction>>()
+    private val searchQueryFlow = MutableSharedFlow<String>()
+
+    val transactions = searchQueryFlow.flatMapLatest { searchQuery ->
+        return@flatMapLatest when {
+            searchQuery.isBlank() -> {
+               RepositoryProvider.transactionRepo().getSortedTransactions()
+            }
+            else -> {
+                RepositoryProvider.transactionRepo().getFilteredTransactions(searchQuery)
+            }
+        }
+    }
 
     suspend fun getAllTransactions(): List<Transaction> =
         RepositoryProvider.transactionRepo().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
-        when {
-            searchQuery.isBlank() -> {
-                viewModelScope.launch {
-                    transactions.emit(
-                        RepositoryProvider.transactionRepo().getSortedTransactionTuples()
-                    )
-                }
-            }
-            TextUtils.isDigitsOnly(searchQuery) -> {
-                viewModelScope.launch {
-                    transactions.emit(
-                        RepositoryProvider.transactionRepo()
-                            .getFilteredTransactionTuples(searchQuery, "")
-                    )
-                }
-            }
-            else -> {
-                viewModelScope.launch {
-                    transactions.emit(
-                        RepositoryProvider.transactionRepo()
-                            .getFilteredTransactionTuples("", searchQuery)
-                    )
-                }
-            }
+        viewModelScope.launch {
+            searchQueryFlow.emit(searchQuery)
         }
     }
 
