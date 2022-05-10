@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.data.room
 
 import androidx.room.*
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -32,4 +33,7 @@ internal interface EventTransactionDao {
 
     @Query("SELECT * FROM event_transactions")
     suspend fun getAll(): List<EventTransaction>
+
+    @Query("SELECT * FROM event_transactions WHERE id = :id")
+    fun getById(id: Long): Flow<HttpTransaction?>
 }

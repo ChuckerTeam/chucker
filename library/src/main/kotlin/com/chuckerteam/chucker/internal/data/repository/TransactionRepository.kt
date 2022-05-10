@@ -9,4 +9,5 @@ internal interface TransactionRepository {
     suspend fun getAllTransactions() : List<Transaction>
     suspend fun deleteAllTransactions()
     suspend fun deleteOldTransactions(threshold: Long)
+    fun getTransaction(transactionId: Long,type : Transaction.Type): Flow<Transaction?>
 }

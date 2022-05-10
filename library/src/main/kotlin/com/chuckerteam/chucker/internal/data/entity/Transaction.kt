@@ -4,4 +4,9 @@ internal sealed interface Transaction {
     val id: Long
     val notificationText: String
     val time : Long
+    
+    enum class Type {
+        Http,
+        Event
+    }
 }

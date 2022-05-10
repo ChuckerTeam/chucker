@@ -11,26 +11,10 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
  */
 internal object RepositoryProvider {
 
-    private var transactionRepository: HttpTransactionRepository? = null
+    private var transactionRepository: TransactionRepository? = null
 
-    private var eventTransactionRepository: EventTransactionRepository? = null
-
-    private var transactionRepo: TransactionRepository? = null
-
-    fun transaction(): HttpTransactionRepository {
+    fun transaction(): TransactionRepository {
         return checkNotNull(transactionRepository) {
-            "You can't access the transaction repository if you don't initialize it!"
-        }
-    }
-
-    fun eventTransaction(): EventTransactionRepository {
-        return checkNotNull(eventTransactionRepository) {
-            "You can't access the event transaction repository if you don't initialize it!"
-        }
-    }
-
-    fun transactionRepo(): TransactionRepository {
-        return checkNotNull(transactionRepo) {
             "You can't access the transaction repository if you don't initialize it!"
         }
     }
@@ -41,9 +25,7 @@ internal object RepositoryProvider {
     fun initialize(applicationContext: Context) {
         if (transactionRepository == null) {
             val db = ChuckerDatabase.create(applicationContext)
-            transactionRepository = HttpTransactionDatabaseRepository(db)
-            eventTransactionRepository = EventTransactionDatabaseRepository(db)
-            transactionRepo = TransactionDatabaseRepository(db)
+            transactionRepository = TransactionDatabaseRepository(db)
         }
     }
 

@@ -3,8 +3,10 @@ package com.chuckerteam.chucker.internal.data.repository
 import android.text.TextUtils
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import com.chuckerteam.chucker.internal.support.distinctUntilChanged
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal class TransactionDatabaseRepository(
     roomDatabase: ChuckerDatabase
@@ -61,5 +63,12 @@ internal class TransactionDatabaseRepository(
     override suspend fun deleteOldTransactions(threshold: Long) {
         requestsDao.deleteBefore(threshold)
         eventsDao.deleteBefore(threshold)
+    }
+
+    override fun getTransaction(transactionId: Long, type: Transaction.Type): Flow<Transaction?> {
+        return when(type) {
+            Transaction.Type.Http -> requestsDao.getById(transactionId)
+            Transaction.Type.Event -> eventsDao.getById(transactionId)
+        }.distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }
 }
