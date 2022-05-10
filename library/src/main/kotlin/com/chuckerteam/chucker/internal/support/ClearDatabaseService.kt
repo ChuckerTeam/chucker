@@ -13,8 +13,7 @@ internal class ClearDatabaseService : JobIntentService() {
     override fun onHandleWork(intent: Intent) {
         RepositoryProvider.initialize(applicationContext)
         scope.launch {
-            RepositoryProvider.transaction().deleteAllTransactions()
-            RepositoryProvider.eventTransaction().deleteAllTransactions()
+            RepositoryProvider.transactionRepo().deleteAllTransactions()
             NotificationHelper.clearBuffer()
             NotificationHelper(applicationContext).dismissNotifications()
         }

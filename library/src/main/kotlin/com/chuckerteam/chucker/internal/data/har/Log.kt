@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.data.har
 
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.har.log.*
 import com.chuckerteam.chucker.internal.data.har.log.Browser
@@ -25,9 +26,10 @@ internal data class Log(
     constructor(transactions: List<Transaction>, creator: Creator) : this(
         creator = creator,
         entries = transactions.map {
-            return@map when(it) {
+            when(it) {
                 is EventTransaction -> EventEntry(it)
                 is HttpTransaction -> HttpEntry(it)
+                is HttpTransactionTuple -> TODO("NOT SUPPORTED")
             }
         }
     )

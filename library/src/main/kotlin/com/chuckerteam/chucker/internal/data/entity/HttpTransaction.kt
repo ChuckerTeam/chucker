@@ -142,6 +142,9 @@ internal class HttpTransaction(
             }
         }
 
+    override val time: Long
+        get() = requestDate ?: 0
+
     val isSsl: Boolean
         get() = scheme.equals("https", ignoreCase = true)
 

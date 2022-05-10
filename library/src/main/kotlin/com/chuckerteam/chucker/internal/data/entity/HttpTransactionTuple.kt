@@ -11,7 +11,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
  */
 @Suppress("LongParameterList")
 internal data class HttpTransactionTuple(
-    @ColumnInfo(name = "id") var id: Long,
+    @ColumnInfo(name = "id") override var id: Long,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,
     @ColumnInfo(name = "tookMs") var tookMs: Long?,
     @ColumnInfo(name = "protocol") var protocol: String?,
@@ -23,7 +23,7 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "error") var error: String?
-) {
+) : Transaction {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
     val status: HttpTransaction.Status
@@ -56,4 +56,15 @@ internal data class HttpTransactionTuple(
         val httpUrl = dummyUrl.toHttpUrlOrNull() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
+
+    override val notificationText: String
+        get() {
+            return when (status) {
+                HttpTransaction.Status.Failed -> " ! ! !  $method $path"
+                HttpTransaction.Status.Requested -> " . . .  $method $path"
+                else -> "$responseCode $method $path"
+            }
+        }
+    override val time: Long
+        get() = requestDate ?: 0
 }

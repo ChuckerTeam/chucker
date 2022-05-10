@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.HarUtils
@@ -23,6 +22,7 @@ import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 internal class MainActivity :
@@ -58,13 +58,14 @@ internal class MainActivity :
             }
         }
 
-        viewModel.transactions.observe(
-            this,
-            { transactionTuples ->
-                transactionsAdapter.submitList(transactionTuples)
-                mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+        lifecycleScope.launch {
+            viewModel.transactions.collect { transactions ->
+                transactionsAdapter.submitList(transactions)
+                mainBinding.tutorialGroup.isVisible = transactions.isEmpty()
             }
-        )
+        }
+
+        viewModel.updateItemsFilter("")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

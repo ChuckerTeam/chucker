@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        tools:listitem="@layout/chucker_list_item_transaction"
+        tools:listitem="@layout/chucker_list_item_transaction_http"
         tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.Group

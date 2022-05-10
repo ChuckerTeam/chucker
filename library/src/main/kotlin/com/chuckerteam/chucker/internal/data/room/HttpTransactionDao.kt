@@ -17,7 +17,7 @@ internal interface HttpTransactionDao {
             "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
             "transactions ORDER BY requestDate DESC"
     )
-    fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
+    suspend fun getSortedTuples(): List<HttpTransactionTuple>
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, " +
@@ -25,7 +25,7 @@ internal interface HttpTransactionDao {
             "transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
             "ORDER BY requestDate DESC"
     )
-    fun getFilteredTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
+    suspend fun getFilteredTuples(codeQuery: String, pathQuery: String): List<HttpTransactionTuple>
 
     @Insert
     suspend fun insert(transaction: HttpTransaction): Long?

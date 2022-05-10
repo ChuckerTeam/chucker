@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.R.string
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.toSharableUtf8Content
@@ -18,6 +19,7 @@ internal class TransactionListDetailsSharable(
         return@map when (it) {
             is HttpTransaction -> HttpTransactionDetailsSharable(it, encodeUrls)
             is EventTransaction -> EventTransactionDetailsSharable(it)
+            is HttpTransactionTuple -> TODO("NOT SUPPORTED")
         }
     }
 

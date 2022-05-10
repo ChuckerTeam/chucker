@@ -1,47 +1,51 @@
 package com.chuckerteam.chucker.internal.ui
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import androidx.lifecycle.*
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
 
-    private val currentFilter = MutableLiveData("")
+    val transactions = MutableSharedFlow<List<Transaction>>()
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
-        with(RepositoryProvider.transaction()) {
-            when {
-                searchQuery.isNullOrBlank() -> {
-                    getSortedTransactionTuples()
+    suspend fun getAllTransactions(): List<Transaction> =
+        RepositoryProvider.transactionRepo().getAllTransactions()
+
+    fun updateItemsFilter(searchQuery: String) {
+        when {
+            searchQuery.isBlank() -> {
+                viewModelScope.launch {
+                    transactions.emit(
+                        RepositoryProvider.transactionRepo().getSortedTransactionTuples()
+                    )
                 }
-                TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
+            }
+            TextUtils.isDigitsOnly(searchQuery) -> {
+                viewModelScope.launch {
+                    transactions.emit(
+                        RepositoryProvider.transactionRepo()
+                            .getFilteredTransactionTuples(searchQuery, "")
+                    )
                 }
-                else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+            }
+            else -> {
+                viewModelScope.launch {
+                    transactions.emit(
+                        RepositoryProvider.transactionRepo()
+                            .getFilteredTransactionTuples("", searchQuery)
+                    )
                 }
             }
         }
     }
 
-    suspend fun getAllTransactions(): List<Transaction> = RepositoryProvider.transactionRepo().getAllTransactions()
-
-    fun updateItemsFilter(searchQuery: String) {
-        currentFilter.value = searchQuery
-    }
-
     fun clearTransactions() {
         viewModelScope.launch {
-            RepositoryProvider.transaction().deleteAllTransactions()
+            RepositoryProvider.transactionRepo().deleteAllTransactions()
         }
         NotificationHelper.clearBuffer()
     }

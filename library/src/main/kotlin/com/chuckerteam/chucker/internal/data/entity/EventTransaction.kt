@@ -23,4 +23,7 @@ internal class EventTransaction(
 
     override val notificationText: String
         get() = title ?: ""
+
+    override val time: Long
+        get() = receivedDate ?: 0
 }
