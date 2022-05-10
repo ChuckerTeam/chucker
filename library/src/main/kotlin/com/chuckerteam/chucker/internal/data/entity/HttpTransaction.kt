@@ -26,7 +26,7 @@ import java.util.Date
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
-    var id: Long = 0,
+    override var id: Long = 0,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,
     @ColumnInfo(name = "responseDate") var responseDate: Long?,
     @ColumnInfo(name = "tookMs") var tookMs: Long?,
@@ -54,7 +54,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
-) {
+) : Transaction {
 
     @Ignore
     constructor() : this(
@@ -129,7 +129,7 @@ internal class HttpTransaction(
             }
         }
 
-    val notificationText: String
+    override val notificationText: String
         get() {
             return when (status) {
                 Status.Failed -> " ! ! !  $method $path"

@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import com.chuckerteam.chucker.internal.data.entity.EventTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
@@ -60,6 +61,24 @@ public class ChuckerCollector @JvmOverloads constructor(
             val updated = RepositoryProvider.transaction().updateTransaction(transaction)
             if (showNotification && updated > 0) {
                 notificationHelper.show(transaction)
+            }
+        }
+    }
+
+    public fun onEventReceived(title: String?, payload: String,receiveDate: Long? = 0) {
+        scope.launch {
+            val eventTransaction = EventTransaction(title = title,
+                receivedDate = receiveDate,
+                payload = payload
+            )
+
+            RepositoryProvider.eventTransaction().insertTransaction(eventTransaction)
+
+            if (showNotification) {
+                notificationHelper.show(eventTransaction)
+            }
+            withContext(Dispatchers.IO) {
+                retentionManager.doMaintenance()
             }
         }
     }

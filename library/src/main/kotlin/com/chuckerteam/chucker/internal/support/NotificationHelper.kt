@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
@@ -24,7 +24,7 @@ internal class NotificationHelper(val context: Context) {
 
         private const val BUFFER_SIZE = 10
         private const val INTENT_REQUEST_CODE = 11
-        private val transactionBuffer = LongSparseArray<HttpTransaction>()
+        private val transactionBuffer = LongSparseArray<Transaction>()
         private val transactionIdsSet = HashSet<Long>()
 
         fun clearBuffer() {
@@ -58,7 +58,7 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
-    private fun addToBuffer(transaction: HttpTransaction) {
+    private fun addToBuffer(transaction: Transaction) {
         if (transaction.id == 0L) {
             // Don't store Transactions with an invalid ID (0).
             // Transaction with an Invalid ID will be shown twice in the notification
@@ -74,7 +74,7 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
-    fun show(transaction: HttpTransaction) {
+    fun show(transaction: Transaction) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground) {
             val builder =
