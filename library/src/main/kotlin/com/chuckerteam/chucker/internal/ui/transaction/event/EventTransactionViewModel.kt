@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 internal class EventTransactionViewModel(
     private val sharedViewModel: TransactionViewModel
 ) : ViewModel() {
-    val transaction: StateFlow<EventTransaction?>
-        get() = sharedViewModel.transaction
+    val transaction: StateFlow<EventTransaction?> = sharedViewModel.transaction
             .map { it as EventTransaction? }
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

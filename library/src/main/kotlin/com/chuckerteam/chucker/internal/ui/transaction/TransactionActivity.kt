@@ -61,6 +61,9 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     companion object {
+        const val EXPORT_TXT_FILE_NAME = "transaction.txt"
+        const val EXPORT_HAR_FILE_NAME = "transaction.har"
+
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private const val EXTRA_TRANSACTION_TYPE = "transaction_type"
 

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Suppress("LongParameterList")
 @Entity(tableName = "event_transactions")
@@ -26,6 +27,9 @@ internal class EventTransaction(
 
     override val time: Long
         get() = receivedDate ?: 0
+
+    val receiveDateString: String?
+        get() = receivedDate?.let { Date(it).toString() }
 
     override fun hasTheSameContent(other: Transaction?): Boolean {
         if (this === other) return true

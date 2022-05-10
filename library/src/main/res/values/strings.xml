@@ -9,6 +9,9 @@
     <string name="chucker_request">Request</string>
     <string name="chucker_response">Response</string>
     <string name="chucker_url">URL</string>
+    <string name="chucker_title">Title</string>
+    <string name="chucker_payload">Payload</string>
+    <string name="chucker_receive_time">Receive time</string>
     <string name="chucker_method">Method</string>
     <string name="chucker_protocol">Protocol</string>
     <string name="chucker_status">Status</string>

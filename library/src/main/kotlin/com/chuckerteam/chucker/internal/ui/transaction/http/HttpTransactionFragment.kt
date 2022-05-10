@@ -19,6 +19,8 @@ import com.chuckerteam.chucker.internal.support.share.TransactionDetailsHarShara
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.EXPORT_HAR_FILE_NAME
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.EXPORT_TXT_FILE_NAME
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModelFactory
 import kotlinx.coroutines.flow.collect
@@ -162,8 +164,6 @@ internal class HttpTransactionFragment : Fragment() {
     }
 
     companion object {
-        private const val EXPORT_TXT_FILE_NAME = "transaction.txt"
-        private const val EXPORT_HAR_FILE_NAME = "transaction.har"
         private var selectedTabPosition = 0
     }
 
