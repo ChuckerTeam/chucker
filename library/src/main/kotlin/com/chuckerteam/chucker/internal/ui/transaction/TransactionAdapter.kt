@@ -19,6 +19,7 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
+import com.chuckerteam.chucker.internal.ui.transaction.http.HttpProtocolResources
 import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
@@ -122,7 +123,7 @@ internal class TransactionAdapter internal constructor(
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
-                setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
+                setProtocolImage(if (transaction.isSsl) HttpProtocolResources.Https() else HttpProtocolResources.Http())
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()
@@ -141,7 +142,7 @@ internal class TransactionAdapter internal constructor(
             setStatusColor(transaction)
         }
 
-        private fun setProtocolImage(resources: ProtocolResources) {
+        private fun setProtocolImage(resources: HttpProtocolResources) {
             itemBinding.ssl.setImageDrawable(
                 AppCompatResources.getDrawable(
                     itemView.context,

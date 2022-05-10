@@ -1,27 +1,23 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.transaction.http
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionOverviewBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModelFactory
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.launch
 
-internal class TransactionOverviewFragment : Fragment() {
-
-    private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+internal class HttpTransactionOverviewFragment : Fragment() {
+    private val sharedViewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+    private val viewModel: HttpTransactionViewModel by viewModels { HttpTransactionViewModelFactory(sharedViewModel) }
 
     private lateinit var overviewBinding: ChuckerFragmentTransactionOverviewBinding
 
@@ -34,7 +30,7 @@ internal class TransactionOverviewFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         overviewBinding = ChuckerFragmentTransactionOverviewBinding.inflate(inflater, container, false)
         return overviewBinding.root
     }

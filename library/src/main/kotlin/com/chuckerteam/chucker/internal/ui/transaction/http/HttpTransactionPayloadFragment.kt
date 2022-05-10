@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.transaction.http
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -18,30 +18,31 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
-import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import java.io.IOException
 
-internal class TransactionPayloadFragment :
+internal class HttpTransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
-    private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+    private val sharedViewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+    private val viewModel: HttpTransactionViewModel by viewModels { HttpTransactionViewModelFactory(sharedViewModel) }
 
-    private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getSerializable(ARG_TYPE) as PayloadType
+    private val payloadType: HttpPayloadType by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getSerializable(ARG_TYPE) as HttpPayloadType
     }
 
     private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
@@ -67,7 +68,7 @@ internal class TransactionPayloadFragment :
     }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter()
+    private val payloadAdapter = HttpTransactionBodyAdapter()
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -132,7 +133,7 @@ internal class TransactionPayloadFragment :
 
     private fun showEmptyState() {
         payloadBinding.apply {
-            emptyPayloadTextView.text = if (payloadType == PayloadType.RESPONSE) {
+            emptyPayloadTextView.text = if (payloadType == HttpPayloadType.RESPONSE) {
                 getString(R.string.chucker_response_is_empty)
             } else {
                 getString(R.string.chucker_request_is_empty)
@@ -171,7 +172,7 @@ internal class TransactionPayloadFragment :
             }
         }
 
-        if (payloadType == PayloadType.REQUEST) {
+        if (payloadType == HttpPayloadType.REQUEST) {
             lifecycleScope.launch {
                 viewModel.doesRequestBodyRequireEncoding.collect {
                     menu.findItem(R.id.encode_url).isVisible = it
@@ -186,16 +187,16 @@ internal class TransactionPayloadFragment :
     }
 
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
-        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
-        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
+        (payloadType == HttpPayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
+        (payloadType == HttpPayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
         else -> true
     }
 
     private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
-        PayloadType.REQUEST -> {
+        HttpPayloadType.REQUEST -> {
             (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
-        PayloadType.RESPONSE -> {
+        HttpPayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
     }
@@ -222,18 +223,18 @@ internal class TransactionPayloadFragment :
     }
 
     private suspend fun processPayload(
-        type: PayloadType,
+        type: HttpPayloadType,
         transaction: HttpTransaction,
         formatRequestBody: Boolean
-    ): MutableList<TransactionPayloadItem> {
+    ): MutableList<HttpTransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
-            val result = mutableListOf<TransactionPayloadItem>()
+            val result = mutableListOf<HttpTransactionPayloadItem>()
 
             val headersString: String
             val isBodyEncoded: Boolean
             val bodyString: String
 
-            if (type == PayloadType.REQUEST) {
+            if (type == HttpPayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
@@ -249,7 +250,7 @@ internal class TransactionPayloadFragment :
 
             if (headersString.isNotBlank()) {
                 result.add(
-                    TransactionPayloadItem.HeaderItem(
+                    HttpTransactionPayloadItem.HeaderItem(
                         HtmlCompat.fromHtml(
                             headersString,
                             HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -261,23 +262,35 @@ internal class TransactionPayloadFragment :
             // The body could either be an image, plain text, decoded binary or not decoded binary.
             val responseBitmap = transaction.responseImageBitmap
 
-            if (type == PayloadType.RESPONSE && responseBitmap != null) {
+            if (type == HttpPayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
-                result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
+                result.add(HttpTransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
                 return@withContext result
             }
 
             when {
                 isBodyEncoded -> {
                     val text = requireContext().getString(R.string.chucker_body_omitted)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                    result.add(
+                        HttpTransactionPayloadItem.BodyLineItem(
+                            SpannableStringBuilder.valueOf(
+                                text
+                            )
+                        )
+                    )
                 }
                 bodyString.isBlank() -> {
                     val text = requireContext().getString(R.string.chucker_body_empty)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                    result.add(
+                        HttpTransactionPayloadItem.BodyLineItem(
+                            SpannableStringBuilder.valueOf(
+                                text
+                            )
+                        )
+                    )
                 }
                 else -> bodyString.lines().forEach {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                    result.add(HttpTransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             }
 
@@ -285,17 +298,17 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(type: HttpPayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         when (type) {
-                            PayloadType.REQUEST -> {
+                            HttpPayloadType.REQUEST -> {
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
-                            PayloadType.RESPONSE -> {
+                            HttpPayloadType.RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
@@ -318,8 +331,8 @@ internal class TransactionPayloadFragment :
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
-        fun newInstance(type: PayloadType): TransactionPayloadFragment =
-            TransactionPayloadFragment().apply {
+        fun newInstance(type: HttpPayloadType): HttpTransactionPayloadFragment =
+            HttpTransactionPayloadFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_TYPE, type)
                 }

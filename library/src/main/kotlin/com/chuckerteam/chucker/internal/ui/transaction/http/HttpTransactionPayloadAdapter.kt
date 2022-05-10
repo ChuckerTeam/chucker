@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.transaction
+package com.chuckerteam.chucker.internal.ui.transaction.http
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -20,11 +20,11 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class HttpTransactionBodyAdapter : RecyclerView.Adapter<HttpTransactionPayloadViewHolder>() {
 
-    private val items = arrayListOf<TransactionPayloadItem>()
+    private val items = arrayListOf<HttpTransactionPayloadItem>()
 
-    fun setItems(bodyItems: List<TransactionPayloadItem>) {
+    fun setItems(bodyItems: List<HttpTransactionPayloadItem>) {
         val previousItemCount = items.size
         items.clear()
         items.addAll(bodyItems)
@@ -32,24 +32,24 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         notifyItemRangeInserted(0, items.size)
     }
 
-    override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HttpTransactionPayloadViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HttpTransactionPayloadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADERS -> {
                 val headersItemBinding = ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
-                TransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
+                HttpTransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
             }
             TYPE_BODY_LINE -> {
                 val bodyItemBinding = ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
-                TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
+                HttpTransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
-                TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
+                HttpTransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
             }
         }
     }
@@ -58,14 +58,14 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
-            is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
-            is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
+            is HttpTransactionPayloadItem.HeaderItem -> TYPE_HEADERS
+            is HttpTransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
+            is HttpTransactionPayloadItem.ImageItem -> TYPE_IMAGE
         }
     }
 
     internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<HttpTransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 if (item.line.contains(newText, ignoreCase = true)) {
@@ -85,7 +85,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     }
 
     internal fun resetHighlight() {
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items.filterIsInstance<HttpTransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
                 val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
@@ -103,14 +103,14 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     }
 }
 
-internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bind(item: TransactionPayloadItem)
+internal sealed class HttpTransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    abstract fun bind(item: HttpTransactionPayloadItem)
 
     internal class HeaderViewHolder(
         private val headerBinding: ChuckerTransactionItemHeadersBinding
-    ) : TransactionPayloadViewHolder(headerBinding.root) {
-        override fun bind(item: TransactionPayloadItem) {
-            if (item is TransactionPayloadItem.HeaderItem) {
+    ) : HttpTransactionPayloadViewHolder(headerBinding.root) {
+        override fun bind(item: HttpTransactionPayloadItem) {
+            if (item is HttpTransactionPayloadItem.HeaderItem) {
                 headerBinding.responseHeaders.text = item.headers
             }
         }
@@ -118,9 +118,9 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
     internal class BodyLineViewHolder(
         private val bodyBinding: ChuckerTransactionItemBodyLineBinding
-    ) : TransactionPayloadViewHolder(bodyBinding.root) {
-        override fun bind(item: TransactionPayloadItem) {
-            if (item is TransactionPayloadItem.BodyLineItem) {
+    ) : HttpTransactionPayloadViewHolder(bodyBinding.root) {
+        override fun bind(item: HttpTransactionPayloadItem) {
+            if (item is HttpTransactionPayloadItem.BodyLineItem) {
                 bodyBinding.bodyLine.text = item.line
             }
         }
@@ -128,10 +128,10 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
     internal class ImageViewHolder(
         private val imageBinding: ChuckerTransactionItemImageBinding
-    ) : TransactionPayloadViewHolder(imageBinding.root) {
+    ) : HttpTransactionPayloadViewHolder(imageBinding.root) {
 
-        override fun bind(item: TransactionPayloadItem) {
-            if (item is TransactionPayloadItem.ImageItem) {
+        override fun bind(item: HttpTransactionPayloadItem) {
+            if (item is HttpTransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
                 imageBinding.root.background = createContrastingBackground(item.luminance)
             }
@@ -163,8 +163,8 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 }
 
-internal sealed class TransactionPayloadItem {
-    internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
-    internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
-    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
+internal sealed class HttpTransactionPayloadItem {
+    internal class HeaderItem(val headers: Spanned) : HttpTransactionPayloadItem()
+    internal class BodyLineItem(var line: SpannableStringBuilder) : HttpTransactionPayloadItem()
+    internal class ImageItem(val image: Bitmap, val luminance: Double?) : HttpTransactionPayloadItem()
 }
