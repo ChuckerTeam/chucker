@@ -14,16 +14,16 @@ internal class MainViewModel : ViewModel() {
     val transactions = searchQueryFlow.flatMapLatest { searchQuery ->
         return@flatMapLatest when {
             searchQuery.isBlank() -> {
-               RepositoryProvider.transactionRepo().getSortedTransactions()
+               RepositoryProvider.transaction().getSortedTransactions()
             }
             else -> {
-                RepositoryProvider.transactionRepo().getFilteredTransactions(searchQuery)
+                RepositoryProvider.transaction().getFilteredTransactions(searchQuery)
             }
         }
     }
 
     suspend fun getAllTransactions(): List<Transaction> =
-        RepositoryProvider.transactionRepo().getAllTransactions()
+        RepositoryProvider.transaction().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
         viewModelScope.launch {
@@ -33,7 +33,7 @@ internal class MainViewModel : ViewModel() {
 
     fun clearTransactions() {
         viewModelScope.launch {
-            RepositoryProvider.transactionRepo().deleteAllTransactions()
+            RepositoryProvider.transaction().deleteAllTransactions()
         }
         NotificationHelper.clearBuffer()
     }

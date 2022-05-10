@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.share.TransactionCurlCommandSharable
@@ -20,12 +21,15 @@ import com.chuckerteam.chucker.internal.support.share.HttpTransactionDetailsShar
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
     private val viewModel: TransactionViewModel by viewModels {
-        TransactionViewModelFactory(intent.getLongExtra(EXTRA_TRANSACTION_ID, 0))
+        TransactionViewModelFactory(
+            intent.getLongExtra(EXTRA_TRANSACTION_ID, 0)
+        )
     }
 
     private lateinit var transactionBinding: ChuckerActivityTransactionBinding
@@ -43,10 +47,12 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.transactionTitle.observe(
-            this,
-            Observer { transactionBinding.toolbarTitle.text = it }
-        )
+        lifecycleScope.launch {
+            viewModel.transactionTitle.collect {
+                transactionBinding.toolbarTitle.text = it
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,9 +67,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
             viewModel.switchUrlEncoding()
             return@setOnMenuItemClickListener true
         }
-        viewModel.encodeUrl.observe(
-            this,
-            Observer { encode ->
+        lifecycleScope.launch {
+            viewModel.encodeUrl.collect {encode ->
                 val icon = if (encode) {
                     R.drawable.chucker_ic_encoded_url_white
                 } else {
@@ -71,19 +76,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 }
                 encodeUrlMenuItem.setIcon(icon)
             }
-        )
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.share_text -> shareTransactionAsText { transaction ->
-            val encodeUrls = viewModel.encodeUrl.value!!
+            val encodeUrls = viewModel.encodeUrl.value
             HttpTransactionDetailsSharable(transaction, encodeUrls)
         }
         R.id.share_curl -> shareTransactionAsText { transaction ->
             TransactionCurlCommandSharable(transaction)
         }
         R.id.share_file -> shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
-            val encodeUrls = viewModel.encodeUrl.value!!
+            val encodeUrls = viewModel.encodeUrl.value
             HttpTransactionDetailsSharable(transaction, encodeUrls)
         }
         R.id.share_har -> shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
@@ -157,11 +162,14 @@ internal class TransactionActivity : BaseChuckerActivity() {
         private const val EXPORT_TXT_FILE_NAME = "transaction.txt"
         private const val EXPORT_HAR_FILE_NAME = "transaction.har"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
+        private const val EXTRA_TRANSACTION_TYPE = "transaction_type"
+
         private var selectedTabPosition = 0
 
-        fun start(context: Context, transactionId: Long) {
+        fun start(context: Context, transactionId: Long,transactionType: Transaction.Type) {
             val intent = Intent(context, TransactionActivity::class.java)
             intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
+            intent.putExtra(EXTRA_TRANSACTION_TYPE, transactionType.name)
             context.startActivity(intent)
         }
     }

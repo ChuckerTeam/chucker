@@ -72,7 +72,7 @@ public class ChuckerCollector @JvmOverloads constructor(
                 payload = payload
             )
 
-            RepositoryProvider.eventTransaction().insertTransaction(eventTransaction)
+            RepositoryProvider.transaction().insertTransaction(eventTransaction)
 
             if (showNotification) {
                 notificationHelper.show(eventTransaction)

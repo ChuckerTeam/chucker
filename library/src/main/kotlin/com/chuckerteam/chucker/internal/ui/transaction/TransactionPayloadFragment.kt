@@ -27,6 +27,9 @@ import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
@@ -95,14 +98,15 @@ internal class TransactionPayloadFragment :
             adapter = payloadAdapter
         }
 
-        viewModel.transaction.combineLatest(viewModel.formatRequestBody).observe(
-            viewLifecycleOwner,
-            Observer { (transaction, formatRequestBody) ->
-                if (transaction == null) return@Observer
-                lifecycleScope.launch {
+        lifecycleScope.launch {
+            viewModel.transaction
+                .combine(viewModel.formatRequestBody) { first, second ->
+                    Pair(first, second)
+                }.collect {
+                    if (it.first == null) return@collect
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                    val result = processPayload(payloadType, transaction, formatRequestBody)
+                    val result = processPayload(payloadType, it.first!!, it.second)
                     if (result.isEmpty()) {
                         showEmptyState()
                     } else {
@@ -114,8 +118,16 @@ internal class TransactionPayloadFragment :
 
                     payloadBinding.loadingProgress.visibility = View.GONE
                 }
-            }
-        )
+        }
+
+        lifecycleScope.launch {
+            viewModel.transaction
+                .combine(viewModel.formatRequestBody) { first, second ->
+                    Pair(first, second)
+                }.collect { (_, _) ->
+
+                }
+        }
     }
 
     private fun showEmptyState() {
@@ -160,10 +172,12 @@ internal class TransactionPayloadFragment :
         }
 
         if (payloadType == PayloadType.REQUEST) {
-            viewModel.doesRequestBodyRequireEncoding.observe(
-                viewLifecycleOwner,
-                { menu.findItem(R.id.encode_url).isVisible = it }
-            )
+            lifecycleScope.launch {
+                viewModel.doesRequestBodyRequireEncoding.collect {
+                    menu.findItem(R.id.encode_url).isVisible = it
+                }
+            }
+
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
         }

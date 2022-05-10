@@ -1,18 +1,43 @@
 package com.chuckerteam.chucker.internal.data.repository
 
 import android.text.TextUtils
+import com.chuckerteam.chucker.internal.data.entity.EventTransaction
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
-import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.lang.IllegalArgumentException
 
 internal class TransactionDatabaseRepository(
     roomDatabase: ChuckerDatabase
 ) : TransactionRepository {
     private val requestsDao = roomDatabase.transactionDao()
     private val eventsDao = roomDatabase.eventTransactionDao()
+
+    override suspend fun insertTransaction(transaction: Transaction) {
+        when (transaction) {
+            is HttpTransaction -> {
+                val id = requestsDao.insert(transaction)
+                transaction.id = id ?: 0
+            }
+            is EventTransaction -> {
+                val id = eventsDao.insert(transaction)
+                transaction.id = id ?: 0
+            }
+            is HttpTransactionTuple -> throw IllegalArgumentException("not supported")
+        }
+    }
+
+    override suspend fun updateTransaction(transaction: Transaction) : Int {
+        return when(transaction) {
+            is EventTransaction -> eventsDao.update(transaction)
+            is HttpTransaction -> requestsDao.update(transaction)
+            is HttpTransactionTuple -> throw IllegalArgumentException("not supported")
+        }
+    }
 
     override fun getSortedTransactions(): Flow<List<Transaction>> {
         return requestsDao.getSortedTuples().combine(eventsDao.getAllSorted()) { a,b ->

@@ -24,7 +24,7 @@ import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val onTransactionClick: (Long) -> Unit,
+    private val onTransactionClick: (Long,Transaction.Type) -> Unit,
 ) : ListAdapter<Transaction, TransactionAdapter.TransactionViewHolder>(TransactionDiffCallback) {
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -77,7 +77,7 @@ internal class TransactionAdapter internal constructor(
         init {
             itemView.setOnClickListener {
                 transactionId?.let {
-                    onTransactionClick.invoke(it)
+                    onTransactionClick.invoke(it,Transaction.Type.Event)
                 }
             }
         }
@@ -105,7 +105,7 @@ internal class TransactionAdapter internal constructor(
         init {
             itemView.setOnClickListener {
                 transactionId?.let {
-                    onTransactionClick.invoke(it)
+                    onTransactionClick.invoke(it,Transaction.Type.Http)
                 }
             }
         }

@@ -41,8 +41,8 @@ internal class MainActivity :
         super.onCreate(savedInstanceState)
 
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
-        transactionsAdapter = TransactionAdapter(this) { transactionId ->
-            TransactionActivity.start(this, transactionId)
+        transactionsAdapter = TransactionAdapter(this) { transactionId,type ->
+            TransactionActivity.start(this, transactionId,type)
         }
 
         with(mainBinding) {
