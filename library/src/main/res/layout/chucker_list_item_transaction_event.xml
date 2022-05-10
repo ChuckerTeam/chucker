@@ -44,18 +44,8 @@
         android:id="@+id/timeStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/payload"
         tools:text="18:29:07 PM" />
-
-    <TextView
-        android:id="@+id/size"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/timeStart"
-        tools:text="16.45 KB" />
 </androidx.constraintlayout.widget.ConstraintLayout>
