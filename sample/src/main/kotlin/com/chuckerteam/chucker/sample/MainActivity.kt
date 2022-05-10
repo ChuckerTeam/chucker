@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             receiveEvents?.setOnClickListener {
-                collector.onEventReceived("Some Event","Some Body")
+                collector.onEventReceived("Some Event", LARGE_JSON)
             }
 
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
