@@ -25,6 +25,7 @@ import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBind
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.NUMBER_OF_IGNORED_SYMBOLS
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -326,8 +327,6 @@ internal class HttpTransactionPayloadFragment :
     companion object {
         private const val ARG_TYPE = "type"
         private const val TRANSACTION_EXCEPTION = "Transaction not ready"
-
-        private const val NUMBER_OF_IGNORED_SYMBOLS = 1
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 

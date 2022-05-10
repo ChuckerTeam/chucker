@@ -1,8 +1,14 @@
 package com.chuckerteam.chucker.internal.ui.transaction.event
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -10,25 +16,26 @@ import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionEventBinding
 import com.chuckerteam.chucker.internal.data.entity.EventTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.*
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.share.EventTransactionDetailsSharable
-import com.chuckerteam.chucker.internal.support.share.HttpTransactionDetailsSharable
-import com.chuckerteam.chucker.internal.support.share.TransactionCurlCommandSharable
 import com.chuckerteam.chucker.internal.support.share.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.EXPORT_HAR_FILE_NAME
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.EXPORT_TXT_FILE_NAME
+import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity.Companion.NUMBER_OF_IGNORED_SYMBOLS
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModel
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionViewModelFactory
-import com.chuckerteam.chucker.internal.ui.transaction.http.HttpTransactionFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
-internal class EventTransactionFragment : Fragment() {
+
+internal class EventTransactionFragment : Fragment(), SearchView.OnQueryTextListener {
     private val sharedViewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
     private val viewModel: EventTransactionViewModel by viewModels {
         EventTransactionViewModelFactory(
@@ -68,6 +75,12 @@ internal class EventTransactionFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.findItem(R.id.share_curl).isVisible = false
+
+        val searchMenuItem = menu.findItem(R.id.search)
+        searchMenuItem.isVisible = true
+        val searchView = searchMenuItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
+        searchView.setIconifiedByDefault(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -129,6 +142,21 @@ internal class EventTransactionFragment : Fragment() {
                 }
             }
         }
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean = false
+
+    override fun onQueryTextChange(newText: String): Boolean {
+        val currentPayLoad = viewModel.transaction.value?.payload ?: return false
+
+        if (newText.isNotEmpty()) {
+            viewBinding.payloadText.text =
+                currentPayLoad.highlightWithDefinedColors(newText,Color.YELLOW,Color.RED)
+        } else {
+            viewBinding.payloadText.text = currentPayLoad
+        }
+
         return true
     }
 
