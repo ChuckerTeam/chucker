@@ -1,11 +1,6 @@
 package com.chuckerteam.chucker.internal.data.room
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import kotlinx.coroutines.flow.Flow
@@ -16,14 +11,14 @@ internal interface HttpTransactionDao {
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, " +
             "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
-            "transactions ORDER BY requestDate DESC"
+            "http_transactions ORDER BY requestDate DESC"
     )
     fun getSortedTuples(): Flow<List<HttpTransactionTuple>>
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, " +
             "path, scheme, responseCode, requestPayloadSize, responsePayloadSize, error FROM " +
-            "transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
+            "http_transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
             "ORDER BY requestDate DESC"
     )
     fun getFilteredTuples(codeQuery: String, pathQuery: String): Flow<List<HttpTransactionTuple>>
@@ -34,15 +29,15 @@ internal interface HttpTransactionDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(transaction: HttpTransaction): Int
 
-    @Query("DELETE FROM transactions")
+    @Query("DELETE FROM http_transactions")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM transactions WHERE id = :id")
+    @Query("SELECT * FROM http_transactions WHERE id = :id")
     fun getById(id: Long): Flow<HttpTransaction?>
 
-    @Query("DELETE FROM transactions WHERE requestDate <= :threshold")
+    @Query("DELETE FROM http_transactions WHERE requestDate <= :threshold")
     suspend fun deleteBefore(threshold: Long)
 
-    @Query("SELECT * FROM transactions")
+    @Query("SELECT * FROM http_transactions")
     suspend fun getAll(): List<HttpTransaction>
 }

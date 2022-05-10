@@ -14,13 +14,13 @@ import java.lang.IllegalArgumentException
 internal class TransactionDatabaseRepository(
     roomDatabase: ChuckerDatabase
 ) : TransactionRepository {
-    private val requestsDao = roomDatabase.transactionDao()
+    private val httpDao = roomDatabase.transactionDao()
     private val eventsDao = roomDatabase.eventTransactionDao()
 
     override suspend fun insertTransaction(transaction: Transaction) {
         when (transaction) {
             is HttpTransaction -> {
-                val id = requestsDao.insert(transaction)
+                val id = httpDao.insert(transaction)
                 transaction.id = id ?: 0
             }
             is EventTransaction -> {
@@ -34,13 +34,13 @@ internal class TransactionDatabaseRepository(
     override suspend fun updateTransaction(transaction: Transaction) : Int {
         return when(transaction) {
             is EventTransaction -> eventsDao.update(transaction)
-            is HttpTransaction -> requestsDao.update(transaction)
+            is HttpTransaction -> httpDao.update(transaction)
             is HttpTransactionTuple -> throw IllegalArgumentException("not supported")
         }
     }
 
     override fun getSortedTransactions(): Flow<List<Transaction>> {
-        return requestsDao.getSortedTuples().combine(eventsDao.getAllSorted()) { a,b ->
+        return httpDao.getSortedTuples().combine(eventsDao.getAllSorted()) { a, b ->
             val combinedList = mutableListOf<Transaction>()
             combinedList.addAll(a)
             combinedList.addAll(b)
@@ -53,9 +53,9 @@ internal class TransactionDatabaseRepository(
         query : String
     ): Flow<List<Transaction>> {
         val httpFlow = if (TextUtils.isDigitsOnly(query)) {
-            requestsDao.getFilteredTuples("$query%", "%")
+            httpDao.getFilteredTuples("$query%", "%")
         } else {
-            requestsDao.getFilteredTuples("%", "%$query%")
+            httpDao.getFilteredTuples("%", "%$query%")
         }
 
         return httpFlow.combine(eventsDao.getFiltered("%$query%")) { a,b ->
@@ -69,7 +69,7 @@ internal class TransactionDatabaseRepository(
     }
 
     override suspend fun getAllTransactions(): List<Transaction> {
-        val httpTransactions = requestsDao.getAll()
+        val httpTransactions = httpDao.getAll()
         val eventTransactions = eventsDao.getAll()
 
         val allTransactions = mutableListOf<Transaction>()
@@ -81,18 +81,18 @@ internal class TransactionDatabaseRepository(
     }
 
     override suspend fun deleteAllTransactions() {
-        requestsDao.deleteAll()
+        httpDao.deleteAll()
         eventsDao.deleteAll()
     }
 
     override suspend fun deleteOldTransactions(threshold: Long) {
-        requestsDao.deleteBefore(threshold)
+        httpDao.deleteBefore(threshold)
         eventsDao.deleteBefore(threshold)
     }
 
     override fun getTransaction(transactionId: Long, type: Transaction.Type): Flow<Transaction?> {
         return when(type) {
-            Transaction.Type.Http -> requestsDao.getById(transactionId)
+            Transaction.Type.Http -> httpDao.getById(transactionId)
             Transaction.Type.Event -> eventsDao.getById(transactionId)
         }.distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }

@@ -27,7 +27,7 @@ import java.util.Date
  * should be populated as soon as the library receives data from OkHttp.
  */
 @Suppress("LongParameterList")
-@Entity(tableName = "transactions")
+@Entity(tableName = "http_transactions")
 internal class HttpTransaction(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
     override var id: Long = 0,
