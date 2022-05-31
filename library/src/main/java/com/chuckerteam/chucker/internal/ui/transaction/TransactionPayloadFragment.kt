@@ -24,10 +24,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.GsonInstance
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +45,9 @@ internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
 
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
+
+    var plain = true
+    private lateinit var result: MutableList<TransactionPayloadItem>
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
@@ -61,7 +68,7 @@ internal class TransactionPayloadFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
             inflater,
             container,
@@ -87,7 +94,7 @@ internal class TransactionPayloadFragment :
                     lifecycleScope.launch {
                         payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                        val result = processPayload(payloadType, transaction, formatRequestBody)
+                        result = processPayload(payloadType, transaction, formatRequestBody)
                         if (result.isEmpty()) {
                             showEmptyState()
                         } else {
@@ -101,6 +108,87 @@ internal class TransactionPayloadFragment :
                     }
                 }
             )
+
+
+
+        payloadBinding.expandBtn.setOnClickListener {
+            expand()
+        }
+
+        payloadBinding.collapseBtn.setOnClickListener {
+            collapse()
+        }
+
+        payloadBinding.plainHighlightedToggle.setOnClickListener {
+            togglePlainHighlighted()
+        }
+
+    }
+
+    private fun expand() {
+        payloadBinding.jsonView.expandAll()
+        payloadBinding.collapseBtn.visibility = View.VISIBLE
+        payloadBinding.expandBtn.visibility = View.GONE
+    }
+
+    private fun collapse() {
+        payloadBinding.jsonView.collapseAll()
+        payloadBinding.expandBtn.visibility = View.VISIBLE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun togglePlainHighlighted() {
+        if (plain) {
+            bindJson()
+        } else {
+            showPlainText()
+        }
+    }
+
+    private fun bindJson() {
+        plain = false
+        payloadBinding.payloadRecyclerView.visibility = View.GONE
+        payloadBinding.jsonView.visibility = View.VISIBLE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_show_plain)
+        expand()
+        payloadBinding.collapseBtn.visibility = View.VISIBLE
+    }
+
+    private fun showPlainText() {
+        plain = true
+        if (result.isEmpty()) {
+            showEmptyState()
+        } else {
+            payloadBinding.payloadRecyclerView.visibility = View.VISIBLE
+        }
+        payloadBinding.jsonView.visibility = View.GONE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_highlight)
+        payloadBinding.expandBtn.visibility = View.GONE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun isJson(body: String): Boolean {
+        return try {
+            val element = JsonParser.parseString(body)
+            element.isJsonObject || element.isJsonArray
+        } catch (e: JsonSyntaxException) {
+            false
+        }
+    }
+
+    private fun prettyPrint(str: String): String? {
+        val parser: JsonElement = JsonParser.parseString(str)
+        return when {
+            parser.isJsonObject -> {
+                GsonInstance.get()?.toJson(parser.asJsonObject)
+            }
+            parser.isJsonArray -> {
+                GsonInstance.get()?.toJson(parser.asJsonArray)
+            }
+            else -> {
+                str
+            }
+        }
     }
 
     private fun showEmptyState() {
@@ -221,7 +309,11 @@ internal class TransactionPayloadFragment :
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+            payloadAdapter.highlightQueryWithColors(
+                newText,
+                backgroundSpanColor,
+                foregroundSpanColor
+            )
         } else {
             payloadAdapter.resetHighlight()
         }
@@ -275,17 +367,32 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
             } else {
-                if (bodyString.isNotBlank()) {
-                    bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                    withContext(Dispatchers.Main) {
+                        if (isJson(bodyString)) {
+                            payloadBinding.jsonView.bindJson(prettyPrint(bodyString))
+                            payloadBinding.plainHighlightedToggle.visibility = View.VISIBLE
+                        }
                     }
-                }
+
+                    bodyString.lines().forEach {
+                        result.add(
+                            TransactionPayloadItem.BodyLineItem(
+                                SpannableStringBuilder.valueOf(
+                                    it
+                                )
+                            )
+                        )
+                    }
             }
             return@withContext result
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(
+        type: PayloadType,
+        uri: Uri,
+        transaction: HttpTransaction
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
