@@ -5,7 +5,7 @@ import android.content.Context
 /**
  * No-op implementation.
  */
-@Suppress("UnusedPrivateMember")
+@Suppress("UnusedPrivateMember", "UNUSED_PARAMETER")
 public class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
