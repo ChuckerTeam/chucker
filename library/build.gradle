@@ -46,6 +46,13 @@ android {
     }
 
     resourcePrefix 'chucker_'
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
