@@ -27,5 +27,5 @@ internal interface HttpTransactionRepository {
 
     suspend fun getAllTransactions(): List<HttpTransaction>
 
-    suspend fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction>
+    fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction>
 }

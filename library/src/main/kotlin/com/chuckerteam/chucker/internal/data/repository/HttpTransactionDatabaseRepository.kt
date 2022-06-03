@@ -43,7 +43,7 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     override suspend fun getAllTransactions(): List<HttpTransaction> = transactionDao.getAll()
 
-    override suspend fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction> {
+    override fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction> {
         val timestamp = minTimestamp ?: 0L
         return transactionDao.getTransactionsInTimeRange(timestamp)
     }

@@ -39,31 +39,24 @@ internal suspend fun Sharable.shareAsUtf8Text(
         .createChooserIntent()
 }
 
-internal suspend fun Sharable.writeToFile(
+internal fun Sharable.writeToFile(
     context: Context,
     fileName: String,
-    intentTitle: String,
-    intentSubject: String,
-    clipDataLabel: String,
 ): Uri? {
     val cache = context.cacheDir
     if (cache == null) {
         Logger.warn("Failed to obtain a valid cache directory for file export")
-        Toast.makeText(context, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
     val file = FileFactory.create(cache, fileName)
     if (file == null) {
         Logger.warn("Failed to create an export file")
-        Toast.makeText(context, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
-    val fileContent = withContext(Dispatchers.Default) { toSharableContent(context) }
-    withContext(Dispatchers.IO) {
-        file.sink().buffer().use { it.writeAll(fileContent) }
-    }
+    val fileContent = toSharableContent(context)
+    file.sink().buffer().use { it.writeAll(fileContent) }
 
     return FileProvider.getUriForFile(
         context,
@@ -72,7 +65,7 @@ internal suspend fun Sharable.writeToFile(
     )
 }
 
-internal suspend fun Sharable.shareAsFile(
+internal fun Sharable.shareAsFile(
     activity: Activity,
     fileName: String,
     intentTitle: String,

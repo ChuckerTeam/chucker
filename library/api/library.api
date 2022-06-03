@@ -17,7 +17,7 @@ public final class com/chuckerteam/chucker/api/ChuckerCollector {
 	public synthetic fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getShowNotification ()Z
 	public final fun setShowNotification (Z)V
-	public final fun writeTransactions (Landroid/content/Context;Ljava/lang/Long;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun writeTransactions (Landroid/content/Context;Ljava/lang/Long;)Landroid/net/Uri;
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Interceptor {

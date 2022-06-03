@@ -12,7 +12,6 @@ import com.chuckerteam.chucker.internal.support.writeToFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -71,14 +70,15 @@ public class ChuckerCollector @JvmOverloads constructor(
     }
 
     /**
-     * Export the chucker transactions to a file.
+     * Export the Chucker transactions to a file. Please note that this function is blocking
+     * and performs Disk I/O. Make sure you run it on a separate thread or coroutine.
      *
      * @param context Application context
      * @param startTimestamp The timestamp to read transactions from. Passing null means
      * transactions will not be limited by timestamp
-     * @return The content uri of a file with the transactions in
+     * @return The content uri of a file with the transactions in or null if the export failed.
      */
-    public suspend fun writeTransactions(
+    public fun writeTransactions(
         context: Context,
         startTimestamp: Long?,
     ): Uri? {
@@ -90,9 +90,9 @@ public class ChuckerCollector @JvmOverloads constructor(
 
         val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
         return sharableTransactions.writeToFile(
-                context = context,
-                fileName = "api_transactions.txt",
-            )
+            context = context,
+            fileName = "api_transactions.txt",
+        )
     }
 
 }
