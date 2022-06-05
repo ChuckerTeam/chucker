@@ -17,7 +17,7 @@ internal class EntryTest {
         val transaction = HarTestUtils.createTransaction("GET")
         val entry = HarTestUtils.createEntry("GET")
 
-        assertThat(Entry.DateFormat.get()!!.parse(entry?.startedDateTime))
+        assertThat(Entry.DateFormat.get()!!.parse(entry!!.startedDateTime))
             .isEqualTo(Date(transaction.requestDate!!))
     }
 

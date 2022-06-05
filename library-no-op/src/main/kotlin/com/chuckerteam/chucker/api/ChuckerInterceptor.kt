@@ -8,7 +8,7 @@ import java.io.IOException
 /**
  * No-op implementation.
  */
-@Suppress("UnusedPrivateMember")
+@Suppress("UnusedPrivateMember", "UNUSED_PARAMETER")
 public class ChuckerInterceptor private constructor(
     builder: Builder,
 ) : Interceptor {
