@@ -1,114 +1,78 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply plugin: 'org.jetbrains.dokka'
 
 group = GROUP
 version = VERSION_NAME
 
-def dokka = tasks['dokkaJavadoc']
-
-dokkaJavadoc {
-    dokkaSourceSets {
-        configureEach {
-            includeNonPublic.set(false)
-            reportUndocumented.set(true)
-            skipEmptyPackages.set(true)
-
-            perPackageOption {
-                matchingRegex.set(".*\\.internal.*")
-                suppress.set(true)
+publishing {
+    repositories {
+        maven {
+            name "snapshot"
+            url = "https://oss.sonatype.org/content/repositories/snapshots"
+            credentials {
+                username = findProperty("NEXUS_USERNAME")
+                password = findProperty("NEXUS_PASSWORD")
+            }
+        }
+        maven {
+            name "staging"
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = findProperty("NEXUS_USERNAME")
+                password = findProperty("NEXUS_PASSWORD")
             }
         }
     }
-}
-
-
-task javadocJar(type: Jar, dependsOn: dokka) {
-    archiveClassifier.set('javadoc')
-    from dokka.outputDirectory
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-afterEvaluate {
-    publishing {
-        repositories {
-            maven {
-                name "snapshot"
-                url = "https://oss.sonatype.org/content/repositories/snapshots"
-                credentials {
-                    username = findProperty("NEXUS_USERNAME")
-                    password = findProperty("NEXUS_PASSWORD")
-                }
-            }
-            maven {
-                name "staging"
-                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-                credentials {
-                    username = findProperty("NEXUS_USERNAME")
-                    password = findProperty("NEXUS_PASSWORD")
-                }
-            }
-        }
-        publications {
-            release(MavenPublication) {
+    publications {
+        release(MavenPublication) {
+            afterEvaluate {
                 from components.release
-                artifact javadocJar
-                artifact sourcesJar
-                artifactId = project.name
-                pom {
-                    name = POM_REPO_NAME
-                    description = POM_DESCRIPTION
+            }
+            artifactId = project.name
+            pom {
+                name = POM_REPO_NAME
+                description = POM_DESCRIPTION
+                url = POM_URL
+                licenses {
+                    license {
+                        name = POM_LICENSE_NAME
+                        url = POM_LICENSE_URL
+                    }
+                }
+                scm {
+                    connection = POM_SCM_CONNECTION
+                    developerConnection = POM_SCM_CONNECTION
                     url = POM_URL
-                    licenses {
-                        license {
-                            name = POM_LICENSE_NAME
-                            url = POM_LICENSE_URL
-                        }
+                }
+                developers {
+                    developer {
+                        id = 'cortinico'
+                        name = 'Nicola Corti'
+                        email = 'corti.nico@gmail.com'
                     }
-                    scm {
-                        connection = POM_SCM_CONNECTION
-                        developerConnection = POM_SCM_CONNECTION
-                        url = POM_URL
+                    developer {
+                        id = 'vbuberen'
+                        name = 'Volodymyr Buberenko'
+                        email = 'v.buberenko@gmail.com'
                     }
-                    developers {
-                        developer {
-                            id = 'cortinico'
-                            name = 'Nicola Corti'
-                            email = 'corti.nico@gmail.com'
-                        }
-                        developer {
-                            id = 'vbuberen'
-                            name = 'Volodymyr Buberenko'
-                            email = 'v.buberenko@gmail.com'
-                        }
-                        developer {
-                            id = 'olivierperez'
-                            name = 'Olivier Perez'
-                            email = 'olivier@olivierperez.fr'
-                        }
+                    developer {
+                        id = 'olivierperez'
+                        name = 'Olivier Perez'
+                        email = 'olivier@olivierperez.fr'
                     }
                 }
             }
         }
     }
+}
 
-    def signingKey = findProperty("SIGNING_KEY")
-    def signingPwd = findProperty("SIGNING_PWD")
-    if (signingKey && signingPwd) {
-        signing {
-            useInMemoryPgpKeys(signingKey, signingPwd)
-            sign publishing.publications.release
-        }
-    } else {
-        logger.info("Signing Disable as the PGP key was not found")
+def signingKey = findProperty("SIGNING_KEY")
+def signingPwd = findProperty("SIGNING_PWD")
+if (signingKey && signingPwd) {
+    signing {
+        useInMemoryPgpKeys(signingKey, signingPwd)
+        sign publishing.publications.release
     }
+} else {
+    logger.info("Signing Disable as the PGP key was not found")
 }

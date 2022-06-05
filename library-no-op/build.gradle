@@ -27,6 +27,13 @@ android {
         // Don't fail build if some dependencies outdated
         disable 'GradleDependency'
     }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
