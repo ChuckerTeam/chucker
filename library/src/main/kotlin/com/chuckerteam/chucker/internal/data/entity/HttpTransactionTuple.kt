@@ -19,13 +19,13 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "protocol") var protocol: String?,
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "host") var host: String?,
-    @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
-    @ColumnInfo(name = "error") var error: String?
+    @ColumnInfo(name = "error") var error: String?,
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
@@ -48,14 +48,6 @@ internal data class HttpTransactionTuple(
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
     }
-
-    fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return JsonConverter.instance.fromJson<List<HttpHeader>>(
-            requestHeaders,
-            object : TypeToken<List<HttpHeader>>() {}.type
-        )
-    }
-
     fun getFormattedPath(encode: Boolean): String {
         val path = this.path ?: return ""
 

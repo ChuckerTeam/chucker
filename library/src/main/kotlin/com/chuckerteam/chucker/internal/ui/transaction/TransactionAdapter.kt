@@ -67,7 +67,7 @@ internal class TransactionAdapter internal constructor(
             transactionId = transaction.id
 
             itemBinding.apply {
-                displayGraphQlFields(transaction)
+                displayGraphQlFields(transaction.graphQlOperationName)
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
@@ -120,36 +120,14 @@ internal class TransactionAdapter internal constructor(
     }
 }
 
-private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
-    transaction: HttpTransactionTuple
-) {
-    transaction.getFormattedPath(encode = false)
-        .let { formattedPath ->
-            if (formattedPath.lowercase() == "/graphql") {
-                graphqlIcon.visibility = View.VISIBLE
-                graphqlPath.visibility = View.VISIBLE
+private fun ChuckerListItemTransactionBinding.displayGraphQlFields(graphQlOperationName: String?) {
+    if (graphQlOperationName != null) {
+        graphqlIcon.visibility = View.VISIBLE
+        graphqlPath.visibility = View.VISIBLE
 
-                val text =
-                    transaction.getParsedRequestHeaders()
-                        ?.find { it.name.lowercase().contains("operation-name") }
-                        ?.value
-                    ?: ""
-
-                graphqlPath.text = text
-            } else {
-                graphqlIcon.visibility = View.GONE
-                graphqlPath.visibility = View.GONE
-            }
-        }
+        graphqlPath.text = graphQlOperationName
+    } else {
+        graphqlIcon.visibility = View.GONE
+        graphqlPath.visibility = View.GONE
+    }
 }
-
-private fun HttpTransactionTuple.getDisplayPath(): String =
-    this.getFormattedPath(encode = false)
-        .let { formattedPath ->
-            if (formattedPath.lowercase() == "/graphql")
-                formattedPath +
-                (this.getParsedRequestHeaders()
-                     ?.find { it.name.lowercase().contains("operation-name") }
-                     ?.value?.let { operationName -> " - $operationName" } ?: "")
-            else formattedPath
-        }
