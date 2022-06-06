@@ -51,7 +51,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toBottomOf="@+id/path"
-        tools:text="getBatchDetails" />
+        tools:text="getBatchDetails"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/graphqlIcon"
@@ -62,7 +63,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/graphqlPath"
         app:layout_constraintStart_toStartOf="@+id/ssl"
-        app:layout_constraintTop_toTopOf="@+id/graphqlPath" />
+        app:layout_constraintTop_toTopOf="@+id/graphqlPath"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/host"
