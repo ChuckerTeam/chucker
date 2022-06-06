@@ -5,17 +5,14 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
-import com.chuckerteam.chucker.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.BufferedSource
 import okio.Source
 import okio.buffer
 import okio.sink
-import java.io.File
 
 internal interface Sharable {
     fun toSharableContent(context: Context): Source

@@ -2,8 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
-import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper

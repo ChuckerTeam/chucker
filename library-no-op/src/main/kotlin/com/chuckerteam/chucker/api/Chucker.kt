@@ -2,9 +2,6 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
-import com.chuckerteam.chucker.R
 
 /**
  * No-op implementation.

@@ -31,3 +31,5 @@ style:
     excludedFunctions: "equals"
     excludeLabeled: false
     excludeReturnFromLambda: true
+  UnusedImports:
+    active: true

@@ -5,19 +5,13 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
-import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.getSystemService
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
-import com.chuckerteam.chucker.internal.support.writeToFile
 import com.chuckerteam.chucker.internal.ui.MainActivity
-import kotlinx.coroutines.runBlocking
 
 /**
  * Chucker methods and utilities to interact with the library.
