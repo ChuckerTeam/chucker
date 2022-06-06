@@ -12,6 +12,7 @@ public class ChuckerCollector @JvmOverloads constructor(
     public var showNotification: Boolean = true,
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
+    @Suppress("FunctionOnlyReturningConstant")
     public fun writeTransactions(
         context: Context,
         startTimestamp: Long?,
