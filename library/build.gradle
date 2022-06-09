@@ -62,6 +62,8 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     api "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
+    implementation"com.tzx.json:jsonhandleview:$jsonhandleviewVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     testImplementation "junit:junit:$vintageJunitVersion"

@@ -13,6 +13,7 @@ buildscript {
         lifecycleVersion = '2.2.0'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
+        jsonhandleviewVersion = '1.2.2'
 
         // Networking
         gsonVersion = '2.8.6'
@@ -58,6 +59,7 @@ allprojects {
 
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
         google()
     }
 
