@@ -94,6 +94,7 @@ ext.versionName = { ->
 def libraryGroupId = 'com.meesho.android.chucker'
 def libraryVersion = versionName()
 
+artifactoryPublish.dependsOn('build')
 publishing {
     publications {
         aar(MavenPublication) {
