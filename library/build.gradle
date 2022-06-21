@@ -79,3 +79,58 @@ dependencies {
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
+
+ext.versionName = { ->
+    def currentTag = 'git tag --points-at HEAD'.execute().in.text.toString().trim()
+    def currentBranch = 'git rev-parse --abbrev-ref HEAD'.execute().in.text.toString().trim()
+    def tagRegex = "[0-9.]*[0-9]"
+    if (!currentTag.isEmpty() && currentTag.matches(tagRegex)) {// is not empty and is in following format 8.0
+        return currentTag
+    } else {
+        return currentBranch + '-SNAPSHOT'
+    }
+}
+
+def libraryGroupId = 'com.meesho.android.chucker'
+def libraryVersion = versionName()
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = libraryGroupId
+            artifactId = 'library'
+            version = libraryVersion
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+
+            pom.withXml {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.getByName("releaseCompileClasspath").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+                    def dependency = dependencies.appendNode('dependency')
+                    dependency.appendNode('groupId', it.moduleGroup)
+                    dependency.appendNode('artifactId', it.moduleName)
+                    dependency.appendNode('version', it.moduleVersion)
+                }
+            }
+        }
+    }
+}
+artifactory {
+    //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = project.properties["JFROG_ARTIFACTORY_URL"]
+    publish {
+        repository {
+            repoKey = libraryVersion.endsWith('-SNAPSHOT') ? project.properties["SNAPSHOT_REPO_NAME"] :
+                    project.properties["RELEASE_REPO_NAME"]
+            username = project.properties["JFROG_ARTIFACTORY_USERNAME"]
+            password = project.properties["JFROG_ARTIFACTORY_KEY"]
+        }
+        defaults {
+            // Tell the Artifactory Plugin which artifacts should be published to Artifactory.
+            publications('aar')
+            publishArtifacts = true
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
+}
