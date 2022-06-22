@@ -1,9 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import okio.Buffer
-import okio.ForwardingSource
-import okio.Okio
-import okio.Source
+import okio.*
 import java.io.IOException
 
 internal class DepletingSource(delegate: Source) : ForwardingSource(delegate) {
@@ -21,7 +18,7 @@ internal class DepletingSource(delegate: Source) : ForwardingSource(delegate) {
     override fun close() {
         if (shouldDeplete) {
             try {
-                Okio.buffer(delegate()).readAll(Okio.blackhole())
+                delegate.buffer().readAll(blackholeSink())
             } catch (e: IOException) {
                 IOException("An error occurred while depleting the source", e).printStackTrace()
             }

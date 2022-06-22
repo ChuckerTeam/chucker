@@ -72,7 +72,7 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
     testImplementation "androidx.test:core:$androidxTestCoreVersion"
-    testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
+    testImplementation "androidx.arch.core:core-testing:$androidXArchTestVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }

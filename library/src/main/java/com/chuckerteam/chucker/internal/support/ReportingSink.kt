@@ -1,9 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import okio.Buffer
-import okio.Okio
-import okio.Sink
-import okio.Timeout
+import okio.*
 import java.io.File
 import java.io.IOException
 
@@ -24,7 +21,7 @@ internal class ReportingSink(
     private var isFailure = false
     private var isClosed = false
     private var downstream = try {
-        if (downstreamFile != null) Okio.sink(downstreamFile) else null
+        downstreamFile?.sink()
     } catch (e: IOException) {
         callDownstreamFailure(IOException("Failed to use file $downstreamFile by Chucker", e))
         null

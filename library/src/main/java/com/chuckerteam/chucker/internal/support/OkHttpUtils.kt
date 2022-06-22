@@ -12,11 +12,11 @@ private const val HTTP_CONTINUE = 100
 /** Returns true if the response must have a (possibly 0-length) body. See RFC 7231.  */
 internal fun Response.hasBody(): Boolean {
     // HEAD requests never yield a body regardless of the response headers.
-    if (request().method() == "HEAD") {
+    if (request.method == "HEAD") {
         return false
     }
 
-    val responseCode = code()
+    val responseCode = code
     if ((responseCode < HTTP_CONTINUE || responseCode >= HTTP_OK) &&
         (responseCode != HTTP_NO_CONTENT) &&
         (responseCode != HTTP_NOT_MODIFIED)
@@ -47,13 +47,13 @@ internal val Response.contentType: String?
 /** Checks if the OkHttp response uses gzip encoding. */
 internal val Response.isGzipped: Boolean
     get() {
-        return this.headers().containsGzip
+        return this.headers.containsGzip
     }
 
 /** Checks if the OkHttp request uses gzip encoding. */
 internal val Request.isGzipped: Boolean
     get() {
-        return this.headers().containsGzip
+        return this.headers.containsGzip
     }
 
 private val Headers.containsGzip: Boolean

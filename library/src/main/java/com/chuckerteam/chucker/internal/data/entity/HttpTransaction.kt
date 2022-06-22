@@ -14,6 +14,8 @@ import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Date
 
 /**
@@ -184,7 +186,7 @@ internal class HttpTransaction(
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
         val httpHeaders = ArrayList<HttpHeader>()
-        for (i in 0 until headers.size()) {
+        for (i in 0 until headers.size) {
             httpHeaders.add(HttpHeader(headers.name(i), headers.value(i)))
         }
         return httpHeaders
@@ -223,12 +225,12 @@ internal class HttpTransaction(
     }
 
     fun getFormattedUrl(encode: Boolean): String {
-        val httpUrl = url?.let(HttpUrl::get) ?: return ""
+        val httpUrl = url?.toHttpUrlOrNull() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).url
     }
 
     fun getFormattedPath(encode: Boolean): String {
-        val httpUrl = url?.let(HttpUrl::get) ?: return ""
+        val httpUrl = url?.toHttpUrlOrNull()?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 

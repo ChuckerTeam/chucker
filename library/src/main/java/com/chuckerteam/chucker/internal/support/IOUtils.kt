@@ -2,10 +2,7 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.R
-import okio.Buffer
-import okio.BufferedSource
-import okio.GzipSource
-import okio.Okio
+import okio.*
 import java.io.EOFException
 import java.nio.charset.Charset
 import kotlin.math.min
@@ -22,7 +19,7 @@ internal class IOUtils(private val context: Context) {
     fun isPlaintext(buffer: Buffer): Boolean {
         try {
             val prefix = Buffer()
-            val byteCount = if (buffer.size() < PREFIX_SIZE) buffer.size() else PREFIX_SIZE
+            val byteCount = if (buffer.size < PREFIX_SIZE) buffer.size else PREFIX_SIZE
             buffer.copyTo(prefix, 0, byteCount)
             for (i in 0 until CODE_POINT_SIZE) {
                 if (prefix.exhausted()) {
@@ -40,7 +37,7 @@ internal class IOUtils(private val context: Context) {
     }
 
     fun readFromBuffer(buffer: Buffer, charset: Charset, maxContentLength: Long): String {
-        val bufferSize = buffer.size()
+        val bufferSize = buffer.size
         val maxBytes = min(bufferSize, maxContentLength)
         var body = ""
         try {
@@ -57,7 +54,7 @@ internal class IOUtils(private val context: Context) {
 
     fun getNativeSource(input: BufferedSource, isGzipped: Boolean): BufferedSource = if (isGzipped) {
         val source = GzipSource(input)
-        source.use { Okio.buffer(it) }
+        source.use { it.buffer() }
     } else {
         input
     }

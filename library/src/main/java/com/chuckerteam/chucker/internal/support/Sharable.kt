@@ -11,9 +11,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger.warn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okio.BufferedSource
-import okio.Okio
-import okio.Source
+import okio.*
 
 internal interface Sharable {
     fun toSharableContent(context: Context): Source
@@ -21,7 +19,7 @@ internal interface Sharable {
 
 internal fun Sharable.toSharableUtf8Content(
     context: Context,
-) = Okio.buffer(toSharableContent(context)).use(BufferedSource::readUtf8)
+) = toSharableContent(context).buffer().use(BufferedSource::readUtf8)
 
 internal suspend fun Sharable.shareAsUtf8Text(
     activity: Activity,
@@ -60,7 +58,7 @@ internal suspend fun Sharable.shareAsFile(
 
     val fileContent = withContext(Dispatchers.Default) { toSharableContent(activity) }
     withContext(Dispatchers.IO) {
-        Okio.buffer(Okio.sink(file)).use { it.writeAll(fileContent) }
+        file.sink().buffer().use { it.writeAll(fileContent) }
     }
 
     val uri = FileProvider.getUriForFile(
