@@ -1,6 +1,9 @@
 package com.chuckerteam.chucker.internal.support
 
-import okio.*
+import okio.Buffer
+import okio.Sink
+import okio.Timeout
+import okio.sink
 import java.io.File
 import java.io.IOException
 

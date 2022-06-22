@@ -3,7 +3,6 @@ package com.chuckerteam.chucker.internal.data.entity
 import androidx.room.ColumnInfo
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /**

@@ -2,7 +2,10 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.R
-import okio.*
+import okio.Buffer
+import okio.BufferedSource
+import okio.GzipSource
+import okio.buffer
 import java.io.EOFException
 import java.nio.charset.Charset
 import kotlin.math.min

@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Date
 
 /**
@@ -225,12 +224,12 @@ internal class HttpTransaction(
     }
 
     fun getFormattedUrl(encode: Boolean): String {
-        val httpUrl = url?.toHttpUrlOrNull() ?: return ""
+        val httpUrl = url?.toHttpUrl() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).url
     }
 
     fun getFormattedPath(encode: Boolean): String {
-        val httpUrl = url?.toHttpUrlOrNull()?: return ""
+        val httpUrl = url?.toHttpUrl() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 

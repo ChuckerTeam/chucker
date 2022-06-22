@@ -11,7 +11,10 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger.warn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okio.*
+import okio.BufferedSource
+import okio.Source
+import okio.buffer
+import okio.sink
 
 internal interface Sharable {
     fun toSharableContent(context: Context): Source
