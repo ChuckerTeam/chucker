@@ -1,6 +1,10 @@
 package com.chuckerteam.chucker.internal.support
 
-import okio.*
+import okio.Buffer
+import okio.ForwardingSource
+import okio.Source
+import okio.buffer
+import okio.blackholeSink
 import java.io.IOException
 
 internal class DepletingSource(delegate: Source) : ForwardingSource(delegate) {
