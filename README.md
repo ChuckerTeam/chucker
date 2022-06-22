@@ -31,9 +31,9 @@ Apps using Chucker will display a **notification** showing a summary of ongoing 
 
 ## Getting Started 👣
 
-Chucker is distributed through [Maven Central](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library). To use it you need to add the following **Gradle dependency** to your `build.gradle` file of you android app module (NOT the root file).
+Chucker is distributed through [Maven Central](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library). To use it you need to add the following **Gradle dependency** to the `build.gradle` file of your android app module (NOT the root file).
 
-Please note that you should add both the `library` and the the `library-no-op` variant to isolate Chucker from release builds as follows:
+Please note that you should add both the `library` and the `library-no-op` variant to isolate Chucker from release builds as follows:
 
 ```groovy
 dependencies {
@@ -42,7 +42,7 @@ dependencies {
 }
 ```
 
-To start using Chucker, just plug it a new `ChuckerInterceptor` to your OkHttp Client Builder:
+To start using Chucker, just plug in a new `ChuckerInterceptor` to your OkHttp Client Builder:
 
 ```kotlin
 val client = OkHttpClient.Builder()
@@ -144,7 +144,7 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 
 **Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.2
 
-Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable to read data from different encodings.
+Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable of reading data from different encodings.
 
 ```kotlin
 object ProtoDecoder : BinaryDecoder {
