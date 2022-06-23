@@ -6,7 +6,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.HttpBinApi.Data
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -122,14 +122,14 @@ class HttpBinClient(
                 override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    response.body()?.source()?.use { it.readByteString() }
+                    response.body?.source()?.use { it.readByteString() }
                 }
             }
         )
     }
 
     private fun getResponsePartially() {
-        val body = RequestBody.create(MediaType.get("application/json"), LARGE_JSON)
+        val body = RequestBody.create("application/json".toMediaType(), LARGE_JSON)
         val request = Request.Builder()
             .url("https://postman-echo.com/post")
             .post(body)
@@ -139,7 +139,7 @@ class HttpBinClient(
                 override fun onFailure(call: okhttp3.Call, e: IOException) = Unit
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    response.body()?.source()?.use { it.readByteString(SEGMENT_SIZE) }
+                    response.body?.source()?.use { it.readByteString(SEGMENT_SIZE) }
                 }
             }
         )

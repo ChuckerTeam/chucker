@@ -36,7 +36,7 @@ internal class TeeSource(
     }
 
     private fun copyBytesToSideStream(sink: Buffer, bytesRead: Long) {
-        val offset = sink.size() - bytesRead
+        val offset = sink.size - bytesRead
         sink.copyTo(tempBuffer, offset, bytesRead)
         try {
             sideStream.write(tempBuffer, bytesRead)

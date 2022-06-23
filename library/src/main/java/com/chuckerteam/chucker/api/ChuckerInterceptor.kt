@@ -16,10 +16,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
-import okio.Buffer
-import okio.GzipSource
-import okio.Okio
-import okio.Source
+import okio.*
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -126,17 +123,17 @@ public class ChuckerInterceptor internal constructor(
      * Processes a [Request] and populates corresponding fields of a [HttpTransaction].
      */
     private fun processRequest(request: Request, transaction: HttpTransaction) {
-        val requestBody = request.body()
+        val requestBody = request.body
 
-        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers().get(CONTENT_ENCODING))
+        val encodingIsSupported = io.bodyHasSupportedEncoding(request.headers.get(CONTENT_ENCODING))
 
         transaction.apply {
-            setRequestHeaders(request.headers())
-            populateUrl(request.url())
+            setRequestHeaders(request.headers)
+            populateUrl(request.url)
 
             isRequestBodyPlainText = encodingIsSupported
             requestDate = System.currentTimeMillis()
-            method = request.method()
+            method = request.method
             requestContentType = requestBody?.contentType()?.toString()
             requestPayloadSize = requestBody?.contentLength() ?: 0L
         }
@@ -166,28 +163,28 @@ public class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction
     ) {
-        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers().get(CONTENT_ENCODING))
+        val responseEncodingIsSupported = io.bodyHasSupportedEncoding(response.headers.get(CONTENT_ENCODING))
 
         transaction.apply {
             // includes headers added later in the chain
-            setRequestHeaders(filterHeaders(response.request().headers()))
-            setResponseHeaders(filterHeaders(response.headers()))
+            setRequestHeaders(filterHeaders(response.request.headers))
+            setResponseHeaders(filterHeaders(response.headers))
 
             isResponseBodyPlainText = responseEncodingIsSupported
-            requestDate = response.sentRequestAtMillis()
-            responseDate = response.receivedResponseAtMillis()
-            protocol = response.protocol().toString()
-            responseCode = response.code()
-            responseMessage = response.message()
+            requestDate = response.sentRequestAtMillis
+            responseDate = response.receivedResponseAtMillis
+            protocol = response.protocol.toString()
+            responseCode = response.code
+            responseMessage = response.message
 
-            response.handshake()?.let { handshake ->
-                responseTlsVersion = handshake.tlsVersion().javaName()
-                responseCipherSuite = handshake.cipherSuite().javaName()
+            response.handshake?.let { handshake ->
+                responseTlsVersion = handshake.tlsVersion.javaName
+                responseCipherSuite = handshake.cipherSuite.javaName
             }
 
             responseContentType = response.contentType
 
-            tookMs = (response.receivedResponseAtMillis() - response.sentRequestAtMillis())
+            tookMs = (response.receivedResponseAtMillis - response.sentRequestAtMillis)
         }
     }
 
@@ -200,7 +197,7 @@ public class ChuckerInterceptor internal constructor(
         response: Response,
         transaction: HttpTransaction
     ): Response {
-        val responseBody = response.body()
+        val responseBody = response.body
         if (!response.hasBody() || responseBody == null) {
             collector.onResponseReceived(transaction)
             return response
@@ -218,7 +215,7 @@ public class ChuckerInterceptor internal constructor(
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
         return response.newBuilder()
-            .body(ResponseBody.create(contentType, contentLength, Okio.buffer(upstream)))
+            .body(ResponseBody.create(contentType, contentLength, upstream.buffer()))
             .build()
     }
 
@@ -237,14 +234,14 @@ public class ChuckerInterceptor internal constructor(
         responseBodyBuffer: Buffer,
         transaction: HttpTransaction
     ) {
-        val responseBody = response.body() ?: return
+        val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
         val charset = contentType?.charset(UTF8) ?: UTF8
 
         if (io.isPlaintext(responseBodyBuffer)) {
             transaction.isResponseBodyPlainText = true
-            if (responseBodyBuffer.size() != 0L) {
+            if (responseBodyBuffer.size != 0L) {
                 transaction.responseBody = responseBodyBuffer.readString(charset)
             }
         } else {
@@ -253,7 +250,7 @@ public class ChuckerInterceptor internal constructor(
             val isImageContentType =
                 (contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true)
 
-            if (isImageContentType && (responseBodyBuffer.size() < MAX_BLOB_SIZE)) {
+            if (isImageContentType && (responseBodyBuffer.size < MAX_BLOB_SIZE)) {
                 transaction.responseImageData = responseBodyBuffer.readByteArray()
             }
         }
@@ -290,7 +287,7 @@ public class ChuckerInterceptor internal constructor(
         override fun onFailure(file: File?, exception: IOException) = exception.printStackTrace()
 
         private fun readResponseBuffer(responseBody: File, isGzipped: Boolean) = try {
-            val bufferedSource = Okio.buffer(Okio.source(responseBody))
+            val bufferedSource = responseBody.source().buffer()
             val source = if (isGzipped) {
                 GzipSource(bufferedSource)
             } else {
