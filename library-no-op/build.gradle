@@ -43,6 +43,11 @@ ext.versionName = { ->
 def libraryGroupId = 'com.meesho.android.chucker'
 def libraryVersion = versionName()
 
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
 artifactoryPublish.dependsOn('build')
 publishing {
     publications {
@@ -52,6 +57,7 @@ publishing {
             version = libraryVersion
             // Tell maven to prepare the generated "*.aar" file for publishing
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            artifact androidSourcesJar
 
             pom.withXml {
                 def dependencies = asNode().appendNode('dependencies')
