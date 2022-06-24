@@ -3,7 +3,7 @@ package com.chuckerteam.chucker.internal.data.entity
 import androidx.room.ColumnInfo
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /**
  * A subset of [HttpTransaction] to perform faster Read operations on the Repository.
@@ -53,7 +53,7 @@ internal class HttpTransactionTuple(
         // and we are only interested in a formatted path with query.
         val dummyUrl = "https://www.example.com$path"
 
-        val httpUrl = HttpUrl.parse(dummyUrl) ?: return ""
+        val httpUrl = dummyUrl.toHttpUrlOrNull() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 }

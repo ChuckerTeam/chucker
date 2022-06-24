@@ -31,13 +31,14 @@ class MainActivity : AppCompatActivity() {
 
         client.initializeCrashHandler()
 
-        StrictMode.setVmPolicy(
+        //todo need to fix this, closing app on
+        /*StrictMode.setVmPolicy(
             StrictMode.VmPolicy.Builder()
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .penaltyDeath()
                 .build()
-        )
+        )*/
     }
 
     private fun launchChuckerDirectly() {
