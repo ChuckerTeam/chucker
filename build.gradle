@@ -35,6 +35,9 @@ buildscript {
         robolectricVersion = '4.4'
         truthVersion = '1.1'
         vintageJunitVersion = '4.12'
+
+        //jfrog publish
+        jfrogExtractor = '4.28.3'
     }
 
     repositories {
@@ -50,10 +53,14 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrogExtractor"
     }
 }
 
 allprojects {
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: "maven-publish"
+
     version = VERSION_NAME
     group = GROUP
 
