@@ -11,7 +11,7 @@ buildscript {
         materialComponentsVersion = '1.6.1'
         roomVersion = '2.4.2'
         fragmentVersion = '1.4.1'
-        lifecycleVersion = '2.4.1'
+        lifecycleVersion = '2.5.0'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
 
