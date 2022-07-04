@@ -30,7 +30,7 @@ buildscript {
 
         // Testing
         androidxTestCoreVersion = '1.4.0'
-        junitGradlePluignVersion = '1.8.2.0'
+        junitGradlePluignVersion = '1.8.2.1'
         junitVersion = '5.8.2'
         junit4Version = '4.13.2'
         mockkVersion = '1.12.4'
