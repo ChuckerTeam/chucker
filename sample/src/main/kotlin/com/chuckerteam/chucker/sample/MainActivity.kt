@@ -22,6 +22,10 @@ class MainActivity : AppCompatActivity() {
         listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
+    private val graphQLTasks by lazy {
+        listOf(GraphQLTaskImpl(client),)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,6 +36,21 @@ class MainActivity : AppCompatActivity() {
             doHttp.setOnClickListener {
                 for (task in httpTasks) {
                     task.run()
+                }
+            }
+
+            doGraphql?.setOnClickListener {
+                for(task in graphQLTasks) {
+                    task.run("query GetCharacter( \$id: ID! ){\n" +
+                        "  character(id:\$id) {\n" +
+                        "      id:id,      \n" +
+                        "     \tname,\n" +
+                        "      status     \n" +
+                        "    \n" +
+                        "  }\n" +
+                        "}",
+                        "{\"id\":1}"
+                    )
                 }
             }
 

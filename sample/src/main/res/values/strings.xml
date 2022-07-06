@@ -4,6 +4,7 @@
     <string name="application_type">Application</string>
     <string name="network_type">Network</string>
     <string name="do_http_activity">Do HTTP activity</string>
+    <string name="do_graphql_activity">Do GraphQL activity</string>
     <string name="launch_chucker_directly">Launch Chucker directly</string>
 
     <string name="intro_title">Welcome to Chucker Sample App</string>

@@ -30,6 +30,7 @@ fun createOkHttpClient(
         .redactHeaders(emptySet())
         .alwaysReadResponseBody(false)
         .addBodyDecoder(PokemonProtoBodyDecoder())
+        .graphQLEndpoint(GRAPHQL_BASE_URL)
         .build()
 
     return OkHttpClient.Builder()

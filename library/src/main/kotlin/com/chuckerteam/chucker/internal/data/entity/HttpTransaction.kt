@@ -53,7 +53,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
-    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
+    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
+    @ColumnInfo(name = "isGraphQLRequest") var isGraphQLRequest: Boolean = false
 ) {
 
     @Ignore
@@ -285,6 +286,7 @@ internal class HttpTransaction(
             (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
-            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
+            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
+            (isGraphQLRequest == other.isGraphQLRequest)
     }
 }
