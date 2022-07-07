@@ -1,7 +1,11 @@
 package com.chuckerteam.chucker.sample
 
 import okhttp3.OkHttpClient
-import retrofit2.*
+import retrofit2.Retrofit
+import retrofit2.Callback
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.create
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -9,6 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 const val GRAPHQL_BASE_URL = "https://rickandmortyapi.com/"
+private const val CHARACTER_ID = 6L
 class GraphQLTaskImpl(client: OkHttpClient):IGraphQLTask {
     private val api = Retrofit.Builder()
         .baseUrl(GRAPHQL_BASE_URL)
@@ -24,12 +29,13 @@ class GraphQLTaskImpl(client: OkHttpClient):IGraphQLTask {
             t.printStackTrace()
         }
     }
+
     override fun run(query: String, variables: String?) = with(api) {
         getCharacterById(query, variables).enqueue(noOpCallback)
         getCharacterByIdPost(
             GraphQLQuery(
             "query GetCharacter( \$id: ID! ){character(id:\$id) {id:id,      name,status     }}",
-            GraphQLVariables(6L)
+            GraphQLVariables(CHARACTER_ID)
             )
         ).enqueue(noOpCallback)
 

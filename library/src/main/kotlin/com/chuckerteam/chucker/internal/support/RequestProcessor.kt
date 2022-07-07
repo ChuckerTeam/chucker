@@ -5,7 +5,6 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import okhttp3.HttpUrl
 import okhttp3.Request
 import okio.Buffer
 import okio.ByteString
@@ -29,10 +28,7 @@ internal class RequestProcessor(
             requestHeadersSize = request.headers.byteCount()
             setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
-
-            if (graphQLEndpoint.isNotEmpty() && checkIfGraphQL(request.url, graphQLEndpoint)){
-                isGraphQLRequest = true
-            }
+            isGraphQLRequest = graphQLEndpoint.isNotEmpty() && url.toString().contains(graphQLEndpoint)
 
             requestDate = System.currentTimeMillis()
             method = request.method
@@ -40,8 +36,6 @@ internal class RequestProcessor(
             requestPayloadSize = request.body?.contentLength()
         }
     }
-
-    private fun checkIfGraphQL(url: HttpUrl, graphQLEndpoint: String) = url.toString().contains(graphQLEndpoint)
 
     private fun processPayload(request: Request, transaction: HttpTransaction) {
         val body = request.body ?: return

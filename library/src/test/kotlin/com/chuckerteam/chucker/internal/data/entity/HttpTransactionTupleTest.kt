@@ -106,6 +106,16 @@ internal class HttpTransactionTupleTest {
             .isEqualTo("")
     }
 
+    @Test
+    fun `transaction is GraphQL`() {
+        assertThat(createTuple(isGraphQLRequest = true).isGraphQL).isTrue()
+    }
+
+    @Test
+    fun `transaction is not GraphQL`() {
+        assertThat(createTuple().isGraphQL).isFalse()
+    }
+
     private fun createTuple(
         id: Long = 0,
         requestDate: Long? = null,
@@ -118,7 +128,8 @@ internal class HttpTransactionTupleTest {
         responseCode: Int? = null,
         requestPayloadSize: Long? = null,
         responsePayloadSize: Long? = null,
-        error: String? = null
+        error: String? = null,
+        isGraphQLRequest: Boolean = false
     ) = HttpTransactionTuple(
         id,
         requestDate,
@@ -131,6 +142,7 @@ internal class HttpTransactionTupleTest {
         responseCode,
         requestPayloadSize,
         responsePayloadSize,
-        error
+        error,
+        isGraphQLRequest
     )
 }
