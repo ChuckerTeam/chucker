@@ -69,7 +69,7 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     api "com.squareup.okhttp3:okhttp:$okhttp3Version"
 
-    implementation"com.tzx.json:jsonhandleview:$jsonhandleviewVersion"
+    implementation "com.meesho.android:jsonhandleview:$jsonhandleviewVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
@@ -84,7 +84,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
 
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
 
 ext.versionName = { ->

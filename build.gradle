@@ -41,8 +41,8 @@ buildscript {
     }
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
         gradlePluginPortal()
     }
 
@@ -65,9 +65,19 @@ allprojects {
     group = GROUP
 
     repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
         google()
+        mavenCentral()
+
+        def jfrogArtifactoryUrl = project.properties["JFROG_ARTIFACTORY_URL"]
+        def jfrogArtifactoryUserName = project.properties["JFROG_ARTIFACTORY_USERNAME"]
+        def jfrogArtifactoryKey = project.properties["JFROG_ARTIFACTORY_KEY"]
+        maven {
+            url "${jfrogArtifactoryUrl}/${project.properties["RELEASE_REPO_NAME"]}"
+            credentials {
+                username = jfrogArtifactoryUserName
+                password = jfrogArtifactoryKey
+            }
+        }
     }
 
     tasks.withType(Test) {
