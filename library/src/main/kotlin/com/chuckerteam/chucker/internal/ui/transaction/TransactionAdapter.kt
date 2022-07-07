@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -62,6 +63,7 @@ internal class TransactionAdapter internal constructor(
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
                 setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
+                graphql.visibility =  if(transaction.isGraphQL ) View.VISIBLE else View.INVISIBLE
 
                 if (transaction.status === HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()

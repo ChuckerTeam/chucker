@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_end="197dp" />
 
     <TextView
         android:id="@+id/code"
@@ -68,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/duration"
-        app:layout_constraintStart_toStartOf="@+id/path"
+        app:layout_constraintStart_toStartOf="@+id/host"
         app:layout_constraintTop_toBottomOf="@+id/host"
         tools:text="18:29:07 PM" />
 
@@ -87,8 +87,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/host"
         app:layout_constraintStart_toEndOf="@+id/duration"
         app:layout_constraintTop_toTopOf="@+id/duration"
         tools:text="16.45 KB" />
+
+    <ImageView
+        android:id="@+id/graphql"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/chucker_graphql"
+        app:layout_constraintBottom_toBottomOf="@+id/timeStart"
+        app:layout_constraintEnd_toEndOf="@+id/ssl"
+        app:layout_constraintStart_toStartOf="@+id/ssl"
+        app:layout_constraintTop_toTopOf="@+id/timeStart"
+        app:srcCompat="@drawable/chucker_ic_graphql_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
