@@ -41,14 +41,8 @@ class MainActivity : AppCompatActivity() {
 
             doGraphql?.setOnClickListener {
                 for(task in graphQLTasks) {
-                    task.run("query GetCharacter( \$id: ID! ){\n" +
-                        "  character(id:\$id) {\n" +
-                        "      id:id,      \n" +
-                        "     \tname,\n" +
-                        "      status     \n" +
-                        "    \n" +
-                        "  }\n" +
-                        "}",
+                    task.run(
+                        GRAPHQL_QUERY,
                         "{\"id\":1}"
                     )
                 }

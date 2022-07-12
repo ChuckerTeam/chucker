@@ -1,5 +1,7 @@
 package com.chuckerteam.chucker.sample
 
+import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.Callback
@@ -13,7 +15,6 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 const val GRAPHQL_BASE_URL = "https://rickandmortyapi.com/"
-private const val CHARACTER_ID = 6L
 class GraphQLTaskImpl(client: OkHttpClient):IGraphQLTask {
     private val api = Retrofit.Builder()
         .baseUrl(GRAPHQL_BASE_URL)
@@ -34,8 +35,10 @@ class GraphQLTaskImpl(client: OkHttpClient):IGraphQLTask {
         getCharacterById(query, variables).enqueue(noOpCallback)
         getCharacterByIdPost(
             GraphQLQuery(
-            "query GetCharacter( \$id: ID! ){character(id:\$id) {id:id,      name,status     }}",
-            GraphQLVariables(CHARACTER_ID)
+            query,
+             variables ?. let {
+                 JsonConverter.gsonInstance.fromJson(variables, GraphQLVariables::class.java)
+             } ?: GraphQLVariables()
             )
         ).enqueue(noOpCallback)
 
@@ -49,6 +52,21 @@ class GraphQLTaskImpl(client: OkHttpClient):IGraphQLTask {
         fun getCharacterByIdPost(@Body graphQLQuery: GraphQLQuery): Call<Any?>
     }
 
-    data class GraphQLQuery(val query:String, val variables: GraphQLVariables)
-    data class GraphQLVariables(val id: Long)
+    data class GraphQLQuery(val query:String, val variables: GraphQLVariables?)
+    data class GraphQLVariables(
+        @SerializedName("id") val id: Long? = null
+    )
+}
+
+const val GRAPHQL_QUERY = "query GetCharacter( \$id: ID! ){\n" +
+    "  character(id:\$id) {\n" +
+    "      id:id,      \n" +
+    "     \tname,\n" +
+    "      status     \n" +
+    "    \n" +
+    "  }\n" +
+    "}"
+
+object JsonConverter {
+    val gsonInstance by lazy { GsonBuilder().create() }
 }

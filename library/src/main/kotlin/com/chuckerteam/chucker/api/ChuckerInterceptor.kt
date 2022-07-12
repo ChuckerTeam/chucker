@@ -166,7 +166,10 @@ public class ChuckerInterceptor private constructor(
             this.cacheDirectoryProvider = provider
         }
 
-        public fun graphQLEndpoint(graphQLEndpoint: String): Builder = apply {
+        /**
+         * Sets graphql endpoint/path to identify graphql requests.
+         */
+        public fun registerGraphQLEndpoint(graphQLEndpoint: String): Builder = apply {
             this.graphQLEndpoint = graphQLEndpoint
         }
 
