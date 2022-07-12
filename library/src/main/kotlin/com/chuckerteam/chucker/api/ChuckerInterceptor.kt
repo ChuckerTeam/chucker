@@ -43,7 +43,7 @@ public class ChuckerInterceptor private constructor(
         collector,
         builder.maxContentLength,
         headersToRedact,
-        decoders
+        decoders,
     )
 
     private val responseProcessor = ResponseProcessor(
@@ -71,7 +71,7 @@ public class ChuckerInterceptor private constructor(
         val transaction = HttpTransaction()
         val request = chain.request()
 
-        requestProcessor.process(request, transaction,graphQLEndpoint)
+        requestProcessor.process(request, transaction, graphQLEndpoint)
 
         val response = try {
             chain.proceed(request)

@@ -18,7 +18,7 @@ internal class RequestProcessor(
     private val bodyDecoders: List<BodyDecoder>,
 ) {
     fun process(request: Request, transaction: HttpTransaction, graphQLEndpoint: String) {
-        processMetadata(request, transaction,graphQLEndpoint)
+        processMetadata(request, transaction, graphQLEndpoint)
         processPayload(request, transaction)
         collector.onRequestSent(transaction)
     }

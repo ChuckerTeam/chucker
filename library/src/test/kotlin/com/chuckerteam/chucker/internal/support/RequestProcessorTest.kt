@@ -36,7 +36,7 @@ internal class RequestProcessorTest {
     @Test
     fun `Given a GraphQL Url path WHEN process request THEN transaction is GraphQLRequest`() {
         val transaction = HttpTransaction()
-        val graphQLUrl = getGraphQLUrl(graphQLPath)
+        val graphQLUrl = getUrl(graphQLPath)
 
         val request: Request = mockk(relaxed = true) {
             every{ url } returns graphQLUrl
@@ -49,7 +49,7 @@ internal class RequestProcessorTest {
     @Test
     fun `Given an Url with no GraphQL path WHEN process request THEN transaction is NOT GraphQLRequest`() {
         val transaction = HttpTransaction()
-        val urlWithNoGraphQLPath = getNonGraphQLUrl()
+        val urlWithNoGraphQLPath = getUrl()
         val request:Request = mockk(relaxed = true) {
             every { url } returns urlWithNoGraphQLPath
         }
@@ -59,16 +59,10 @@ internal class RequestProcessorTest {
 
     }
 
-    private fun getGraphQLUrl(graphQLPath: String) =  HttpUrl.Builder()
+    private fun getUrl(graphQLPath: String? = null) =  HttpUrl.Builder()
         .scheme("https")
         .host("random_host")
-        .addPathSegment(graphQLPath)
-        .build()
-
-    private fun getNonGraphQLUrl() = HttpUrl.Builder()
-        .scheme("https")
-        .host("random_host")
-        .addPathSegment("some/other/path")
+        .addPathSegment(graphQLPath ?: "some/other/path")
         .build()
 
 }
