@@ -17,18 +17,20 @@ internal class RequestProcessor(
     private val headersToRedact: Set<String>,
     private val bodyDecoders: List<BodyDecoder>,
 ) {
-    fun process(request: Request, transaction: HttpTransaction, graphQLEndpoint: String) {
+    fun process(request: Request, transaction: HttpTransaction, graphQLEndpoint: String?) {
         processMetadata(request, transaction, graphQLEndpoint)
         processPayload(request, transaction)
         collector.onRequestSent(transaction)
     }
 
-    private fun processMetadata(request: Request, transaction: HttpTransaction, graphQLEndpoint: String) {
+    private fun processMetadata(request: Request, transaction: HttpTransaction, graphQLEndpoint: String?) {
         transaction.apply {
             requestHeadersSize = request.headers.byteCount()
             setRequestHeaders(request.headers.redact(headersToRedact))
             populateUrl(request.url)
-            isGraphQLRequest = graphQLEndpoint.isNotEmpty() && url.toString().contains(graphQLEndpoint)
+            isGraphQLRequest = graphQLEndpoint?.let {
+                it.isNotEmpty() && url.toString().contains(it)
+            } ?: false
 
             requestDate = System.currentTimeMillis()
             method = request.method

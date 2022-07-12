@@ -6,10 +6,8 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import io.mockk.every
 import io.mockk.mockk
-import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.Request
-import okhttp3.RequestBody
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -21,7 +19,6 @@ internal class RequestProcessorTest {
     private val headersToRedact: Set<String> = emptySet()
     private val bodyDecoders: List<BodyDecoder> = emptyList()
 
-    private val blankGraphQLPath = "----"
     private val graphQLPath = "graphql"
 
     private val requestProcessor: RequestProcessor = RequestProcessor(
@@ -54,9 +51,36 @@ internal class RequestProcessorTest {
             every { url } returns urlWithNoGraphQLPath
         }
 
-        requestProcessor.process(request,transaction,blankGraphQLPath)
+        requestProcessor.process(request,transaction,null)
         assertFalse(transaction.isGraphQLRequest)
 
+    }
+
+    @Test
+    fun `Given an empty GraphQL path WHEN process request THEN transaction is NOT GraphQLRequest`() {
+        val transaction = HttpTransaction()
+        val emptyPath = ""
+        val urlWithEmptyGraphQLPath = getUrl(emptyPath)
+        val request: Request = mockk(relaxed = true) {
+            every { url } returns urlWithEmptyGraphQLPath
+        }
+
+        requestProcessor.process(request,transaction,emptyPath)
+        assertFalse(transaction.isGraphQLRequest)
+    }
+
+
+    @Test
+    fun `Given a blank GraphQL path WHEN process request THEN transaction is NOT GraphQLPath`() {
+        val transaction = HttpTransaction()
+        val blankPath = "     "
+        val urlWithEmptyGraphQLPath = getUrl(blankPath)
+        val request: Request = mockk(relaxed = true) {
+            every { url } returns urlWithEmptyGraphQLPath
+        }
+
+        requestProcessor.process(request,transaction,blankPath)
+        assertFalse(transaction.isGraphQLRequest)
     }
 
     private fun getUrl(graphQLPath: String? = null) =  HttpUrl.Builder()
