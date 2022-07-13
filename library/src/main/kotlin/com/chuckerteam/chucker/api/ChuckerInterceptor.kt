@@ -52,7 +52,7 @@ public class ChuckerInterceptor private constructor(
         builder.maxContentLength,
         headersToRedact,
         builder.alwaysReadResponseBody,
-        decoders
+        decoders,
     )
 
     init {
