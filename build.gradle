@@ -5,12 +5,12 @@ buildscript {
         coroutineVersion = '1.6.3'
 
         // Google libraries
-        activityVersion = '1.4.0'
+        activityVersion = '1.5.0'
         appCompatVersion = '1.4.2'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.6.1'
         roomVersion = '2.4.2'
-        fragmentVersion = '1.4.1'
+        fragmentVersion = '1.5.0'
         lifecycleVersion = '2.5.0'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
@@ -30,7 +30,7 @@ buildscript {
 
         // Testing
         androidxTestCoreVersion = '1.4.0'
-        junitGradlePluignVersion = '1.8.2.0'
+        junitGradlePluignVersion = '1.8.2.1'
         junitVersion = '5.8.2'
         junit4Version = '4.13.2'
         mockkVersion = '1.12.4'
