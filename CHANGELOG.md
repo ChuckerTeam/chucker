@@ -4,6 +4,7 @@ This file follows [Keepachangelog](https://keepachangelog.com/) format.
 Please add your entries according to this format.
 
 ## Unreleased
+* Added ability to log manual transactions. In order to do this call ChuckerCollector#saveTransaction(transaction: ManualHttpTransaction) method and pass ManualHttpTransaction entity to it.
 
 ### Added
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
