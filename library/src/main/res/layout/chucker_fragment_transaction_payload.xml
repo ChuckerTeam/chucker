@@ -7,7 +7,7 @@
     android:animateLayoutChanges="true"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionPayloadFragment">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+    <ProgressBar
         android:id="@+id/loadingProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

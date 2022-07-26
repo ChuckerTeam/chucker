@@ -33,6 +33,7 @@ import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -48,7 +49,7 @@ internal class TransactionPayloadFragment :
         arguments?.getSerializable(ARG_TYPE) as PayloadType
     }
 
-    private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+    private val saveToFile = activity?.registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
         val transaction = viewModel.transaction.value
         if (uri != null && transaction != null) {
             lifecycleScope.launch {
@@ -278,7 +279,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun createFileToSaveBody() {
-        saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+        saveToFile?.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = false
