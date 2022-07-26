@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout target branch for rebase
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Automatic Rebase
-      uses: cirrus-actions/rebase@1.3.1
+      uses: cirrus-actions/rebase@1.5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # https://github.community/t5/GitHub-Actions/Workflow-is-failing-if-no-job-can-be-ran-due-to-condition/m-p/38186#M3250

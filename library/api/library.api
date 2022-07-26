@@ -1,0 +1,55 @@
+public abstract interface class com/chuckerteam/chucker/api/BodyDecoder {
+	public abstract fun decodeRequest (Lokhttp3/Request;Lokio/ByteString;)Ljava/lang/String;
+	public abstract fun decodeResponse (Lokhttp3/Response;Lokio/ByteString;)Ljava/lang/String;
+}
+
+public final class com/chuckerteam/chucker/api/Chucker {
+	public static final field INSTANCE Lcom/chuckerteam/chucker/api/Chucker;
+	public static final fun dismissNotifications (Landroid/content/Context;)V
+	public static final fun getLaunchIntent (Landroid/content/Context;)Landroid/content/Intent;
+	public final fun isOp ()Z
+}
+
+public final class com/chuckerteam/chucker/api/ChuckerCollector {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Z)V
+	public fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;)V
+	public synthetic fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getShowNotification ()Z
+	public final fun setShowNotification (Z)V
+}
+
+public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Interceptor {
+	public fun <init> (Landroid/content/Context;)V
+	public synthetic fun <init> (Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
+	public final fun redactHeader ([Ljava/lang/String;)V
+}
+
+public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
+	public fun <init> (Landroid/content/Context;)V
+	public final fun addBodyDecoder (Lcom/chuckerteam/chucker/api/BodyDecoder;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun alwaysReadResponseBody (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun build ()Lcom/chuckerteam/chucker/api/ChuckerInterceptor;
+	public final fun collector (Lcom/chuckerteam/chucker/api/ChuckerCollector;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun createShortcut (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun maxContentLength (J)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun redactHeaders (Ljava/lang/Iterable;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun redactHeaders ([Ljava/lang/String;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+}
+
+public final class com/chuckerteam/chucker/api/RetentionManager {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Lcom/chuckerteam/chucker/api/RetentionManager$Period;)V
+	public synthetic fun <init> (Landroid/content/Context;Lcom/chuckerteam/chucker/api/RetentionManager$Period;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/chuckerteam/chucker/api/RetentionManager$Period : java/lang/Enum {
+	public static final field FOREVER Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static final field ONE_DAY Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static final field ONE_HOUR Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static final field ONE_WEEK Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static fun values ()[Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+}
+

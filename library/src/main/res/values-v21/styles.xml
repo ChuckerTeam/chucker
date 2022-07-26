@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-   <style name="Chucker.Theme" parent="Chucker.BaseTheme">
-     <item name="android:textDirection">locale</item>
-     <item name="android:textAlignment">viewStart</item>
-   </style>
-
-</resources>

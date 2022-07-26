@@ -7,9 +7,8 @@
     android:animateLayoutChanges="true"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionPayloadFragment">
 
-    <androidx.core.widget.ContentLoadingProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loadingProgress"
-        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/chucker_doub_grid"
@@ -27,23 +26,23 @@
         android:layout_marginBottom="@dimen/chucker_quad_grid"
         android:contentDescription="@string/chucker_body_empty"
         android:src="@drawable/chucker_empty_payload"
-        android:tint="@color/chucker_color_primary"
         app:layout_constraintBottom_toTopOf="@id/emptyPayloadTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
+        app:layout_constraintVertical_bias="1"
+        app:tint="@color/chucker_color_primary" />
 
     <TextView
         android:id="@+id/emptyPayloadTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/chucker_response_is_empty"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/chucker_response_is_empty" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout

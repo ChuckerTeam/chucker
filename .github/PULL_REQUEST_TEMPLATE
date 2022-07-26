@@ -6,6 +6,7 @@
 
 ## :pencil: Changes
 <!-- Which code did you change? How? -->
+<!-- If your changes affect users somehow, be it a new feature, a bugfix or an API change please update the `Unreleased` section in the CHANGELOG.md file. -->
 
 ## :paperclip: Related PR
 <!-- PR that blocks this one, or the ones blocked by this PR -->

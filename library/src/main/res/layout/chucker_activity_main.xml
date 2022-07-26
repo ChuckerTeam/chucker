@@ -1,32 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        android:id="@+id/appBarLayout"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="match_parent"
             app:popupTheme="@style/Chucker.Theme" />
-
-        <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                style="@style/Widget.MaterialComponents.TabLayout.PrimarySurface"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transactionsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        tools:listitem="@layout/chucker_list_item_transaction"
+        tools:visibility="gone" />
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tutorialGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tutorialTitle,tutorialLink,tutorialDescription" />
+
+    <TextView
+        android:id="@+id/tutorialTitle"
+        style="@style/Chucker.TextAppearance.ListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+        android:layout_marginBottom="@dimen/chucker_base_grid"
+        android:text="@string/chucker_setup"
+        app:layout_constraintBottom_toTopOf="@id/tutorialDescription" />
+
+    <TextView
+        android:id="@+id/tutorialDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+        android:gravity="center_vertical"
+        android:text="@string/chucker_network_tutorial"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tutorialLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+        android:layout_marginTop="@dimen/chucker_base_grid"
+        android:gravity="center_vertical"
+        android:text="@string/chucker_check_readme"
+        app:layout_constraintTop_toBottomOf="@id/tutorialDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

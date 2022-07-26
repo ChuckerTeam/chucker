@@ -1,10 +1,11 @@
 buildscript {
     ext {
-        kotlinVersion = '1.4.10'
-        androidGradleVersion = '4.1.0'
-        coroutineVersion = '1.4.0'
+        kotlinVersion = '1.6.10'
+        androidGradleVersion = '7.0.4'
+        coroutineVersion = '1.5.2'
 
         // Google libraries
+        activityVersion = '1.4.0'
         appCompatVersion = '1.2.0'
         constraintLayoutVersion = '1.1.3'
         materialComponentsVersion = '1.2.1'
@@ -19,8 +20,10 @@ buildscript {
         gsonVersion = '2.8.6'
         okhttp3Version = '4.9.0'
         retrofitVersion = '2.9.0'
+        wireVersion = '4.1.0'
 
         // Debug and quality control
+        binaryCompatibilityValidator = '0.8.0'
         detektVersion = '1.14.0'
         dokkaVersion = '1.4.10.2'
         ktLintVersion = '0.39.0'
@@ -54,6 +57,8 @@ buildscript {
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrogExtractor"
+        classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
+        classpath "com.squareup.wire:wire-gradle-plugin:$wireVersion"
     }
 }
 
@@ -100,6 +105,7 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 30
-    compileSdkVersion = 30
+    targetSdkVersion = 31
+    compileSdkVersion = 31
 }
+

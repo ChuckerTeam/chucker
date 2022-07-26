@@ -1,7 +1,58 @@
 # Change Log
 
-This file follows [Keepachangelog](https://keepachangelog.com/) format. 
+This file follows [Keepachangelog](https://keepachangelog.com/) format.
 Please add your entries according to this format.
+
+## Unreleased
+
+### Added
+* Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
+* Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
+* Brotli compression support
+* Added ability to export list of transactions as .har file.
+* Added ability to save single transaction as .har file.
+
+### Fixed
+
+* Fixed request headers not being redacted in case of failures [#545].
+* Fixed wrongful processing of one shot and duplex requests [#544].
+* Fixed writing to database on the main thread [#487].
+* Fixed RTL issue in payload view
+* Fixed StrictMode ThreadPolicy violations [#737]
+
+### Removed
+
+* Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
+* Removed the Throwable reporting feature as well as all the @Deprecated related methods.
+
+### Changed
+
+* Updated OkHttp to 4.9.1
+
+## Version 3.5.2 *(2021-07-28)*
+
+This release is a re-deployment of 3.5.1, since 3.5.1 `aar` didn't upload properly on Maven Central.
+
+## Version 3.5.1 *(2021-07-19)*
+
+Note: this release wasn't properly uploaded to Maven Central, so update to a newer verion is required.
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
+
+## Version 3.5.0 *(2021-06-29)*
+
+Note: this release has issue with Android 12 support, so update to 3.5.2 is highly recommended.
+
+### Added
+
+* Android 12 support.
+
+### Fixed
+
+* Fix crash on Android 12 due to missing immutability flags [#593].
+* Fix not setting request body type correctly [#538].
 
 ## Version 3.4.0 *(2020-11-05)*
 
@@ -29,8 +80,8 @@ Please add your entries according to this format.
 
 ## Version 3.3.0 *(2020-09-30)*
 
-This is a new minor release with multiple fixes and improvements. 
-After this release we are starting to work on a new major release 4.x with minSDK 21. 
+This is a new minor release with multiple fixes and improvements.
+After this release we are starting to work on a new major release 4.x with minSDK 21.
 Bumping minSDK to 21 is required to keep up with [newer versions of OkHttp](https://medium.com/square-corner-blog/okhttp-3-13-requires-android-5-818bb78d07ce).
 Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes and minor improvements.
 
@@ -38,7 +89,7 @@ Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes a
 
 * Added a new flag `alwaysReadResponseBody` into Chucker configuration to read the whole response body even if consumer fails to consume it.
 * Added port numbers as part of the URL. Numbers appear if they are different from default 80 or 443.
-* Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI. 
+* Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI.
 * Transaction size is defined by actual payload size now, not by `Content-length` header.
 * Added empty state UI for payloads, so no more guessing if there is some error or the payload is really empty.
 * Added ability to export list of transactions.
@@ -181,7 +232,7 @@ This release was possible thanks to the contribution of:
 
 ### This version shouldn't be used as dependency due to [#203](https://github.com/ChuckerTeam/chucker/issues/203). Use 3.1.1 instead.
 
-This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes. 
+This is a new minor release of Chucker. Please note that this minor release contains multiple new features (see below) as well as multiple bugfixes.
 
 ### Summary of Changes
 
@@ -218,11 +269,11 @@ This is a new minor release of Chucker. Please note that this minor release cont
 This release was possible thanks to the contribution of:
 
 @christopherniksch
-@yoavst 
+@yoavst
 @psh
 @kmayoral
 @vbuberen
-@dcampogiani 
+@dcampogiani
 @ullas-jain
 @rakshit444
 @olivierperez
@@ -232,8 +283,8 @@ This release was possible thanks to the contribution of:
 @koral--
 @redwarp
 @uOOOO
-@sprohaszka 
-@PaulWoitaschek 
+@sprohaszka
+@PaulWoitaschek
 
 
 ## Version 3.0.1 *(2019-08-16)*
@@ -466,3 +517,10 @@ Initial release.
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
 [#472]: https://github.com/ChuckerTeam/chucker/issues/472
 [#480]: https://github.com/ChuckerTeam/chucker/issues/480
+[#487]: https://github.com/ChuckerTeam/chucker/issues/487
+[#538]: https://github.com/ChuckerTeam/chucker/issues/538
+[#544]: https://github.com/ChuckerTeam/chucker/issues/544
+[#545]: https://github.com/ChuckerTeam/chucker/issues/545
+[#593]: https://github.com/ChuckerTeam/chucker/issues/593
+[#653]: https://github.com/ChuckerTeam/chucker/pull/653
+[#737]: https://github.com/ChuckerTeam/chucker/issues/737

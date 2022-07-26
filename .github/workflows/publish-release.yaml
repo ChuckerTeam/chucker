@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
@@ -25,8 +25,8 @@ jobs:
         name: 'chucker-release-artifacts'
         path: '~/.m2/repository/'
 
-    - name: Publish to the Snapshot Repository
-      run: ./gradlew publishReleasePublicationToStagingRepository
+    - name: Publish to the Staging Repository
+      run: ./gradlew publishReleasePublicationToStagingRepository --no-parallel
       env:
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
