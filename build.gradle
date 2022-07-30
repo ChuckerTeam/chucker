@@ -1,15 +1,15 @@
 buildscript {
     ext {
-        kotlinVersion = '1.6.10'
+        kotlinVersion = '1.7.10'
         androidGradleVersion = '7.2.1'
-        coroutineVersion = '1.6.3'
+        coroutineVersion = '1.6.4'
 
         // Google libraries
         activityVersion = '1.5.0'
         appCompatVersion = '1.4.2'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.6.1'
-        roomVersion = '2.4.2'
+        roomVersion = '2.4.3'
         fragmentVersion = '1.5.0'
         lifecycleVersion = '2.4.1'
         androidXCoreVersion = '2.1.0'
