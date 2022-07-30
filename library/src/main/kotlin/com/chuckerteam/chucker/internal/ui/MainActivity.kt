@@ -23,7 +23,9 @@ import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class MainActivity :
     BaseChuckerActivity(),
@@ -145,15 +147,19 @@ internal class MainActivity :
             }
 
             val sharableTransactions = block(transactions)
-            val shareIntent = sharableTransactions.shareAsFile(
-                activity = this@MainActivity,
-                fileName = fileName,
-                intentTitle = getString(R.string.chucker_share_all_transactions_title),
-                intentSubject = getString(R.string.chucker_share_all_transactions_subject),
-                clipDataLabel = "transactions"
-            )
+            val shareIntent = withContext(Dispatchers.IO) {
+                sharableTransactions.shareAsFile(
+                    activity = this@MainActivity,
+                    fileName = fileName,
+                    intentTitle = getString(R.string.chucker_share_all_transactions_title),
+                    intentSubject = getString(R.string.chucker_share_all_transactions_subject),
+                    clipDataLabel = "transactions"
+                )
+            }
             if (shareIntent != null) {
                 startActivity(shareIntent)
+            } else {
+                Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
             }
         }
     }
