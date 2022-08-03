@@ -2,9 +2,12 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.api.entity.ManualHttpTransaction
+import android.net.Uri
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
+import com.chuckerteam.chucker.internal.support.writeToFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -73,4 +76,31 @@ public class ChuckerCollector @JvmOverloads constructor(
     public fun saveTransaction(transaction: ManualHttpTransaction) {
         onRequestSent(transaction.convertToHttpTransaction())
     }
+
+    /**
+     * Export the Chucker transactions to a file. Please note that this function is blocking
+     * and performs Disk I/O. Make sure you run it on a separate thread or coroutine.
+     *
+     * @param context Application context
+     * @param startTimestamp The timestamp to read transactions from. Passing null means
+     * transactions will not be limited by timestamp
+     * @return The content uri of a file with the transactions in or null if the export failed.
+     */
+    public fun writeTransactions(
+        context: Context,
+        startTimestamp: Long?,
+    ): Uri? {
+        val transactions =
+            RepositoryProvider.transaction().getTransactionsInTimeRange(startTimestamp)
+        if (transactions.isEmpty()) {
+            return null
+        }
+
+        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
+        return sharableTransactions.writeToFile(
+            context = context,
+            fileName = "api_transactions.txt",
+        )
+    }
+
 }

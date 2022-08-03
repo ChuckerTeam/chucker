@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import com.chuckerteam.chucker.api.entity.ManualHttpTransaction
+import android.net.Uri
 
 /**
  * No-op implementation.
@@ -19,4 +20,10 @@ public class ChuckerCollector @JvmOverloads constructor(
     public fun saveTransaction(transaction: ManualHttpTransaction) {
         // Empty method for the library-no-op artifact
     }
+
+    @Suppress("FunctionOnlyReturningConstant")
+    public fun writeTransactions(
+        context: Context,
+        startTimestamp: Long?,
+    ): Uri? = null
 }

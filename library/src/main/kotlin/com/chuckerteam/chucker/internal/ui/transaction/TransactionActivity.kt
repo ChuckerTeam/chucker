@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +21,9 @@ import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
@@ -125,17 +128,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
             }
 
             val sharable = block(transaction)
-            lifecycleScope.launch {
-                val shareIntent = sharable.shareAsFile(
+            val shareIntent = withContext(Dispatchers.IO) {
+                sharable.shareAsFile(
                     activity = this@TransactionActivity,
                     fileName = fileName,
                     intentTitle = getString(R.string.chucker_share_transaction_title),
                     intentSubject = getString(R.string.chucker_share_transaction_subject),
                     clipDataLabel = "transaction"
                 )
-                if (shareIntent != null) {
-                    startActivity(shareIntent)
-                }
+            }
+            if (shareIntent != null) {
+                startActivity(shareIntent)
+            } else {
+                Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
             }
         }
         return true

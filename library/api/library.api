@@ -18,6 +18,7 @@ public final class com/chuckerteam/chucker/api/ChuckerCollector {
 	public final fun getShowNotification ()Z
 	public final fun saveTransaction (Lcom/chuckerteam/chucker/api/entity/ManualHttpTransaction;)V
 	public final fun setShowNotification (Z)V
+	public final fun writeTransactions (Landroid/content/Context;Ljava/lang/Long;)Landroid/net/Uri;
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Interceptor {

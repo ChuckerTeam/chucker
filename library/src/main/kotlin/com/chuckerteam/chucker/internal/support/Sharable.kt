@@ -4,10 +4,9 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
+import android.net.Uri
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
-import com.chuckerteam.chucker.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.BufferedSource
@@ -37,38 +36,40 @@ internal suspend fun Sharable.shareAsUtf8Text(
         .createChooserIntent()
 }
 
-internal suspend fun Sharable.shareAsFile(
-    activity: Activity,
+internal fun Sharable.writeToFile(
+    context: Context,
     fileName: String,
-    intentTitle: String,
-    intentSubject: String,
-    clipDataLabel: String,
-): Intent? {
-    val cache = activity.cacheDir
-    val applicationContext = activity.applicationContext
+): Uri? {
+    val cache = context.cacheDir
     if (cache == null) {
         Logger.warn("Failed to obtain a valid cache directory for file export")
-        Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
     val file = FileFactory.create(cache, fileName)
     if (file == null) {
         Logger.warn("Failed to create an export file")
-        Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
         return null
     }
 
-    val fileContent = withContext(Dispatchers.Default) { toSharableContent(activity) }
-    withContext(Dispatchers.IO) {
-        file.sink().buffer().use { it.writeAll(fileContent) }
-    }
+    val fileContent = toSharableContent(context)
+    file.sink().buffer().use { it.writeAll(fileContent) }
 
-    val uri = FileProvider.getUriForFile(
-        activity,
-        "${activity.packageName}.com.chuckerteam.chucker.provider",
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.com.chuckerteam.chucker.provider",
         file
     )
+}
+
+internal fun Sharable.shareAsFile(
+    activity: Activity,
+    fileName: String,
+    intentTitle: String,
+    intentSubject: String,
+    clipDataLabel: String,
+): Intent? {
+    val uri = writeToFile(activity, fileName) ?: return null
     val shareIntent = ShareCompat.IntentBuilder(activity)
         .setType(activity.contentResolver.getType(uri))
         .setChooserTitle(intentTitle)
