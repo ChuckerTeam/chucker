@@ -34,13 +34,13 @@ internal interface HttpTransactionDao {
     suspend fun update(transaction: HttpTransaction): Int
 
     @Query("DELETE FROM transactions")
-    suspend fun deleteAll()
+    suspend fun deleteAll(): Int
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     fun getById(id: Long): LiveData<HttpTransaction?>
 
     @Query("DELETE FROM transactions WHERE requestDate <= :threshold")
-    suspend fun deleteBefore(threshold: Long)
+    suspend fun deleteBefore(threshold: Long): Int
 
     @Query("SELECT * FROM transactions")
     suspend fun getAll(): List<HttpTransaction>
