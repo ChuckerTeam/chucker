@@ -1,13 +1,22 @@
 package com.chuckerteam.chucker.internal.ui
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +25,7 @@ import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.HarUtils
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
@@ -23,6 +33,7 @@ import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,6 +49,14 @@ internal class MainActivity :
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
+
+    private val permissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isPermissionGranted: Boolean ->
+        if (!isPermissionGranted) {
+            Logger.error("Notification permission denied. Can`t show transactions info")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,18 +74,54 @@ internal class MainActivity :
             tutorialLink.movementMethod = LinkMovementMethod.getInstance()
             transactionsRecyclerView.apply {
                 setHasFixedSize(true)
-                addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this@MainActivity,
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
                 adapter = transactionsAdapter
             }
         }
 
         viewModel.transactions.observe(
-            this,
-            { transactionTuples ->
-                transactionsAdapter.submitList(transactionTuples)
-                mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+            this
+        ) { transactionTuples ->
+            transactionsAdapter.submitList(transactionTuples)
+            mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            handleNotificationsPermission()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun handleNotificationsPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Logger.info("Notification permission granted")
             }
-        )
+            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                Snackbar.make(
+                    mainBinding.root,
+                    "Notifications blocked",
+                    Snackbar.LENGTH_LONG
+                ).setAction("Change") {
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        data = Uri.fromParts("package", packageName, null)
+                    }.also { intent ->
+                        startActivity(intent)
+                    }
+                }.show()
+            }
+            else -> {
+                permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -137,7 +192,10 @@ internal class MainActivity :
         return true
     }
 
-    private fun exportTransactions(fileName: String, block: suspend (List<HttpTransaction>) -> Sharable) {
+    private fun exportTransactions(
+        fileName: String,
+        block: suspend (List<HttpTransaction>) -> Sharable
+    ) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
@@ -159,7 +217,11 @@ internal class MainActivity :
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
-                Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    R.string.chucker_export_no_file,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
