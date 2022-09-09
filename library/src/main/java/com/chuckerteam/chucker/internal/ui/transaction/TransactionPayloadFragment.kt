@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -23,8 +24,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.chuckerteam.chucker.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.chuckerteam.chucker.GsonInstance
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.calculateLuminance
@@ -59,6 +62,8 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
+    private lateinit var smoothScroller: LinearSmoothScroller
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -74,6 +79,18 @@ internal class TransactionPayloadFragment :
             container,
             false
         )
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+        payloadBinding.scrollerFab.setOnClickListener {
+            onScrollerFabClick()
+        }
+        payloadBinding.scrollerFab.backgroundTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_primary)
+        payloadBinding.scrollerFab.imageTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_surface)
         return payloadBinding.root
     }
 
@@ -305,7 +322,24 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean = false
+    override fun onQueryTextSubmit(query: String): Boolean {
+        return false
+    }
+
+    private fun onScrollerFabClick() {
+        val layoutManager = payloadBinding.payloadRecyclerView.layoutManager as LinearLayoutManager
+        var offset = layoutManager.findFirstVisibleItemPosition() + 1
+        var index =
+            payloadAdapter.findNextHighlightedItem(offset = offset)
+        if (index == -1) {
+            offset = 0
+            index = payloadAdapter.findNextHighlightedItem(offset = offset)
+        }
+        if (index != -1) {
+            smoothScroller.targetPosition = index + offset
+            layoutManager.startSmoothScroll(smoothScroller)
+        }
+    }
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
@@ -314,8 +348,10 @@ internal class TransactionPayloadFragment :
                 backgroundSpanColor,
                 foregroundSpanColor
             )
+            payloadBinding.scrollerFab.visibility = View.VISIBLE
         } else {
             payloadAdapter.resetHighlight()
+            payloadBinding.scrollerFab.visibility = View.INVISIBLE
         }
         return true
     }
