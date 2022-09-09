@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -86,6 +87,10 @@ internal class TransactionPayloadFragment :
         payloadBinding.scrollerFab.setOnClickListener {
             onScrollerFabClick()
         }
+        payloadBinding.scrollerFab.backgroundTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_primary)
+        payloadBinding.scrollerFab.imageTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_surface)
         return payloadBinding.root
     }
 
