@@ -53,7 +53,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseHeadersSize") var responseHeadersSize: Long?,
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
-    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?
+    @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
 
     @Ignore
@@ -82,7 +83,8 @@ internal class HttpTransaction(
         responseHeaders = null,
         responseHeadersSize = null,
         responseBody = null,
-        responseImageData = null
+        responseImageData = null,
+        graphQlOperationName = null
     )
 
     enum class Status {
@@ -154,6 +156,11 @@ internal class HttpTransaction(
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
         requestHeaders = JsonConverter.instance.toJson(headers)
+    }
+
+    fun setGraphQlOperationName(headers: Headers) {
+        graphQlOperationName = toHttpHeaderList(headers)
+            .find { it.name.lowercase().contains("operation-name") }?.value
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
@@ -285,6 +292,7 @@ internal class HttpTransaction(
             (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
-            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
+            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
+            (graphQlOperationName == other.graphQlOperationName)
     }
 }

@@ -12,6 +12,7 @@ Please add your entries according to this format.
 * Added ability to export list of transactions as .har file.
 * Added ability to save single transaction as .har file.
 * Added ability to export transactions to a file programmatically, LOG or HAR.
+* GraphlQL OperationName header to transaction title [#69], [#116]
 
 ### Fixed
 
