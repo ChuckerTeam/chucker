@@ -1,0 +1,18 @@
+query SearchCharacters(
+    $searchTerm: String,
+) {
+    characters(page: 1, filter: { name: $searchTerm}) {
+        info {
+            count
+        }
+        results {
+            name
+        }
+    }
+    location(id: 1) {
+        id
+    }
+    episodesByIds(ids: [1, 2]) {
+        id
+    }
+}

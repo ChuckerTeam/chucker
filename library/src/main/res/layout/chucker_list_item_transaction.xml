@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:focusable="true"
     android:background="?android:attr/selectableItemBackground"
+    android:focusable="true"
     android:padding="@dimen/chucker_base_grid">
 
     <androidx.constraintlayout.widget.Guideline
@@ -24,8 +25,8 @@
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="200"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="200" />
 
     <TextView
         android:id="@+id/path"
@@ -40,6 +41,32 @@
         tools:text="GET /path/to/some/resource?goes=here" />
 
     <TextView
+        android:id="@+id/graphqlPath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/chucker_half_grid"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ssl"
+        app:layout_constraintTop_toBottomOf="@+id/path"
+        tools:text="getBatchDetails"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/graphqlIcon"
+        android:layout_width="@dimen/chucker_doub_grid"
+        android:layout_height="@dimen/chucker_doub_grid"
+        android:contentDescription="@string/chucker_ssl"
+        android:src="@drawable/chucker_ic_graphql"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/graphqlPath"
+        app:layout_constraintStart_toStartOf="@+id/ssl"
+        app:layout_constraintTop_toTopOf="@+id/graphqlPath"
+        tools:visibility="visible" />
+
+    <TextView
         android:id="@+id/host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,9 +75,8 @@
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toBottomOf="@+id/path"
+        app:layout_constraintTop_toBottomOf="@+id/graphqlPath"
         app:layout_goneMarginStart="0dp"
-        app:layout_goneMarginTop="@dimen/chucker_doub_grid"
         tools:text="example.com" />
 
     <ImageView
@@ -58,9 +84,9 @@
         android:layout_width="@dimen/chucker_doub_grid"
         android:layout_height="@dimen/chucker_doub_grid"
         android:contentDescription="@string/chucker_ssl"
+        app:layout_constraintBottom_toBottomOf="@id/host"
         app:layout_constraintStart_toStartOf="@+id/path"
         app:layout_constraintTop_toTopOf="@+id/host"
-        app:layout_constraintBottom_toBottomOf="@id/host"
         tools:src="@drawable/chucker_ic_https" />
 
     <TextView
