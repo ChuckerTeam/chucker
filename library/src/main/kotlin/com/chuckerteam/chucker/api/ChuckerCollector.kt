@@ -7,7 +7,6 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.ExportFormat
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.NotificationHelper
