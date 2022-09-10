@@ -7,7 +7,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
-import com.chuckerteam.chucker.internal.support.*
+import com.chuckerteam.chucker.internal.support.ExportFormat
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.NotificationHelper
@@ -96,18 +96,12 @@ public class ChuckerCollector @JvmOverloads constructor(
             return null
         }
 
-        return when (exportFormat) {
+        val (sharableTransactions, extension) =  when (exportFormat) {
             ExportFormat.LOG -> {
-                val sharableTransactions =
-                    TransactionListDetailsSharable(transactions, encodeUrls = false)
-
-                sharableTransactions.writeToFile(
-                    context = context,
-                    fileName = "api_transactions.txt",
-                )
+                TransactionListDetailsSharable(transactions, encodeUrls = false) to "txt"
             }
             ExportFormat.HAR -> {
-                val sharableTransactions = TransactionDetailsHarSharable(
+                TransactionDetailsHarSharable(
                     JsonConverter.nonNullSerializerInstance
                         .toJson(
                             HarUtils.fromHttpTransactions(
@@ -117,14 +111,13 @@ public class ChuckerCollector @JvmOverloads constructor(
                                 )
                             )
                         )
-                )
-
-                return sharableTransactions.writeToFile(
-                    context = context,
-                    fileName = "api_transactions.har",
-                )
+                ) to "har"
             }
         }
+        return sharableTransactions.writeToFile(
+            context = context,
+            fileName = "api_transactions.$extension",
+        )
     }
 
 }
