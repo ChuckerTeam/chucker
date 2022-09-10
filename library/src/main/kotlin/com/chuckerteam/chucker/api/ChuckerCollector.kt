@@ -83,7 +83,6 @@ public class ChuckerCollector @JvmOverloads constructor(
      * @param exportFormat The export format: LOG or HAR
      * @return The content uri of a file with the transactions in or null if the export failed.
      */
-    @SuppressLint("VisibleForTests")
     public fun writeTransactions(
         context: Context,
         startTimestamp: Long?,
