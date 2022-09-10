@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.support
+package com.chuckerteam.chucker.api
 
 public enum class ExportFormat {
     LOG,
