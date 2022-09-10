@@ -93,9 +93,9 @@ public class ChuckerCollector @JvmOverloads constructor(
             return null
         }
 
-        val (sharableTransactions, extension) =  when (exportFormat) {
+        val sharableTransactions =  when (exportFormat) {
             ExportFormat.LOG -> {
-                TransactionListDetailsSharable(transactions, encodeUrls = false) to "txt"
+                TransactionListDetailsSharable(transactions, encodeUrls = false)
             }
             ExportFormat.HAR -> {
                 TransactionDetailsHarSharable(
@@ -108,12 +108,12 @@ public class ChuckerCollector @JvmOverloads constructor(
                                 )
                             )
                         )
-                ) to "har"
+                )
             }
         }
         return sharableTransactions.writeToFile(
             context = context,
-            fileName = "api_transactions.$extension",
+            fileName = "api_transactions.${exportFormat.extension}",
         )
     }
 
