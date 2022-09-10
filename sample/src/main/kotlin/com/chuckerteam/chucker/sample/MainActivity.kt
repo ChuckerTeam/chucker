@@ -28,10 +28,6 @@ class MainActivity : AppCompatActivity() {
         listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
-    private val graphqlTasks by lazy {
-        listOf(GraphQlTask(client))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,9 +41,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             doGraphql.setOnClickListener {
-                for (task in graphqlTasks) {
-                    task.run()
-                }
+                GraphQlTask(client).run()
             }
 
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
