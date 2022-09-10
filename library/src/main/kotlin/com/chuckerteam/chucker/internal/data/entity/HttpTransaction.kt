@@ -292,6 +292,7 @@ internal class HttpTransaction(
             (responseHeadersSize == other.responseHeadersSize) &&
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
-            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false)
+            (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
+            (graphQlOperationName == other.graphQlOperationName)
     }
 }
