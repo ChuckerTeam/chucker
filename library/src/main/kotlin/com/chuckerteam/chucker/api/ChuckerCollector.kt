@@ -1,10 +1,17 @@
 package com.chuckerteam.chucker.api
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.har.log.Creator
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.*
+import com.chuckerteam.chucker.internal.support.HarUtils
+import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.writeToFile
 import kotlinx.coroutines.Dispatchers
@@ -74,11 +81,14 @@ public class ChuckerCollector @JvmOverloads constructor(
      * @param context Application context
      * @param startTimestamp The timestamp to read transactions from. Passing null means
      * transactions will not be limited by timestamp
+     * @param exportFormat The export format: LOG or HAR
      * @return The content uri of a file with the transactions in or null if the export failed.
      */
+    @SuppressLint("VisibleForTests")
     public fun writeTransactions(
         context: Context,
         startTimestamp: Long?,
+        exportFormat: ExportFormat = ExportFormat.LOG
     ): Uri? {
         val transactions =
             RepositoryProvider.transaction().getTransactionsInTimeRange(startTimestamp)
@@ -86,11 +96,35 @@ public class ChuckerCollector @JvmOverloads constructor(
             return null
         }
 
-        val sharableTransactions = TransactionListDetailsSharable(transactions, encodeUrls = false)
-        return sharableTransactions.writeToFile(
-            context = context,
-            fileName = "api_transactions.txt",
-        )
+        return when (exportFormat) {
+            ExportFormat.LOG -> {
+                val sharableTransactions =
+                    TransactionListDetailsSharable(transactions, encodeUrls = false)
+
+                sharableTransactions.writeToFile(
+                    context = context,
+                    fileName = "api_transactions.txt",
+                )
+            }
+            ExportFormat.HAR -> {
+                val sharableTransactions = TransactionDetailsHarSharable(
+                    JsonConverter.nonNullSerializerInstance
+                        .toJson(
+                            HarUtils.fromHttpTransactions(
+                                transactions, Creator(
+                                    context.getString(R.string.chucker_name),
+                                    context.getString(R.string.chucker_version),
+                                )
+                            )
+                        )
+                )
+
+                return sharableTransactions.writeToFile(
+                    context = context,
+                    fileName = "api_transactions.har",
+                )
+            }
+        }
     }
 
 }
