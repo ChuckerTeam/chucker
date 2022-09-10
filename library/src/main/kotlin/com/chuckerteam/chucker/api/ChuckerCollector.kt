@@ -1,6 +1,5 @@
 package com.chuckerteam.chucker.api
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import com.chuckerteam.chucker.R
