@@ -338,6 +338,8 @@ internal class TransactionPayloadFragment :
         if (index != -1) {
             smoothScroller.targetPosition = index + offset
             layoutManager.startSmoothScroll(smoothScroller)
+        } else {
+            Toast.makeText(context, R.string.chucker_no_matches_found, Toast.LENGTH_SHORT).show()
         }
     }
 
