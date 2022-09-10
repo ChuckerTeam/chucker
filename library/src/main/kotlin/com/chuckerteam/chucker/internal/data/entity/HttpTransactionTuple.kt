@@ -22,7 +22,8 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "responseCode") var responseCode: Int?,
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
-    @ColumnInfo(name = "error") var error: String?
+    @ColumnInfo(name = "error") var error: String?,
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
@@ -45,7 +46,6 @@ internal data class HttpTransactionTuple(
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
     }
-
     fun getFormattedPath(encode: Boolean): String {
         val path = this.path ?: return ""
 

@@ -40,6 +40,9 @@ class MainActivity : AppCompatActivity() {
                     task.run()
                 }
             }
+            doGraphql.setOnClickListener {
+                GraphQlTask(client).run()
+            }
 
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }

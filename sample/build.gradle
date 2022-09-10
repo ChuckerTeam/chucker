@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.squareup.wire'
+apply plugin: 'com.apollographql.apollo3'
 
 wire {
     kotlin {}
@@ -62,6 +63,14 @@ android {
     }
 }
 
+apollo {
+    packageName.set("com.chuckerteam.chucker.sample")
+    schemaFile.set(file("src/main/graphql/com/chuckerteam/chucker/sample/schema.json.graphql"))
+    srcDir("src/main/graphql")
+    excludes.add("**/schema.json.graphql")
+    excludes.add("**/schema.json")
+}
+
 dependencies {
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')
@@ -77,6 +86,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    implementation "com.apollographql.apollo3:apollo-runtime:$apolloVersion"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanaryVersion"
 }
