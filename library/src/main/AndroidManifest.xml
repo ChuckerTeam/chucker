@@ -13,6 +13,9 @@
         android:name="android.permission.WAKE_LOCK"
         android:maxSdkVersion="25" />
 
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application>
         <activity
             android:name="com.chuckerteam.chucker.internal.ui.MainActivity"

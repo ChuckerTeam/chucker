@@ -7,6 +7,8 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger
@@ -73,6 +75,26 @@ public object Chucker {
     @JvmStatic
     public fun dismissNotifications(context: Context) {
         NotificationHelper(context).dismissNotifications()
+    }
+
+    /**
+     * Util function to request the Notification Permission to users.
+     * Needed if your app is not requesting notification permission already and only
+     * on Android 13+.
+     *
+     * If your app is requesting notification permission already, you don't need to call this method.
+     *
+     * @param activity The [AppCompatActivity] where you're calling this function from.
+     * @param shouldShowRequestUIToUsers Whether Chucker should show UI to user (Permission rationale dialog
+     * & Toast if the permission are disabled)
+     */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @JvmStatic
+    public fun requestNotificationPermission(
+        activity: AppCompatActivity,
+        shouldShowRequestUIToUsers: Boolean = true
+    ) {
+        NotificationHelper(activity).requestNotificationPermission(activity, shouldShowRequestUIToUsers)
     }
 
     internal var logger: Logger = object : Logger {

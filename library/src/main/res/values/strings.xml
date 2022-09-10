@@ -58,4 +58,9 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_shortcut_label">Open Chucker</string>
+    <string name="chucker_notification_not_granted">Chucker won\'t show notifications but it\'s still recording network requests</string>
+    <string name="chucker_back">Back</string>
+    <string name="chucker_continue">Continue</string>
+    <string name="chucker_permission_dialog_title">Notification Permission for Chucker</string>
+    <string name="chucker_permission_dialog_message">This application is using Chucker to debug Network Requests. Chucker needs Notification Permission to show you when network requests are happening.</string>
 </resources>

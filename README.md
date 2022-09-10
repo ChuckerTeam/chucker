@@ -163,6 +163,36 @@ object ProtoDecoder : BinaryDecoder {
 interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 ```
 
+### Notification Permission 🔔
+
+**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.2
+
+Starting with Android 13, your apps needs to request the `POST_NOTIFICATION` permission to the user in order to show a notification. As Chucker is also showing a notification, your app needs to have the `POST_NOTIFICATION` permission granted to show a notification.
+
+We suggest the following approach:
+1. If your app is already sending notifications, you don't need to do anything as Chucker will
+show a notification as soon as the `POST_NOTIFICATION` permission is granted.
+2. If your app is not sending notification you can use the `Chucker.requestNotificationPermission` in your Activity's `onCreate` as follows:
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Chucker.requestNotificationPermission(
+            activity = this,
+            shouldShowRequestUIToUsers = true
+        )
+    }
+}
+```
+
+The `shouldShowRequestUIToUsers` controls if you wish Chucker to show informational UI to the user or not.
+
+<p align="center">
+  <img src="assets/chucker-notification-permission.png" alt="chucker notification permission" width="50%"/>
+</p>
+
 ## Migrating 🚗
 
 If you're migrating **from [Chuck](https://github.com/jgilfelt/chuck) to Chucker**, please refer to this [migration guide](/docs/migrating-from-chuck.md).

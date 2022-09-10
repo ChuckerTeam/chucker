@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -7,6 +8,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.LongSparseArray
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.chuckerteam.chucker.R
@@ -76,7 +83,7 @@ internal class NotificationHelper(val context: Context) {
 
     fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
-        if (!BaseChuckerActivity.isInForeground) {
+        if (shouldShowNotification()) {
             val builder =
                 NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
@@ -110,6 +117,42 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
+    fun dismissNotifications() {
+        notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun requestNotificationPermission(
+        activity: AppCompatActivity,
+        shouldShowRequestUIToUsers: Boolean
+    ) {
+        val requestPermissionLauncher =
+            activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (!isGranted && shouldShowRequestUIToUsers) {
+                    Toast.makeText(activity, R.string.chucker_notification_not_granted, Toast.LENGTH_SHORT).show()
+                }
+            }
+        when {
+            shouldShowRequestUIToUsers && shouldShowRequestPermissionRationale(
+                activity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) -> {
+                AlertDialog.Builder(activity)
+                    .setTitle(R.string.chucker_permission_dialog_title)
+                    .setMessage(R.string.chucker_permission_dialog_message)
+                    .setPositiveButton(R.string.chucker_continue) { _, _ ->
+                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    .setNegativeButton(R.string.chucker_back) { _, _ ->
+                        Toast.makeText(activity, R.string.chucker_notification_not_granted, Toast.LENGTH_SHORT).show()
+                    }
+                    .create()
+                    .apply { show() }
+            }
+            else -> requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
     private fun createClearAction():
         NotificationCompat.Action {
         val clearTitle = context.getString(R.string.chucker_clear)
@@ -128,13 +171,16 @@ internal class NotificationHelper(val context: Context) {
         )
     }
 
-    fun dismissNotifications() {
-        notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
-    }
-
     private fun immutableFlag() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         PendingIntent.FLAG_IMMUTABLE
     } else {
         0
     }
+
+    private fun shouldShowNotification() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            !BaseChuckerActivity.isInForeground && notificationManager.areNotificationsEnabled()
+        } else {
+            !BaseChuckerActivity.isInForeground
+        }
 }

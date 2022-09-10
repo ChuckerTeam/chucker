@@ -6,7 +6,7 @@ buildscript {
 
         // Google libraries
         activityVersion = '1.5.1'
-        appCompatVersion = '1.4.2'
+        appCompatVersion = '1.5.0'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.6.1'
         roomVersion = '2.4.3'
@@ -101,8 +101,8 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 31
-    compileSdkVersion = 31
+    targetSdkVersion = 33
+    compileSdkVersion = 33
 }
 
 nexusStaging {

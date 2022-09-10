@@ -19,4 +19,9 @@ public object Chucker {
     public fun dismissNotifications(context: Context) {
         // Empty method for the library-no-op artifact
     }
+
+    @JvmStatic
+    public fun requestNotificationPermission(activity: Context, shouldShowRequestUIToUsers: Boolean = true) {
+        // Empty method for the library-no-op artifact
+    }
 }

@@ -6,6 +6,7 @@ Please add your entries according to this format.
 ## Unreleased
 
 ### Added
+
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
 * Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
 * Brotli compression support
@@ -13,6 +14,8 @@ Please add your entries according to this format.
 * Added ability to save single transaction as .har file.
 * Added ability to export transactions to a file programmatically.
 * GraphlQL OperationName header to transaction title [#69], [#116]
+* Added support for Android 13
+* Added utility function `Chucker.requestNotificationPermission` to help users request the Notification permission.
 
 ### Fixed
 

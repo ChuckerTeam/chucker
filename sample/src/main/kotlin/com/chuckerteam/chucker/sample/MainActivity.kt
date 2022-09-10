@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.sample
 
+import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.method.LinkMovementMethod
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         mainBinding = ActivityMainSampleBinding.inflate(layoutInflater)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Chucker.requestNotificationPermission(this@MainActivity)
+        }
 
         with(mainBinding) {
             setContentView(root)
