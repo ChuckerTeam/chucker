@@ -28,7 +28,6 @@ internal class RequestProcessor(
             requestHeadersSize = request.headers.byteCount()
             request.headers.redact(headersToRedact).let {
                 setRequestHeaders(it)
-                setGraphQlOperationName(it)
             }
             populateUrl(request.url)
 
