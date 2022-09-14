@@ -68,6 +68,7 @@ internal class HttpTransactionDaoTest {
             assertThat(stringValue("responseMessage")).isEqualTo(data.responseMessage)
             assertThat(stringValue("responseBody")).isEqualTo(data.responseBody)
             assertThat(stringValue("error")).isEqualTo(data.error)
+            assertThat(booleanValue("isGraphQLRequest")).isFalse()
         }
     }
 
@@ -244,4 +245,7 @@ internal class HttpTransactionDaoTest {
 
     private fun Cursor.longValue(fieldName: String) =
         getLong(getColumnIndex(fieldName))
+
+    private fun Cursor.booleanValue(fieldName: String) =
+        getInt(getColumnIndex(fieldName)) == 1
 }
