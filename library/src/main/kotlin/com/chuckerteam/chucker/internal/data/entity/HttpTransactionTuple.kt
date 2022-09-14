@@ -23,7 +23,7 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "requestPayloadSize") var requestPayloadSize: Long?,
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "error") var error: String?,
-    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "isGraphQLRequest") var isGraphQLRequest: Boolean?,
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 

@@ -36,6 +36,8 @@ public class ChuckerInterceptor private constructor(
 
     private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
+    private val expectedGraphQLUrl = builder.graphQLUrl
+
     private val requestProcessor = RequestProcessor(
         builder.context,
         collector,
@@ -69,7 +71,7 @@ public class ChuckerInterceptor private constructor(
         val transaction = HttpTransaction()
         val request = chain.request()
 
-        requestProcessor.process(request, transaction)
+        requestProcessor.process(request, transaction, expectedGraphQLUrl)
 
         val response = try {
             chain.proceed(request)
@@ -95,7 +97,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
-
+        internal var graphQLUrl: String? = null
         /**
          * Sets the [ChuckerCollector] to customize data retention.
          */
@@ -162,6 +164,10 @@ public class ChuckerInterceptor private constructor(
         @VisibleForTesting
         internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
             this.cacheDirectoryProvider = provider
+        }
+
+        public fun graphQLUrl(url: String): Builder = apply {
+            this.graphQLUrl = url
         }
 
         /**
