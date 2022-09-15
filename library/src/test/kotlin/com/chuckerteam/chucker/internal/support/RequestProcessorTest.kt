@@ -65,4 +65,16 @@ internal class RequestProcessorTest {
         assertFalse(transaction.isGraphQLRequest)
     }
 
+    @Test
+    fun `GIVEN a url with graphql host WHEN process request THEN transaction isGraphQLRequest`() {
+        val transaction = HttpTransaction()
+        val request: Request = mockk(relaxed = true ) {
+            every { url } returns "http://some.graphql.api".toHttpUrl()
+        }
+        requestProcessor.process(request, transaction)
+
+        assertTrue(transaction.isGraphQLRequest)
+    }
+
+
 }
