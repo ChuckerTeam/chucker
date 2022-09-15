@@ -95,6 +95,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+
         /**
          * Sets the [ChuckerCollector] to customize data retention.
          */
