@@ -19,7 +19,7 @@ internal class RequestProcessorTest {
     private val maxContentLength: Long = 0
     private val headersToRedact: Set<String> = emptySet()
     private val bodyDecoders: List<BodyDecoder> = emptyList()
-    private val expectedGraphQLUrl = "http://some/graphql/url"
+
     private val requestProcessor: RequestProcessor = RequestProcessor(
         context = context,
         collector = chuckerCollector,
@@ -29,49 +29,24 @@ internal class RequestProcessorTest {
     )
 
     @Test
-    fun `GIVEN graphql Url WHEN process request THEN transaction isGraphQLRequest`() {
+    fun `GIVEN an Url containing graphql path WHEN process request THEN transaction isGraphQLRequest`() {
         val transaction = HttpTransaction()
         val request: Request = mockk(relaxed = true ) {
-            every { url } returns expectedGraphQLUrl.toHttpUrl()
+            every { url } returns "http://some/api/graphql".toHttpUrl()
         }
-        requestProcessor.process(request, transaction, expectedGraphQLUrl)
+        requestProcessor.process(request, transaction)
 
         assertTrue(transaction.isGraphQLRequest)
     }
 
     @Test
-    fun `GIVEN no graphql Url WHEN process request THEN transaction !isGraphQLRequest`() {
+    fun `GIVEN a url with no graphql path WHEN process request THEN transaction !isGraphQLRequest`() {
         val transaction = HttpTransaction()
         val request: Request = mockk(relaxed = true ) {
-            every { url } returns "http://some/random/url".toHttpUrl()
+            every { url } returns "http://some/random/api".toHttpUrl()
         }
-        requestProcessor.process(request, transaction, expectedGraphQLUrl)
+        requestProcessor.process(request, transaction)
 
-        assertFalse(transaction.isGraphQLRequest)
-    }
-
-    @Test
-    fun `Given an empty GraphQL path WHEN process request THEN transaction is NOT GraphQLRequest`() {
-        val transaction = HttpTransaction()
-        val emptyGraphQLUrl = ""
-        val request: Request = mockk(relaxed = true) {
-            every { url } returns "https://some/random/url".toHttpUrl()
-        }
-
-        requestProcessor.process(request,transaction,emptyGraphQLUrl)
-        assertFalse(transaction.isGraphQLRequest)
-    }
-
-    @Test
-    fun `Given a blank GraphQL path WHEN process request THEN transaction is NOT GraphQLPath`() {
-        val transaction = HttpTransaction()
-        val blankPath = "     "
-
-        val request: Request = mockk(relaxed = true) {
-            every { url } returns "https://some/random/url".toHttpUrl()
-        }
-
-        requestProcessor.process(request,transaction,blankPath)
         assertFalse(transaction.isGraphQLRequest)
     }
 

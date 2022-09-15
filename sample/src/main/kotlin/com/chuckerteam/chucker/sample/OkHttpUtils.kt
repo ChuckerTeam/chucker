@@ -30,7 +30,6 @@ fun createOkHttpClient(
         .redactHeaders(emptySet())
         .alwaysReadResponseBody(false)
         .addBodyDecoder(PokemonProtoBodyDecoder())
-        .graphQLUrl("https://rickandmortyapi.com/graphql")
         .build()
 
     return OkHttpClient.Builder()
