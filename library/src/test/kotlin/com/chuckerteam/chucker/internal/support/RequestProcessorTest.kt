@@ -6,10 +6,10 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import io.mockk.every
 import io.mockk.mockk
+import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Assert.*
 import org.junit.Test
 
 internal class RequestProcessorTest {
@@ -27,6 +27,21 @@ internal class RequestProcessorTest {
         headersToRedact = headersToRedact,
         bodyDecoders = bodyDecoders,
     )
+
+    @Test
+    fun `GIVEN graphql headers WHEN process request THEN transaction has graphQlOperationName`() {
+        val operationName = "SearchCharacters"
+        val transaction = HttpTransaction()
+        val headersGraphQl = Headers.Builder().add("X-APOLLO-OPERATION-NAME", operationName).build()
+        val request:Request = mockk(relaxed = true) {
+            every { headers } returns headersGraphQl
+        }
+
+        requestProcessor.process(request, transaction)
+
+        assertEquals(operationName, transaction.graphQlOperationName)
+        assertTrue(transaction.isGraphQLRequest)
+    }
 
     @Test
     fun `GIVEN an Url containing graphql path WHEN process request THEN transaction isGraphQLRequest`() {

@@ -68,6 +68,7 @@ internal class HttpTransactionDaoTest {
             assertThat(stringValue("responseMessage")).isEqualTo(data.responseMessage)
             assertThat(stringValue("responseBody")).isEqualTo(data.responseBody)
             assertThat(stringValue("error")).isEqualTo(data.error)
+            assertThat(stringValue("graphQlOperationName")).isNull()
             assertThat(booleanValue("isGraphQLRequest")).isFalse()
         }
     }

@@ -28,9 +28,10 @@ internal class RequestProcessor(
             requestHeadersSize = request.headers.byteCount()
             request.headers.redact(headersToRedact).let {
                 setRequestHeaders(it)
+                setGraphQlOperationName(it)
             }
             populateUrl(request.url)
-            isGraphQLRequest = request.url.pathSegments.contains("graphql")
+            isGraphQLRequest = this.graphQlOperationName != null || request.url.pathSegments.contains("graphql")
 
             requestDate = System.currentTimeMillis()
             method = request.method

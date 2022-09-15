@@ -50,6 +50,7 @@ internal object HarTestUtils {
             responseBody = """{"field": "value"}""",
             isResponseBodyEncoded = false,
             responseImageData = null,
+            graphQlOperationName = null,
             isGraphQLRequest = false,
         )
     }

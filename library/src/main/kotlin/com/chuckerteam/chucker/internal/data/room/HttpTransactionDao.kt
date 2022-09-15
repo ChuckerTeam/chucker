@@ -14,14 +14,14 @@ internal interface HttpTransactionDao {
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, " +
-        "requestPayloadSize, responsePayloadSize, error, isGraphQLRequest FROM " +
+        "requestPayloadSize, responsePayloadSize, error, graphQlOperationName, isGraphQLRequest FROM " +
             "transactions ORDER BY requestDate DESC"
     )
     fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, " +
-        "requestPayloadSize, responsePayloadSize, error, isGraphQLRequest FROM " +
+        "requestPayloadSize, responsePayloadSize, error, graphQlOperationName, isGraphQLRequest FROM " +
             "transactions WHERE responseCode LIKE :codeQuery AND path LIKE :pathQuery " +
             "ORDER BY requestDate DESC"
     )
