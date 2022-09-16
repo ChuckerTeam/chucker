@@ -48,13 +48,13 @@ class MainActivity : AppCompatActivity() {
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
 
-            exportToFile?.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
-            exportToFile?.setOnClickListener {
+            exportToFile.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFile.setOnClickListener {
                 generateExportFile(ExportFormat.LOG)
             }
 
-            exportToFileHar?.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
-            exportToFileHar?.setOnClickListener {
+            exportToFileHar.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFileHar.setOnClickListener {
                 generateExportFile(ExportFormat.HAR)
             }
 
