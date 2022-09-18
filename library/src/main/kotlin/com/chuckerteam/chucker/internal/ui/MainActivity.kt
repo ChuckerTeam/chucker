@@ -110,7 +110,7 @@ internal class MainActivity :
                     mainBinding.root,
                     applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
                     Snackbar.LENGTH_LONG
-                ).setAction("Change") {
+                ).setAction(applicationContext.getString(R.string.chucker_change)) {
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         data = Uri.fromParts("package", packageName, null)
