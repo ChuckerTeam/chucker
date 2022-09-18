@@ -54,6 +54,7 @@ internal class MainActivity :
         ActivityResultContracts.RequestPermission()
     ) { isPermissionGranted: Boolean ->
         if (!isPermissionGranted) {
+            showToast(applicationContext.getString(R.string.chucker_notifications_permission_not_granted))
             Logger.error("Notification permission denied. Can`t show transactions info")
         }
     }
@@ -107,7 +108,7 @@ internal class MainActivity :
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                 Snackbar.make(
                     mainBinding.root,
-                    "Notifications blocked",
+                    applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
                     Snackbar.LENGTH_LONG
                 ).setAction("Change") {
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

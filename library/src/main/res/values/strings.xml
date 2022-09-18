@@ -58,4 +58,5 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_shortcut_label">Open Chucker</string>
+    <string name="chucker_notifications_permission_not_granted">Chucker can\'t show notifications without permission</string>
 </resources>
