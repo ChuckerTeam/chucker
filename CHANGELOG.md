@@ -12,7 +12,8 @@ Please add your entries according to this format.
 * Added ability to export list of transactions as .har file.
 * Added ability to save single transaction as .har file.
 * Added ability to export transactions to a file programmatically.
-* GraphlQL OperationName header to transaction title [#69], [#116]
+* GraphQL OperationName header to transaction title [#69], [#116]
+* Added support for Android 13 and notifications permission handling
 
 ### Fixed
 

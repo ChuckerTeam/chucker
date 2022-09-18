@@ -163,6 +163,22 @@ object ProtoDecoder : BinaryDecoder {
 interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 ```
 
+### Notification Permission 🔔
+
+**Warning** This feature is available in SNAPSHOT builds only at the moment
+
+Starting with Android 13, your apps needs to request the `POST_NOTIFICATION` permission to the user in order to show notifications.
+As Chucker also shows notifications to show network activity you need to handle permission request depending on your app features.
+Without this permission Chucker will track network activity, but there will be no notifications on devices with Android 13 and newer.
+
+There are 2 possible cases:
+1. If your app is already sending notifications, you don't need to do anything as Chucker will
+   show a notification as soon as the `POST_NOTIFICATION` permission is granted to your app.
+2. If your app does not send notifications you would need to open Chucker directly (can be done via shortcut, which is added to your app by default when Chucker is added)
+and click `Allow` in the dialog with permission request. In case you don't allow this permission or dismiss that dialog by mistake, on every Chucker launch there will be
+a snackbar with a button to open your app settings where you can change permissions settings. Note, you need to grant `POST_NOTIFICATION` to your app in Settings as there
+will be no separate app in Apps list in Settings.
+
 ## Migrating 🚗
 
 If you're migrating **from [Chuck](https://github.com/jgilfelt/chuck) to Chucker**, please refer to this [migration guide](/docs/migrating-from-chuck.md).
