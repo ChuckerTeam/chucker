@@ -128,9 +128,12 @@ private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
         graphqlIcon.visibility = View.VISIBLE
         graphqlPath.visibility = View.VISIBLE
 
-        if(graphQlOperationName != null ) graphqlPath.text = graphQlOperationName
+        displayGraphQLPath(graphQlOperationName)
     } else {
         graphqlIcon.visibility = View.GONE
         graphqlPath.visibility = View.GONE
     }
+}
+private fun ChuckerListItemTransactionBinding.displayGraphQLPath(graphQlOperationName: String?) {
+    graphqlPath.text = graphQlOperationName ?: root.resources.getString(R.string.chucker_graphql_operation_is_empty)
 }

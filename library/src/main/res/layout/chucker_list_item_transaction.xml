@@ -48,7 +48,6 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:visibility="gone"
-        android:text="@string/chucker_graphql_operation_is_empty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toBottomOf="@+id/path"
