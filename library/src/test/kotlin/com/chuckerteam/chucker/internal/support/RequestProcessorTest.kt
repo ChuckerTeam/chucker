@@ -77,6 +77,4 @@ internal class RequestProcessorTest {
 
         assertTrue(transaction.graphQLDetected)
     }
-
-
 }
