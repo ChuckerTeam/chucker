@@ -120,7 +120,7 @@ internal class HttpTransactionTupleTest {
         responsePayloadSize: Long? = null,
         error: String? = null,
         graphQlOperationName: String? = null,
-        isGraphQLRequest: Boolean = false,
+        graphQLDetected: Boolean = false,
     ) = HttpTransactionTuple(
         id = id,
         requestDate = requestDate,
@@ -135,6 +135,6 @@ internal class HttpTransactionTupleTest {
         responsePayloadSize = responsePayloadSize,
         error = error,
         graphQlOperationName = graphQlOperationName,
-        graphQLDetected = isGraphQLRequest
+        graphQLDetected = graphQLDetected
     )
 }
