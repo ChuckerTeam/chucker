@@ -31,7 +31,7 @@ internal class RequestProcessor(
                 setGraphQlOperationName(it)
             }
             populateUrl(request.url)
-            isGraphQLRequest = this.graphQlOperationName != null ||
+            graphQLDetected = this.graphQlOperationName != null ||
                 request.url.pathSegments.contains("graphql") ||
                 request.url.host.contains("graphql")
 

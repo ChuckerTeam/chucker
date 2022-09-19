@@ -55,7 +55,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
-    @ColumnInfo(name = "isGraphQLRequest") var isGraphQLRequest: Boolean = false,
+    @ColumnInfo(name = "graphQLDetected") var graphQLDetected: Boolean = false,
 ) {
 
     @Ignore
@@ -295,6 +295,6 @@ internal class HttpTransaction(
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
             (graphQlOperationName == other.graphQlOperationName) &&
-            (isGraphQLRequest == other.isGraphQLRequest)
+            (graphQLDetected == other.graphQLDetected)
     }
 }

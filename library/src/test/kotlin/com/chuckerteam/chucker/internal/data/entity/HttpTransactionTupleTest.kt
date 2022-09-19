@@ -135,6 +135,6 @@ internal class HttpTransactionTupleTest {
         responsePayloadSize = responsePayloadSize,
         error = error,
         graphQlOperationName = graphQlOperationName,
-        isGraphQLRequest = isGraphQLRequest
+        graphQLDetected = isGraphQLRequest
     )
 }

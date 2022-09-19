@@ -121,7 +121,7 @@ internal class TransactionAdapter internal constructor(
 }
 
 private fun ChuckerListItemTransactionBinding.displayGraphQlFields(transaction: HttpTransactionTuple) {
-    if (transaction.graphQlOperationName != null || transaction.isGraphQLRequest) {
+    if (transaction.graphQlOperationName != null || transaction.graphQLDetected) {
         graphqlIcon.visibility = View.VISIBLE
     } else {
         graphqlIcon.visibility = View.GONE
