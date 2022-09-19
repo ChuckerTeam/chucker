@@ -67,7 +67,7 @@ internal class TransactionAdapter internal constructor(
             transactionId = transaction.id
 
             itemBinding.apply {
-                displayGraphQlFields(transaction)
+                displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQLDetected)
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
@@ -120,10 +120,17 @@ internal class TransactionAdapter internal constructor(
     }
 }
 
-private fun ChuckerListItemTransactionBinding.displayGraphQlFields(transaction: HttpTransactionTuple) {
-    if (transaction.graphQlOperationName != null || transaction.graphQLDetected) {
+private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
+    graphQlOperationName: String?,
+    graphQLDetected: Boolean
+) {
+    if (graphQlOperationName != null || graphQLDetected) {
         graphqlIcon.visibility = View.VISIBLE
+        graphqlPath.visibility = View.VISIBLE
+
+        if(graphQlOperationName != null ) graphqlPath.text = graphQlOperationName
     } else {
         graphqlIcon.visibility = View.GONE
+        graphqlPath.visibility = View.GONE
     }
 }

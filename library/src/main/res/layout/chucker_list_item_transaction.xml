@@ -40,6 +40,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="GET /path/to/some/resource?goes=here" />
 
+    <TextView
+        android:id="@+id/graphqlPath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/chucker_half_grid"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:visibility="gone"
+        android:text="@string/chucker_graphql_operation_is_empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ssl"
+        app:layout_constraintTop_toBottomOf="@+id/path"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/graphqlIcon"
         android:layout_width="@dimen/chucker_doub_grid"
@@ -47,9 +61,9 @@
         android:contentDescription="@string/chucker_ssl"
         android:src="@drawable/chucker_ic_graphql"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/timeStart"
+        app:layout_constraintBottom_toBottomOf="@id/graphqlPath"
         app:layout_constraintStart_toStartOf="@+id/ssl"
-        app:layout_constraintTop_toTopOf="@+id/timeStart"
+        app:layout_constraintTop_toTopOf="@+id/graphqlPath"
         tools:visibility="visible" />
 
     <TextView
@@ -57,12 +71,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/chucker_half_grid"
-        android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toBottomOf="@+id/path"
+        app:layout_constraintTop_toBottomOf="@+id/graphqlPath"
         app:layout_goneMarginStart="0dp"
         tools:text="example.com" />
 
@@ -81,7 +94,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/duration"
-        app:layout_constraintStart_toStartOf="@+id/host"
+        app:layout_constraintStart_toStartOf="@+id/path"
         app:layout_constraintTop_toBottomOf="@+id/host"
         tools:text="18:29:07 PM" />
 
