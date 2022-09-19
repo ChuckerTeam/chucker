@@ -51,6 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
         app:layout_constraintTop_toBottomOf="@+id/path"
+        tools:text="getBatchDetails"
         tools:visibility="visible" />
 
     <ImageView
