@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,12 +21,25 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainBinding: ActivityMainSampleBinding
 
+    private val chuckerCollector: ChuckerCollector by lazy {
+        ChuckerCollector(
+            context = applicationContext,
+            showNotification = true,
+            retentionPeriod = RetentionManager.Period.ONE_HOUR
+        )
+    }
+
     private val client by lazy {
-        createOkHttpClient(applicationContext, interceptorTypeSelector)
+        createOkHttpClient(applicationContext, interceptorTypeSelector, chuckerCollector)
     }
 
     private val httpTasks by lazy {
-        listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
+        listOf(
+            HttpBinHttpTask(client),
+            DummyImageHttpTask(client),
+            PostmanEchoHttpTask(client),
+            ManualTransactionTask(chuckerCollector)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

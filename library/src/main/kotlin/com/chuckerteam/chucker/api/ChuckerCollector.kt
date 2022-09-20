@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import com.chuckerteam.chucker.api.entity.ManualHttpTransaction
 import android.net.Uri
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
@@ -65,6 +66,15 @@ public class ChuckerCollector @JvmOverloads constructor(
                 notificationHelper.show(transaction)
             }
         }
+    }
+
+    /**
+     * Call this method whenever you want to save a transaction that is not collected by Chucker interceptor
+     *
+     * @param transaction the manual transaction you want to save it manually
+     */
+    public fun saveTransaction(transaction: ManualHttpTransaction) {
+        onRequestSent(transaction.convertToHttpTransaction())
     }
 
     /**

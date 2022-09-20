@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import android.content.Context
+import com.chuckerteam.chucker.api.entity.ManualHttpTransaction
 import android.net.Uri
 
 /**
@@ -12,6 +13,14 @@ public class ChuckerCollector @JvmOverloads constructor(
     public var showNotification: Boolean = true,
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
 ) {
+
+    /**
+     * No-op implementation.
+     */
+    public fun saveTransaction(transaction: ManualHttpTransaction) {
+        // Empty method for the library-no-op artifact
+    }
+
     @Suppress("FunctionOnlyReturningConstant")
     public fun writeTransactions(
         context: Context,
