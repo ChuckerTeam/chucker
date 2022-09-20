@@ -35,39 +35,34 @@ class GraphQlTask (
 
     private val scope = MainScope()
 
-    private val noopCallback = object: Callback<Any?> {
-        override fun onResponse(call: Call<Any?>, response: Response<Any?>) = Unit
-
-        override fun onFailure(call: Call<Any?>, t: Throwable) {
-            t.printStackTrace()
-        }
-
-    }
     override fun run() {
         scope.launch {
-            with(api) {
-                this.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(noopCallback)
+            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<Any?> {
+                override fun onResponse(call: Call<Any?>, response: Response<Any?>) = Unit
 
-                 apolloClient
+                override fun onFailure(call: Call<Any?>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+            apolloClient
                 .query(SearchCharactersQuery(Optional.presentIfNotNull("Morty")))
                 .execute()
-            }
         }
     }
 
     private interface Api {
         @GET("graphql")
-        fun getCharacterById(@Query("query")query: String, @Query("variables") variables: String? = null )
+        fun getCharacterById(@Query("query") query: String,
+                             @Query("variables") variables: String? = null )
         : Call<Any?>
     }
 }
 
-const val GRAPHQL_QUERY = "query GetCharacter( \$id: ID! ){\n" +
-    "  character(id:\$id) {\n" +
-    "      id:id,      \n" +
-    "     \tname,\n" +
-    "      status     \n" +
-    "    \n" +
-    "  }\n" +
-    "}"
-const val GRAPHQL_QUERY_VARIABLE = "{\"id\":1}"
+const val GRAPHQL_QUERY = """query GetCharacter( ${'$'}id: ID! ){
+    character(id:${'$'}id) {
+        id:id,
+        name,
+        status
+    }
+}"""
+const val GRAPHQL_QUERY_VARIABLE = """{"id":1}"""

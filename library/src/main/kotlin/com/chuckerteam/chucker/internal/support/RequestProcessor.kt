@@ -31,7 +31,7 @@ internal class RequestProcessor(
                 setGraphQlOperationName(it)
             }
             populateUrl(request.url)
-            graphQLDetected = isGraphQLRequest(this.graphQlOperationName, request)
+            graphQlDetected = isGraphQLRequest(this.graphQlOperationName, request)
 
             requestDate = System.currentTimeMillis()
             method = request.method

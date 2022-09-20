@@ -36,7 +36,7 @@ internal object TestTransactionFactory {
             isResponseBodyEncoded = false,
             responseImageData = null,
             graphQlOperationName = null,
-            graphQLDetected = false
+            graphQlDetected = false
         )
     }
 

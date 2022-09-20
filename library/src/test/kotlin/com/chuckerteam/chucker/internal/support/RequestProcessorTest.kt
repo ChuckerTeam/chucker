@@ -42,7 +42,7 @@ internal class RequestProcessorTest {
         requestProcessor.process(request, transaction)
 
         assertEquals(operationName, transaction.graphQlOperationName)
-        assertTrue(transaction.graphQLDetected)
+        assertTrue(transaction.graphQlDetected)
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class RequestProcessorTest {
         }
         requestProcessor.process(request, transaction)
 
-        assertTrue(transaction.graphQLDetected)
+        assertTrue(transaction.graphQlDetected)
     }
 
     @Test
@@ -64,7 +64,7 @@ internal class RequestProcessorTest {
         }
         requestProcessor.process(request, transaction)
 
-        assertFalse(transaction.graphQLDetected)
+        assertFalse(transaction.graphQlDetected)
     }
 
     @Test
@@ -75,6 +75,6 @@ internal class RequestProcessorTest {
         }
         requestProcessor.process(request, transaction)
 
-        assertTrue(transaction.graphQLDetected)
+        assertTrue(transaction.graphQlDetected)
     }
 }
