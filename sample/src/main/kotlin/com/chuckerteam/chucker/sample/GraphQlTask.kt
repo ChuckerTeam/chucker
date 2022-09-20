@@ -36,10 +36,10 @@ class GraphQlTask (
 
     override fun run() {
         scope.launch {
-            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<ResponseBody?> {
-                override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) = Unit
+            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = Unit
 
-                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     t.printStackTrace()
                 }
             })
@@ -53,7 +53,7 @@ class GraphQlTask (
         @GET("graphql")
         fun getCharacterById(@Query("query") query: String,
                              @Query("variables") variables: String? = null )
-        : Call<ResponseBody?>
+        : Call<ResponseBody>
     }
 }
 
