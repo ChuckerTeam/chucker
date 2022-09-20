@@ -69,7 +69,7 @@ internal class HttpTransactionDaoTest {
             assertThat(stringValue("responseBody")).isEqualTo(data.responseBody)
             assertThat(stringValue("error")).isEqualTo(data.error)
             assertThat(stringValue("graphQlOperationName")).isNull()
-            assertThat(booleanValue("graphQLDetected")).isFalse()
+            assertThat(booleanValue("graphQlDetected")).isFalse()
         }
     }
 
