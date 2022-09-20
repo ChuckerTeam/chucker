@@ -6,12 +6,12 @@ import com.apollographql.apollo3.network.okHttpClient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.create
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -28,7 +28,6 @@ class GraphQlTask (
 
     private val api = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()
         .create<Api>()
@@ -37,10 +36,10 @@ class GraphQlTask (
 
     override fun run() {
         scope.launch {
-            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<Any?> {
-                override fun onResponse(call: Call<Any?>, response: Response<Any?>) = Unit
+            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<ResponseBody?> {
+                override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) = Unit
 
-                override fun onFailure(call: Call<Any?>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                     t.printStackTrace()
                 }
             })
@@ -54,7 +53,7 @@ class GraphQlTask (
         @GET("graphql")
         fun getCharacterById(@Query("query") query: String,
                              @Query("variables") variables: String? = null )
-        : Call<Any?>
+        : Call<ResponseBody?>
     }
 }
 
