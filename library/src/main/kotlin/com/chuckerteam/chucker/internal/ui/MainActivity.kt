@@ -55,7 +55,7 @@ internal class MainActivity :
     ) { isPermissionGranted: Boolean ->
         if (!isPermissionGranted) {
             showToast(applicationContext.getString(R.string.chucker_notifications_permission_not_granted))
-            Logger.error("Notification permission denied. Can`t show transactions info")
+            Logger.error("Notification permission denied. Can't show transactions info")
         }
     }
 
