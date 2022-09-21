@@ -6,7 +6,7 @@ buildscript {
 
         // Google libraries
         activityVersion = '1.5.1'
-        appCompatVersion = '1.4.2'
+        appCompatVersion = '1.5.1'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.6.1'
         roomVersion = '2.4.3'

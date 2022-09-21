@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -200,7 +199,7 @@ internal class MainActivity :
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
             val transactions = viewModel.getAllTransactions()
-            if (transactions.isNullOrEmpty()) {
+            if (transactions.isEmpty()) {
                 showToast(applicationContext.getString(R.string.chucker_export_empty_text))
                 return@launch
             }
@@ -218,11 +217,7 @@ internal class MainActivity :
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
-                Toast.makeText(
-                    applicationContext,
-                    R.string.chucker_export_no_file,
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast(applicationContext.getString(R.string.chucker_export_no_file))
             }
         }
     }
