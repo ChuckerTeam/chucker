@@ -74,9 +74,17 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
+    private fun canShowNotifications(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            notificationManager.areNotificationsEnabled()
+        } else {
+            true
+        }
+    }
+
     fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
-        if (!BaseChuckerActivity.isInForeground) {
+        if (!BaseChuckerActivity.isInForeground && canShowNotifications()) {
             val builder =
                 NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
