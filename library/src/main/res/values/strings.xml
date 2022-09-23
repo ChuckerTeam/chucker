@@ -58,4 +58,5 @@
     <string name="chucker_request_is_empty">This request is empty</string>
     <string name="chucker_response_is_empty">This response is empty</string>
     <string name="chucker_shortcut_label">Open Chucker</string>
+    <string name="chucker_graphql_operation_is_empty"> &lt;Unable to discover GraphQL operation name&gt;</string>
 </resources>

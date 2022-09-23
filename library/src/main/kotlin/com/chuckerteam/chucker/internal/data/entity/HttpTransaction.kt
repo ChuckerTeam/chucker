@@ -54,6 +54,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseBody") var responseBody: String?,
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
+    @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
 
@@ -293,6 +294,7 @@ internal class HttpTransaction(
             (responseBody == other.responseBody) &&
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
-            (graphQlOperationName == other.graphQlOperationName)
+            (graphQlOperationName == other.graphQlOperationName) &&
+            (graphQlDetected == other.graphQlDetected)
     }
 }
