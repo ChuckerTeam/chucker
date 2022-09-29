@@ -10,7 +10,7 @@ buildscript {
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.6.1'
         roomVersion = '2.4.3'
-        fragmentVersion = '1.5.2'
+        fragmentVersion = '1.5.3'
         lifecycleVersion = '2.5.1'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
