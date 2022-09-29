@@ -35,6 +35,7 @@ internal object TestTransactionFactory {
             responseBody = """{"field": "value"}""",
             isResponseBodyEncoded = false,
             responseImageData = null,
+            graphQlDetected = false,
             graphQlOperationName = null,
         )
     }

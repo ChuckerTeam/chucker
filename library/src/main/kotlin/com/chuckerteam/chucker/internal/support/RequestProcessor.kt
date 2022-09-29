@@ -31,6 +31,7 @@ internal class RequestProcessor(
                 setGraphQlOperationName(it)
             }
             populateUrl(request.url)
+            graphQlDetected = isGraphQLRequest(this.graphQlOperationName, request)
 
             requestDate = System.currentTimeMillis()
             method = request.method
@@ -78,4 +79,9 @@ internal class RequestProcessor(
                 null
             }
         }.firstOrNull()
+
+    private fun isGraphQLRequest(graphQLOperationName: String?, request: Request) =
+        graphQLOperationName != null ||
+        request.url.pathSegments.contains("graphql") ||
+        request.url.host.contains("graphql")
 }
