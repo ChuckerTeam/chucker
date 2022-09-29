@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -53,7 +54,10 @@ internal class MainActivity :
         ActivityResultContracts.RequestPermission()
     ) { isPermissionGranted: Boolean ->
         if (!isPermissionGranted) {
-            showToast(applicationContext.getString(R.string.chucker_notifications_permission_not_granted))
+            showToast(
+                applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
+                Toast.LENGTH_LONG,
+            )
             Logger.error("Notification permission denied. Can't show transactions info")
         }
     }
@@ -102,7 +106,7 @@ internal class MainActivity :
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED -> {
-                Logger.info("Notification permission granted")
+                /* We have permission, all good */
             }
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                 Snackbar.make(
