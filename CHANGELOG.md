@@ -11,7 +11,7 @@ Please add your entries according to this format.
 * Brotli compression support
 * Added ability to export list of transactions as .har file.
 * Added ability to save single transaction as .har file.
-* Added ability to export transactions to a file programmatically.
+* Added ability to export transactions to a file programmatically, LOG or HAR.
 * GraphQL OperationName header to transaction title [#69], [#116]
 * Added support for Android 13 and notifications permission handling
 

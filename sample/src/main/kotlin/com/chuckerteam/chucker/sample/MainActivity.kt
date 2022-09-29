@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ExportFormat
 import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,20 +48,14 @@ class MainActivity : AppCompatActivity() {
             launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
 
-            exportToFile?.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
-            exportToFile?.setOnClickListener {
-                lifecycleScope.launch {
-                    val uri = withContext(Dispatchers.IO) {
-                        ChuckerCollector(this@MainActivity)
-                            .writeTransactions(this@MainActivity, null)
-                    }
-                    if (uri == null) {
-                        Toast.makeText(applicationContext, R.string.export_to_file_failure, Toast.LENGTH_SHORT).show()
-                    } else {
-                        val successMessage = applicationContext.getString(R.string.export_to_file_success, uri.path)
-                        Toast.makeText(applicationContext, successMessage, Toast.LENGTH_SHORT).show()
-                    }
-                }
+            exportToFile.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFile.setOnClickListener {
+                generateExportFile(ExportFormat.LOG)
+            }
+
+            exportToFileHar.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFileHar.setOnClickListener {
+                generateExportFile(ExportFormat.HAR)
             }
 
             interceptorTypeLabel.movementMethod = LinkMovementMethod.getInstance()
@@ -97,5 +92,20 @@ class MainActivity : AppCompatActivity() {
     private fun launchChuckerDirectly() {
         // Optionally launch Chucker directly from your own app UI
         startActivity(Chucker.getLaunchIntent(this))
+    }
+
+    private fun generateExportFile(exportFormat: ExportFormat) {
+        lifecycleScope.launch {
+            val uri = withContext(Dispatchers.IO) {
+                ChuckerCollector(this@MainActivity)
+                    .writeTransactions(this@MainActivity, null, exportFormat)
+            }
+            if (uri == null) {
+                Toast.makeText(applicationContext, R.string.export_to_file_failure, Toast.LENGTH_SHORT).show()
+            } else {
+                val successMessage = applicationContext.getString(R.string.export_to_file_success, uri.path)
+                Toast.makeText(applicationContext, successMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

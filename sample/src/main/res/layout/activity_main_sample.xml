@@ -102,8 +102,8 @@
         android:id="@+id/launch_chucker_directly"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:text="@string/launch_chucker_directly"
         android:layout_marginBottom="@dimen/doub_grid_size"
+        android:text="@string/launch_chucker_directly"
         app:layout_constraintBottom_toTopOf="@id/export_to_file"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,11 +114,25 @@
         android:id="@+id/export_to_file"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        android:layout_marginEnd="@dimen/doub_grid_size"
         android:text="@string/export_to_file"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/export_to_file_har"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/launch_chucker_directly"
+        app:layout_constraintWidth_max="@dimen/max_width" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/export_to_file_har"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:text="@string/export_to_file_har"
+        app:layout_constraintBottom_toBottomOf="@+id/export_to_file"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/export_to_file"
+        app:layout_constraintTop_toTopOf="@+id/export_to_file"
         app:layout_constraintWidth_max="@dimen/max_width" />
 
     <androidx.constraintlayout.widget.Guideline

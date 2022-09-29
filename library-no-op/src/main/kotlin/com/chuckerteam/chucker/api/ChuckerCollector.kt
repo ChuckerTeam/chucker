@@ -16,5 +16,6 @@ public class ChuckerCollector @JvmOverloads constructor(
     public fun writeTransactions(
         context: Context,
         startTimestamp: Long?,
+        exportFormat: ExportFormat = ExportFormat.LOG
     ): Uri? = null
 }
