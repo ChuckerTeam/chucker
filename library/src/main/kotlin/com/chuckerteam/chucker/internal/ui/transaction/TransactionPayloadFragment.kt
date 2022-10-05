@@ -12,6 +12,8 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -20,15 +22,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import com.chuckerteam.chucker.GsonInstance
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -37,11 +46,14 @@ internal class TransactionPayloadFragment :
 
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
+    var plain = true
+    private lateinit var result: MutableList<TransactionPayloadItem>
+
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getSerializable(ARG_TYPE) as PayloadType
     }
 
-    private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+    private val saveToFile = activity?.registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
         val transaction = viewModel.transaction.value
         if (uri != null && transaction != null) {
             lifecycleScope.launch {
@@ -68,6 +80,8 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
+    private lateinit var smoothScroller: LinearSmoothScroller
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -83,6 +97,18 @@ internal class TransactionPayloadFragment :
             container,
             false
         )
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+        payloadBinding.scrollerFab.setOnClickListener {
+            onScrollerFabClick()
+        }
+        payloadBinding.scrollerFab.backgroundTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_primary)
+        payloadBinding.scrollerFab.imageTintList =
+            AppCompatResources.getColorStateList(requireContext(), R.color.chucker_color_surface)
         return payloadBinding.root
     }
 
@@ -101,20 +127,99 @@ internal class TransactionPayloadFragment :
                 lifecycleScope.launch {
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
-                    val result = processPayload(payloadType, transaction, formatRequestBody)
-                    if (result.isEmpty()) {
-                        showEmptyState()
-                    } else {
-                        payloadAdapter.setItems(result)
-                        showPayloadState()
-                    }
-                    // Invalidating menu, because we need to hide menu items for empty payloads
-                    requireActivity().invalidateOptionsMenu()
+                        result = processPayload(payloadType, transaction, formatRequestBody)
+                        if (result.isEmpty()) {
+                            showEmptyState()
+                        } else {
+                            payloadAdapter.setItems(result)
+                            showPayloadState()
+                        }
+                        // Invalidating menu, because we need to hide menu items for empty payloads
+                        requireActivity().invalidateOptionsMenu()
 
-                    payloadBinding.loadingProgress.visibility = View.GONE
+                        payloadBinding.loadingProgress.visibility = View.GONE
+                    }
                 }
+            )
+
+        payloadBinding.expandBtn.setOnClickListener {
+            expand()
+        }
+
+        payloadBinding.collapseBtn.setOnClickListener {
+            collapse()
+        }
+
+        payloadBinding.plainHighlightedToggle.setOnClickListener {
+            togglePlainHighlighted()
+        }
+
+    }
+
+    private fun expand() {
+        payloadBinding.jsonView.expandAll()
+        payloadBinding.collapseBtn.visibility = View.VISIBLE
+        payloadBinding.expandBtn.visibility = View.GONE
+    }
+
+    private fun collapse() {
+        payloadBinding.jsonView.collapseAll()
+        payloadBinding.expandBtn.visibility = View.VISIBLE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun togglePlainHighlighted() {
+        if (plain) {
+            bindJson()
+        } else {
+            showPlainText()
+        }
+    }
+
+    private fun bindJson() {
+        plain = false
+        payloadBinding.payloadRecyclerView.visibility = View.GONE
+        payloadBinding.jsonView.visibility = View.VISIBLE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_show_plain)
+        expand()
+        payloadBinding.collapseBtn.visibility = View.VISIBLE
+    }
+
+    private fun showPlainText() {
+        plain = true
+        if (result.isEmpty()) {
+            showEmptyState()
+        } else {
+            payloadBinding.payloadRecyclerView.visibility = View.VISIBLE
+        }
+        payloadBinding.jsonView.visibility = View.GONE
+        payloadBinding.plainHighlightedToggle.setText(R.string.chucker_highlight)
+        payloadBinding.expandBtn.visibility = View.GONE
+        payloadBinding.collapseBtn.visibility = View.GONE
+    }
+
+    private fun isJson(body: String): Boolean {
+        return try {
+            val element = JsonParser.parseString(body)
+            element.isJsonObject || element.isJsonArray
+        } catch (e: JsonSyntaxException) {
+            false
+        }
+    }
+
+    private fun prettyPrint(str: String): String? {
+        val parser: JsonElement = JsonParser.parseString(str)
+        return when {
+            parser.isJsonObject -> {
+                GsonInstance.get()?.toJson(parser.asJsonObject)
             }
-        )
+            parser.isJsonArray -> {
+                GsonInstance.get()?.toJson(parser.asJsonArray)
+            }
+            else -> {
+                str
+            }
+        }
     }
 
     private fun showEmptyState() {
@@ -171,6 +276,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
+        // SAF is not available on pre-Kit Kat so let's hide the icon.
         (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
         (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
         else -> true
@@ -192,16 +298,41 @@ internal class TransactionPayloadFragment :
     }
 
     private fun createFileToSaveBody() {
-        saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+        saveToFile?.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean = false
+    override fun onQueryTextSubmit(query: String): Boolean {
+        return false
+    }
+
+    private fun onScrollerFabClick() {
+        val layoutManager = payloadBinding.payloadRecyclerView.layoutManager as LinearLayoutManager
+        var offset = layoutManager.findFirstVisibleItemPosition() + 1
+        var index =
+            payloadAdapter.findNextHighlightedItem(offset = offset)
+        if (index == -1) {
+            offset = 0
+            index = payloadAdapter.findNextHighlightedItem(offset = offset)
+        }
+        if (index != -1) {
+            smoothScroller.targetPosition = index + offset
+            layoutManager.startSmoothScroll(smoothScroller)
+        } else {
+            Toast.makeText(context, R.string.chucker_no_matches_found, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+            payloadAdapter.highlightQueryWithColors(
+                newText,
+                backgroundSpanColor,
+                foregroundSpanColor
+            )
+            payloadBinding.scrollerFab.visibility = View.VISIBLE
         } else {
             payloadAdapter.resetHighlight()
+            payloadBinding.scrollerFab.visibility = View.INVISIBLE
         }
         return true
     }
@@ -249,28 +380,41 @@ internal class TransactionPayloadFragment :
             if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-                return@withContext result
-            }
-
-            when {
-                isBodyEncoded -> {
-                    val text = requireContext().getString(R.string.chucker_body_omitted)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
-                }
-                bodyString.isBlank() -> {
-                    val text = requireContext().getString(R.string.chucker_body_empty)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
-                }
-                else -> bodyString.lines().forEach {
+            } else if (isBodyEncoded) {
+                requireContext().getString(R.string.chucker_body_omitted).let {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
-            }
+            } else if (bodyString.isBlank()) {
+                requireContext().getString(R.string.chucker_body_empty).let {
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                }
+            } else {
+                    withContext(Dispatchers.Main) {
+                        if (isJson(bodyString)) {
+                            payloadBinding.jsonView.bindJson(prettyPrint(bodyString))
+                            payloadBinding.plainHighlightedToggle.visibility = View.VISIBLE
+                        }
+                    }
 
+                    bodyString.lines().forEach {
+                        result.add(
+                            TransactionPayloadItem.BodyLineItem(
+                                SpannableStringBuilder.valueOf(
+                                    it
+                                )
+                            )
+                        )
+                    }
+            }
             return@withContext result
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(
+        type: PayloadType,
+        uri: Uri,
+        transaction: HttpTransaction
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
@@ -287,6 +431,9 @@ internal class TransactionPayloadFragment :
                         }
                     }
                 }
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+                return@withContext false
             } catch (e: IOException) {
                 Logger.error("Failed to save transaction to a file", e)
                 return@withContext false

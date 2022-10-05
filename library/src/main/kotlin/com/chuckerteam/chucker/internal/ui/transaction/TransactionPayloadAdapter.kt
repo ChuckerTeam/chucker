@@ -96,6 +96,18 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             }
     }
 
+    fun findNextHighlightedItem(offset: Int): Int {
+        return items.asSequence()
+            .drop(offset)
+            .indexOfFirst { item ->
+                if (item is TransactionPayloadItem.BodyLineItem) {
+                    item.line.getSpans(0, item.line.length - 1, Any::class.java).isNotEmpty()
+                } else {
+                    false
+                }
+            }
+    }
+
     companion object {
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2

@@ -1,49 +1,52 @@
 buildscript {
     ext {
-        kotlinVersion = '1.6.10'
-        androidGradleVersion = '7.1.1'
+        kotlinVersion = '1.6.21'
+        androidGradleVersion = '7.0.4'
         coroutineVersion = '1.5.2'
 
         // Google libraries
         activityVersion = '1.4.0'
-        appCompatVersion = '1.4.1'
-        constraintLayoutVersion = '2.1.3'
-        materialComponentsVersion = '1.5.0'
-        roomVersion = '2.4.1'
-        fragmentVersion = '1.4.1'
-        lifecycleVersion = '2.4.1'
-        androidXCoreVersion = '2.1.0'
+        appCompatVersion = '1.2.0'
+        constraintLayoutVersion = '1.1.3'
+        materialComponentsVersion = '1.2.1'
+        roomVersion = '2.4.3'
+        fragmentVersion = '1.2.5'
+        lifecycleVersion = '2.2.0'
+        androidXArchTestVersion = '2.0.0'
         paletteKtxVersion = '1.0.0'
+        jsonhandleviewVersion = '1.2.2'
 
         // Networking
         brotliVersion = '0.1.2'
-        gsonVersion = '2.9.0'
-        okhttpVersion = '4.9.3'
+        gsonVersion = '2.8.6'
+        okhttpVersion = '4.9.0'
         retrofitVersion = '2.9.0'
         wireVersion = '4.1.0'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.8.0'
-        detektVersion = '1.19.0'
-        dokkaVersion = '1.6.10'
-        ktLintGradleVersion = '10.2.1'
-        leakcanaryVersion = '2.8.1'
+        detektVersion = '1.14.0'
+        dokkaVersion = '1.4.10.2'
+        ktLintVersion = '0.39.0'
+        ktLintGradleVersion = '10.0.0'
+        leakcanaryVersion = '2.9.1'
 
         // Testing
-        androidxTestCoreVersion = '1.4.0'
-        junitGradlePluignVersion = '1.8.2.0'
-        junitVersion = '5.8.2'
-        junit4Version = '4.13.2'
-        mockkVersion = '1.12.2'
-        robolectricVersion = '4.7.3'
-        truthVersion = '1.1.3'
+        androidxTestCoreVersion = '1.3.0'
+        junitGradlePluignVersion = '1.6.1.0'
+        junitVersion = '5.5.2'
+        mockkVersion = '1.10.2'
+        robolectricVersion = '4.4'
+        truthVersion = '1.1'
+        vintageJunitVersion = '4.12'
 
-        // Publishing
-        nexusStagingPlugin = '0.30.0'
+        //jfrog publish
+        jfrogExtractor = '4.28.3'
     }
 
     repositories {
         google()
+        mavenCentral()
         gradlePluginPortal()
     }
 
@@ -54,33 +57,31 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrogExtractor"
         classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
         classpath "com.squareup.wire:wire-gradle-plugin:$wireVersion"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$nexusStagingPlugin"
     }
-}
-apply plugin: 'binary-compatibility-validator'
-apply plugin: 'io.codearte.nexus-staging'
-
-apiValidation {
-    ignoredProjects += ["sample"]
-    ignoredPackages += [
-            "com.chuckerteam.chucker.internal",
-            "com.chuckerteam.chucker.databinding"
-    ]
 }
 
 allprojects {
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: "maven-publish"
+
     version = VERSION_NAME
     group = GROUP
 
     repositories {
         google()
         mavenCentral()
-        jcenter {
-            content {
-                includeModule("org.jetbrains.trove4j", "trove4j")
-                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+
+        def jfrogArtifactoryUrl = project.properties["JFROG_ARTIFACTORY_URL"]
+        def jfrogArtifactoryUserName = project.properties["JFROG_ARTIFACTORY_USERNAME"]
+        def jfrogArtifactoryKey = project.properties["JFROG_ARTIFACTORY_KEY"]
+        maven {
+            url "${jfrogArtifactoryUrl}/${project.properties["RELEASE_REPO_NAME"]}"
+            credentials {
+                username = jfrogArtifactoryUserName
+                password = jfrogArtifactoryKey
             }
         }
     }
@@ -109,8 +110,3 @@ ext {
     compileSdkVersion = 31
 }
 
-nexusStaging {
-    username = findProperty("NEXUS_USERNAME")
-    password = findProperty("NEXUS_PASSWORD")
-    stagingProfileId = "ea09119de9f4"
-}
