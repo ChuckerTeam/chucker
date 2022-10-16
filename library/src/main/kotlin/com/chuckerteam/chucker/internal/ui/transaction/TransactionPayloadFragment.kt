@@ -161,9 +161,8 @@ internal class TransactionPayloadFragment :
 
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
-                viewLifecycleOwner,
-                { menu.findItem(R.id.encode_url).isVisible = it }
-            )
+                viewLifecycleOwner
+            ) { menu.findItem(R.id.encode_url).isVisible = it }
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
         }
@@ -225,7 +224,7 @@ internal class TransactionPayloadFragment :
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
                 } else {
-                    transaction.requestBody ?: ""
+                    transaction.requestBody.orEmpty()
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
@@ -299,7 +298,6 @@ internal class TransactionPayloadFragment :
     companion object {
         private const val ARG_TYPE = "type"
         private const val TRANSACTION_EXCEPTION = "Transaction not ready"
-
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
