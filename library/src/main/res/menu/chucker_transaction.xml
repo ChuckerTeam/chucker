@@ -9,12 +9,11 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
     <item
+        android:id="@+id/encode_url"
         android:icon="@drawable/chucker_ic_decoded_url_white"
         android:title="@string/chucker_encode_url"
-        android:id="@+id/encode_url"
         android:visible="false"
-        app:showAsAction="ifRoom">
-    </item>
+        app:showAsAction="ifRoom" />
     <item
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_share"
@@ -37,10 +36,9 @@
         </menu>
     </item>
     <item
+        android:id="@+id/save_body"
         android:icon="@drawable/chucker_ic_save_white"
         android:title="@string/chucker_save"
-        android:id="@+id/save_body"
         android:visible="false"
-        app:showAsAction="ifRoom">
-    </item>
+        app:showAsAction="ifRoom" />
 </menu>
