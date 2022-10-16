@@ -134,7 +134,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
                     fileName = fileName,
                     intentTitle = getString(R.string.chucker_share_transaction_title),
                     intentSubject = getString(R.string.chucker_share_transaction_subject),
-                    clipDataLabel = "transaction"
+                    clipDataLabel = TRANSACTION
                 )
             }
             if (shareIntent != null) {
@@ -162,6 +162,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         private const val EXPORT_TXT_FILE_NAME = "transaction.txt"
         private const val EXPORT_HAR_FILE_NAME = "transaction.har"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
+        private const val TRANSACTION = "transaction"
         private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
