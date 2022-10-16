@@ -46,8 +46,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/payloadRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/chucker_zero_grid"
+        android:layout_height="@dimen/chucker_zero_grid"
         android:clipToPadding="false"
         android:paddingVertical="@dimen/chucker_doub_grid"
         android:scrollbars="vertical"

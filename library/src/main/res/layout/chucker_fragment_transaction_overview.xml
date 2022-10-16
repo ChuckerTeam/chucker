@@ -19,7 +19,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:gravity="start"
       android:text="@string/chucker_url"
@@ -30,7 +30,7 @@
     <TextView
       android:id="@+id/url"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:gravity="start"
       app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_method"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -50,16 +50,16 @@
     <TextView
       android:id="@+id/method"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@+id/url"
+      app:layout_constraintTop_toBottomOf="@id/url"
       tools:text="GET" />
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_protocol"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -69,7 +69,7 @@
     <TextView
       android:id="@+id/protocol"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -78,7 +78,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_status"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -88,7 +88,7 @@
     <TextView
       android:id="@+id/status"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -97,7 +97,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -107,7 +107,7 @@
     <TextView
       android:id="@+id/response"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -117,7 +117,7 @@
     <TextView
       android:id="@+id/ssl"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       android:text="@string/chucker_ssl"
@@ -128,7 +128,7 @@
     <TextView
       android:id="@+id/sslValue"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
@@ -138,16 +138,16 @@
 
     <androidx.constraintlayout.widget.Group
       android:id="@+id/sslGroup"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
+      android:layout_height="@dimen/chucker_zero_grid"
       app:constraint_referenced_ids="sslValue,ssl"
-      tools:layout_editor_absoluteX="16dp"
-      tools:layout_editor_absoluteY="16dp" />
+      tools:layout_editor_absoluteX="@dimen/chucker_zero_grid"
+      tools:layout_editor_absoluteY="@dimen/chucker_zero_grid" />
 
     <TextView
       android:id="@+id/tlsVersion"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_tls_version"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -157,7 +157,7 @@
     <TextView
       android:id="@+id/tlsVersionValue"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -166,8 +166,8 @@
 
     <androidx.constraintlayout.widget.Group
       android:id="@+id/tlsGroup"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
+      android:layout_height="@dimen/chucker_zero_grid"
       android:visibility="gone"
       app:constraint_referenced_ids="tlsVersionValue,tlsVersion"
       tools:layout_editor_absoluteX="16dp"
@@ -177,7 +177,7 @@
     <TextView
       android:id="@+id/cipherSuite"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_tls_cipher_suite"
       android:visibility="gone"
@@ -189,7 +189,7 @@
     <TextView
       android:id="@+id/cipherSuiteValue"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:visibility="gone"
       app:layout_constraintEnd_toEndOf="parent"
@@ -200,8 +200,8 @@
 
     <androidx.constraintlayout.widget.Group
       android:id="@+id/cipherSuiteGroup"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
+      android:layout_height="@dimen/chucker_zero_grid"
       android:visibility="gone"
       app:constraint_referenced_ids="cipherSuite,cipherSuiteValue"
       tools:layout_editor_absoluteX="16dp"
@@ -211,7 +211,7 @@
     <TextView
       android:id="@+id/requestTimeLabel"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       android:text="@string/chucker_request_time"
@@ -222,7 +222,7 @@
     <TextView
       android:id="@+id/requestTime"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
@@ -240,7 +240,7 @@
     <TextView
       android:id="@+id/responseTimeLabel"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_time"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -250,7 +250,7 @@
     <TextView
       android:id="@+id/responseTime"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -266,7 +266,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_duration"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -276,7 +276,7 @@
     <TextView
       android:id="@+id/duration"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -286,7 +286,7 @@
     <TextView
       android:id="@+id/requestSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       android:text="@string/chucker_request_size"
@@ -297,7 +297,7 @@
     <TextView
       android:id="@+id/requestSize"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_base_grid"
       app:layout_constraintEnd_toEndOf="parent"
@@ -315,7 +315,7 @@
     <TextView
       android:id="@+id/responseSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_response_size"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -325,7 +325,7 @@
     <TextView
       android:id="@+id/responseSize"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
@@ -341,7 +341,7 @@
 
     <TextView
       style="@style/Chucker.TextAppearance.Label"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       android:text="@string/chucker_total_size"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
@@ -351,7 +351,7 @@
     <TextView
       android:id="@+id/totalSize"
       style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
+      android:layout_width="@dimen/chucker_zero_grid"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
