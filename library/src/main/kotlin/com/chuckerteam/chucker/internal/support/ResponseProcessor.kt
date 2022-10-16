@@ -141,7 +141,6 @@ internal class ResponseProcessor(
 
     private companion object {
         const val MAX_BLOB_SIZE = 1_000_000L
-
         const val CONTENT_TYPE_IMAGE = "image"
     }
 }
