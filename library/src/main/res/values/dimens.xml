@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="chucker_zero_grid">0dp</dimen>
     <dimen name="chucker_half_grid">4dp</dimen>
     <dimen name="chucker_base_grid">8dp</dimen>
     <dimen name="chucker_doub_grid">16dp</dimen>
