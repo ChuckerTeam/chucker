@@ -56,6 +56,14 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "callStartDate") var callStartDate: Long?,
+    @ColumnInfo(name = "callEndDate") var callEndDate: Long?,
+    @ColumnInfo(name = "connectStartDate") var connectStartDate: Long?,
+    @ColumnInfo(name = "connectEndDate") var connectEndDate: Long?,
+    @ColumnInfo(name = "secureConnectStartDate") var secureConnectStartDate: Long?,
+    @ColumnInfo(name = "secureConnectEndDate") var secureConnectEndDate: Long?,
+    @ColumnInfo(name = "dnsStartDate") var dnsStartDate: Long?,
+    @ColumnInfo(name = "dnsEndDate") var dnsEndDate: Long?,
 ) {
 
     @Ignore
@@ -85,7 +93,15 @@ internal class HttpTransaction(
         responseHeadersSize = null,
         responseBody = null,
         responseImageData = null,
-        graphQlOperationName = null
+        graphQlOperationName = null,
+        callStartDate = null,
+        callEndDate = null,
+        connectStartDate = null,
+        connectEndDate = null,
+        secureConnectStartDate = null,
+        secureConnectEndDate = null,
+        dnsStartDate = null,
+        dnsEndDate = null,
     )
 
     enum class Status {
@@ -109,6 +125,42 @@ internal class HttpTransaction(
 
     val durationString: String?
         get() = tookMs?.let { "$it ms" }
+    val callDurationString: String?
+        get() {
+            val start = callStartDate ?: return null
+            val end = callEndDate ?: return null
+            return (end - start).let { "$it ms" }
+        }
+
+    val connectDuration: Long?
+        get() {
+            val start = connectStartDate ?: return null
+            val end = connectEndDate ?: return null
+            return (end - start)
+        }
+    val connectDurationString: String?
+        get() = connectDuration?.let { "$it ms" }
+
+
+    val secureConnectDuration: Long?
+        get() {
+            val start = secureConnectStartDate ?: return null
+            val end = secureConnectEndDate ?: return null
+            return (end - start)
+        }
+
+    val secureConnectDurationString: String?
+        get() = secureConnectDuration?.let { "$it ms" }
+
+    val dnsDuration: Long?
+        get() {
+            val start = dnsStartDate ?: return null
+            val end = dnsEndDate ?: return null
+            return (end - start)
+        }
+
+    val dnsDurationString: String?
+        get() = dnsDuration?.let { "$it ms" }
 
     val requestSizeString: String
         get() = formatBytes(requestPayloadSize ?: 0)
@@ -211,6 +263,7 @@ internal class HttpTransaction(
             contentType.contains("xml", ignoreCase = true) -> FormatUtils.formatXml(body)
             contentType.contains("x-www-form-urlencoded", ignoreCase = true) ->
                 FormatUtils.formatUrlEncodedForm(body)
+
             else -> body
         }
     }
@@ -295,6 +348,14 @@ internal class HttpTransaction(
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
             (graphQlOperationName == other.graphQlOperationName) &&
-            (graphQlDetected == other.graphQlDetected)
+            (graphQlDetected == other.graphQlDetected) &&
+            (callStartDate == other.callStartDate) &&
+            (callEndDate == other.callEndDate) &&
+            (connectStartDate == other.connectStartDate) &&
+            (connectEndDate == other.connectEndDate) &&
+            (secureConnectStartDate == other.secureConnectStartDate) &&
+            (secureConnectEndDate == other.secureConnectEndDate) &&
+            (dnsStartDate == other.dnsStartDate) &&
+            (dnsEndDate == other.dnsEndDate)
     }
 }

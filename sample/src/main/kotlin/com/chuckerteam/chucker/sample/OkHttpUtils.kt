@@ -32,6 +32,8 @@ fun createOkHttpClient(
         .addBodyDecoder(PokemonProtoBodyDecoder())
         .build()
 
+    val eventListenerFactory = chuckerInterceptor.useEventListener()
+
     return OkHttpClient.Builder()
         // Add a ChuckerInterceptor instance to your OkHttp client as an application or a network interceptor.
         // Learn more about interceptor types here – https://square.github.io/okhttp/interceptors.
@@ -39,6 +41,7 @@ fun createOkHttpClient(
         .addInterceptor(chuckerInterceptor.activeForType(InterceptorType.APPLICATION, interceptorTypeProvider))
         .addNetworkInterceptor(chuckerInterceptor.activeForType(InterceptorType.NETWORK, interceptorTypeProvider))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .eventListenerFactory(eventListenerFactory)
         .build()
 }
 

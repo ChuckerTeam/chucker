@@ -30,7 +30,7 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     override suspend fun insertTransaction(transaction: HttpTransaction) {
         val id = transactionDao.insert(transaction)
-        transaction.id = id ?: 0
+        transaction.id = id
     }
 
     override suspend fun updateTransaction(transaction: HttpTransaction): Int {

@@ -283,7 +283,87 @@
       app:layout_constraintTop_toBottomOf="@id/barrierResponseTime"
       tools:text="405 ms" />
 
-    <TextView
+      <TextView
+          style="@style/Chucker.TextAppearance.Label"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="Call duration"
+          app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/duration" />
+
+      <TextView
+          android:id="@+id/call_duration"
+          style="@style/Chucker.TextAppearance.Value"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+          app:layout_constraintTop_toBottomOf="@id/duration"
+          tools:text="705 ms" />
+
+      <TextView
+          style="@style/Chucker.TextAppearance.Label"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="Connect"
+          app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/call_duration" />
+
+      <TextView
+          android:id="@+id/connect_duration"
+          style="@style/Chucker.TextAppearance.Value"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+          app:layout_constraintTop_toBottomOf="@id/call_duration"
+          tools:text="105 ms" />
+
+      <TextView
+          style="@style/Chucker.TextAppearance.Label"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="SSL connect"
+          app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+          app:layout_constraintHorizontal_bias="1.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/connect_duration" />
+
+      <TextView
+          android:id="@+id/secure_connect_duration"
+          style="@style/Chucker.TextAppearance.Value"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="17dp"
+          app:layout_constraintTop_toBottomOf="@+id/connect_duration"
+          app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+          app:layout_constraintEnd_toEndOf="parent"
+          tools:text="109 ms" />
+
+      <TextView
+          style="@style/Chucker.TextAppearance.Label"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="Dns"
+          app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+          app:layout_constraintHorizontal_bias="1.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/secure_connect_duration" />
+
+      <TextView
+          android:id="@+id/dns_duration"
+          style="@style/Chucker.TextAppearance.Value"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+          app:layout_constraintTop_toBottomOf="@+id/secure_connect_duration"
+          tools:text="86 ms" />
+
+      <TextView
       android:id="@+id/requestSizeLabel"
       style="@style/Chucker.TextAppearance.Label"
       android:layout_width="0dp"
@@ -292,20 +372,20 @@
       android:text="@string/chucker_request_size"
       app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/duration" />
+      app:layout_constraintTop_toBottomOf="@id/dns_duration" />
 
-    <TextView
-      android:id="@+id/requestSize"
-      style="@style/Chucker.TextAppearance.Value"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/chucker_base_grid"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-      app:layout_constraintTop_toBottomOf="@id/duration"
-      tools:text="53 KB" />
+      <TextView
+          android:id="@+id/requestSize"
+          style="@style/Chucker.TextAppearance.Value"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+          app:layout_constraintTop_toTopOf="@+id/requestSizeLabel"
+          tools:text="53 KB" />
 
-    <androidx.constraintlayout.widget.Barrier
+      <androidx.constraintlayout.widget.Barrier
       android:id="@+id/barrierRequestSize"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

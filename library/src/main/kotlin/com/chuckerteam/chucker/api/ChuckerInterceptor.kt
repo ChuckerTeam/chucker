@@ -2,11 +2,14 @@ package com.chuckerteam.chucker.api
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.HttpTransactionFactory
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
+import com.chuckerteam.chucker.internal.support.RealChuckerEventListenerFactory
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import com.chuckerteam.chucker.internal.support.SimpleHttpTransactionFactory
+import okhttp3.EventListener
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -53,6 +56,8 @@ public class ChuckerInterceptor private constructor(
         decoders,
     )
 
+    private var httpTransactionFactory: HttpTransactionFactory = SimpleHttpTransactionFactory()
+
     init {
         if (builder.createShortcut) {
             Chucker.createShortcut(builder.context)
@@ -64,9 +69,16 @@ public class ChuckerInterceptor private constructor(
         headersToRedact.addAll(headerName)
     }
 
+    public fun useEventListener(): EventListener.Factory {
+        val realEventListenerFactory = RealChuckerEventListenerFactory()
+        httpTransactionFactory = realEventListenerFactory
+
+        return realEventListenerFactory
+    }
+
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val transaction = HttpTransaction()
+        val transaction = httpTransactionFactory.getHttpTransaction(chain.call())
         val request = chain.request()
 
         requestProcessor.process(request, transaction)
@@ -87,7 +99,7 @@ public class ChuckerInterceptor private constructor(
      *
      * @param context An Android [Context].
      */
-    public class Builder(internal var context: Context) {
+    public class Builder(providedContext: Context) {
         internal var collector: ChuckerCollector? = null
         internal var maxContentLength = MAX_CONTENT_LENGTH
         internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
@@ -95,6 +107,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+        internal val context = providedContext.applicationContext
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
