@@ -231,7 +231,7 @@ In order to keep up with the changes in OkHttp we decided to bump its version in
 
 # Sponsors 💸
 
-Chucker is maintained and improved during nights, weekends and whenever team has free time. If you use Chucker in your project, please consider sponsoring us. This will help us buy a domain for a website we will have soon and also spend some money on charity. Additionally, sponsorthip will also help us understand better how valuable Chucker is for people's everyday work.
+Chucker is maintained and improved during nights, weekends and whenever team has free time. If you use Chucker in your project, please consider sponsoring us. This will help us buy a domain for a website we will have soon and also spend some money on charity. Additionally, sponsorship will also help us understand better how valuable Chucker is for people's everyday work.
 
 You can sponsor us by clicking `Sponsor` button.
 
