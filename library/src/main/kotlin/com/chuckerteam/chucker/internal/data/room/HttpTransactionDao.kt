@@ -25,8 +25,7 @@ internal interface HttpTransactionDao {
             "transactions WHERE responseCode LIKE :codeQuery AND (path LIKE :pathQuery OR " +
             "graphQlOperationName LIKE :pathQuery) ORDER BY requestDate DESC"
     )
-    fun getFilteredTuples(codeQuery: String, pathQuery: String):
-        LiveData<List<HttpTransactionTuple>>
+    fun getFilteredTuples(codeQuery: String, pathQuery: String): LiveData<List<HttpTransactionTuple>>
 
     @Insert
     suspend fun insert(transaction: HttpTransaction): Long?
