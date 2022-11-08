@@ -155,13 +155,20 @@ internal class HttpTransactionDatabaseRepositoryTest {
             createRequest("def").withResponseData().apply {
                 requestDate = 300L
             }
+        val transactionFour =
+            createRequest("graphql").withResponseData().apply {
+                requestDate = 400L
+                graphQlDetected = true
+                graphQlOperationName = "GefDefQuery"
+            }
 
         testObject.insertTransaction(transactionOne)
         testObject.insertTransaction(transactionTwo)
         testObject.insertTransaction(transactionThree)
+        testObject.insertTransaction(transactionFour)
 
         testObject.getFilteredTransactionTuples(code = "", path = "def").observeForever { result ->
-            assertTuples(listOf(transactionThree, transactionTwo), result)
+            assertTuples(listOf(transactionFour,transactionThree, transactionTwo), result)
         }
     }
 
