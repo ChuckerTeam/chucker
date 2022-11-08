@@ -184,13 +184,21 @@ internal class HttpTransactionDaoTest {
             createRequest("def").withResponseData().apply {
                 requestDate = 300L
             }
+        val transactionFour =
+            createRequest("graphql").withResponseData().apply {
+                requestDate = 400L
+                graphQlDetected = true
+                graphQlOperationName = "GefAbcQuery"
+            }
+
 
         insertTransaction(transactionOne)
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
+        insertTransaction(transactionFour)
 
         testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
-            assertTuples(listOf(transactionOne, transactionTwo), result)
+            assertTuples(listOf(transactionFour, transactionOne, transactionTwo), result)
         }
     }
 
