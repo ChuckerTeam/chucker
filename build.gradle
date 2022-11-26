@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.7.10'
+        kotlinVersion = '1.7.21'
         androidGradleVersion = '7.3.1'
         coroutineVersion = '1.6.4'
 
@@ -20,7 +20,7 @@ buildscript {
         gsonVersion = '2.9.1'
         okhttpVersion = '4.9.3'
         retrofitVersion = '2.9.0'
-        wireVersion = '4.4.2'
+        wireVersion = '4.4.3'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.12.1'
