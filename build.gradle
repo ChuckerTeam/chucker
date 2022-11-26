@@ -26,7 +26,7 @@ buildscript {
         binaryCompatibilityValidator = '0.12.1'
         detektVersion = '1.22.0'
         ktLintGradleVersion = '11.0.0'
-        leakcanaryVersion = '2.9.1'
+        leakcanaryVersion = '2.10'
 
         // Apollo
         apolloVersion = '3.7.1'
