@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 public class SpanUtilTest {
     @SuppressLint("CheckResult")
     @Test
-    public fun testt() {
+    public fun json_can_have_null_value() {
 
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field": null }"""
