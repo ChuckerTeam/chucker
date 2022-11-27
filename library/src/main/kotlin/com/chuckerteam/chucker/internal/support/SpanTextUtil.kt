@@ -75,7 +75,7 @@ public class SpanTextUtil {
                     result.appendWithColor("\"${item.key}\"", JSON_KEY_COLOR)
                         .appendWithColor(":", JSON_SIGN_ELEMENTS_COLOR)
                     if (item.value.isJsonObject || item.value.isJsonArray)
-                        result.append(" " + printifyRecursive(item.value, indent))
+                        result.append(" ").append(printifyRecursive(item.value, indent))
                     else result.appendJsonValue(item.value)
                     if (index != transformedJson.asJsonObject.size())
                         result.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
