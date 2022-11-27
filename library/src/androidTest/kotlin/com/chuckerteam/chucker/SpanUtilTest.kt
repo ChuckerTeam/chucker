@@ -1,16 +1,24 @@
-package com.chuckerteam.chucker.internal.support
+package com.chuckerteam.chucker
 
+import android.annotation.SuppressLint
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.google.common.truth.Truth
-import org.junit.jupiter.api.Test
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 
-internal class SpanUtilsTest {
+@RunWith(AndroidJUnit4::class)
+public class SpanUtilTest {
+    @SuppressLint("CheckResult")
     @Test
-    fun `JSON can have null fields`() {
+    public fun testt() {
+
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field": null }"""
         )
-
-        Truth.assertThat(parsedJson).isEqualTo(
+        Assert.assertEquals(
+            parsedJson.toString(),
             """
             {
               "field": null
@@ -18,14 +26,13 @@ internal class SpanUtilsTest {
             """.trimIndent()
         )
     }
-
     @Test
-    fun `JSON can have empty fields`() {
+    public fun json_can_have_empty_fields() {
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field": "" }"""
         )
 
-        Truth.assertThat(parsedJson).isEqualTo(
+        Truth.assertThat(parsedJson.toString()).isEqualTo(
             """
             {
               "field": ""
@@ -35,23 +42,23 @@ internal class SpanUtilsTest {
     }
 
     @Test
-    fun `JSON can be invalid`() {
+    public fun json_can_be_invalid() {
         val parsedJson = SpanTextUtil.spanJson(
             """[{ "field": null }"""
         )
 
-        Truth.assertThat(parsedJson).isEqualTo(
+        Truth.assertThat(parsedJson.toString()).isEqualTo(
             """[{ "field": null }"""
         )
     }
 
     @Test
-    fun `JSON object is pretty printed`() {
+    public fun json_object_is_pretty_printed() {
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field1": "something", "field2": "else" }"""
         )
 
-        Truth.assertThat(parsedJson).isEqualTo(
+        Truth.assertThat(parsedJson.toString()).isEqualTo(
             """
             {
               "field1": "something",
@@ -62,12 +69,12 @@ internal class SpanUtilsTest {
     }
 
     @Test
-    fun `JSON array is pretty printed`() {
+    public fun json_array_is_pretty_printed() {
         val parsedJson = SpanTextUtil.spanJson(
             """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
         )
 
-        Truth.assertThat(parsedJson).isEqualTo(
+        Truth.assertThat(parsedJson.toString()).isEqualTo(
             """
             [
               {
