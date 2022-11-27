@@ -243,6 +243,11 @@ internal class HttpTransaction(
         return requestBody?.let { formatBody(it, requestContentType) } ?: ""
     }
 
+    fun getSpannedRequestBody(): CharSequence {
+        return requestBody?.let { spanBody(it, requestContentType) }
+            ?: SpannableStringBuilder.valueOf("")
+    }
+
     fun getFormattedResponseBody(): String {
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }

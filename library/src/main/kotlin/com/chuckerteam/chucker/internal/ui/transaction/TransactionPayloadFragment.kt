@@ -228,7 +228,7 @@ internal class TransactionPayloadFragment :
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
-                    transaction.getFormattedRequestBody()
+                    transaction.getSpannedRequestBody()
                 } else {
                     transaction.requestBody ?: ""
                 }
