@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.7.10'
+        kotlinVersion = '1.7.21'
         androidGradleVersion = '7.3.1'
         coroutineVersion = '1.6.4'
 
@@ -17,22 +17,22 @@ buildscript {
 
         // Networking
         brotliVersion = '0.1.2'
-        gsonVersion = '2.9.1'
+        gsonVersion = '2.10'
         okhttpVersion = '4.9.3'
         retrofitVersion = '2.9.0'
-        wireVersion = '4.4.2'
+        wireVersion = '4.4.3'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.12.1'
-        detektVersion = '1.21.0'
+        detektVersion = '1.22.0'
         ktLintGradleVersion = '11.0.0'
-        leakcanaryVersion = '2.9.1'
+        leakcanaryVersion = '2.10'
 
         // Apollo
-        apolloVersion = '3.6.2'
+        apolloVersion = '3.7.1'
 
         // Testing
-        androidxTestCoreVersion = '1.4.0'
+        androidxTestCoreVersion = '1.5.0'
         junitGradlePluignVersion = '1.8.2.1'
         junitVersion = '5.9.1'
         junit4Version = '4.13.2'
