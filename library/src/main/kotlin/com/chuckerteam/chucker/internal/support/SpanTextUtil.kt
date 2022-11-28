@@ -90,7 +90,7 @@ public class SpanTextUtil {
         private fun SpannableStringBuilder.appendWithColor(text: CharSequence, color: Int):
             SpannableStringBuilder {
             this.append(
-                text, ForegroundColorSpan(color),
+                text, ChuckerForegroundColorSpan(color),
                 Spanned.SPAN_INCLUSIVE_INCLUSIVE
             )
             return this
@@ -111,4 +111,6 @@ public class SpanTextUtil {
             )
         }
     }
+
+    public class ChuckerForegroundColorSpan(color: Int) : ForegroundColorSpan(color)
 }
