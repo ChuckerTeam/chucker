@@ -104,10 +104,10 @@ internal class TransactionPayloadFragment :
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
                     val result = processPayload(payloadType, transaction, formatRequestBody)
-                    if (result.isEmpty()) {
+                    if (result.second.isEmpty()) {
                         showEmptyState()
                     } else {
-                        payloadAdapter.setItems(result)
+                        payloadAdapter.setItems(result.second, result.first)
                         showPayloadState()
                     }
                     // Invalidating menu, because we need to hide menu items for empty payloads
@@ -216,7 +216,7 @@ internal class TransactionPayloadFragment :
         type: PayloadType,
         transaction: HttpTransaction,
         formatRequestBody: Boolean
-    ): MutableList<TransactionPayloadItem> {
+    ): Pair<Boolean, MutableList<TransactionPayloadItem>> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
 
@@ -237,8 +237,9 @@ internal class TransactionPayloadFragment :
                 isBodyEncoded = transaction.isResponseBodyEncoded
                 bodyString = transaction.getSpannedResponseBody()
             }
-
+            var containsHeader = false
             if (headersString.isNotBlank()) {
+                containsHeader = true
                 result.add(
                     TransactionPayloadItem.HeaderItem(
                         HtmlCompat.fromHtml(
@@ -255,7 +256,7 @@ internal class TransactionPayloadFragment :
             if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-                return@withContext result
+                return@withContext Pair(containsHeader, result)
             }
 
             when {
@@ -290,8 +291,7 @@ internal class TransactionPayloadFragment :
                     }
                 }
             }
-
-            return@withContext result
+            return@withContext Pair(containsHeader, result)
         }
     }
 

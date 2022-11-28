@@ -25,11 +25,13 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
 
     private val items = arrayListOf<TransactionPayloadItem>()
+    private var containsHeader = false
 
-    fun setItems(bodyItems: List<TransactionPayloadItem>) {
+    fun setItems(bodyItems: List<TransactionPayloadItem>, containsHeader: Boolean) {
         val previousItemCount = items.size
         items.clear()
         items.addAll(bodyItems)
+        this.containsHeader = containsHeader
         notifyItemRangeRemoved(0, previousItemCount)
         notifyItemRangeInserted(0, items.size)
     }
@@ -38,19 +40,25 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TransactionPayloadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADERS -> {
-                val headersItemBinding = ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
+                val headersItemBinding =
+                    ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
             }
             TYPE_BODY_LINE -> {
-                val bodyItemBinding = ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
+                val bodyItemBinding =
+                    ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
             else -> {
-                val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
+                val imageItemBinding =
+                    ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
             }
         }
@@ -66,7 +74,11 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         }
     }
 
-    internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
+    internal fun highlightQueryWithColors(
+        newText: String,
+        backgroundColor: Int,
+        foregroundColor: Int
+    ) {
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
@@ -75,12 +87,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                     item.line =
                         item.line
                             .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index + if (containsHeader) 1 else 0)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
-                        notifyItemChanged(index + 1)
+                        notifyItemChanged(index + if (containsHeader) 1 else 0)
                     }
                 }
             }
@@ -92,7 +104,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             .forEach { (index, item) ->
                 val removedSpansCount = item.line.clearHighlightSpans()
                 if (removedSpansCount > 0) {
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index + if (containsHeader) 1 else 0)
                 }
             }
     }
