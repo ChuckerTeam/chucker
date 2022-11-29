@@ -221,7 +221,7 @@ internal class HttpTransactionDaoTest {
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(codeQuery = "200", pathQuery = "%get%", graphQlQuery = "%get%")
+        testObject.getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
             .observeForever { result ->
             assertTuples(listOf(transactionFour), result)
         }
