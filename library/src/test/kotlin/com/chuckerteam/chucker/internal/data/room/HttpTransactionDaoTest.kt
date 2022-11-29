@@ -184,21 +184,46 @@ internal class HttpTransactionDaoTest {
             createRequest("def").withResponseData().apply {
                 requestDate = 300L
             }
+
+        insertTransaction(transactionOne)
+        insertTransaction(transactionTwo)
+        insertTransaction(transactionThree)
+
+        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
+            assertTuples(listOf(transactionOne, transactionTwo), result)
+        }
+    }
+
+    @Test
+    fun `transaction tuples are filtered by graphQLOperationName`() = runBlocking {
+        val transactionOne =
+            createRequest("abc").withResponseData().apply {
+                requestDate = 200L
+            }
+        val transactionTwo =
+            createRequest("abcdef").withResponseData().apply {
+                requestDate = 100L
+            }
+        val transactionThree =
+            createRequest("def").withResponseData().apply {
+                requestDate = 300L
+            }
         val transactionFour =
             createRequest("graphql").withResponseData().apply {
+                method = "POST"
                 requestDate = 400L
-                graphQlDetected = true
-                graphQlOperationName = "GefAbcQuery"
+                responseCode = 200
+                graphQlOperationName = "GetDefQuery"
             }
-
 
         insertTransaction(transactionOne)
         insertTransaction(transactionTwo)
         insertTransaction(transactionThree)
         insertTransaction(transactionFour)
 
-        testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
-            assertTuples(listOf(transactionFour, transactionOne, transactionTwo), result)
+        testObject.getFilteredTuples(codeQuery = "200", pathQuery = "%get%", graphQlQuery = "%get%")
+            .observeForever { result ->
+            assertTuples(listOf(transactionFour), result)
         }
     }
 
