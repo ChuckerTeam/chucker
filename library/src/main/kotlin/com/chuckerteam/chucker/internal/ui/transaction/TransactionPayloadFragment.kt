@@ -262,33 +262,14 @@ internal class TransactionPayloadFragment :
             when {
                 isBodyEncoded -> {
                     val text = requireContext().getString(R.string.chucker_body_omitted)
-                    result.add(
-                        TransactionPayloadItem.BodyLineItem(
-                            SpannableStringBuilder.valueOf(
-                                text
-                            )
-                        )
-                    )
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 bodyString.isBlank() -> {
                     val text = requireContext().getString(R.string.chucker_body_empty)
-                    result.add(
-                        TransactionPayloadItem.BodyLineItem(
-                            SpannableStringBuilder.valueOf(
-                                text
-                            )
-                        )
-                    )
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
-                else -> {
-                    bodyString.lines().forEach {
-                        result.add(
-                            TransactionPayloadItem.BodyLineItem(
-                                if (it is SpannableStringBuilder)
-                                    it else SpannableStringBuilder.valueOf(it)
-                            )
-                        )
-                    }
+                else -> bodyString.lines().forEach {
+                        result.add(TransactionPayloadItem.BodyLineItem(if (it is SpannableStringBuilder) it else SpannableStringBuilder.valueOf(it)))
                 }
             }
             return@withContext Pair(containsHeader, result)

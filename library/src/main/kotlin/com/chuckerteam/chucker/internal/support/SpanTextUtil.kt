@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.text.isDigitsOnly
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 
 
 public class SpanTextUtil {
@@ -19,7 +20,8 @@ public class SpanTextUtil {
         public fun spanJson(input: CharSequence): SpannableStringBuilder {
             val jsonElement = try {
                 JsonParser.parseString(input.toString())
-            } catch (e: Exception) {
+            } catch (e: JsonSyntaxException) {
+                e.printStackTrace()
                 return SpannableStringBuilder.valueOf(input)
             }
             val result = SpannableStringBuilder()
@@ -56,8 +58,7 @@ public class SpanTextUtil {
                     if (index != transformedJson.asJsonArray.size() - 1)
                         result.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
                 }
-                if (indent.length > 1)
-                    indent = indent.substring(2)
+                indent = indent.dropLast(2)
                 result.appendWithColor("\n$indent]", JSON_SIGN_ELEMENTS_COLOR)
             }
             if (transformedJson.isJsonObject) {
@@ -80,8 +81,7 @@ public class SpanTextUtil {
                     if (index != transformedJson.asJsonObject.size())
                         result.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
                 }
-                if (indent.length > 1)
-                    indent = indent.substring(2)
+                indent = indent.dropLast(2)
                 result.appendWithColor("\n$indent}", JSON_SIGN_ELEMENTS_COLOR)
             }
             return result
