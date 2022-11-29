@@ -21,7 +21,7 @@ public class SpanTextUtil {
             val jsonElement = try {
                 JsonParser.parseString(input.toString())
             } catch (e: JsonSyntaxException) {
-                e.printStackTrace()
+                Logger.error("Json structure is invalid")
                 return SpannableStringBuilder.valueOf(input)
             }
             val result = SpannableStringBuilder()

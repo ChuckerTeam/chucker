@@ -269,7 +269,9 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(if (it is SpannableStringBuilder) it else SpannableStringBuilder.valueOf(it)))
+                        result.add(TransactionPayloadItem.BodyLineItem(
+                            if (it is SpannableStringBuilder) it
+                            else SpannableStringBuilder.valueOf(it)))
                 }
             }
             return@withContext Pair(containsHeader, result)

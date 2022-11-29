@@ -46,7 +46,7 @@ class HttpBinHttpTask(
     @Suppress("MagicNumber")
     override fun run() = with(api) {
         get().enqueue(noOpCallback)
-        /*post(Data("posted")).enqueue(noOpCallback)
+        post(Data("posted")).enqueue(noOpCallback)
         patch(Data("patched")).enqueue(noOpCallback)
         put(Data("put")).enqueue(noOpCallback)
         delete().enqueue(noOpCallback)
@@ -77,7 +77,7 @@ class HttpBinHttpTask(
         redirectTo("https://ascii.cl?parameter=%22Click+on+%27URL+Encode%27%21%22").enqueue(noOpCallback)
         redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(noOpCallback)
         postForm("Value 1", "Value with symbols &$%").enqueue(noOpCallback)
-        postRawRequestBody(oneShotRequestBody()).enqueue(noOpCallback)*/
+        postRawRequestBody(oneShotRequestBody()).enqueue(noOpCallback)
     }
 
     private fun oneShotRequestBody() = object : RequestBody() {
