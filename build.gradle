@@ -14,7 +14,7 @@ buildscript {
         lifecycleVersion = '2.5.1'
         androidXArchTestVersion = '2.0.0'
         paletteKtxVersion = '1.0.0'
-        jsonhandleviewVersion = '1.2.2-jetified'
+        jsonhandleviewVersion = '1.2.3'
 
         // Networking
         brotliVersion = '0.1.2'
