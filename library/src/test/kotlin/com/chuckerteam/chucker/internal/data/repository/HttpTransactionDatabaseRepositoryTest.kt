@@ -193,6 +193,70 @@ internal class HttpTransactionDatabaseRepositoryTest {
     }
 
     @Test
+    fun `transaction tuples are filtered by qraphQlOperationName`() = runBlocking {
+        val transactionOne =
+            createRequest("abc").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 418
+            }
+        val transactionTwo =
+            createRequest("abcdef").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+            }
+        val transactionThree =
+            createRequest("def").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 400
+            }
+        val transactionFour =
+            createRequest("def").withResponseData().apply {
+                requestDate = 400L
+                responseCode = 200
+                graphQlOperationName = "GetDefQuery"
+            }
+        testObject.insertTransaction(transactionOne)
+        testObject.insertTransaction(transactionTwo)
+        testObject.insertTransaction(transactionThree)
+        testObject.insertTransaction(transactionFour)
+        testObject.getFilteredTransactionTuples(code = "", path = "GetDe").observeForever { result ->
+            assertTuples(listOf(transactionFour), result)
+        }
+    }
+
+    @Test
+    fun `transaction tuples are not filtered by qraphQlOperationName when graphQLQuery is empty`() = runBlocking {
+        val transactionOne =
+            createRequest("abc").withResponseData().apply {
+                requestDate = 200L
+                responseCode = 418
+            }
+        val transactionTwo =
+            createRequest("abcdef").withResponseData().apply {
+                requestDate = 100L
+                responseCode = 200
+            }
+        val transactionThree =
+            createRequest("def").withResponseData().apply {
+                requestDate = 300L
+                responseCode = 400
+            }
+        val transactionFour =
+            createRequest("graphql").withResponseData().apply {
+                requestDate = 400L
+                responseCode = 200
+                graphQlOperationName = "GetDefQuery"
+            }
+        testObject.insertTransaction(transactionOne)
+        testObject.insertTransaction(transactionTwo)
+        testObject.insertTransaction(transactionThree)
+        testObject.insertTransaction(transactionFour)
+        testObject.getFilteredTransactionTuples(code = "", path = "").observeForever { result ->
+            assertTuples(listOf(transactionFour,transactionThree, transactionOne, transactionTwo), result)
+        }
+    }
+
+    @Test
     fun `delete all transactions`() = runBlocking {
         testObject.insertTransaction(transaction)
         testObject.insertTransaction(otherTransaction)
