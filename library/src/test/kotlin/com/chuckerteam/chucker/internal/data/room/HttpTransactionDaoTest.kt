@@ -195,6 +195,39 @@ internal class HttpTransactionDaoTest {
     }
 
     @Test
+    fun `transaction tuples are filtered by graphQLOperationName`() = runBlocking {
+        val transactionOne =
+            createRequest("abc").withResponseData().apply {
+                requestDate = 200L
+            }
+        val transactionTwo =
+            createRequest("abcdef").withResponseData().apply {
+                requestDate = 100L
+            }
+        val transactionThree =
+            createRequest("def").withResponseData().apply {
+                requestDate = 300L
+            }
+        val transactionFour =
+            createRequest("graphql").withResponseData().apply {
+                method = "POST"
+                requestDate = 400L
+                responseCode = 200
+                graphQlOperationName = "GetDefQuery"
+            }
+
+        insertTransaction(transactionOne)
+        insertTransaction(transactionTwo)
+        insertTransaction(transactionThree)
+        insertTransaction(transactionFour)
+
+        testObject.getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
+            .observeForever { result ->
+            assertTuples(listOf(transactionFour), result)
+        }
+    }
+
+    @Test
     fun `transaction tuples are filtered by code`() = runBlocking {
         val transactionOne =
             createRequest("abc").withResponseData().apply {
