@@ -25,13 +25,11 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
 
     private val items = arrayListOf<TransactionPayloadItem>()
-    private var containsHeader = false
 
-    fun setItems(bodyItems: List<TransactionPayloadItem>, containsHeader: Boolean) {
+    fun setItems(bodyItems: List<TransactionPayloadItem>) {
         val previousItemCount = items.size
         items.clear()
         items.addAll(bodyItems)
-        this.containsHeader = containsHeader
         notifyItemRangeRemoved(0, previousItemCount)
         notifyItemRangeInserted(0, items.size)
     }
@@ -87,12 +85,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                     item.line =
                         item.line
                             .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
-                    notifyItemChanged(index + if (containsHeader) 1 else 0)
+                    notifyItemChanged(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
-                        notifyItemChanged(index + if (containsHeader) 1 else 0)
+                        notifyItemChanged(index + 1)
                     }
                 }
             }
@@ -104,7 +102,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             .forEach { (index, item) ->
                 val removedSpansCount = item.line.clearHighlightSpans()
                 if (removedSpansCount > 0) {
-                    notifyItemChanged(index + if (containsHeader) 1 else 0)
+                    notifyItemChanged(index + 1)
                 }
             }
     }
