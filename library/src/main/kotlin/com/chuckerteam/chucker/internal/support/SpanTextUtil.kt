@@ -34,11 +34,12 @@ public class SpanTextUtil {
             currentIndent: StringBuilder,
             sb: SpannableStringBuilder
         ) {
+            val indent = StringBuilder(currentIndent)
             if (transformedJson.isJsonArray) {
-                printifyJsonArray(sb, currentIndent, transformedJson)
+                printifyJsonArray(sb, indent, transformedJson)
             }
             if (transformedJson.isJsonObject) {
-                printifyJsonObject(sb, currentIndent, transformedJson)
+                printifyJsonObject(sb, indent, transformedJson)
             }
         }
 
