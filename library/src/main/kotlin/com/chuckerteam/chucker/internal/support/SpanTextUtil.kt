@@ -21,70 +21,84 @@ public class SpanTextUtil {
             val jsonElement = try {
                 JsonParser.parseString(input.toString())
             } catch (e: JsonSyntaxException) {
-                Logger.warn("Json structure is invalid so it can not be formatted",e)
+                Logger.warn("Json structure is invalid so it can not be formatted", e)
                 return SpannableStringBuilder.valueOf(input)
             }
-            val result = SpannableStringBuilder()
-            result.append(printifyRecursive(jsonElement, ""))
-            return result
+            val sb = SpannableStringBuilder()
+            printifyRecursive(jsonElement, StringBuilder(""), sb)
+            return sb
         }
 
         private fun printifyRecursive(
             transformedJson: JsonElement,
-            currentIndent: String
-        ): SpannableStringBuilder {
-            var indent = currentIndent
-            val result = SpannableStringBuilder()
+            currentIndent: StringBuilder,
+            sb: SpannableStringBuilder
+        ) {
             if (transformedJson.isJsonArray) {
-                if (transformedJson.asJsonArray.size() == 0)
-                    return SpannableStringBuilder().appendWithColor(
-                        "[]",
-                        JSON_SIGN_ELEMENTS_COLOR
-                    )
-                result.appendWithColor("$indent[\n", JSON_SIGN_ELEMENTS_COLOR)
-                indent += "  "
-                for (index in 0 until transformedJson.asJsonArray.size()) {
-                    val item = transformedJson.asJsonArray[index]
-                    if (item.isJsonObject || item.isJsonArray) result.append(
-                        printifyRecursive(
-                            item,
-                            indent
-                        )
-                    )
-                    else {
-                        result.append(indent)
-                        result.appendJsonValue(item)
-                    }
-                    if (index != transformedJson.asJsonArray.size() - 1)
-                        result.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
-                }
-                indent = indent.dropLast(2)
-                result.appendWithColor("\n$indent]", JSON_SIGN_ELEMENTS_COLOR)
+                printifyJsonArray(sb, currentIndent, transformedJson)
             }
             if (transformedJson.isJsonObject) {
-                if (transformedJson.asJsonObject.size() == 0)
-                    return SpannableStringBuilder().appendWithColor(
-                        "{}",
-                        JSON_SIGN_ELEMENTS_COLOR
-                    )
-                result.appendWithColor("$indent{\n", JSON_SIGN_ELEMENTS_COLOR)
-                indent += "  "
-                var index = 0
-                for (item in transformedJson.asJsonObject.entrySet()) {
-                    result.append(indent)
-                    index++
-                    result.appendWithColor("\"${item.key}\"", JSON_KEY_COLOR)
-                        .appendWithColor(":", JSON_SIGN_ELEMENTS_COLOR)
-                    if (item.value.isJsonObject || item.value.isJsonArray)
-                        result.append(" ").append(printifyRecursive(item.value, indent))
-                    else result.appendJsonValue(item.value)
-                    if (index != transformedJson.asJsonObject.size())
-                        result.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
-                }
-                indent = indent.dropLast(2)
-                result.appendWithColor("\n$indent}", JSON_SIGN_ELEMENTS_COLOR)
+                printifyJsonObject(sb, currentIndent, transformedJson)
             }
-            return result
+        }
+
+        private fun printifyJsonArray(
+            sb: SpannableStringBuilder,
+            indent: StringBuilder,
+            transformedJson: JsonElement
+        ) {
+            if (transformedJson.asJsonArray.isEmpty) {
+                sb.appendWithColor(
+                    "[]",
+                    JSON_SIGN_ELEMENTS_COLOR
+                )
+                return
+            }
+            sb.appendWithColor("$indent[\n", JSON_SIGN_ELEMENTS_COLOR)
+            indent.append("  ")
+            for (index in 0 until transformedJson.asJsonArray.size()) {
+                val item = transformedJson.asJsonArray[index]
+                if (item.isJsonObject || item.isJsonArray)
+                    printifyRecursive(item, indent, sb)
+                else {
+                    sb.append(indent)
+                    sb.appendJsonValue(item)
+                }
+                if (index != transformedJson.asJsonArray.size() - 1)
+                    sb.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
+            }
+            val finalIndent = StringBuilder(indent.dropLast(2))
+            sb.appendWithColor("\n$finalIndent]", JSON_SIGN_ELEMENTS_COLOR)
+        }
+
+        private fun printifyJsonObject(
+            sb: SpannableStringBuilder,
+            indentBuilder: StringBuilder,
+            transformedJson: JsonElement
+        ) {
+            if (transformedJson.asJsonObject.size() == 0) {
+                sb.appendWithColor(
+                    "{}",
+                    JSON_SIGN_ELEMENTS_COLOR
+                )
+                return
+            }
+            sb.appendWithColor("${indentBuilder}{\n", JSON_SIGN_ELEMENTS_COLOR)
+            indentBuilder.append("  ")
+            var index = 0
+            for (item in transformedJson.asJsonObject.entrySet()) {
+                sb.append(indentBuilder)
+                index++
+                sb.appendWithColor("\"${item.key}\"", JSON_KEY_COLOR)
+                    .appendWithColor(":", JSON_SIGN_ELEMENTS_COLOR)
+                if (item.value.isJsonObject || item.value.isJsonArray) {
+                    sb.append(" ")
+                    printifyRecursive(item.value, indentBuilder, sb)
+                } else sb.appendJsonValue(item.value)
+                if (index != transformedJson.asJsonObject.size())
+                    sb.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
+            }
+            sb.appendWithColor("\n${indentBuilder.dropLast(2)}}", JSON_SIGN_ELEMENTS_COLOR)
         }
 
         private fun SpannableStringBuilder.appendWithColor(text: CharSequence, color: Int):
@@ -114,3 +128,4 @@ public class SpanTextUtil {
 
     public class ChuckerForegroundColorSpan(color: Int) : ForegroundColorSpan(color)
 }
+
