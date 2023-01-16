@@ -29,7 +29,7 @@ buildscript {
         leakcanaryVersion = '2.10'
 
         // Apollo
-        apolloVersion = '3.7.1'
+        apolloVersion = '3.7.4'
 
         // Testing
         androidxTestCoreVersion = '1.5.0'
