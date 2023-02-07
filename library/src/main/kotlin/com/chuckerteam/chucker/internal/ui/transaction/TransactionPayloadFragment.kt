@@ -254,7 +254,7 @@ internal class TransactionPayloadFragment :
             if (type == PayloadType.RESPONSE && responseBitmap != null) {
                 val bitmapLuminance = responseBitmap.calculateLuminance()
                 result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-                return@withContext  result
+                return@withContext result
             }
 
             when {
@@ -276,11 +276,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(
-        type: PayloadType,
-        uri: Uri,
-        transaction: HttpTransaction
-    ): Boolean {
+    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
