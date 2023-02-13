@@ -20,7 +20,7 @@ buildscript {
         gsonVersion = '2.10.1'
         okhttpVersion = '4.9.3'
         retrofitVersion = '2.9.0'
-        wireVersion = '4.4.3'
+        wireVersion = '4.5.1'
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.12.1'
