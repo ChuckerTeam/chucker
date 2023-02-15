@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 public class SpanUtilTest {
     @SuppressLint("CheckResult")
     @Test
-    public fun `json can have null value`() {
+    public fun json_can_have_null_value() {
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field": null }"""
         )
@@ -26,7 +26,7 @@ public class SpanUtilTest {
         )
     }
     @Test
-    public fun `json can have empty fields`() {
+    public fun json_can_have_empty_fields() {
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field": "" }"""
         )
@@ -41,7 +41,7 @@ public class SpanUtilTest {
     }
 
     @Test
-    public fun `json can be invalid`() {
+    public fun json_can_be_invalid() {
         val parsedJson = SpanTextUtil.spanJson(
             """[{ "field": null }"""
         )
@@ -52,7 +52,7 @@ public class SpanUtilTest {
     }
 
     @Test
-    public fun `json object is pretty printed`() {
+    public fun json_object_is_pretty_printed() {
         val parsedJson = SpanTextUtil.spanJson(
             """{ "field1": "something", "field2": "else" }"""
         )
@@ -68,7 +68,7 @@ public class SpanUtilTest {
     }
 
     @Test
-    public fun `json array is pretty printed`() {
+    public fun json_array_is_pretty_printed() {
         val parsedJson = SpanTextUtil.spanJson(
             """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
         )
