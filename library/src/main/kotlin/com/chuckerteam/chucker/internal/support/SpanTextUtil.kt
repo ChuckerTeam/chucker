@@ -25,14 +25,14 @@ public class SpanTextUtil {
                 return SpannableStringBuilder.valueOf(input)
             }
             val sb = SpannableStringBuilder()
-            printifyRecursive(jsonElement, StringBuilder(""), sb)
+            printifyRecursive(sb, StringBuilder(""), jsonElement)
             return sb
         }
 
         private fun printifyRecursive(
-            transformedJson: JsonElement,
+            sb: SpannableStringBuilder,
             currentIndent: StringBuilder,
-            sb: SpannableStringBuilder
+            transformedJson: JsonElement
         ) {
             val indent = StringBuilder(currentIndent)
             if (transformedJson.isJsonArray) {
@@ -55,12 +55,12 @@ public class SpanTextUtil {
                 )
                 return
             }
-            sb.appendWithColor("$indent[\n", JSON_SIGN_ELEMENTS_COLOR)
+            sb.appendWithColor("${indent}[\n", JSON_SIGN_ELEMENTS_COLOR)
             indent.append("  ")
             for (index in 0 until transformedJson.asJsonArray.size()) {
                 val item = transformedJson.asJsonArray[index]
                 if (item.isJsonObject || item.isJsonArray)
-                    printifyRecursive(item, indent, sb)
+                    printifyRecursive(sb, indent, item)
                 else {
                     sb.append(indent)
                     sb.appendJsonValue(item)
@@ -69,7 +69,7 @@ public class SpanTextUtil {
                     sb.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
             }
             val finalIndent = StringBuilder(indent.dropLast(2))
-            sb.appendWithColor("\n$finalIndent]", JSON_SIGN_ELEMENTS_COLOR)
+            sb.appendWithColor("\n${finalIndent}]", JSON_SIGN_ELEMENTS_COLOR)
         }
 
         private fun printifyJsonObject(
@@ -94,7 +94,7 @@ public class SpanTextUtil {
                     .appendWithColor(":", JSON_SIGN_ELEMENTS_COLOR)
                 if (item.value.isJsonObject || item.value.isJsonArray) {
                     sb.append(" ")
-                    printifyRecursive(item.value, indentBuilder, sb)
+                    printifyRecursive(sb, indentBuilder, item.value)
                 } else sb.appendJsonValue(item.value)
                 if (index != transformedJson.asJsonObject.size())
                     sb.appendWithColor(",", JSON_SIGN_ELEMENTS_COLOR).append("\n")
