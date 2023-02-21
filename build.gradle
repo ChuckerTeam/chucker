@@ -25,7 +25,7 @@ buildscript {
         // Debug and quality control
         binaryCompatibilityValidator = '0.12.1'
         detektVersion = '1.22.0'
-        ktLintGradleVersion = '11.1.0'
+        ktLintGradleVersion = '11.2.0'
         leakcanaryVersion = '2.10'
 
         // Apollo
