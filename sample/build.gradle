@@ -8,11 +8,12 @@ wire {
 }
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdkVersion
+    namespace "com.chuckerteam.chucker.sample"
 
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
         applicationId "com.chuckerteam.chucker.sample"
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
@@ -54,12 +55,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
