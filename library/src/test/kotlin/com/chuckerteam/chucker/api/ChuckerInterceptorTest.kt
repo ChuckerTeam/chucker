@@ -41,11 +41,17 @@ internal class ChuckerInterceptorTest {
     val server = MockWebServer()
 
     private val serverUrl = server.url("/") // Starts server implicitly
+    private val skipUrl = server.url("/skipUrl")
 
     @TempDir
     lateinit var tempDir: File
     private val chuckerInterceptor =
-        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
+        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir } )
+
+    private fun skipEndpointLogic(request: Request)= {
+            request: Request -> request.url.host == skipUrl.host &&
+            skipUrl.encodedPathSegments.containsAll( request.url.encodedPathSegments)
+    }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -629,5 +635,63 @@ internal class ChuckerInterceptorTest {
         val serverRequestContent = server.takeRequest().body.readByteString()
 
         assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun `request that should be skipped is not processed by Chucker`(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate( cacheDirectoryProvider = {tempDir},
+            skipEndpoints = listOf(
+                skipEndpointLogic(Request.Builder().url(skipUrl).build())
+            )
+        )
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(skipUrl)
+            .build()
+
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+
+        chuckerInterceptor.expectNoTransactions()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun `request that should not be skipped is processed by Chucker`(factory: ClientFactory) {
+        val chuckerInterceptor = ChuckerInterceptorDelegate( cacheDirectoryProvider = {tempDir},
+            skipEndpoints = listOf(
+                skipEndpointLogic(Request.Builder().url(skipUrl).build())
+            )
+        )
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        val request = Request.Builder().url(skipUrl.toString().plus("/additional/path"))
+            .build()
+
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().body!!.string()
+
+        chuckerInterceptor.expectTransaction()
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
+    fun `chucker processes all requests when no skipEndpoints are provided`(factory: ClientFactory) {
+        val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
+            cacheDirectoryProvider = { tempDir }
+        )
+
+        server.enqueue(MockResponse().setBody("Hello, world!"))
+        server.enqueue(MockResponse().setBody("Hello, world again!!"))
+        val request = Request.Builder().url(skipUrl)
+            .build()
+        val secondRequest = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chuckerInterceptorWithoutSkipping)
+        client.newCall(request).execute().readByteStringBody()
+        client.newCall(secondRequest).execute().readByteStringBody()
+        val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
+        assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+        val secondTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
+        assertThat(secondTransaction.responseBody).isEqualTo("Hello, world again!!")
     }
 }

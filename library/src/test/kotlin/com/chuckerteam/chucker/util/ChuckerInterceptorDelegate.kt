@@ -10,6 +10,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import io.mockk.every
 import io.mockk.mockk
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
@@ -20,6 +21,7 @@ internal class ChuckerInterceptorDelegate(
     alwaysReadResponseBody: Boolean = false,
     cacheDirectoryProvider: CacheDirectoryProvider,
     decoders: List<BodyDecoder> = emptyList(),
+    skipEndpoints: List<(Request) -> Boolean> = emptyList()
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
@@ -42,6 +44,7 @@ internal class ChuckerInterceptorDelegate(
         .redactHeaders(headersToRedact)
         .alwaysReadResponseBody(alwaysReadResponseBody)
         .cacheDirectorProvider(cacheDirectoryProvider)
+        .skipEndpoints(skipEndpoints)
         .apply { decoders.forEach(::addBodyDecoder) }
         .build()
 

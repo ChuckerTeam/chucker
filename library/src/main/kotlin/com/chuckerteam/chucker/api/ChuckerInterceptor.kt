@@ -8,6 +8,7 @@ import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
@@ -53,6 +54,8 @@ public class ChuckerInterceptor private constructor(
         decoders,
     )
 
+    private val skipEndpoints = builder.skipEndpoints.toSet()
+
     init {
         if (builder.createShortcut) {
             Chucker.createShortcut(builder.context)
@@ -69,17 +72,19 @@ public class ChuckerInterceptor private constructor(
         val transaction = HttpTransaction()
         val request = chain.request()
 
-        requestProcessor.process(request, transaction)
-
-        val response = try {
-            chain.proceed(request)
-        } catch (e: IOException) {
-            transaction.error = e.toString()
-            collector.onResponseReceived(transaction)
-            throw e
+        return if(skipEndpoints.any { it(request) } ) {
+             chain.proceed(request)
+        } else {
+            requestProcessor.process(request, transaction)
+            val response = try {
+                chain.proceed(request)
+            } catch (e: IOException) {
+                transaction.error = e.toString()
+                collector.onResponseReceived(transaction)
+                throw e
+            }
+            responseProcessor.process(response, transaction)
         }
-
-        return responseProcessor.process(response, transaction)
     }
 
     /**
@@ -95,6 +100,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+        internal var skipEndpoints = mutableSetOf<(Request) -> Boolean>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -162,6 +168,10 @@ public class ChuckerInterceptor private constructor(
         @VisibleForTesting
         internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
             this.cacheDirectoryProvider = provider
+        }
+
+        internal fun skipEndpoints(comparisonLogics: List<(Request) -> Boolean>): Builder = apply {
+            this.skipEndpoints.addAll(comparisonLogics)
         }
 
         /**
