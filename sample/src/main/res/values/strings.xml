@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chucker Sample</string>
+    <string name="app_name">Chucker Sample App</string>
     <string name="interceptor_type"><a href="https://square.github.io/okhttp/interceptors/">Interceptor type</a>:</string>
     <string name="application_type">Application</string>
     <string name="network_type">Network</string>
