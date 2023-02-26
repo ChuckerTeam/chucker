@@ -8,7 +8,7 @@ build:
 
 complexity:
   active: true
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
     threshold: 16
   ComplexCondition:
@@ -28,7 +28,7 @@ style:
   ReturnCount:
     active: true
     max: 5
-    excludedFunctions: "equals"
+    excludedFunctions: ["equals"]
     excludeLabeled: false
     excludeReturnFromLambda: true
   UnusedImports:

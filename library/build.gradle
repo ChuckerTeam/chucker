@@ -3,7 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdkVersion
+    namespace "com.chuckerteam.chucker"
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += [
@@ -13,14 +14,19 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
+        minSdk rootProject.minSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
         resValue("string", "chucker_version", "$VERSION_NAME")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     buildFeatures {

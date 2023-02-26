@@ -1,12 +1,12 @@
 buildscript {
     ext {
-        kotlinVersion = '1.7.22'
-        androidGradleVersion = '7.3.1'
+        kotlinVersion = '1.8.10'
+        androidGradleVersion = '7.4.1'
         coroutineVersion = '1.6.4'
 
         // Google libraries
         activityVersion = '1.6.1'
-        appCompatVersion = '1.6.0'
+        appCompatVersion = '1.6.1'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.7.0'
         roomVersion = '2.5.0'
@@ -20,16 +20,16 @@ buildscript {
         gsonVersion = '2.10.1'
         okhttpVersion = '4.9.3'
         retrofitVersion = '2.9.0'
-        wireVersion = '4.4.3'
+        wireVersion = '4.5.1'
 
         // Debug and quality control
-        binaryCompatibilityValidator = '0.12.1'
+        binaryCompatibilityValidator = '0.13.0'
         detektVersion = '1.22.0'
-        ktLintGradleVersion = '11.1.0'
+        ktLintGradleVersion = '11.2.0'
         leakcanaryVersion = '2.10'
 
         // Apollo
-        apolloVersion = '3.7.1'
+        apolloVersion = '3.7.4'
 
         // Testing
         androidxTestCoreVersion = '1.5.0'
