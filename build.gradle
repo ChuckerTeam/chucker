@@ -12,7 +12,7 @@ buildscript {
         roomVersion = '2.5.0'
         fragmentVersion = '1.5.5'
         lifecycleVersion = '2.5.1'
-        androidXCoreVersion = '2.1.0'
+        androidXCoreVersion = '2.2.0'
         paletteKtxVersion = '1.0.0'
 
         // Networking
