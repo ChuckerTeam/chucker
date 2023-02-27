@@ -8,31 +8,18 @@
     tools:context="com.chuckerteam.chucker.sample.MainActivity">
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/doub_grid_size"
-        android:gravity="center"
-        android:text="@string/intro_title"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintBottom_toTopOf="@+id/description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintWidth_max="@dimen/max_width" />
-
-    <TextView
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/intro_body"
+        android:layout_marginBottom="@dimen/norm_grid_size"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/interceptor_type_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_max="@dimen/max_width" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -41,10 +28,10 @@
         android:layout_height="wrap_content"
         android:text="@string/interceptor_type"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        app:layout_constraintBottom_toTopOf="@+id/interceptor_type_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintBottom_toTopOf="@+id/interceptor_type_group"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_max="@dimen/max_width" />
 
@@ -80,7 +67,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/do_http"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/do_http_activity"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +78,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/do_graphql"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:text="@string/do_graphql_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +88,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/launch_chucker_directly"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/launch_chucker_directly"
         app:layout_constraintBottom_toTopOf="@id/export_to_file"
@@ -113,7 +100,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/export_to_file"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/doub_grid_size"
         android:text="@string/export_to_file"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -126,7 +113,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/export_to_file_har"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:text="@string/export_to_file_har"
         app:layout_constraintBottom_toBottomOf="@+id/export_to_file"
         app:layout_constraintEnd_toEndOf="parent"
@@ -134,12 +121,5 @@
         app:layout_constraintStart_toEndOf="@+id/export_to_file"
         app:layout_constraintTop_toTopOf="@+id/export_to_file"
         app:layout_constraintWidth_max="@dimen/max_width" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
