@@ -84,7 +84,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/do_http"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/do_http_activity"
@@ -96,7 +96,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/do_graphql"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/do_graphql_activity"
@@ -108,7 +108,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/launch_chucker_directly"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:text="@string/launch_chucker_directly"
         app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +119,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/export_to_file"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/doub_grid_size"
         android:layout_marginEnd="@dimen/doub_grid_size"
         android:text="@string/export_to_file"
@@ -133,7 +133,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/export_to_file_har"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/doub_grid_size"
         android:text="@string/export_to_file_har"
         app:layout_constraintBottom_toBottomOf="@+id/export_to_file"
