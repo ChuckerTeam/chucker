@@ -228,14 +228,14 @@ internal class TransactionPayloadFragment :
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
-                    transaction.getSpannedRequestBody()
+                    transaction.getSpannedRequestBody(context)
                 } else {
                     transaction.requestBody ?: ""
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
                 isBodyEncoded = transaction.isResponseBodyEncoded
-                bodyString = transaction.getSpannedResponseBody()
+                bodyString = transaction.getSpannedResponseBody(context)
             }
             if (headersString.isNotBlank()) {
                 result.add(

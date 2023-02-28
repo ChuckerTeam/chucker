@@ -2,6 +2,7 @@
 
 package com.chuckerteam.chucker.internal.data.entity
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.text.SpannableStringBuilder
@@ -226,11 +227,13 @@ internal class HttpTransaction(
      * This method just works with json content-type yet, and calls [formatBody]
      * for other content-type until parser function will be developed for other content-types.
      */
-    private fun spanBody(body: CharSequence, contentType: String?): CharSequence {
+    private fun spanBody(body: CharSequence, contentType: String?, context: Context?): CharSequence {
         return when {
             //TODO Implement Other Content Types
             contentType.isNullOrBlank() -> body
-            contentType.contains("json", ignoreCase = true) -> SpanTextUtil.spanJson(body)
+            contentType.contains("json", ignoreCase = true) && context != null -> {
+                SpanTextUtil(context).spanJson(body)
+            }
             else -> formatBody(body.toString(), contentType)
         }
     }
@@ -243,8 +246,8 @@ internal class HttpTransaction(
         return requestBody?.let { formatBody(it, requestContentType) } ?: ""
     }
 
-    fun getSpannedRequestBody(): CharSequence {
-        return requestBody?.let { spanBody(it, requestContentType) }
+    fun getSpannedRequestBody(context: Context?): CharSequence {
+        return requestBody?.let { spanBody(it, requestContentType,context) }
             ?: SpannableStringBuilder.valueOf("")
     }
 
@@ -252,9 +255,9 @@ internal class HttpTransaction(
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
     }
 
-    fun getSpannedResponseBody(): CharSequence {
+    fun getSpannedResponseBody(context: Context?): CharSequence {
         return responseBody?.let {
-            spanBody(it, responseContentType)
+            spanBody(it, responseContentType, context)
         } ?: SpannableStringBuilder.valueOf("")
     }
 
