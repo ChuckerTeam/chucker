@@ -47,7 +47,9 @@ public class ChuckerCollector @JvmOverloads constructor(
      */
     internal fun onRequestSent(transaction: HttpTransaction) {
         scope.launch {
-            RepositoryProvider.transaction().insertTransaction(transaction)
+            withContext(Dispatchers.IO) {
+                RepositoryProvider.transaction().insertTransaction(transaction)
+            }
 
             if (showNotification) {
                 notificationHelper.show(transaction)
@@ -65,7 +67,9 @@ public class ChuckerCollector @JvmOverloads constructor(
      */
     internal fun onResponseReceived(transaction: HttpTransaction) {
         scope.launch {
-            val updated = RepositoryProvider.transaction().updateTransaction(transaction)
+            val updated = withContext(Dispatchers.IO) {
+                RepositoryProvider.transaction().updateTransaction(transaction)
+            }
             if (showNotification && updated > 0) {
                 notificationHelper.show(transaction)
             }
