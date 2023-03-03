@@ -7,8 +7,8 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
@@ -54,7 +54,7 @@ public class ChuckerInterceptor private constructor(
         decoders,
     )
 
-    private val skipEndpoints = builder.skipEndpoints.toSet()
+    private val skipPaths = builder.skipPaths.toSet()
 
     init {
         if (builder.createShortcut) {
@@ -71,8 +71,7 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
-
-        return if(skipEndpoints.any { it(request) } ) {
+        return if(skipPaths.any { it == request.url.encodedPath }) {
              chain.proceed(request)
         } else {
             requestProcessor.process(request, transaction)
@@ -92,6 +91,7 @@ public class ChuckerInterceptor private constructor(
      *
      * @param context An Android [Context].
      */
+    @Suppress("TooManyFunctions")
     public class Builder(internal var context: Context) {
         internal var collector: ChuckerCollector? = null
         internal var maxContentLength = MAX_CONTENT_LENGTH
@@ -100,7 +100,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
-        internal var skipEndpoints = mutableSetOf<(Request) -> Boolean>()
+        internal var skipPaths = mutableSetOf<String>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -170,8 +170,20 @@ public class ChuckerInterceptor private constructor(
             this.cacheDirectoryProvider = provider
         }
 
-        internal fun skipEndpoints(comparisonLogics: List<(Request) -> Boolean>): Builder = apply {
-            this.skipEndpoints.addAll(comparisonLogics)
+        public fun skipPaths(skipPaths: List<String>): Builder = apply {
+            skipPaths.forEach { candidatePath ->
+                processSkipPaths(candidatePath)
+            }
+        }
+
+        private fun processSkipPaths(candidatePath: String) {
+            if (candidatePath.isNotBlank()) {
+                candidatePath.toHttpUrlOrNull()
+                    ?: "http://localhost:8080$candidatePath".toHttpUrlOrNull()
+                        ?.let { validHttpUrl ->
+                            this@Builder.skipPaths.add(validHttpUrl.encodedPath)
+                        }
+            }
         }
 
         /**
