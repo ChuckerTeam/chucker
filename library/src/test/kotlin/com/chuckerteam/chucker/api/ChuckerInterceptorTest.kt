@@ -42,7 +42,6 @@ internal class ChuckerInterceptorTest {
     val server = MockWebServer()
 
     private val serverUrl = server.url("/") // Starts server implicitly
-    private val skipPath = "/skipThisPath"
 
     @TempDir
     lateinit var tempDir: File
@@ -635,56 +634,18 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `request that should be skipped is not processed by Chucker`(factory: ClientFactory) {
-        val chuckerInterceptor = ChuckerInterceptorDelegate( cacheDirectoryProvider = { null },
-                skipPaths = listOf(skipPath)
-        )
-        server.enqueue(MockResponse().setBody("Hello, world!"))
-        val request = Request.Builder().url(server.url(skipPath))
-            .build()
-
-        val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().readByteStringBody()
-
-        chuckerInterceptor.expectNoTransactions()
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ClientFactory::class)
-    fun `request that should not be skipped is processed by Chucker`(factory: ClientFactory) {
-        val chuckerInterceptor = ChuckerInterceptorDelegate( cacheDirectoryProvider = { null },
-            skipPaths = listOf(skipPath)
-        )
-        server.enqueue(MockResponse().setBody("Hello, world!"))
-        val request = Request.Builder().url(server.url(skipPath.plus("/additional/path")))
-            .build()
-
-        val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().body!!.string()
-
-        chuckerInterceptor.expectTransaction()
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ClientFactory::class)
     fun `chucker processes all requests when no skipEndpoints are provided`(factory: ClientFactory) {
         val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { null }
+            cacheDirectoryProvider = { tempDir }
         )
-
-        server.enqueue(MockResponse().setBody("Hello, world!"))
-        server.enqueue(MockResponse().setBody("Hello, world again!!"))
-        val request = Request.Builder().url(server.url(skipPath))
-            .build()
-        val secondRequest = Request.Builder().url(serverUrl).build()
-
         val client = factory.create(chuckerInterceptorWithoutSkipping)
-        client.newCall(request).execute().readByteStringBody()
-        client.newCall(secondRequest).execute().readByteStringBody()
+        executeRequestForPath(client,"/","Response from /")
         val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+        assertThat(transaction.responseBody).isEqualTo("Response from /")
+
+        executeRequestForPath(client,"/skip/path","Response from /skip/path")
         val secondTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(secondTransaction.responseBody).isEqualTo("Hello, world again!!")
+        assertThat(secondTransaction.responseBody).isEqualTo("Response from /skip/path")
     }
 
     @ParameterizedTest
@@ -698,7 +659,6 @@ internal class ChuckerInterceptorTest {
                 "bla",
                 "www.bla.c/skip/path",
                 "bla.c/skip/path",
-                "https://bla/",
                 "90"
             )
         )
@@ -719,9 +679,10 @@ internal class ChuckerInterceptorTest {
         val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             skipPaths = listOf(
-                "/",
+                "https://bla/",
                 "/skip/path",
-                "/skip//"
+                "/skip//",
+                "http://localhost:8080/skip/path/ext"
             )
         )
         val client = factory.create(chuckerInterceptorWithoutSkipping)
@@ -745,6 +706,9 @@ internal class ChuckerInterceptorTest {
             .isEqualTo("Response from /skip/path/")
 
         executeRequestForPath(client,"/skip//","Request will not be processed")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client,"/skip/path/ext","Request will not be processed")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
     }
 

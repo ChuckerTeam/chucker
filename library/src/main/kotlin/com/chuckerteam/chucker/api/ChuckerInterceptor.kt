@@ -178,9 +178,10 @@ public class ChuckerInterceptor private constructor(
 
         private fun processSkipPaths(candidatePath: String) {
             if (candidatePath.isNotBlank()) {
-                candidatePath.toHttpUrlOrNull()
+                val nullableHttpUrl = candidatePath.toHttpUrlOrNull()
                     ?: "http://localhost:8080$candidatePath".toHttpUrlOrNull()
-                        ?.let { validHttpUrl ->
+
+                nullableHttpUrl?.let { validHttpUrl ->
                             this@Builder.skipPaths.add(validHttpUrl.encodedPath)
                         }
             }
