@@ -26,4 +26,11 @@
     <color name="chucker_chessboard_odd_square_light">#D2DADF</color>
     <color name="chucker_chessboard_even_square_dark">#182531</color>
     <color name="chucker_chessboard_odd_square_dark">#01101D</color>
+
+    <color name="chucker_json_key_color">#8B0057</color>
+    <color name="chucker_json_value_color">#2F00FF</color>
+    <color name="chucker_json_digit_and_null_value_color">#E84B31</color>
+    <color name="chucker_json_elements_color">#474747</color>
+
+
 </resources>

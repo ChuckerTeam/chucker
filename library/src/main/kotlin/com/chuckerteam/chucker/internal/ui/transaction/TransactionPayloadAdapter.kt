@@ -7,12 +7,14 @@ import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.getSpans
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
 import com.chuckerteam.chucker.internal.support.ChessboardDrawable
+import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 
 /**
@@ -69,15 +71,15 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             .withIndex()
             .forEach { (index, item) ->
                 if (item.line.contains(newText, ignoreCase = true)) {
-                    item.line.clearSpans()
-                    item.line = item.line.toString()
-                        .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
+                    item.line.clearHighlightSpans()
+                    item.line =
+                        item.line
+                            .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
                     notifyItemChanged(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
-                    val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
-                    if (spans.isNotEmpty()) {
-                        item.line.clearSpans()
+                    val removedSpansCount = item.line.clearHighlightSpans()
+                    if (removedSpansCount > 0) {
                         notifyItemChanged(index + 1)
                     }
                 }
@@ -88,9 +90,8 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
-                val spans = item.line.getSpans(0, item.line.length - 1, Any::class.java)
-                if (spans.isNotEmpty()) {
-                    item.line.clearSpans()
+                val removedSpansCount = item.line.clearHighlightSpans()
+                if (removedSpansCount > 0) {
                     notifyItemChanged(index + 1)
                 }
             }
@@ -100,6 +101,21 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2
         private const val TYPE_IMAGE = 3
+    }
+
+    /**
+     * Clear span that created during search process
+     * @return Number of spans that removed.
+     */
+    private fun SpannableStringBuilder.clearHighlightSpans(): Int {
+        var removedSpansCount = 0
+        val spanList = getSpans<Any>(0, length)
+        for (span in spanList)
+            if (span !is SpanTextUtil.ChuckerForegroundColorSpan) {
+                removeSpan(span)
+                removedSpansCount++
+            }
+        return removedSpansCount
     }
 }
 

@@ -41,27 +41,28 @@ internal class TransactionPayloadFragment :
         arguments?.getSerializable(ARG_TYPE) as PayloadType
     }
 
-    private val saveToFile = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
-        val transaction = viewModel.transaction.value
-        val applicationContext = requireContext().applicationContext
-        if (uri != null && transaction != null) {
-            lifecycleScope.launch {
-                val result = saveToFile(payloadType, uri, transaction)
-                val toastMessageId = if (result) {
-                    R.string.chucker_file_saved
-                } else {
-                    R.string.chucker_file_not_saved
+    private val saveToFile =
+        registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+            val transaction = viewModel.transaction.value
+            val applicationContext = requireContext().applicationContext
+            if (uri != null && transaction != null) {
+                lifecycleScope.launch {
+                    val result = saveToFile(payloadType, uri, transaction)
+                    val toastMessageId = if (result) {
+                        R.string.chucker_file_saved
+                    } else {
+                        R.string.chucker_file_not_saved
+                    }
+                    Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    R.string.chucker_save_failed_to_open_document,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.chucker_save_failed_to_open_document,
-                Toast.LENGTH_SHORT
-            ).show()
         }
-    }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
     private val payloadAdapter = TransactionBodyAdapter()
@@ -200,7 +201,11 @@ internal class TransactionPayloadFragment :
 
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+            payloadAdapter.highlightQueryWithColors(
+                newText,
+                backgroundSpanColor,
+                foregroundSpanColor
+            )
         } else {
             payloadAdapter.resetHighlight()
         }
@@ -217,22 +222,21 @@ internal class TransactionPayloadFragment :
 
             val headersString: String
             val isBodyEncoded: Boolean
-            val bodyString: String
+            val bodyString: CharSequence
 
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyEncoded = transaction.isRequestBodyEncoded
                 bodyString = if (formatRequestBody) {
-                    transaction.getFormattedRequestBody()
+                    transaction.getSpannedRequestBody(context)
                 } else {
                     transaction.requestBody ?: ""
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
                 isBodyEncoded = transaction.isResponseBodyEncoded
-                bodyString = transaction.getFormattedResponseBody()
+                bodyString = transaction.getSpannedResponseBody(context)
             }
-
             if (headersString.isNotBlank()) {
                 result.add(
                     TransactionPayloadItem.HeaderItem(
@@ -263,10 +267,11 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
+                        result.add(TransactionPayloadItem.BodyLineItem(
+                            if (it is SpannableStringBuilder) it
+                            else SpannableStringBuilder.valueOf(it)))
                 }
             }
-
             return@withContext result
         }
     }
@@ -310,5 +315,18 @@ internal class TransactionPayloadFragment :
                     putSerializable(ARG_TYPE, type)
                 }
             }
+    }
+
+    private fun CharSequence.lines(): List<CharSequence> {
+        val linesList = this.lineSequence().toList()
+        val result = mutableListOf<CharSequence>()
+        var lineIndex = 0
+        for (index in linesList.indices) {
+            result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
+            lineIndex += linesList[index].length + 1
+        }
+        if (result.isEmpty())
+            result.add(subSequence(0, length))
+        return result
     }
 }

@@ -2,8 +2,11 @@
 
 package com.chuckerteam.chucker.internal.data.entity
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -11,6 +14,7 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -215,6 +219,25 @@ internal class HttpTransaction(
         }
     }
 
+    /**
+     * This method creates [android.text.SpannableString] from body
+     * and add [ForegroundColorSpan] to text with different colors for better contrast between
+     * keys and values and etc in the body.
+     *
+     * This method just works with json content-type yet, and calls [formatBody]
+     * for other content-type until parser function will be developed for other content-types.
+     */
+    private fun spanBody(body: CharSequence, contentType: String?, context: Context?): CharSequence {
+        return when {
+            //TODO Implement Other Content Types
+            contentType.isNullOrBlank() -> body
+            contentType.contains("json", ignoreCase = true) && context != null -> {
+                SpanTextUtil(context).spanJson(body)
+            }
+            else -> formatBody(body.toString(), contentType)
+        }
+    }
+
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
     }
@@ -223,8 +246,19 @@ internal class HttpTransaction(
         return requestBody?.let { formatBody(it, requestContentType) } ?: ""
     }
 
+    fun getSpannedRequestBody(context: Context?): CharSequence {
+        return requestBody?.let { spanBody(it, requestContentType,context) }
+            ?: SpannableStringBuilder.valueOf("")
+    }
+
     fun getFormattedResponseBody(): String {
         return responseBody?.let { formatBody(it, responseContentType) } ?: ""
+    }
+
+    fun getSpannedResponseBody(context: Context?): CharSequence {
+        return responseBody?.let {
+            spanBody(it, responseContentType, context)
+        } ?: SpannableStringBuilder.valueOf("")
     }
 
     fun populateUrl(httpUrl: HttpUrl): HttpTransaction {

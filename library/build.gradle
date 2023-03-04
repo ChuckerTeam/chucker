@@ -17,6 +17,7 @@ android {
         minSdk rootProject.minSdkVersion
         consumerProguardFiles 'proguard-rules.pro'
         resValue("string", "chucker_version", "$VERSION_NAME")
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -96,6 +97,12 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
+
+    androidTestImplementation "junit:junit:$junit4Version"
+    androidTestImplementation "androidx.test:runner:$androidXTestRunner"
+    androidTestImplementation "androidx.test:rules:$androidXTestRules"
+    androidTestImplementation "com.google.truth:truth:$truthVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidXTestExt"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
