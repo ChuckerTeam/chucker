@@ -12,6 +12,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
+import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -650,7 +651,7 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
-    fun `chucker processes requests when skipPaths are invalid`(factory: ClientFactory){
+    fun `chucker skips requests when skipPaths are provided`(factory: ClientFactory){
         val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
             skipPaths = listOf(
@@ -659,26 +660,7 @@ internal class ChuckerInterceptorTest {
                 "bla",
                 "www.bla.c/skip/path",
                 "bla.c/skip/path",
-                "90"
-            )
-        )
-        val client = factory.create(chuckerInterceptorWithoutSkipping)
-
-        executeRequestForPath(client,"/skip/path","Hello, world!")
-        val firstTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(firstTransaction.responseBody).isEqualTo("Hello, world!")
-
-        executeRequestForPath(client,"/","Hello, world! again")
-        val secondTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(secondTransaction.responseBody).isEqualTo("Hello, world! again")
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ClientFactory::class)
-    fun `chucker skips all requests for valid skipPaths`(factory: ClientFactory) {
-        val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            skipPaths = listOf(
+                "90",
                 "https://bla/",
                 "/skip/path",
                 "/skip//",
@@ -686,34 +668,42 @@ internal class ChuckerInterceptorTest {
             )
         )
         val client = factory.create(chuckerInterceptorWithoutSkipping)
-        executeRequestForPath(client,"/","Request will not be processed")
+
+        executeRequestForPath(client,"","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(
-            client,
-            "/some/random/path",
-            "Response from /some/random/path"
-        )
-        val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(transaction.responseBody).isEqualTo("Response from /some/random/path")
-
-        executeRequestForPath(client,"/skip/path","Request will not be processed")
+        executeRequestForPath(client,"    ","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client,"/skip/path/","Response from /skip/path/")
-        val anotherProcessedtransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(anotherProcessedtransaction.responseBody)
-            .isEqualTo("Response from /skip/path/")
-
-        executeRequestForPath(client,"/skip//","Request will not be processed")
+        executeRequestForPath(client,"www.bla.c/skip/path","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client,"/skip/path/ext","Request will not be processed")
+        executeRequestForPath(client,"bla.c/skip/path","Hello, world!")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client, "90","Hello, world!")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client, "https://bla/","Hello, world!")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client, "/skip/path","Hello, world!")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client, "/skip//","Hello, world!")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
+
+        executeRequestForPath(client, "http://localhost:8080/skip/path/ext","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
     }
 
     private fun executeRequestForPath(okHttpClient: OkHttpClient, path: String, responseBody: String) {
-        val request = Request.Builder().url(server.url(path)).build()
+        val httpUrl = HttpUrl.Builder().scheme("https")
+            .host("testexample.com")
+            .addPathSegment(path)
+            .build()
+
+        val request = Request.Builder().url(server.url(httpUrl.encodedPath)).build()
         server.enqueue(MockResponse().setBody(responseBody))
         okHttpClient.newCall(request).execute().readByteStringBody()
     }

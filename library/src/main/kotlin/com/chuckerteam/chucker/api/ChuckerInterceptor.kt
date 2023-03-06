@@ -7,7 +7,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -172,18 +172,11 @@ public class ChuckerInterceptor private constructor(
 
         public fun skipPaths(skipPaths: List<String>): Builder = apply {
             skipPaths.forEach { candidatePath ->
-                processSkipPaths(candidatePath)
-            }
-        }
-
-        private fun processSkipPaths(candidatePath: String) {
-            if (candidatePath.isNotBlank()) {
-                val nullableHttpUrl = candidatePath.toHttpUrlOrNull()
-                    ?: "http://localhost:8080$candidatePath".toHttpUrlOrNull()
-
-                nullableHttpUrl?.let { validHttpUrl ->
-                            this@Builder.skipPaths.add(validHttpUrl.encodedPath)
-                        }
+                val httpUrl = HttpUrl.Builder()
+                    .scheme("https")
+                    .host("example.com")
+                    .addPathSegment(candidatePath).build()
+                this@Builder.skipPaths.add(httpUrl.encodedPath)
             }
         }
 
