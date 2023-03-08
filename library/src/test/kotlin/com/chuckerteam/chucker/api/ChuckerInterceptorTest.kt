@@ -47,7 +47,7 @@ internal class ChuckerInterceptorTest {
     @TempDir
     lateinit var tempDir: File
     private val chuckerInterceptor =
-        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir } )
+        ChuckerInterceptorDelegate(cacheDirectoryProvider = { tempDir })
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)

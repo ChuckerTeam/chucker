@@ -46,7 +46,7 @@ public class ChuckerInterceptor private constructor(
 
         public fun createShortcut(enable: Boolean): Builder = this
 
-        public fun skipPaths(paths: List<String>): Builder = this
+        public fun skipPaths(vararg paths: String): Builder = this
 
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }

@@ -170,7 +170,7 @@ public class ChuckerInterceptor private constructor(
             this.cacheDirectoryProvider = provider
         }
 
-        public fun skipPaths(skipPaths: List<String>): Builder = apply {
+        public fun skipPaths(vararg skipPaths: String): Builder = apply {
             skipPaths.forEach { candidatePath ->
                 val httpUrl = HttpUrl.Builder()
                     .scheme("https")
