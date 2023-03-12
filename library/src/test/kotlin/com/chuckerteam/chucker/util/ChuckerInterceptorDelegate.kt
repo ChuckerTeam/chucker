@@ -43,7 +43,7 @@ internal class ChuckerInterceptorDelegate(
         .redactHeaders(headersToRedact)
         .alwaysReadResponseBody(alwaysReadResponseBody)
         .cacheDirectorProvider(cacheDirectoryProvider)
-        .skipPaths(skipPaths = skipPaths.map{it}.toTypedArray())
+        .skipPaths(skipPaths = skipPaths.toTypedArray())
         .apply { decoders.forEach(::addBodyDecoder) }
         .build()
 

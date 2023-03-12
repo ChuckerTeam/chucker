@@ -675,25 +675,25 @@ internal class ChuckerInterceptorTest {
         executeRequestForPath(client,"    ","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client,"www.bla.c/skip/path","Hello, world!")
+        executeRequestForPath(client,"www.example.com/skip/path","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client,"bla.c/skip/path","Hello, world!")
+        executeRequestForPath(client,"example.com/skip/path","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client, "90","Hello, world!")
+        executeRequestForPath(client,"90","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client, "https://bla/","Hello, world!")
+        executeRequestForPath(client,"https://bla/","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client, "/skip/path","Hello, world!")
+        executeRequestForPath(client,"/skip/path","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client, "/skip//","Hello, world!")
+        executeRequestForPath(client,"/skip//","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client, "http://localhost:8080/skip/path/ext","Hello, world!")
+        executeRequestForPath(client,"http://localhost:8080/skip/path/ext","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
     }
 
