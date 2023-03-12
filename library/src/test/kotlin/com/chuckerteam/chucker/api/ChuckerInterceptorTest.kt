@@ -657,11 +657,11 @@ internal class ChuckerInterceptorTest {
             skipPaths = listOf(
                 "",
                 "    ",
-                "bla",
-                "www.bla.c/skip/path",
-                "bla.c/skip/path",
+                "example",
+                "www.example.com/skip/path",
+                "example.com/skip/path",
                 "90",
-                "https://bla/",
+                "https://example/",
                 "/skip/path",
                 "/skip//",
                 "http://localhost:8080/skip/path/ext"
@@ -684,7 +684,7 @@ internal class ChuckerInterceptorTest {
         executeRequestForPath(client,"90","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
-        executeRequestForPath(client,"https://bla/","Hello, world!")
+        executeRequestForPath(client,"https://example/","Hello, world!")
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
         executeRequestForPath(client,"/skip/path","Hello, world!")
