@@ -9,7 +9,6 @@ import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
@@ -72,28 +71,20 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
-        val skipProcessing = skipPaths.any { it == request.url.encodedPath }
-        return if(skipProcessing) {
-            chain.proceed(request)
-        } else {
-            requestProcessor.process(request, transaction)
-            val response = proceedRequest(chain, request, transaction)
-            responseProcessor.process(response, transaction)
+        val shouldProcessTheRequest = !skipPaths.any { it == request.url.encodedPath }
+        if(shouldProcessTheRequest){
+            requestProcessor.process(request,transaction)
         }
-    }
-
-    private fun proceedRequest(
-        chain: Interceptor.Chain,
-        request: Request,
-        transaction: HttpTransaction
-    ): Response {
-        return try {
+        val response = try {
             chain.proceed(request)
-        } catch (e: IOException) {
-            transaction.error = e.toString()
+        } catch (exception: IOException) {
+            transaction.error = exception.toString()
             collector.onResponseReceived(transaction)
-            throw e
+            throw exception
         }
+        return if(shouldProcessTheRequest)
+            responseProcessor.process(response,transaction)
+        else response
     }
 
     /**
