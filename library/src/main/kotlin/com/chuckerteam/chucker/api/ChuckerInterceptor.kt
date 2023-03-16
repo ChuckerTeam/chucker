@@ -77,10 +77,10 @@ public class ChuckerInterceptor private constructor(
         }
         val response = try {
             chain.proceed(request)
-        } catch (exception: IOException) {
-            transaction.error = exception.toString()
+        } catch (e: IOException) {
+            transaction.error = e.toString()
             collector.onResponseReceived(transaction)
-            throw exception
+            throw e
         }
         return if(shouldProcessTheRequest)
             responseProcessor.process(response,transaction)
