@@ -66,7 +66,8 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         }
     }
 
-    internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
+    internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int): List<Int> {
+        val listOfFoundQueryIndices = mutableListOf<Int>()
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
@@ -76,14 +77,17 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                         item.line
                             .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
                     notifyItemChanged(index + 1)
+                    listOfFoundQueryIndices.add(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
                         notifyItemChanged(index + 1)
+                        listOfFoundQueryIndices.remove(index + 1)
                     }
                 }
             }
+        return listOfFoundQueryIndices
     }
 
     internal fun resetHighlight() {

@@ -1,16 +1,20 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -26,6 +30,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.support.gone
+import com.chuckerteam.chucker.internal.support.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,6 +76,9 @@ internal class TransactionPayloadFragment :
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
 
+    private val scrollableIndices by lazy { mutableListOf<Int>() }
+    private var currentSearchScrollIndex = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -78,7 +87,7 @@ internal class TransactionPayloadFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
             inflater,
@@ -117,6 +126,32 @@ internal class TransactionPayloadFragment :
                 }
             }
         )
+
+        payloadBinding.fabToNext.setOnClickListener {
+            onSearchScrollerButtonClick(true)
+        }
+        payloadBinding.fabToPrevious.setOnClickListener {
+            onSearchScrollerButtonClick(false)
+        }
+    }
+
+    private fun onSearchScrollerButtonClick(goNext: Boolean) {
+        // hide the keyboard if visible
+        val inputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (inputMethodManager.isAcceptingText) {
+            activity?.currentFocus?.clearFocus()
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+
+        val scrollToIndex = if (goNext) currentSearchScrollIndex + 1 else currentSearchScrollIndex - 1
+        val scrollTo = scrollableIndices.getOrNull(scrollToIndex)
+        if (scrollTo != null) {
+            payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
+            currentSearchScrollIndex = scrollToIndex
+        }
+
+        payloadBinding.fabToNext.isEnabled = scrollTo != scrollableIndices.last()
+        payloadBinding.fabToPrevious.isEnabled = scrollTo != scrollableIndices.first()
     }
 
     private fun showEmptyState() {
@@ -200,8 +235,9 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
+        var listOfScrollableIndex = listOf<Int>()
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            payloadAdapter.highlightQueryWithColors(
+            listOfScrollableIndex = payloadAdapter.highlightQueryWithColors(
                 newText,
                 backgroundSpanColor,
                 foregroundSpanColor
@@ -209,6 +245,44 @@ internal class TransactionPayloadFragment :
         } else {
             payloadAdapter.resetHighlight()
         }
+
+        scrollableIndices.clear()
+        when {
+            listOfScrollableIndex.isEmpty() -> {
+                // scroll to top
+                currentSearchScrollIndex = 0
+                payloadBinding.payloadRecyclerView.smoothScrollToPosition(0)
+
+                payloadBinding.fabToNext.gone()
+                payloadBinding.fabToPrevious.gone()
+            }
+            listOfScrollableIndex.size == 1 -> {
+                payloadBinding.fabToNext.gone()
+                payloadBinding.fabToPrevious.gone()
+
+                scrollableIndices.addAll(listOfScrollableIndex)
+            }
+            else -> {
+                payloadBinding.fabToNext.visible()
+                payloadBinding.fabToPrevious.visible()
+
+                payloadBinding.fabToPrevious.isEnabled = false
+                payloadBinding.fabToNext.isEnabled = true
+
+                scrollableIndices.addAll(listOfScrollableIndex)
+            }
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (scrollableIndices.isNotEmpty()) {
+                    currentSearchScrollIndex = 0
+                    payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollableIndices[currentSearchScrollIndex])
+                } else scrollableIndices.clear()
+            },
+            600
+        )
+
         return true
     }
 

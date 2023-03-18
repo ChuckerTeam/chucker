@@ -68,4 +68,36 @@
         app:constraint_referenced_ids="emptyPayloadImage,emptyPayloadTextView"
         tools:visibility="visible" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_to_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/chucker_fab_background_colour"
+        android:contentDescription="@string/chucker_scroll_buttons_for_search"
+        android:src="@drawable/chucker_ic_arrow_down"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/chucker_color_on_primary"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_to_previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="@color/chucker_fab_background_colour"
+        android:contentDescription="@string/chucker_scroll_buttons_for_search"
+        android:enabled="false"
+        android:rotation="180"
+        android:src="@drawable/chucker_ic_arrow_down"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fab_to_next"
+        app:tint="@color/chucker_color_on_primary"
+        tools:enabled="false"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
