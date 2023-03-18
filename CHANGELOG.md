@@ -4,6 +4,7 @@ This file follows [Keepachangelog](https://keepachangelog.com/) format.
 Please add your entries according to this format.
 
 ## Unreleased
+* added scroll to highlighted text search in response screen
 
 ### Added
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
