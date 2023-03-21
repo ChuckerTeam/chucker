@@ -29,7 +29,7 @@ internal interface HttpTransactionDao {
         LiveData<List<HttpTransactionTuple>>
 
     @Insert
-    suspend fun insert(transaction: HttpTransaction): Long?
+    suspend fun insert(transaction: HttpTransaction): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(transaction: HttpTransaction): Int

@@ -17,6 +17,9 @@ internal data class Timings(
 ) {
     constructor(transaction: HttpTransaction) : this(
         wait = transaction.tookMs ?: 0,
+        dns = transaction.dnsDuration,
+        connect = transaction.connectDuration ?: 0,
+        ssl = transaction.secureConnectDuration
     )
 
     fun getTime(): Long {
