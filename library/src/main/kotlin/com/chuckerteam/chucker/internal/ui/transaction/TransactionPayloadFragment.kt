@@ -277,10 +277,12 @@ internal class TransactionPayloadFragment :
             {
                 if (scrollableIndices.isNotEmpty()) {
                     currentSearchScrollIndex = 0
-                    payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollableIndices[currentSearchScrollIndex])
+                    payloadBinding.payloadRecyclerView.smoothScrollToPosition(
+                        scrollableIndices[currentSearchScrollIndex]
+                    )
                 } else scrollableIndices.clear()
             },
-            600
+            DELAY_FOR_SEARCH_SCROLL
         )
 
         return true
@@ -378,6 +380,7 @@ internal class TransactionPayloadFragment :
     companion object {
         private const val ARG_TYPE = "type"
         private const val TRANSACTION_EXCEPTION = "Transaction not ready"
+        private const val DELAY_FOR_SEARCH_SCROLL: Long = 600L
 
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
 
