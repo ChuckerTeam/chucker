@@ -38,6 +38,7 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
 	public final fun maxContentLength (J)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun redactHeaders (Ljava/lang/Iterable;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun redactHeaders ([Ljava/lang/String;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun skipPaths ([Ljava/lang/String;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 }
 
 public final class com/chuckerteam/chucker/api/ExportFormat : java/lang/Enum {
