@@ -7,3 +7,6 @@ trim_trailing_whitespace = true
 
 [*.yml]
 indent_size = 2
+
+[**/test/**.kt]
+ktlint_ignore_back_ticked_identifier=true
