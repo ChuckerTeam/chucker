@@ -97,7 +97,7 @@ public class ChuckerCollector @JvmOverloads constructor(
             return null
         }
 
-        val sharableTransactions =  when (exportFormat) {
+        val sharableTransactions = when (exportFormat) {
             ExportFormat.LOG -> {
                 TransactionListDetailsSharable(transactions, encodeUrls = false)
             }
@@ -106,9 +106,10 @@ public class ChuckerCollector @JvmOverloads constructor(
                     JsonConverter.nonNullSerializerInstance
                         .toJson(
                             HarUtils.fromHttpTransactions(
-                                transactions, Creator(
+                                transactions,
+                                Creator(
                                     context.getString(R.string.chucker_name),
-                                    context.getString(R.string.chucker_version),
+                                    context.getString(R.string.chucker_version)
                                 )
                             )
                         )
@@ -117,8 +118,7 @@ public class ChuckerCollector @JvmOverloads constructor(
         }
         return sharableTransactions.writeToFile(
             context = context,
-            fileName = "api_transactions.${exportFormat.extension}",
+            fileName = "api_transactions.${exportFormat.extension}"
         )
     }
-
 }

@@ -11,7 +11,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 
-
 public class SpanTextUtil(context: Context) {
     private val jsonKeyColor: Int
     private val jsonValueColor: Int
@@ -63,21 +62,22 @@ public class SpanTextUtil(context: Context) {
             )
             return
         }
-        sb.appendWithColor("${indent}[\n", jsonSignElementsColor)
+        sb.appendWithColor("$indent[\n", jsonSignElementsColor)
         indent.append("  ")
         for (index in 0 until transformedJson.asJsonArray.size()) {
             val item = transformedJson.asJsonArray[index]
-            if (item.isJsonObject || item.isJsonArray)
+            if (item.isJsonObject || item.isJsonArray) {
                 printifyRecursive(sb, indent, item)
-            else {
+            } else {
                 sb.append(indent)
                 sb.appendJsonValue(item)
             }
-            if (index != transformedJson.asJsonArray.size() - 1)
+            if (index != transformedJson.asJsonArray.size() - 1) {
                 sb.appendWithColor(",", jsonSignElementsColor).append("\n")
+            }
         }
         val finalIndent = StringBuilder(indent.dropLast(2))
-        sb.appendWithColor("\n${finalIndent}]", jsonSignElementsColor)
+        sb.appendWithColor("\n$finalIndent]", jsonSignElementsColor)
     }
 
     private fun printifyJsonObject(
@@ -92,7 +92,7 @@ public class SpanTextUtil(context: Context) {
             )
             return
         }
-        sb.appendWithColor("${indentBuilder}{\n", jsonSignElementsColor)
+        sb.appendWithColor("$indentBuilder{\n", jsonSignElementsColor)
         indentBuilder.append("  ")
         var index = 0
         for (item in transformedJson.asJsonObject.entrySet()) {
@@ -103,31 +103,36 @@ public class SpanTextUtil(context: Context) {
             if (item.value.isJsonObject || item.value.isJsonArray) {
                 sb.append(" ")
                 printifyRecursive(sb, indentBuilder, item.value)
-            } else sb.appendJsonValue(item.value)
-            if (index != transformedJson.asJsonObject.size())
+            } else {
+                sb.appendJsonValue(item.value)
+            }
+            if (index != transformedJson.asJsonObject.size()) {
                 sb.appendWithColor(",", jsonSignElementsColor).append("\n")
+            }
         }
         sb.appendWithColor("\n${indentBuilder.dropLast(2)}}", jsonSignElementsColor)
     }
 
-    private fun SpannableStringBuilder.appendWithColor(text: CharSequence, color: Int):
-        SpannableStringBuilder {
+    private fun SpannableStringBuilder.appendWithColor(text: CharSequence, color: Int): SpannableStringBuilder {
         this.append(
-            text, ChuckerForegroundColorSpan(color),
+            text,
+            ChuckerForegroundColorSpan(color),
             Spanned.SPAN_INCLUSIVE_INCLUSIVE
         )
         return this
     }
 
-    private fun SpannableStringBuilder.appendJsonValue(jsonValue: JsonElement):
-        SpannableStringBuilder {
+    private fun SpannableStringBuilder.appendJsonValue(jsonValue: JsonElement): SpannableStringBuilder {
         val isDigit = jsonValue.isJsonNull.not() &&
             jsonValue.asString.isNotEmpty() &&
             jsonValue.isJsonPrimitive &&
             jsonValue.asString.isDigitsOnly()
         val value = if (isDigit) jsonValue.asString else jsonValue.toString()
-        val color = if (isDigit || jsonValue.isJsonNull) jsonDigitsAndNullValueColor
-        else jsonValueColor
+        val color = if (isDigit || jsonValue.isJsonNull) {
+            jsonDigitsAndNullValueColor
+        } else {
+            jsonValueColor
+        }
         return this.appendWithColor(
             " $value",
             color
@@ -136,4 +141,3 @@ public class SpanTextUtil(context: Context) {
 
     public class ChuckerForegroundColorSpan(color: Int) : ForegroundColorSpan(color)
 }
-

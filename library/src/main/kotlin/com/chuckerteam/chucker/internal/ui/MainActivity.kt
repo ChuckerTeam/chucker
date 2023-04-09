@@ -56,7 +56,7 @@ internal class MainActivity :
         if (!isPermissionGranted) {
             showToast(
                 applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
-                Toast.LENGTH_LONG,
+                Toast.LENGTH_LONG
             )
             Logger.error("Notification permission denied. Can't show transactions info")
         }
@@ -104,7 +104,8 @@ internal class MainActivity :
     private fun handleNotificationsPermission() {
         when {
             ContextCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED -> {
                 /* We have permission, all good */
             }

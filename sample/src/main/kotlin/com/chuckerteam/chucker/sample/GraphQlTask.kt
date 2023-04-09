@@ -7,8 +7,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
-import retrofit2.Callback
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.create
@@ -17,8 +17,8 @@ import retrofit2.http.Query
 
 private const val GRAPHQL_BASE_URL = "https://rickandmortyapi.com/graphql/"
 private const val BASE_URL = "https://rickandmortyapi.com/"
-class GraphQlTask (
-    client: OkHttpClient,
+class GraphQlTask(
+    client: OkHttpClient
 ) : HttpTask {
 
     private val apolloClient = ApolloClient.Builder()
@@ -36,7 +36,7 @@ class GraphQlTask (
 
     override fun run() {
         scope.launch {
-            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object: Callback<ResponseBody> {
+            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = Unit
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -51,9 +51,10 @@ class GraphQlTask (
 
     private interface Api {
         @GET("graphql")
-        fun getCharacterById(@Query("query") query: String,
-                             @Query("variables") variables: String? = null )
-        : Call<ResponseBody>
+        fun getCharacterById(
+            @Query("query") query: String,
+            @Query("variables") variables: String? = null
+        ): Call<ResponseBody>
     }
 }
 

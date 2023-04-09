@@ -223,8 +223,8 @@ internal class HttpTransactionDaoTest {
 
         testObject.getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
             .observeForever { result ->
-            assertTuples(listOf(transactionFour), result)
-        }
+                assertTuples(listOf(transactionFour), result)
+            }
     }
 
     @Test

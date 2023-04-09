@@ -118,8 +118,7 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
-    private fun createClearAction():
-        NotificationCompat.Action {
+    private fun createClearAction(): NotificationCompat.Action {
         val clearTitle = context.getString(R.string.chucker_clear)
         val clearTransactionsBroadcastIntent =
             Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)

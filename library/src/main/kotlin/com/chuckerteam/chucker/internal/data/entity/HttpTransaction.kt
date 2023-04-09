@@ -29,7 +29,8 @@ import java.util.Date
 @Suppress("LongParameterList")
 @Entity(tableName = "transactions")
 internal class HttpTransaction(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     var id: Long = 0,
     @ColumnInfo(name = "requestDate") var requestDate: Long?,
     @ColumnInfo(name = "responseDate") var responseDate: Long?,
@@ -59,7 +60,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
-    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?
 ) {
 
     @Ignore
@@ -229,7 +230,7 @@ internal class HttpTransaction(
      */
     private fun spanBody(body: CharSequence, contentType: String?, context: Context?): CharSequence {
         return when {
-            //TODO Implement Other Content Types
+            // TODO Implement Other Content Types
             contentType.isNullOrBlank() -> body
             contentType.contains("json", ignoreCase = true) && context != null -> {
                 SpanTextUtil(context).spanJson(body)
@@ -247,7 +248,7 @@ internal class HttpTransaction(
     }
 
     fun getSpannedRequestBody(context: Context?): CharSequence {
-        return requestBody?.let { spanBody(it, requestContentType,context) }
+        return requestBody?.let { spanBody(it, requestContentType, context) }
             ?: SpannableStringBuilder.valueOf("")
     }
 
@@ -289,8 +290,11 @@ internal class HttpTransaction(
     }
 
     fun getHarResponseBodySize(): Long {
-        return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) 0
-        else responsePayloadSize ?: 0
+        return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+            0
+        } else {
+            responsePayloadSize ?: 0
+        }
     }
 
     // Not relying on 'equals' because comparison be long due to request and response sizes

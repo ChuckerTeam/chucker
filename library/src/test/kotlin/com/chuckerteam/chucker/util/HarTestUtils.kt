@@ -51,7 +51,7 @@ internal object HarTestUtils {
             isResponseBodyEncoded = false,
             responseImageData = null,
             graphQlOperationName = null,
-            graphQlDetected = false,
+            graphQlDetected = false
         )
     }
 
