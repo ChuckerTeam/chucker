@@ -28,6 +28,7 @@ fun createOkHttpClient(
         .collector(collector)
         .maxContentLength(250_000L)
         .redactHeaders(emptySet())
+        .skipPaths("anything")
         .alwaysReadResponseBody(false)
         .addBodyDecoder(PokemonProtoBodyDecoder())
         .build()

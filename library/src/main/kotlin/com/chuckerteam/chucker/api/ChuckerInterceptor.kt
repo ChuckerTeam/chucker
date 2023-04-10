@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -53,6 +54,8 @@ public class ChuckerInterceptor private constructor(
         decoders,
     )
 
+    private val skipPaths = builder.skipPaths.toSet()
+
     init {
         if (builder.createShortcut) {
             Chucker.createShortcut(builder.context)
@@ -68,9 +71,10 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
-
-        requestProcessor.process(request, transaction)
-
+        val shouldProcessTheRequest = !skipPaths.any { it == request.url.encodedPath }
+        if(shouldProcessTheRequest){
+            requestProcessor.process(request,transaction)
+        }
         val response = try {
             chain.proceed(request)
         } catch (e: IOException) {
@@ -78,8 +82,9 @@ public class ChuckerInterceptor private constructor(
             collector.onResponseReceived(transaction)
             throw e
         }
-
-        return responseProcessor.process(response, transaction)
+        return if(shouldProcessTheRequest)
+            responseProcessor.process(response,transaction)
+        else response
     }
 
     /**
@@ -87,6 +92,7 @@ public class ChuckerInterceptor private constructor(
      *
      * @param context An Android [Context].
      */
+    @Suppress("TooManyFunctions")
     public class Builder(internal var context: Context) {
         internal var collector: ChuckerCollector? = null
         internal var maxContentLength = MAX_CONTENT_LENGTH
@@ -95,6 +101,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+        internal var skipPaths = mutableSetOf<String>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -162,6 +169,16 @@ public class ChuckerInterceptor private constructor(
         @VisibleForTesting
         internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
             this.cacheDirectoryProvider = provider
+        }
+
+        public fun skipPaths(vararg skipPaths: String): Builder = apply {
+            skipPaths.forEach { candidatePath ->
+                val httpUrl = HttpUrl.Builder()
+                    .scheme("https")
+                    .host("example.com")
+                    .addPathSegment(candidatePath).build()
+                this@Builder.skipPaths.add(httpUrl.encodedPath)
+            }
         }
 
         /**
