@@ -267,9 +267,15 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(
-                            if (it is SpannableStringBuilder) it
-                            else SpannableStringBuilder.valueOf(it)))
+                    result.add(
+                        TransactionPayloadItem.BodyLineItem(
+                            if (it is SpannableStringBuilder) {
+                                it
+                            } else {
+                                SpannableStringBuilder.valueOf(it)
+                            }
+                        )
+                    )
                 }
             }
             return@withContext result
@@ -325,8 +331,9 @@ internal class TransactionPayloadFragment :
             result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
             lineIndex += linesList[index].length + 1
         }
-        if (result.isEmpty())
+        if (result.isEmpty()) {
             result.add(subSequence(0, length))
+        }
         return result
     }
 }

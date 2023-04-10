@@ -25,7 +25,7 @@ internal class TransactionListDetailsSharableTest {
 
         val sharedContent = TransactionListDetailsSharable(
             transactions,
-            encodeUrls = false,
+            encodeUrls = false
         ).toSharableUtf8Content(context)
         assertThat(sharedContent).isEqualTo(expectedSharedContent)
     }

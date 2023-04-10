@@ -32,7 +32,7 @@ public class HarTest {
         val har = context.createSingleTransactionHar("GET")
         val creator = Creator(
             context.getString(R.string.chucker_name),
-            context.getString(R.string.chucker_version),
+            context.getString(R.string.chucker_version)
         )
 
         assertThat(har.log.creator).isEqualTo(creator)

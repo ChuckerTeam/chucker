@@ -17,7 +17,7 @@ import java.io.IOException
  * in your application for later inspection.
  */
 public class ChuckerInterceptor private constructor(
-    builder: Builder,
+    builder: Builder
 ) : Interceptor {
 
     /**
@@ -42,7 +42,7 @@ public class ChuckerInterceptor private constructor(
         collector,
         builder.maxContentLength,
         headersToRedact,
-        decoders,
+        decoders
     )
 
     private val responseProcessor = ResponseProcessor(
@@ -51,7 +51,7 @@ public class ChuckerInterceptor private constructor(
         builder.maxContentLength,
         headersToRedact,
         builder.alwaysReadResponseBody,
-        decoders,
+        decoders
     )
 
     private val skipPaths = builder.skipPaths.toSet()
@@ -72,8 +72,8 @@ public class ChuckerInterceptor private constructor(
         val transaction = HttpTransaction()
         val request = chain.request()
         val shouldProcessTheRequest = !skipPaths.any { it == request.url.encodedPath }
-        if(shouldProcessTheRequest){
-            requestProcessor.process(request,transaction)
+        if (shouldProcessTheRequest) {
+            requestProcessor.process(request, transaction)
         }
         val response = try {
             chain.proceed(request)
@@ -82,9 +82,11 @@ public class ChuckerInterceptor private constructor(
             collector.onResponseReceived(transaction)
             throw e
         }
-        return if(shouldProcessTheRequest)
-            responseProcessor.process(response,transaction)
-        else response
+        return if (shouldProcessTheRequest) {
+            responseProcessor.process(response, transaction)
+        } else {
+            response
+        }
     }
 
     /**

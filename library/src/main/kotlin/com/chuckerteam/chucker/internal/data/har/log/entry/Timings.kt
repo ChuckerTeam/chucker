@@ -16,7 +16,7 @@ internal data class Timings(
     @SerializedName("comment") val comment: String = "The information described by this object is incomplete."
 ) {
     constructor(transaction: HttpTransaction) : this(
-        wait = transaction.tookMs ?: 0,
+        wait = transaction.tookMs ?: 0
     )
 
     fun getTime(): Long {

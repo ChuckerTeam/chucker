@@ -96,7 +96,7 @@ internal class TeeSourceTest {
     private class ThrowingSink(
         private val throwForWrite: Boolean = false,
         private val throwForFlush: Boolean = false,
-        private val throwForClose: Boolean = false,
+        private val throwForClose: Boolean = false
     ) : Sink {
         override fun write(source: Buffer, byteCount: Long) {
             if (throwForWrite) throw IOException("Hello there!")

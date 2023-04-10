@@ -34,7 +34,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `custom body decoder does not change request body`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(ReversingDecoder()),
+            decoders = listOf(ReversingDecoder())
         )
         val client = factory.create(chuckerInterceptor)
         server.enqueue(MockResponse())
@@ -51,7 +51,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `custom body decoder does not change response body`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(ReversingDecoder()),
+            decoders = listOf(ReversingDecoder())
         )
         val client = factory.create(chuckerInterceptor)
 
@@ -69,7 +69,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `custom body decoder is used for decoding`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(LiteralBodyDecoder()),
+            decoders = listOf(LiteralBodyDecoder())
         )
         val client = factory.create(chuckerInterceptor)
         val request = Request.Builder().url(serverUrl)
@@ -90,7 +90,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `body decoders are used in the applied order`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(ReversingDecoder(), LiteralBodyDecoder()),
+            decoders = listOf(ReversingDecoder(), LiteralBodyDecoder())
         )
         val client = factory.create(chuckerInterceptor)
         val request = Request.Builder().url(serverUrl)
@@ -111,7 +111,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `next body decoder is used when previous one does not decode`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(NoOpDecoder(), LiteralBodyDecoder()),
+            decoders = listOf(NoOpDecoder(), LiteralBodyDecoder())
         )
         val client = factory.create(chuckerInterceptor)
         val request = Request.Builder().url(serverUrl)
@@ -132,7 +132,7 @@ internal class ChuckerInterceptorDecodingTest {
     fun `body decoder can throw IO exception`(factory: ClientFactory) {
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(IoThrowingDecoder(), LiteralBodyDecoder()),
+            decoders = listOf(IoThrowingDecoder(), LiteralBodyDecoder())
         )
         val client = factory.create(chuckerInterceptor)
         val request = Request.Builder().url(serverUrl)
@@ -154,7 +154,7 @@ internal class ChuckerInterceptorDecodingTest {
         val statefulDecoder = StatefulDecoder()
         val chuckerInterceptor = ChuckerInterceptorDelegate(
             cacheDirectoryProvider = { tempDir },
-            decoders = listOf(LiteralBodyDecoder(), statefulDecoder),
+            decoders = listOf(LiteralBodyDecoder(), statefulDecoder)
         )
         val client = factory.create(chuckerInterceptor)
         val request = Request.Builder().url(serverUrl)

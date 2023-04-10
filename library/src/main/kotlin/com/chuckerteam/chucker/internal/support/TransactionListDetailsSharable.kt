@@ -8,7 +8,7 @@ import okio.Source
 
 internal class TransactionListDetailsSharable(
     transactions: List<HttpTransaction>,
-    encodeUrls: Boolean,
+    encodeUrls: Boolean
 ) : Sharable {
     private val transactions = transactions.map { TransactionDetailsSharable(it, encodeUrls) }
 
@@ -16,7 +16,7 @@ internal class TransactionListDetailsSharable(
         transactions.joinToString(
             separator = "\n${context.getString(string.chucker_export_separator)}\n",
             prefix = "${context.getString(string.chucker_export_prefix)}\n",
-            postfix = "\n${context.getString(string.chucker_export_postfix)}\n",
+            postfix = "\n${context.getString(string.chucker_export_postfix)}\n"
         ) { it.toSharableUtf8Content(context) }
     )
 }

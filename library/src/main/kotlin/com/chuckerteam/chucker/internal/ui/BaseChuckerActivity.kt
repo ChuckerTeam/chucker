@@ -27,7 +27,7 @@ internal abstract class BaseChuckerActivity : AppCompatActivity() {
             private set
     }
 
-    fun showToast(message: String, toastDuration: Int = Toast.LENGTH_SHORT)  {
+    fun showToast(message: String, toastDuration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this.applicationContext, message, toastDuration).show()
     }
 }
