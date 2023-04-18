@@ -21,7 +21,7 @@ import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val onTransactionClick: (Long) -> Unit,
+    private val onTransactionClick: (Long) -> Unit
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
     TransactionDiffCallback
 ) {

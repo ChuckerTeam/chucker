@@ -8,7 +8,6 @@ import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.google.common.truth.Truth
 import org.junit.Assert
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,6 +19,7 @@ public class SpanUtilTest {
     public fun init() {
         context = InstrumentationRegistry.getInstrumentation().context
     }
+
     @SuppressLint("CheckResult")
     @Test
     public fun json_can_have_null_value() {
@@ -35,6 +35,7 @@ public class SpanUtilTest {
             """.trimIndent()
         )
     }
+
     @Test
     public fun json_can_have_empty_fields() {
         val parsedJson = SpanTextUtil(context).spanJson(

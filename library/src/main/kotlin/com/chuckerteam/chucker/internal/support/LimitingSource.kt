@@ -6,7 +6,7 @@ import okio.Source
 
 internal class LimitingSource(
     delegate: Source,
-    private val bytesCountThreshold: Long,
+    private val bytesCountThreshold: Long
 ) : ForwardingSource(delegate) {
     private var bytesRead = 0L
     val isThresholdReached get() = bytesRead >= bytesCountThreshold

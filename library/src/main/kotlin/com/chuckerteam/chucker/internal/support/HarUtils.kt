@@ -12,7 +12,7 @@ internal object HarUtils {
     suspend fun harStringFromTransactions(
         transactions: List<HttpTransaction>,
         name: String,
-        version: String,
+        version: String
     ): String = withContext(Dispatchers.Default) {
         JsonConverter.nonNullSerializerInstance
             .toJson(fromHttpTransactions(transactions, Creator(name, version)))

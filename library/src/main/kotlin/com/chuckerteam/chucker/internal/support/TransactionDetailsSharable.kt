@@ -8,7 +8,7 @@ import okio.Source
 
 internal class TransactionDetailsSharable(
     private val transaction: HttpTransaction,
-    private val encodeUrls: Boolean,
+    private val encodeUrls: Boolean
 ) : Sharable {
     override fun toSharableContent(context: Context): Source = Buffer().apply {
         writeUtf8("${context.getString(R.string.chucker_url)}: ${transaction.getFormattedUrl(encodeUrls)}\n")
