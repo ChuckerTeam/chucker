@@ -6,22 +6,30 @@ Please add your entries according to this format.
 ## Unreleased
 
 ### Added
-* Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
-* Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder`
-* Brotli compression support
-* Added ability to export list of transactions as .har file.
-* Added ability to save single transaction as .har file.
-* Added ability to export transactions to a file programmatically, LOG or HAR.
-* GraphQL OperationName header to transaction title [#69], [#116]
-* Added support for Android 13 and notifications permission handling
+* Add `skipPaths` to selectively skip requests from Chucker [#970]
+* Add syntax highlighting to the request/response body when is JSON [#930]
+* Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
+* Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder` [#588]
+* Brotli compression support [#563]
+* Added `writeTransactions` method to `ChuckerCollector` to export transactions to a file programmatically [#784]
+* Added ability to save single transaction as `.har` file. [#696]
+* Added ability to export list of transactions as `.har` file. [#880]
+* Added support for Android 13 and notifications permission handling [#887]
+* GraphQL
+  * Add support for GraphQL [#805] [#884]
+  * Show GraphQL OperationName header to transaction title [#69], [#116]
+  * Allows to filter transactions based on graphqlOperationName [#920]
 
 ### Fixed
 
+* Fixed a bug showing empty bodies as `encoded or binary` [#569] [#562]
+* Fixed DiskReadViolation on ChuckerCollector [#975]
 * Fixed request headers not being redacted in case of failures [#545].
 * Fixed wrongful processing of one shot and duplex requests [#544].
 * Fixed writing to database on the main thread [#487].
-* Fixed RTL issue in payload view
+* Fixed RTL issue in payload view [#733]
 * Fixed StrictMode ThreadPolicy violations [#737]
+* Fixed Memory Leak with Toasts: Use applicationContext instead of Activity [#810]
 
 ### Removed
 
@@ -30,7 +38,10 @@ Please add your entries according to this format.
 
 ### Changed
 
-* Updated OkHttp to 4.9.1
+* Updated OkHttp to 4.9.3
+* Updated Material to 1.8.0
+* Updated AGP to 8.0.0
+* Updated Kotlin to 1.8.20
 
 ## Version 3.5.2 *(2021-07-28)*
 
@@ -427,6 +438,7 @@ Initial release.
 [#65]: https://github.com/ChuckerTeam/chucker/pull/65
 [#66]: https://github.com/ChuckerTeam/chucker/pull/66
 [#67]: https://github.com/ChuckerTeam/chucker/pull/67
+[#69]: https://github.com/ChuckerTeam/chucker/pull/69
 [#71]: https://github.com/ChuckerTeam/chucker/pull/71
 [#72]: https://github.com/ChuckerTeam/chucker/pull/72
 [#75]: https://github.com/ChuckerTeam/chucker/pull/75
@@ -448,6 +460,7 @@ Initial release.
 [#111]: https://github.com/ChuckerTeam/chucker/pull/111
 [#112]: https://github.com/ChuckerTeam/chucker/pull/112
 [#114]: https://github.com/ChuckerTeam/chucker/pull/114
+[#116]: https://github.com/ChuckerTeam/chucker/pull/116
 [#118]: https://github.com/ChuckerTeam/chucker/pull/118
 [#119]: https://github.com/ChuckerTeam/chucker/pull/119
 [#120]: https://github.com/ChuckerTeam/chucker/pull/120
@@ -504,16 +517,16 @@ Initial release.
 [#198]: https://github.com/ChuckerTeam/chucker/pull/198
 [#201]: https://github.com/ChuckerTeam/chucker/pull/201
 [#218]: https://github.com/ChuckerTeam/chucker/issues/218
-[#242]: https://github.com/ChuckerTeam/chucker/issues/242
 [#240]: https://github.com/ChuckerTeam/chucker/pull/240
+[#241]: https://github.com/ChuckerTeam/chucker/issues/241
+[#242]: https://github.com/ChuckerTeam/chucker/issues/242
 [#254]: https://github.com/ChuckerTeam/chucker/issues/254
 [#255]: https://github.com/ChuckerTeam/chucker/issues/255
-[#241]: https://github.com/ChuckerTeam/chucker/issues/241
 [#311]: https://github.com/ChuckerTeam/chucker/issues/311
 [#314]: https://github.com/ChuckerTeam/chucker/issues/314
 [#321]: https://github.com/ChuckerTeam/chucker/issues/321
-[#367]: https://github.com/ChuckerTeam/chucker/issues/367
 [#366]: https://github.com/ChuckerTeam/chucker/issues/366
+[#367]: https://github.com/ChuckerTeam/chucker/issues/367
 [#394]: https://github.com/ChuckerTeam/chucker/issues/394
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
@@ -524,6 +537,23 @@ Initial release.
 [#538]: https://github.com/ChuckerTeam/chucker/issues/538
 [#544]: https://github.com/ChuckerTeam/chucker/issues/544
 [#545]: https://github.com/ChuckerTeam/chucker/issues/545
+[#555]: https://github.com/ChuckerTeam/chucker/pull/555
+[#562]: https://github.com/ChuckerTeam/chucker/pull/562
+[#563]: https://github.com/ChuckerTeam/chucker/pull/563
+[#569]: https://github.com/ChuckerTeam/chucker/pull/569
+[#588]: https://github.com/ChuckerTeam/chucker/pull/588
 [#593]: https://github.com/ChuckerTeam/chucker/issues/593
 [#653]: https://github.com/ChuckerTeam/chucker/pull/653
+[#696]: https://github.com/ChuckerTeam/chucker/pull/696
+[#733]: https://github.com/ChuckerTeam/chucker/pull/733
 [#737]: https://github.com/ChuckerTeam/chucker/issues/737
+[#784]: https://github.com/ChuckerTeam/chucker/pull/784
+[#805]: https://github.com/ChuckerTeam/chucker/pull/805
+[#810]: https://github.com/ChuckerTeam/chucker/pull/810
+[#880]: https://github.com/ChuckerTeam/chucker/pull/880
+[#884]: https://github.com/ChuckerTeam/chucker/pull/884
+[#887]: https://github.com/ChuckerTeam/chucker/pull/887
+[#920]: https://github.com/ChuckerTeam/chucker/pull/920
+[#930]: https://github.com/ChuckerTeam/chucker/pull/930
+[#970]: https://github.com/ChuckerTeam/chucker/pull/970
+[#975]: https://github.com/ChuckerTeam/chucker/pull/975
