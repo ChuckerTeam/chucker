@@ -25,6 +25,108 @@ public class SpanTextUtil(context: Context) {
         jsonSignElementsColor = ContextCompat.getColor(context, R.color.chucker_json_elements_color)
     }
 
+    private enum class TokenType(val delimiters: Set<Char>) {
+        STRING(setOf('"')),
+        ARRAY(setOf('[', ']')),
+        OBJECT(setOf('{', '}')),
+        KEY_SEPARATOR(setOf(':')),
+        VALUE_SEPARATOR(setOf(',')),
+        NONE(setOf());
+
+        companion object {
+            val allPossibleTokens = values().map { it.delimiters }.flatten().toSet().toTypedArray().toCharArray()
+        }
+    }
+
+    private fun CharSequence.indexOfNextToken(
+        startIndex: Int = 0
+    ): Pair<Int, TokenType> {
+        var index = indexOfAny(TokenType.allPossibleTokens, startIndex)
+        val tokenType = when (this[index]) {
+            in TokenType.ARRAY.delimiters -> TokenType.ARRAY
+            in TokenType.OBJECT.delimiters -> TokenType.OBJECT
+            in TokenType.KEY_SEPARATOR.delimiters -> TokenType.KEY_SEPARATOR
+            in TokenType.VALUE_SEPARATOR.delimiters -> TokenType.VALUE_SEPARATOR
+            in TokenType.STRING.delimiters -> TokenType.STRING
+            else -> null
+        }
+        tokenType?.let {
+            return index to it
+        }
+        return -1 to TokenType.NONE
+    }
+
+    private fun CharSequence.indexOfNextUnescapedQuote(startIndex: Int = 0): Int {
+        var index = indexOf('"', startIndex)
+        while (index < length) {
+            if (this[index] == '"' && (index == 0 || this[index - 1] != '\\')) {
+                return index
+            }
+            index = indexOf('"', index + 1)
+        }
+        return -1
+    }
+    public fun simpleSpanJson(input: CharSequence): SpannableStringBuilder {
+        // First handle the pretty printing step via gson built-in support
+        val prettyPrintedInput = FormatUtils.formatJson(input.toString())
+
+        var lastTokenType: TokenType? = null
+        var index = 0
+
+        val sb = SpannableStringBuilder(prettyPrintedInput)
+        // First we set a span for all text to match the digits and null value color since other
+        // cases will be overridden below
+        sb.setColor(0, prettyPrintedInput.length, jsonDigitsAndNullValueColor)
+        while (index < prettyPrintedInput.length) {
+            val (tokenIndex, tokenType) = prettyPrintedInput.indexOfNextToken(startIndex = index)
+            when (tokenType) {
+                TokenType.ARRAY,
+                TokenType.OBJECT,
+                TokenType.KEY_SEPARATOR,
+                TokenType.VALUE_SEPARATOR -> {
+                    sb.setColor(
+                        start = tokenIndex,
+                        end = tokenIndex + 1,
+                        color = jsonSignElementsColor
+                    )
+                    index = tokenIndex + 1
+                }
+                TokenType.STRING -> {
+                    val color = when (lastTokenType) {
+                        TokenType.ARRAY,
+                        TokenType.OBJECT,
+                        TokenType.VALUE_SEPARATOR,
+                        TokenType.NONE,
+                        null -> {
+                            jsonKeyColor
+                        }
+                        else -> {
+                            jsonValueColor
+                        }
+                    }
+
+                    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                    val endIndex =
+                        try {
+                            prettyPrintedInput.indexOfNextUnescapedQuote(tokenIndex + 1)
+                        } catch (e: Exception) {
+                            -1
+                        }
+                    // if we somehow get an incomplete string, we lose the ability to parse any other
+                    // tokens, so just return now
+                    if (endIndex < tokenIndex) {
+                        return sb
+                    }
+                    sb.setColor(start = tokenIndex, end = endIndex + 1, color)
+                    index = endIndex + 1
+                }
+                TokenType.NONE -> return sb
+            }
+            lastTokenType = tokenType
+        }
+        return sb
+    }
+
     public fun spanJson(input: CharSequence): SpannableStringBuilder {
         val jsonElement = try {
             JsonParser.parseString(input.toString())
@@ -117,6 +219,16 @@ public class SpanTextUtil(context: Context) {
         this.append(
             text,
             ChuckerForegroundColorSpan(color),
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+        return this
+    }
+
+    private fun SpannableStringBuilder.setColor(start: Int, end: Int, color: Int): SpannableStringBuilder {
+        this.setSpan(
+            ChuckerForegroundColorSpan(color),
+            start,
+            end,
             Spanned.SPAN_INCLUSIVE_INCLUSIVE
         )
         return this

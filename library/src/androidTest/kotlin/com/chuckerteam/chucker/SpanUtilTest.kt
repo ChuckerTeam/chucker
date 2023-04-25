@@ -20,10 +20,10 @@ public class SpanUtilTest {
         context = InstrumentationRegistry.getInstrumentation().context
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult ")
     @Test
     public fun json_can_have_null_value() {
-        val parsedJson = SpanTextUtil(context).spanJson(
+        val parsedJson = SpanTextUtil(context).simpleSpanJson(
             """{ "field": null }"""
         )
         Assert.assertEquals(
@@ -38,7 +38,7 @@ public class SpanUtilTest {
 
     @Test
     public fun json_can_have_empty_fields() {
-        val parsedJson = SpanTextUtil(context).spanJson(
+        val parsedJson = SpanTextUtil(context).simpleSpanJson(
             """{ "field": "" }"""
         )
 
@@ -53,7 +53,7 @@ public class SpanUtilTest {
 
     @Test
     public fun json_can_be_invalid() {
-        val parsedJson = SpanTextUtil(context).spanJson(
+        val parsedJson = SpanTextUtil(context).simpleSpanJson(
             """[{ "field": null }"""
         )
 
@@ -64,7 +64,7 @@ public class SpanUtilTest {
 
     @Test
     public fun json_object_is_pretty_printed() {
-        val parsedJson = SpanTextUtil(context).spanJson(
+        val parsedJson = SpanTextUtil(context).simpleSpanJson(
             """{ "field1": "something", "field2": "else" }"""
         )
 
@@ -80,7 +80,7 @@ public class SpanUtilTest {
 
     @Test
     public fun json_array_is_pretty_printed() {
-        val parsedJson = SpanTextUtil(context).spanJson(
+        val parsedJson = SpanTextUtil(context).simpleSpanJson(
             """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
         )
 
