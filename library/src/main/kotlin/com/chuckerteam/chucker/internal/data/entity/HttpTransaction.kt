@@ -233,7 +233,7 @@ internal class HttpTransaction(
             // TODO Implement Other Content Types
             contentType.isNullOrBlank() -> body
             contentType.contains("json", ignoreCase = true) && context != null -> {
-                SpanTextUtil(context).simpleSpanJson(body)
+                SpanTextUtil(context).spanJson(body)
             }
             else -> formatBody(body.toString(), contentType)
         }
