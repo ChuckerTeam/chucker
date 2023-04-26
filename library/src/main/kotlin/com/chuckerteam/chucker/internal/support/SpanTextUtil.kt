@@ -17,6 +17,7 @@ public class SpanTextUtil(context: Context) {
     private companion object {
         // corresponds to length of word 'true'
         private const val BOOLEAN_TRUE_INDEX_OFFSET = 4
+
         // corresponds to length of word 'false'
         private const val BOOLEAN_FALSE_INDEX_OFFSET = 5
     }
@@ -36,7 +37,7 @@ public class SpanTextUtil(context: Context) {
         OBJECT(setOf("{", "}")),
         KEY_SEPARATOR(setOf(":")),
         VALUE_SEPARATOR(setOf(",")),
-        BOOLEAN(setOf("true","false")),
+        BOOLEAN(setOf("true", "false")),
         NONE(setOf());
 
         companion object {
