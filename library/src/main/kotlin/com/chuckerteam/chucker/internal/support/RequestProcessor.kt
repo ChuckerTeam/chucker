@@ -15,7 +15,7 @@ internal class RequestProcessor(
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
-    private val bodyDecoders: List<BodyDecoder>,
+    private val bodyDecoders: List<BodyDecoder>
 ) {
     fun process(request: Request, transaction: HttpTransaction) {
         processMetadata(request, transaction)
@@ -82,6 +82,6 @@ internal class RequestProcessor(
 
     private fun isGraphQLRequest(graphQLOperationName: String?, request: Request) =
         graphQLOperationName != null ||
-        request.url.pathSegments.contains("graphql") ||
-        request.url.host.contains("graphql")
+            request.url.pathSegments.contains("graphql") ||
+            request.url.host.contains("graphql")
 }

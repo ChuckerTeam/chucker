@@ -11,7 +11,7 @@ internal data class PostData(
     @SerializedName("mimeType") val mimeType: String,
     @SerializedName("params") val params: Params? = null,
     @SerializedName("text") val text: String? = null,
-    @SerializedName("comment") val comment: String? = null,
+    @SerializedName("comment") val comment: String? = null
 ) {
     constructor(transaction: HttpTransaction) : this(
         mimeType = transaction.requestContentType ?: "application/octet-stream",

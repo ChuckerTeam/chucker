@@ -31,7 +31,7 @@ internal data class Entry(
         request = Request(transaction),
         response = Response(transaction),
         cache = Cache(),
-        timings = Timings(transaction),
+        timings = Timings(transaction)
     )
 
     @VisibleForTesting

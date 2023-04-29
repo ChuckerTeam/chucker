@@ -15,7 +15,7 @@ internal data class Log(
     @SerializedName("browser") val browser: Browser? = null,
     @SerializedName("pages") val pages: List<Page>? = null,
     @SerializedName("entries") val entries: List<Entry>,
-    @SerializedName("comment") val comment: String? = null,
+    @SerializedName("comment") val comment: String? = null
 ) {
     constructor(transactions: List<HttpTransaction>, creator: Creator) : this(
         creator = creator,

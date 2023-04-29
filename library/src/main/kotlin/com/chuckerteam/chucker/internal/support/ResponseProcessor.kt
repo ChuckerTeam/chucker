@@ -19,7 +19,7 @@ internal class ResponseProcessor(
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
     private val alwaysReadResponseBody: Boolean,
-    private val bodyDecoders: List<BodyDecoder>,
+    private val bodyDecoders: List<BodyDecoder>
 ) {
     fun process(response: Response, transaction: HttpTransaction): Response {
         processResponseMetadata(response, transaction)
@@ -113,7 +113,7 @@ internal class ResponseProcessor(
 
     private inner class ResponseReportingSinkCallback(
         private val response: Response,
-        private val transaction: HttpTransaction,
+        private val transaction: HttpTransaction
     ) : ReportingSink.Callback {
 
         override fun onClosed(file: File?, sourceByteCount: Long) {

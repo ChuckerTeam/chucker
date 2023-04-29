@@ -26,7 +26,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 class HttpBinHttpTask(
-    client: OkHttpClient,
+    client: OkHttpClient
 ) : HttpTask {
     private val api = Retrofit.Builder()
         .baseUrl("https://httpbin.org")
@@ -78,6 +78,7 @@ class HttpBinHttpTask(
         redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(noOpCallback)
         postForm("Value 1", "Value with symbols &$%").enqueue(noOpCallback)
         postRawRequestBody(oneShotRequestBody()).enqueue(noOpCallback)
+        anything().enqueue(noOpCallback)
     }
 
     private fun oneShotRequestBody() = object : RequestBody() {
@@ -189,6 +190,9 @@ class HttpBinHttpTask(
 
         @POST("/post")
         fun postRawRequestBody(@Body body: RequestBody): Call<Any?>
+
+        @GET("/anything")
+        fun anything(): Call<Any?>
 
         class Data(val thing: String)
     }

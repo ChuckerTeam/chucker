@@ -20,6 +20,7 @@ internal class ChuckerInterceptorDelegate(
     alwaysReadResponseBody: Boolean = false,
     cacheDirectoryProvider: CacheDirectoryProvider,
     decoders: List<BodyDecoder> = emptyList(),
+    skipPaths: List<String> = emptyList()
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
@@ -42,6 +43,7 @@ internal class ChuckerInterceptorDelegate(
         .redactHeaders(headersToRedact)
         .alwaysReadResponseBody(alwaysReadResponseBody)
         .cacheDirectorProvider(cacheDirectoryProvider)
+        .skipPaths(skipPaths = skipPaths.toTypedArray())
         .apply { decoders.forEach(::addBodyDecoder) }
         .build()
 

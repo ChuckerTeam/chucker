@@ -6,7 +6,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class PostmanEchoHttpTask(
-    private val client: OkHttpClient,
+    private val client: OkHttpClient
 ) : HttpTask {
     override fun run() {
         postResponsePartially()

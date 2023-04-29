@@ -104,7 +104,6 @@ internal class TransactionPayloadFragment :
         requireActivity().findViewById<ImageButton>(R.id.toolbarSearchNavButtonUp)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -113,7 +112,7 @@ internal class TransactionPayloadFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
             inflater,
@@ -169,11 +168,13 @@ internal class TransactionPayloadFragment :
         }
 
         val scrollToIndex =
-            if (goNext) ((currentSearchScrollIndex + 1) % scrollableIndices.size)
-            else (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
+            if (goNext) {
+                ((currentSearchScrollIndex + 1) % scrollableIndices.size)
+            } else {
+                (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
+            }
 
         scrollToSearchedItemPosition(scrollToIndex)
-
     }
 
     private fun showEmptyState() {
@@ -284,8 +285,9 @@ internal class TransactionPayloadFragment :
         lifecycleScope.launch {
             delay(DELAY_FOR_SEARCH_SCROLL)
             lifecycle.withResumed {
-                if (scrollableIndices.isNotEmpty()) scrollToSearchedItemPosition(0)
-                else {
+                if (scrollableIndices.isNotEmpty()) {
+                    scrollToSearchedItemPosition(0)
+                } else {
                     currentSearchScrollIndex = -1
                     scrollableIndices.clear()
                 }
@@ -342,7 +344,7 @@ internal class TransactionPayloadFragment :
     private suspend fun processPayload(
         type: PayloadType,
         transaction: HttpTransaction,
-        formatRequestBody: Boolean,
+        formatRequestBody: Boolean
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
@@ -396,8 +398,11 @@ internal class TransactionPayloadFragment :
                 else -> bodyString.lines().forEach {
                     result.add(
                         TransactionPayloadItem.BodyLineItem(
-                            if (it is SpannableStringBuilder) it
-                            else SpannableStringBuilder.valueOf(it)
+                            if (it is SpannableStringBuilder) {
+                                it
+                            } else {
+                                SpannableStringBuilder.valueOf(it)
+                            }
                         )
                     )
                 }
@@ -456,8 +461,9 @@ internal class TransactionPayloadFragment :
             result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
             lineIndex += linesList[index].length + 1
         }
-        if (result.isEmpty())
+        if (result.isEmpty()) {
             result.add(subSequence(0, length))
+        }
         return result
     }
 }

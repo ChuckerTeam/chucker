@@ -15,7 +15,7 @@ const val SEGMENT_SIZE = 8_192L
 
 fun createOkHttpClient(
     context: Context,
-    interceptorTypeProvider: InterceptorType.Provider,
+    interceptorTypeProvider: InterceptorType.Provider
 ): OkHttpClient {
     val collector = ChuckerCollector(
         context = context,
@@ -28,6 +28,7 @@ fun createOkHttpClient(
         .collector(collector)
         .maxContentLength(250_000L)
         .redactHeaders(emptySet())
+        .skipPaths("anything")
         .alwaysReadResponseBody(false)
         .addBodyDecoder(PokemonProtoBodyDecoder())
         .build()
@@ -43,7 +44,7 @@ fun createOkHttpClient(
 }
 
 class ReadBytesCallback(
-    private val byteCount: Long? = null,
+    private val byteCount: Long? = null
 ) : Callback {
     override fun onFailure(call: Call, e: IOException) {
         e.printStackTrace()

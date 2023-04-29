@@ -105,7 +105,7 @@ internal class OkHttpUtilsTest {
             "br" to true,
             "identity" to true,
             "gzip" to true,
-            "other" to false,
+            "other" to false
         ).map { (encoding, result) ->
             val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
             Arguments.of(headers, result)

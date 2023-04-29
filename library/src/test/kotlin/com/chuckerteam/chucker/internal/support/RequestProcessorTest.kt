@@ -10,8 +10,8 @@ import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class RequestProcessorTest {
@@ -27,7 +27,7 @@ internal class RequestProcessorTest {
         collector = chuckerCollector,
         maxContentLength = maxContentLength,
         headersToRedact = headersToRedact,
-        bodyDecoders = bodyDecoders,
+        bodyDecoders = bodyDecoders
     )
 
     @Test
@@ -35,7 +35,7 @@ internal class RequestProcessorTest {
         val operationName = "SearchCharacters"
         val transaction = HttpTransaction()
         val headersGraphQl = Headers.Builder().add("X-APOLLO-OPERATION-NAME", operationName).build()
-        val request:Request = mockk(relaxed = true) {
+        val request: Request = mockk(relaxed = true) {
             every { headers } returns headersGraphQl
         }
 
@@ -48,7 +48,7 @@ internal class RequestProcessorTest {
     @Test
     fun `GIVEN an Url containing graphql path WHEN process request THEN transaction isGraphQLRequest`() {
         val transaction = HttpTransaction()
-        val request: Request = mockk(relaxed = true ) {
+        val request: Request = mockk(relaxed = true) {
             every { url } returns "http://some/api/graphql".toHttpUrl()
         }
         requestProcessor.process(request, transaction)
@@ -59,7 +59,7 @@ internal class RequestProcessorTest {
     @Test
     fun `GIVEN a url with no graphql path WHEN process request THEN transaction !isGraphQLRequest`() {
         val transaction = HttpTransaction()
-        val request: Request = mockk(relaxed = true ) {
+        val request: Request = mockk(relaxed = true) {
             every { url } returns "http://some/random/api".toHttpUrl()
         }
         requestProcessor.process(request, transaction)
@@ -70,7 +70,7 @@ internal class RequestProcessorTest {
     @Test
     fun `GIVEN a url with graphql host WHEN process request THEN transaction isGraphQLRequest`() {
         val transaction = HttpTransaction()
-        val request: Request = mockk(relaxed = true ) {
+        val request: Request = mockk(relaxed = true) {
             every { url } returns "http://some.graphql.api".toHttpUrl()
         }
         requestProcessor.process(request, transaction)
