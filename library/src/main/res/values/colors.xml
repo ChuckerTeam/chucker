@@ -31,6 +31,7 @@
     <color name="chucker_json_value_color">#2F00FF</color>
     <color name="chucker_json_digit_and_null_value_color">#E84B31</color>
     <color name="chucker_json_elements_color">#474747</color>
+    <color name="chucker_json_boolean_color">#2F99AA</color>
 
 
 </resources>
