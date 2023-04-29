@@ -90,6 +90,23 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         return listOfFoundQueryIndices
     }
 
+
+    internal fun highlightItemWithColorOnPosition(
+        position: Int,
+        queryText: String,
+        backgroundColor: Int,
+        foregroundColor: Int,
+    ) {
+        val item = items.getOrNull(position) as? TransactionPayloadItem.BodyLineItem
+        if (item != null) {
+            if (item.line.contains(queryText, ignoreCase = true)) {
+                item.line.clearHighlightSpans()
+                item.line = item.line.highlightWithDefinedColors(queryText, backgroundColor, foregroundColor)
+                notifyItemChanged(position)
+            }
+        }
+    }
+
     internal fun resetHighlight() {
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
@@ -127,7 +144,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(
-        private val headerBinding: ChuckerTransactionItemHeadersBinding
+        private val headerBinding: ChuckerTransactionItemHeadersBinding,
     ) : TransactionPayloadViewHolder(headerBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
@@ -137,7 +154,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class BodyLineViewHolder(
-        private val bodyBinding: ChuckerTransactionItemBodyLineBinding
+        private val bodyBinding: ChuckerTransactionItemBodyLineBinding,
     ) : TransactionPayloadViewHolder(bodyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
@@ -147,7 +164,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class ImageViewHolder(
-        private val imageBinding: ChuckerTransactionItemImageBinding
+        private val imageBinding: ChuckerTransactionItemImageBinding,
     ) : TransactionPayloadViewHolder(imageBinding.root) {
 
         override fun bind(item: TransactionPayloadItem) {

@@ -82,6 +82,7 @@ internal class TransactionPayloadFragment :
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
+    private var backgroundSpanColorSearchItem: Int = Color.GREEN
 
     private val scrollableIndices by lazy { mutableListOf<Int>() }
     private var currentSearchScrollIndex = -1
@@ -170,12 +171,8 @@ internal class TransactionPayloadFragment :
         val scrollToIndex =
             if (goNext) ((currentSearchScrollIndex + 1) % scrollableIndices.size)
             else (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
-        val scrollTo = scrollableIndices.getOrNull(scrollToIndex)
-        if (scrollTo != null) {
-            payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
-            currentSearchScrollIndex = scrollToIndex
-            updateToolbarText(currentSearchQuery, scrollableIndices.size, scrollToIndex + 1)
-        }
+
+        scrollToSearchedItemPosition(scrollToIndex)
 
     }
 
@@ -274,17 +271,11 @@ internal class TransactionPayloadFragment :
         scrollableIndices.clear()
         when {
             listOfScrollableIndex.isEmpty() -> {
-                currentSearchScrollIndex = 0
+                currentSearchScrollIndex = -1
                 makeToolbarSearchSummaryVisible(false)
-
-            }
-            listOfScrollableIndex.size == 1 -> {
-
-                scrollableIndices.addAll(listOfScrollableIndex)
             }
             else -> {
                 makeToolbarSearchSummaryVisible(true)
-
                 scrollableIndices.addAll(listOfScrollableIndex)
                 updateToolbarText(newText, listOfScrollableIndex.size, 1)
             }
@@ -293,12 +284,11 @@ internal class TransactionPayloadFragment :
         lifecycleScope.launch {
             delay(DELAY_FOR_SEARCH_SCROLL)
             lifecycle.withResumed {
-                if (scrollableIndices.isNotEmpty()) {
-                    currentSearchScrollIndex = 0
-                    payloadBinding.payloadRecyclerView.smoothScrollToPosition(
-                        scrollableIndices[currentSearchScrollIndex]
-                    )
-                } else scrollableIndices.clear()
+                if (scrollableIndices.isNotEmpty()) scrollToSearchedItemPosition(0)
+                else {
+                    currentSearchScrollIndex = -1
+                    scrollableIndices.clear()
+                }
             }
         }
         return true
@@ -318,6 +308,34 @@ internal class TransactionPayloadFragment :
                 append(" $searchQuery ")
                 append("$currentIndex/$searchResultsCount")
             }
+        }
+    }
+
+    private fun scrollToSearchedItemPosition(positionOfScrollableIndices: Int) {
+        // reset the last searched item highlight if done
+        scrollableIndices.getOrNull(currentSearchScrollIndex)?.let {
+            payloadAdapter.highlightItemWithColorOnPosition(
+                it,
+                currentSearchQuery,
+                backgroundSpanColor,
+                foregroundSpanColor
+            )
+        }
+
+        currentSearchScrollIndex = positionOfScrollableIndices
+        val scrollTo = scrollableIndices.getOrNull(positionOfScrollableIndices)
+        if (scrollTo != null) {
+            // highlight the next navigated item and update toolbar summary text
+            payloadAdapter.highlightItemWithColorOnPosition(
+                scrollTo,
+                currentSearchQuery,
+                backgroundSpanColorSearchItem,
+                foregroundSpanColor
+            )
+            updateToolbarText(currentSearchQuery, scrollableIndices.size, positionOfScrollableIndices + 1)
+
+            payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
+            currentSearchScrollIndex = positionOfScrollableIndices
         }
     }
 
@@ -376,9 +394,12 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
                 else -> bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(
+                    result.add(
+                        TransactionPayloadItem.BodyLineItem(
                             if (it is SpannableStringBuilder) it
-                            else SpannableStringBuilder.valueOf(it)))
+                            else SpannableStringBuilder.valueOf(it)
+                        )
+                    )
                 }
             }
             return@withContext result
