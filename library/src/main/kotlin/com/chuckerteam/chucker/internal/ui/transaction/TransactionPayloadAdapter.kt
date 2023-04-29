@@ -83,7 +83,6 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
                         notifyItemChanged(index + 1)
-                        listOfFoundQueryIndices.remove(index + 1)
                     }
                 }
             }

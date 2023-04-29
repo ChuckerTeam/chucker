@@ -167,14 +167,16 @@ internal class TransactionPayloadFragment :
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
 
-        val scrollToIndex =
-            if (goNext) {
-                ((currentSearchScrollIndex + 1) % scrollableIndices.size)
-            } else {
-                (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
-            }
+        if (scrollableIndices.isNotEmpty()) {
+            val scrollToIndex =
+                if (goNext) {
+                    ((currentSearchScrollIndex + 1) % scrollableIndices.size)
+                } else {
+                    (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
+                }
 
-        scrollToSearchedItemPosition(scrollToIndex)
+            scrollToSearchedItemPosition(scrollToIndex)
+        }
     }
 
     private fun showEmptyState() {
@@ -269,16 +271,16 @@ internal class TransactionPayloadFragment :
             payloadAdapter.resetHighlight()
         }
 
+        currentSearchQuery = newText
+        currentSearchScrollIndex = -1
         scrollableIndices.clear()
+
         when {
             listOfScrollableIndex.isEmpty() -> {
-                currentSearchScrollIndex = -1
                 makeToolbarSearchSummaryVisible(false)
             }
             else -> {
-                makeToolbarSearchSummaryVisible(true)
                 scrollableIndices.addAll(listOfScrollableIndex)
-                updateToolbarText(newText, listOfScrollableIndex.size, 1)
             }
         }
 
@@ -289,7 +291,6 @@ internal class TransactionPayloadFragment :
                     scrollToSearchedItemPosition(0)
                 } else {
                     currentSearchScrollIndex = -1
-                    scrollableIndices.clear()
                 }
             }
         }
@@ -335,6 +336,7 @@ internal class TransactionPayloadFragment :
                 foregroundSpanColor
             )
             updateToolbarText(currentSearchQuery, scrollableIndices.size, positionOfScrollableIndices + 1)
+            makeToolbarSearchSummaryVisible()
 
             payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
             currentSearchScrollIndex = positionOfScrollableIndices
