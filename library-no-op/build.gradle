@@ -45,7 +45,6 @@ android {
 
 dependencies {
     api "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

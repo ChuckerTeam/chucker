@@ -78,7 +78,6 @@ dependencies {
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
     implementation "androidx.activity:activity-ktx:$activityVersion"
 
