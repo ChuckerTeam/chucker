@@ -15,17 +15,70 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/Chucker.Theme" >
+            app:popupTheme="@style/Chucker.Theme">
 
             <TextView
                 android:id="@+id/toolbarTitle"
+                style="@style/Chucker.TextAppearance.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/chucker_doub_grid"
-                style="@style/Chucker.TextAppearance.Title"
-                tools:text="Title"/>
+                tools:text="Title" />
 
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/toolbarSearchSummary"
+                style="@style/Chucker.TextAppearance.Body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/chucker_doub_grid"
+                android:layout_marginEnd="@dimen/chucker_doub_grid"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/toolbarSearchNavButtonUp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Search Results: eyeColor 3/10" />
+
+            <ImageButton
+                android:id="@+id/toolbarSearchNavButtonUp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/chucker_search_navigation_buttons"
+                android:padding="@dimen/chucker_half_grid"
+                android:rotation="180"
+                android:src="@drawable/chucker_ic_arrow_down"
+                app:layout_constraintBottom_toBottomOf="@id/toolbarSearchSummary"
+                app:layout_constraintEnd_toStartOf="@id/toolbarSearchNavButton"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@id/toolbarSearchSummary"
+                app:layout_constraintTop_toTopOf="@id/toolbarSearchSummary" />
+
+            <ImageButton
+                android:id="@+id/toolbarSearchNavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/chucker_base_grid"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/chucker_search_navigation_buttons"
+                android:padding="@dimen/chucker_half_grid"
+                android:src="@drawable/chucker_ic_arrow_down"
+                app:layout_constraintBottom_toBottomOf="@id/toolbarSearchSummary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/toolbarSearchSummary" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"

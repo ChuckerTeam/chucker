@@ -4,7 +4,6 @@ This file follows [Keepachangelog](https://keepachangelog.com/) format.
 Please add your entries according to this format.
 
 ## Unreleased
-* added scroll to highlighted text search in response screen
 
 ### Added
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI.
@@ -15,6 +14,7 @@ Please add your entries according to this format.
 * Added ability to export transactions to a file programmatically, LOG or HAR.
 * GraphQL OperationName header to transaction title [#69], [#116]
 * Added support for Android 13 and notifications permission handling
+* Added scroll to highlighted text search in response screen [#988]eye
 
 ### Fixed
 
@@ -528,3 +528,5 @@ Initial release.
 [#593]: https://github.com/ChuckerTeam/chucker/issues/593
 [#653]: https://github.com/ChuckerTeam/chucker/pull/653
 [#737]: https://github.com/ChuckerTeam/chucker/issues/737
+[#388]: https://github.com/ChuckerTeam/chucker/issues/388
+[#988]: https://github.com/ChuckerTeam/chucker/pull/988

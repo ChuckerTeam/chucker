@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
@@ -6,8 +8,6 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
@@ -15,15 +15,20 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -33,10 +38,12 @@ import com.chuckerteam.chucker.internal.support.combineLatest
 import com.chuckerteam.chucker.internal.support.gone
 import com.chuckerteam.chucker.internal.support.visible
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.abs
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
@@ -78,6 +85,24 @@ internal class TransactionPayloadFragment :
 
     private val scrollableIndices by lazy { mutableListOf<Int>() }
     private var currentSearchScrollIndex = -1
+    private var currentSearchQuery: String = ""
+
+    private val searchViewSummaryRootLayout by lazy {
+        requireActivity().findViewById<ConstraintLayout>(R.id.constraintToolbar)
+    }
+
+    private val searchTextViewSummary by lazy {
+        requireActivity().findViewById<TextView>(R.id.toolbarSearchSummary)
+    }
+
+    private val searchNavButton by lazy {
+        requireActivity().findViewById<ImageButton>(R.id.toolbarSearchNavButton)
+    }
+
+    private val searchNavButtonUp by lazy {
+        requireActivity().findViewById<ImageButton>(R.id.toolbarSearchNavButtonUp)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,11 +151,10 @@ internal class TransactionPayloadFragment :
                 }
             }
         )
-
-        payloadBinding.fabToNext.setOnClickListener {
+        searchNavButton.setOnClickListener {
             onSearchScrollerButtonClick(true)
         }
-        payloadBinding.fabToPrevious.setOnClickListener {
+        searchNavButtonUp.setOnClickListener {
             onSearchScrollerButtonClick(false)
         }
     }
@@ -143,15 +167,16 @@ internal class TransactionPayloadFragment :
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
 
-        val scrollToIndex = if (goNext) currentSearchScrollIndex + 1 else currentSearchScrollIndex - 1
+        val scrollToIndex =
+            if (goNext) ((currentSearchScrollIndex + 1) % scrollableIndices.size)
+            else (abs(currentSearchScrollIndex - 1 + scrollableIndices.size) % scrollableIndices.size)
         val scrollTo = scrollableIndices.getOrNull(scrollToIndex)
         if (scrollTo != null) {
             payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
             currentSearchScrollIndex = scrollToIndex
+            updateToolbarText(currentSearchQuery, scrollableIndices.size, scrollToIndex + 1)
         }
 
-        payloadBinding.fabToNext.isEnabled = scrollTo != scrollableIndices.last()
-        payloadBinding.fabToPrevious.isEnabled = scrollTo != scrollableIndices.first()
     }
 
     private fun showEmptyState() {
@@ -249,49 +274,57 @@ internal class TransactionPayloadFragment :
         scrollableIndices.clear()
         when {
             listOfScrollableIndex.isEmpty() -> {
-                // scroll to top
                 currentSearchScrollIndex = 0
-                payloadBinding.payloadRecyclerView.smoothScrollToPosition(0)
+                makeToolbarSearchSummaryVisible(false)
 
-                payloadBinding.fabToNext.gone()
-                payloadBinding.fabToPrevious.gone()
             }
             listOfScrollableIndex.size == 1 -> {
-                payloadBinding.fabToNext.gone()
-                payloadBinding.fabToPrevious.gone()
 
                 scrollableIndices.addAll(listOfScrollableIndex)
             }
             else -> {
-                payloadBinding.fabToNext.visible()
-                payloadBinding.fabToPrevious.visible()
-
-                payloadBinding.fabToPrevious.isEnabled = false
-                payloadBinding.fabToNext.isEnabled = true
+                makeToolbarSearchSummaryVisible(true)
 
                 scrollableIndices.addAll(listOfScrollableIndex)
+                updateToolbarText(newText, listOfScrollableIndex.size, 1)
             }
         }
 
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
+        lifecycleScope.launch {
+            delay(DELAY_FOR_SEARCH_SCROLL)
+            lifecycle.withResumed {
                 if (scrollableIndices.isNotEmpty()) {
                     currentSearchScrollIndex = 0
                     payloadBinding.payloadRecyclerView.smoothScrollToPosition(
                         scrollableIndices[currentSearchScrollIndex]
                     )
                 } else scrollableIndices.clear()
-            },
-            DELAY_FOR_SEARCH_SCROLL
-        )
-
+            }
+        }
         return true
+    }
+
+    private fun makeToolbarSearchSummaryVisible(visible: Boolean = true) {
+        with(searchViewSummaryRootLayout) {
+            if (visible) visible() else gone()
+        }
+    }
+
+    private fun updateToolbarText(searchQuery: String, searchResultsCount: Int, currentIndex: Int = 1) {
+        currentSearchQuery = searchQuery
+        searchTextViewSummary.text = SpannableStringBuilder().apply {
+            append(getString(R.string.chucker_search_results_title))
+            bold {
+                append(" $searchQuery ")
+                append("$currentIndex/$searchResultsCount")
+            }
+        }
     }
 
     private suspend fun processPayload(
         type: PayloadType,
         transaction: HttpTransaction,
-        formatRequestBody: Boolean
+        formatRequestBody: Boolean,
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
