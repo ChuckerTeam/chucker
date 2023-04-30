@@ -242,7 +242,6 @@ internal class TransactionPayloadFragment :
         PayloadType.REQUEST -> {
             (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
-
         PayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
@@ -262,6 +261,9 @@ internal class TransactionPayloadFragment :
 
     override fun onQueryTextChange(newText: String): Boolean {
         scrollableIndices.clear()
+        currentSearchQuery = newText
+        currentSearchScrollIndex = -1
+
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
             scrollableIndices.addAll(
                 payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
@@ -270,9 +272,6 @@ internal class TransactionPayloadFragment :
             payloadAdapter.resetHighlight()
             makeToolbarSearchSummaryVisible(false)
         }
-
-        currentSearchQuery = newText
-        currentSearchScrollIndex = -1
 
         lifecycleScope.launch {
             delay(DELAY_FOR_SEARCH_SCROLL)
@@ -308,7 +307,7 @@ internal class TransactionPayloadFragment :
         scrollableIndices.getOrNull(currentSearchScrollIndex)?.let {
             payloadAdapter.highlightItemWithColorOnPosition(
                 it.indexBodyLine,
-                it.queryStartPosition,
+                it.indexStartOfQuerySubString,
                 currentSearchQuery,
                 backgroundSpanColor,
                 foregroundSpanColor
@@ -321,7 +320,7 @@ internal class TransactionPayloadFragment :
             // highlight the next navigated item and update toolbar summary text
             payloadAdapter.highlightItemWithColorOnPosition(
                 scrollTo.indexBodyLine,
-                scrollTo.queryStartPosition,
+                scrollTo.indexStartOfQuerySubString,
                 currentSearchQuery,
                 backgroundSpanColorSearchItem,
                 foregroundSpanColor

@@ -86,7 +86,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                         listOfSearchItems.add(
                             SearchItemBodyLine(
                                 indexBodyLine = index + 1,
-                                queryStartPosition = it
+                                indexStartOfQuerySubString = it
                             )
                         )
                     }
@@ -164,7 +164,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
 
     internal data class SearchItemBodyLine(
         val indexBodyLine: Int,
-        val queryStartPosition: Int
+        val indexStartOfQuerySubString: Int
     )
 }
 
