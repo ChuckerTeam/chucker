@@ -84,7 +84,7 @@ internal class TransactionPayloadFragment :
     private var foregroundSpanColor: Int = Color.RED
     private var backgroundSpanColorSearchItem: Int = Color.GREEN
 
-    private val scrollableIndices by lazy { mutableListOf<Int>() }
+    private val scrollableIndices by lazy { arrayListOf<TransactionBodyAdapter.SearchItemBodyLine>() }
     private var currentSearchScrollIndex = -1
     private var currentSearchQuery: String = ""
 
@@ -242,6 +242,7 @@ internal class TransactionPayloadFragment :
         PayloadType.REQUEST -> {
             (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
+
         PayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
@@ -260,29 +261,18 @@ internal class TransactionPayloadFragment :
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(newText: String): Boolean {
-        var listOfScrollableIndex = listOf<Int>()
+        scrollableIndices.clear()
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            listOfScrollableIndex = payloadAdapter.highlightQueryWithColors(
-                newText,
-                backgroundSpanColor,
-                foregroundSpanColor
+            scrollableIndices.addAll(
+                payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
             )
         } else {
             payloadAdapter.resetHighlight()
+            makeToolbarSearchSummaryVisible(false)
         }
 
         currentSearchQuery = newText
         currentSearchScrollIndex = -1
-        scrollableIndices.clear()
-
-        when {
-            listOfScrollableIndex.isEmpty() -> {
-                makeToolbarSearchSummaryVisible(false)
-            }
-            else -> {
-                scrollableIndices.addAll(listOfScrollableIndex)
-            }
-        }
 
         lifecycleScope.launch {
             delay(DELAY_FOR_SEARCH_SCROLL)
@@ -304,7 +294,6 @@ internal class TransactionPayloadFragment :
     }
 
     private fun updateToolbarText(searchQuery: String, searchResultsCount: Int, currentIndex: Int = 1) {
-        currentSearchQuery = searchQuery
         searchTextViewSummary.text = SpannableStringBuilder().apply {
             append(getString(R.string.chucker_search_results_title))
             bold {
@@ -318,7 +307,8 @@ internal class TransactionPayloadFragment :
         // reset the last searched item highlight if done
         scrollableIndices.getOrNull(currentSearchScrollIndex)?.let {
             payloadAdapter.highlightItemWithColorOnPosition(
-                it,
+                it.indexBodyLine,
+                it.queryStartPosition,
                 currentSearchQuery,
                 backgroundSpanColor,
                 foregroundSpanColor
@@ -330,7 +320,8 @@ internal class TransactionPayloadFragment :
         if (scrollTo != null) {
             // highlight the next navigated item and update toolbar summary text
             payloadAdapter.highlightItemWithColorOnPosition(
-                scrollTo,
+                scrollTo.indexBodyLine,
+                scrollTo.queryStartPosition,
                 currentSearchQuery,
                 backgroundSpanColorSearchItem,
                 foregroundSpanColor
@@ -338,7 +329,7 @@ internal class TransactionPayloadFragment :
             updateToolbarText(currentSearchQuery, scrollableIndices.size, positionOfScrollableIndices + 1)
             makeToolbarSearchSummaryVisible()
 
-            payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo)
+            payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo.indexBodyLine)
             currentSearchScrollIndex = positionOfScrollableIndices
         }
     }
@@ -393,10 +384,12 @@ internal class TransactionPayloadFragment :
                     val text = requireContext().getString(R.string.chucker_body_omitted)
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
+
                 bodyString.isBlank() -> {
                     val text = requireContext().getString(R.string.chucker_body_empty)
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
+
                 else -> bodyString.lines().forEach {
                     result.add(
                         TransactionPayloadItem.BodyLineItem(
@@ -423,6 +416,7 @@ internal class TransactionPayloadFragment :
                                 transaction.requestBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
                             }
+
                             PayloadType.RESPONSE -> {
                                 transaction.responseBody?.byteInputStream()?.copyTo(fos)
                                     ?: throw IOException(TRANSACTION_EXCEPTION)
