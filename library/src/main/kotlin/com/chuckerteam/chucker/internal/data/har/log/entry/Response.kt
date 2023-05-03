@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.data.har.log.entry
 
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.har.log.entry.response.Content
+import com.chuckerteam.chucker.internal.data.har.log.entry.response.Content.Companion.EMPTY
 import com.google.gson.annotations.SerializedName
 
 // https://github.com/ahmadnassri/har-spec/blob/master/versions/1.2.md#response
@@ -24,7 +25,7 @@ internal data class Response(
         statusText = transaction.responseMessage ?: "",
         httpVersion = transaction.protocol ?: "",
         headers = transaction.getParsedResponseHeaders()?.map { Header(it) } ?: emptyList(),
-        content = transaction.responsePayloadSize?.run { Content(transaction) },
+        content = transaction.responsePayloadSize?.run { Content(transaction) } ?: EMPTY,
         headersSize = transaction.responseHeadersSize ?: 0,
         bodySize = transaction.getHarResponseBodySize(),
         totalSize = transaction.getResponseTotalSize()
