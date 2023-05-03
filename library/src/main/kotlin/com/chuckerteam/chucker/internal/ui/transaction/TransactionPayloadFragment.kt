@@ -15,12 +15,9 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
@@ -84,25 +81,9 @@ internal class TransactionPayloadFragment :
     private var foregroundSpanColor: Int = Color.RED
     private var backgroundSpanColorSearchItem: Int = Color.GREEN
 
-    private val scrollableIndices by lazy { arrayListOf<TransactionBodyAdapter.SearchItemBodyLine>() }
+    private val scrollableIndices = arrayListOf<TransactionBodyAdapter.SearchItemBodyLine>()
     private var currentSearchScrollIndex = -1
     private var currentSearchQuery: String = ""
-
-    private val searchViewSummaryRootLayout by lazy {
-        requireActivity().findViewById<ConstraintLayout>(R.id.constraintToolbar)
-    }
-
-    private val searchTextViewSummary by lazy {
-        requireActivity().findViewById<TextView>(R.id.toolbarSearchSummary)
-    }
-
-    private val searchNavButton by lazy {
-        requireActivity().findViewById<ImageButton>(R.id.toolbarSearchNavButton)
-    }
-
-    private val searchNavButtonUp by lazy {
-        requireActivity().findViewById<ImageButton>(R.id.toolbarSearchNavButtonUp)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,10 +132,10 @@ internal class TransactionPayloadFragment :
                 }
             }
         )
-        searchNavButton.setOnClickListener {
+        payloadBinding.searchNavButton.setOnClickListener {
             onSearchScrollerButtonClick(true)
         }
-        searchNavButtonUp.setOnClickListener {
+        payloadBinding.searchNavButtonUp.setOnClickListener {
             onSearchScrollerButtonClick(false)
         }
     }
@@ -287,17 +268,15 @@ internal class TransactionPayloadFragment :
     }
 
     private fun makeToolbarSearchSummaryVisible(visible: Boolean = true) {
-        with(searchViewSummaryRootLayout) {
+        with(payloadBinding.rootSearchSummary) {
             if (visible) visible() else gone()
         }
     }
 
-    private fun updateToolbarText(searchQuery: String, searchResultsCount: Int, currentIndex: Int = 1) {
-        searchTextViewSummary.text = SpannableStringBuilder().apply {
-            append(getString(R.string.chucker_search_results_title))
+    private fun updateToolbarText(searchResultsCount: Int, currentIndex: Int = 1) {
+        payloadBinding.searchSummary.text = SpannableStringBuilder().apply {
             bold {
-                append(" $searchQuery ")
-                append("$currentIndex/$searchResultsCount")
+                append("$currentIndex / $searchResultsCount")
             }
         }
     }
@@ -325,7 +304,7 @@ internal class TransactionPayloadFragment :
                 backgroundSpanColorSearchItem,
                 foregroundSpanColor
             )
-            updateToolbarText(currentSearchQuery, scrollableIndices.size, positionOfScrollableIndices + 1)
+            updateToolbarText(scrollableIndices.size, positionOfScrollableIndices + 1)
             makeToolbarSearchSummaryVisible()
 
             payloadBinding.payloadRecyclerView.smoothScrollToPosition(scrollTo.indexBodyLine)

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -20,7 +21,6 @@ import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,7 +32,6 @@ internal class TransactionActivity : BaseChuckerActivity() {
     }
 
     private lateinit var transactionBinding: ChuckerActivityTransactionBinding
-    private val pagerAdapter by lazy { TransactionPagerAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +40,8 @@ internal class TransactionActivity : BaseChuckerActivity() {
         with(transactionBinding) {
             setContentView(root)
             setSupportActionBar(toolbar)
-            viewPager.adapter = pagerAdapter
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = pagerAdapter.titles[position]
-            }.attach()
+            setupViewPager(viewPager)
+            tabLayout.setupWithViewPager(viewPager)
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -149,10 +146,23 @@ internal class TransactionActivity : BaseChuckerActivity() {
         return true
     }
 
+    private fun setupViewPager(viewPager: ViewPager) {
+        viewPager.adapter = TransactionPagerAdapter(this, supportFragmentManager)
+        viewPager.addOnPageChangeListener(
+            object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    selectedTabPosition = position
+                }
+            }
+        )
+        viewPager.currentItem = selectedTabPosition
+    }
+
     companion object {
         private const val EXPORT_TXT_FILE_NAME = "transaction.txt"
         private const val EXPORT_HAR_FILE_NAME = "transaction.har"
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
+        private var selectedTabPosition = 0
 
         fun start(context: Context, transactionId: Long) {
             val intent = Intent(context, TransactionActivity::class.java)
