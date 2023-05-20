@@ -24,5 +24,5 @@ internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
 
     override fun getCount(): Int = titles.size
 
-    override fun getPageTitle(position: Int): CharSequence? = titles[position]
+    override fun getPageTitle(position: Int): CharSequence = titles[position]
 }

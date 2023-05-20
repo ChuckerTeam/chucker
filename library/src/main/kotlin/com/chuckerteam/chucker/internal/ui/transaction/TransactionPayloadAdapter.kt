@@ -16,6 +16,8 @@ import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
 import com.chuckerteam.chucker.internal.support.ChessboardDrawable
 import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
+import com.chuckerteam.chucker.internal.support.highlightWithDefinedColorsSubstring
+import com.chuckerteam.chucker.internal.support.indicesOf
 
 /**
  * Adapter responsible of showing the content of the Transaction Request/Response body.
@@ -45,10 +47,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                 val headersItemBinding = ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
             }
+
             TYPE_BODY_LINE -> {
                 val bodyItemBinding = ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
+
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
@@ -66,15 +70,35 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         }
     }
 
-    internal fun highlightQueryWithColors(newText: String, backgroundColor: Int, foregroundColor: Int) {
+    internal fun highlightQueryWithColors(
+        newText: String,
+        backgroundColor: Int,
+        foregroundColor: Int
+    ): List<SearchItemBodyLine> {
+        val listOfSearchItems = arrayListOf<SearchItemBodyLine>()
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
             .withIndex()
             .forEach { (index, item) ->
-                if (item.line.contains(newText, ignoreCase = true)) {
+                val listOfOccurrences = item.line.indicesOf(newText)
+                if (listOfOccurrences.isNotEmpty()) {
+                    // storing the occurrences and their positions
+                    listOfOccurrences.forEach {
+                        listOfSearchItems.add(
+                            SearchItemBodyLine(
+                                indexBodyLine = index + 1,
+                                indexStartOfQuerySubString = it
+                            )
+                        )
+                    }
+
+                    // highlighting the occurrences
                     item.line.clearHighlightSpans()
-                    item.line =
-                        item.line
-                            .highlightWithDefinedColors(newText, backgroundColor, foregroundColor)
+                    item.line = item.line.highlightWithDefinedColors(
+                        newText,
+                        listOfOccurrences,
+                        backgroundColor,
+                        foregroundColor
+                    )
                     notifyItemChanged(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
@@ -84,6 +108,26 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                     }
                 }
             }
+        return listOfSearchItems
+    }
+
+    internal fun highlightItemWithColorOnPosition(
+        position: Int,
+        queryStartPosition: Int,
+        queryText: String,
+        backgroundColor: Int,
+        foregroundColor: Int
+    ) {
+        val item = items.getOrNull(position) as? TransactionPayloadItem.BodyLineItem
+        if (item != null) {
+            item.line = item.line.highlightWithDefinedColorsSubstring(
+                queryText,
+                queryStartPosition,
+                backgroundColor,
+                foregroundColor
+            )
+            notifyItemChanged(position)
+        }
     }
 
     internal fun resetHighlight() {
@@ -117,6 +161,11 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             }
         return removedSpansCount
     }
+
+    internal data class SearchItemBodyLine(
+        val indexBodyLine: Int,
+        val indexStartOfQuerySubString: Int
+    )
 }
 
 internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {

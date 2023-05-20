@@ -19,6 +19,7 @@ Please add your entries according to this format.
   * Add support for GraphQL [#805] [#884]
   * Show GraphQL OperationName header to transaction title [#69], [#116]
   * Allows to filter transactions based on graphqlOperationName [#920]
+* Added scroll to highlighted text search in response screen [#988]
 
 ### Fixed
 
@@ -557,3 +558,5 @@ Initial release.
 [#930]: https://github.com/ChuckerTeam/chucker/pull/930
 [#970]: https://github.com/ChuckerTeam/chucker/pull/970
 [#975]: https://github.com/ChuckerTeam/chucker/pull/975
+[#388]: https://github.com/ChuckerTeam/chucker/issues/388
+[#988]: https://github.com/ChuckerTeam/chucker/pull/988

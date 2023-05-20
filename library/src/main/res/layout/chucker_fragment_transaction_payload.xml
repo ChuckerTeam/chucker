@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="false"
     tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionPayloadFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -44,6 +44,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/rootSearchSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/chucker_color_primary"
+        android:gravity="start"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/searchSummary"
+            style="@style/Chucker.TextAppearance.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:layout_marginStart="@dimen/chucker_doub_grid"
+            android:layout_marginEnd="@dimen/chucker_doub_grid"
+            android:layout_weight="1"
+            android:textColor="@color/chucker_color_on_primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/searchNavButtonUp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="3/10" />
+
+        <ImageButton
+            android:id="@+id/searchNavButtonUp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/chucker_scroll_buttons_for_search"
+            android:paddingHorizontal="@dimen/chucker_base_grid"
+            android:rotation="180"
+            android:src="@drawable/chucker_ic_arrow_down"
+            app:layout_constraintBottom_toBottomOf="@id/searchSummary"
+            app:layout_constraintEnd_toStartOf="@id/searchNavButton"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/searchSummary"
+            app:layout_constraintTop_toTopOf="@id/searchSummary" />
+
+        <ImageButton
+            android:id="@+id/searchNavButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/chucker_base_grid"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/chucker_scroll_buttons_for_search"
+            android:paddingHorizontal="@dimen/chucker_base_grid"
+            android:src="@drawable/chucker_ic_arrow_down"
+            app:layout_constraintBottom_toBottomOf="@id/searchSummary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/searchSummary" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/payloadRecyclerView"
         android:layout_width="0dp"
@@ -56,7 +114,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rootSearchSummary"
         tools:listitem="@layout/chucker_transaction_item_body_line"
         tools:visibility="visible" />
 

@@ -15,15 +15,15 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/Chucker.Theme" >
+            app:popupTheme="@style/Chucker.Theme">
 
             <TextView
                 android:id="@+id/toolbarTitle"
+                style="@style/Chucker.TextAppearance.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/chucker_doub_grid"
-                style="@style/Chucker.TextAppearance.Title"
-                tools:text="Title"/>
+                tools:text="Title" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
