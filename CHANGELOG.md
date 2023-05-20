@@ -31,6 +31,7 @@ Please add your entries according to this format.
 * Fixed RTL issue in payload view [#733]
 * Fixed StrictMode ThreadPolicy violations [#737]
 * Fixed Memory Leak with Toasts: Use applicationContext instead of Activity [#810]
+* Improved error message when trying to save empty bodies [#]
 
 ### Removed
 

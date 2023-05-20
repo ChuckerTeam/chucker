@@ -35,6 +35,7 @@
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>
     <string name="chucker_file_not_saved">Failed to save file</string>
+    <string name="chucker_file_not_saved_body_is_empty">Nothing to save as the body is empty</string>
     <string name="chucker_body_empty">(body is empty)</string>
     <string name="chucker_body_omitted">(encoded or binary body omitted)</string>
     <string name="chucker_search">Search</string>

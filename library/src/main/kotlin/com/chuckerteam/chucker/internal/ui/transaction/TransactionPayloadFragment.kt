@@ -235,7 +235,16 @@ internal class TransactionPayloadFragment :
     }
 
     private fun createFileToSaveBody() {
-        saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+        val transaction = viewModel.transaction.value
+        if (transaction != null && isBodyEmpty(payloadType, transaction)) {
+            Toast.makeText(
+                activity,
+                R.string.chucker_file_not_saved_body_is_empty,
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
+        }
     }
 
     override fun onQueryTextSubmit(query: String): Boolean = false
@@ -409,6 +418,13 @@ internal class TransactionPayloadFragment :
             return@withContext true
         }
     }
+
+    private fun isBodyEmpty(type: PayloadType, transaction: HttpTransaction): Boolean =
+        when {
+            type == PayloadType.REQUEST && transaction.requestBody == null -> true
+            type == PayloadType.RESPONSE && transaction.responseBody == null -> true
+            else -> false
+        }
 
     companion object {
         private const val ARG_TYPE = "type"
