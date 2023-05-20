@@ -31,7 +31,7 @@ Please add your entries according to this format.
 * Fixed RTL issue in payload view [#733]
 * Fixed StrictMode ThreadPolicy violations [#737]
 * Fixed Memory Leak with Toasts: Use applicationContext instead of Activity [#810]
-* Improved error message when trying to save empty bodies [#]
+* Improved error message when trying to save empty bodies [#1038]
 
 ### Removed
 
@@ -529,6 +529,7 @@ Initial release.
 [#321]: https://github.com/ChuckerTeam/chucker/issues/321
 [#366]: https://github.com/ChuckerTeam/chucker/issues/366
 [#367]: https://github.com/ChuckerTeam/chucker/issues/367
+[#388]: https://github.com/ChuckerTeam/chucker/issues/388
 [#394]: https://github.com/ChuckerTeam/chucker/issues/394
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
@@ -559,5 +560,5 @@ Initial release.
 [#930]: https://github.com/ChuckerTeam/chucker/pull/930
 [#970]: https://github.com/ChuckerTeam/chucker/pull/970
 [#975]: https://github.com/ChuckerTeam/chucker/pull/975
-[#388]: https://github.com/ChuckerTeam/chucker/issues/388
 [#988]: https://github.com/ChuckerTeam/chucker/pull/988
+[#1038]: https://github.com/ChuckerTeam/chucker/pull/1038
