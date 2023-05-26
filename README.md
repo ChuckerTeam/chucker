@@ -188,7 +188,7 @@ If you're migrating **from Chucker v2.0 to v3.0**, please expect multiple breaki
 
 ## Snapshots 📦
 
-Development of Chucker happens in the [`develop`](https://github.com/ChuckerTeam/chucker/tree/develop) branch. Every push to `develop` will trigger a publishing of a `SNAPSHOT` artifact for the upcoming version. You can get those snapshots artifacts directly from Sonatype with:
+Development of Chucker happens in the [`main`](https://github.com/ChuckerTeam/chucker/tree/main) branch. Every push to `main` will trigger a publishing of a `SNAPSHOT` artifact for the upcoming version. You can get those snapshots artifacts directly from Sonatype with:
 
 ```gradle
 repositories {
@@ -200,15 +200,15 @@ dependencies {
 }
 ```
 
-Moreover, you can still use [JitPack](https://jitpack.io/#ChuckerTeam/chucker) as it builds every branch. So the top of `develop` is available here:
+Moreover, you can still use [JitPack](https://jitpack.io/#ChuckerTeam/chucker) as it builds every branch. So the top of `main` is available here:
 
 ```gradle
 repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:develop-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:develop-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:main-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:main-SNAPSHOT"
 }
 ```
 
