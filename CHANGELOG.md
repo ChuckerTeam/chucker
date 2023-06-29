@@ -6,6 +6,16 @@ Please add your entries according to this format.
 ## Unreleased
 
 ### Added
+
+### Fixed
+
+### Removed
+
+### Changed
+
+## Version 4.0.0 *(2023-06-29)*
+
+### Added
 * Add `skipPaths` to selectively skip requests from Chucker [#970]
 * Add syntax highlighting to the request/response body when is JSON [#930]
 * Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
