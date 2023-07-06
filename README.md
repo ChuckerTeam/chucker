@@ -137,7 +137,7 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable of reading data from different encodings.
 
 ```kotlin
-object ProtoDecoder : BinaryDecoder {
+object ProtoDecoder : BodyDecoder {
     fun decodeRequest(request: Request, body: ByteString): String? = if (request.isExpectedProtoRequest) {
         decodeProtoBody(body)
     } else {

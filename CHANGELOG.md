@@ -18,7 +18,7 @@ Please add your entries according to this format.
 ### Added
 * Add `skipPaths` to selectively skip requests from Chucker [#970]
 * Add syntax highlighting to the request/response body when is JSON [#930]
-* Decoding of request and response bodies can now be customized. In order to do this a `BodyDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
+* Decoding of request and response bodies can now be customized. In order to do this a `BinaryDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
 * Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder` [#588]
 * Brotli compression support [#563]
 * Added `writeTransactions` method to `ChuckerCollector` to export transactions to a file programmatically [#784]
@@ -50,10 +50,10 @@ Please add your entries according to this format.
 
 ### Changed
 
-* Updated OkHttp to 4.9.3
+* Updated OkHttp to 4.11.0
 * Updated Material to 1.8.0
-* Updated AGP to 8.0.0
-* Updated Kotlin to 1.8.20
+* Updated AGP to 8.0.2
+* Updated Kotlin to 1.8.22
 
 ## Version 3.5.2 *(2021-07-28)*
 
