@@ -3,9 +3,9 @@ package com.chuckerteam.chucker.sample
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.method.LinkMovementMethod
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
@@ -45,15 +45,15 @@ class MainActivity : AppCompatActivity() {
                 GraphQlTask(client).run()
             }
 
-            launchChuckerDirectly.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            launchChuckerDirectly.isVisible = Chucker.isOp
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
 
-            exportToFile.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFile.isVisible = Chucker.isOp
             exportToFile.setOnClickListener {
                 generateExportFile(ExportFormat.LOG)
             }
 
-            exportToFileHar.visibility = if (Chucker.isOp) View.VISIBLE else View.GONE
+            exportToFileHar.isVisible = Chucker.isOp
             exportToFileHar.setOnClickListener {
                 generateExportFile(ExportFormat.HAR)
             }
