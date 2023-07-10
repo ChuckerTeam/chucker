@@ -21,6 +21,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -32,8 +33,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
-import com.chuckerteam.chucker.internal.support.gone
-import com.chuckerteam.chucker.internal.support.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -277,9 +276,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun makeToolbarSearchSummaryVisible(visible: Boolean = true) {
-        with(payloadBinding.rootSearchSummary) {
-            if (visible) visible() else gone()
-        }
+        payloadBinding.rootSearchSummary.isVisible = visible
     }
 
     private fun updateToolbarText(searchResultsCount: Int, currentIndex: Int = 1) {
