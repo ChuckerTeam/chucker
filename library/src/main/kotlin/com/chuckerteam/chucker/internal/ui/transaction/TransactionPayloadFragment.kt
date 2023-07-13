@@ -254,9 +254,13 @@ internal class TransactionPayloadFragment :
         currentSearchScrollIndex = -1
 
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            scrollableIndices.addAll(
-                payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
-            )
+            val listOfSearchQuery = payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+            if (listOfSearchQuery.isNotEmpty()) {
+                scrollableIndices.addAll(listOfSearchQuery)
+            } else {
+                payloadAdapter.resetHighlight()
+                makeToolbarSearchSummaryVisible(false)
+            }
         } else {
             payloadAdapter.resetHighlight()
             makeToolbarSearchSummaryVisible(false)
