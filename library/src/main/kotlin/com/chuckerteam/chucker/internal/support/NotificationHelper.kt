@@ -97,7 +97,7 @@ internal class NotificationHelper(val context: Context) {
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
-                (transactionBuffer.size() - 1 downTo 0).forEach { i ->
+                for (i in transactionBuffer.size() - 1 downTo 0) {
                     val bufferedTransaction = transactionBuffer.valueAt(i)
                     if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
