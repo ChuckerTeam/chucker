@@ -44,6 +44,7 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
 public final class com/chuckerteam/chucker/api/ExportFormat : java/lang/Enum {
 	public static final field HAR Lcom/chuckerteam/chucker/api/ExportFormat;
 	public static final field LOG Lcom/chuckerteam/chucker/api/ExportFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getExtension ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lcom/chuckerteam/chucker/api/ExportFormat;
 	public static fun values ()[Lcom/chuckerteam/chucker/api/ExportFormat;
@@ -61,6 +62,7 @@ public final class com/chuckerteam/chucker/api/RetentionManager$Period : java/la
 	public static final field ONE_DAY Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 	public static final field ONE_HOUR Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 	public static final field ONE_WEEK Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 	public static fun values ()[Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 }
