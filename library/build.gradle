@@ -69,6 +69,7 @@ dependencies {
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.palette:palette-ktx:$paletteKtxVersion"
+    implementation "androidx.viewpager2:viewpager2:$viewpager2Version"
 
     implementation "androidx.activity:activity-ktx:$activityVersion"
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"

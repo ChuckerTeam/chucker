@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -21,6 +21,7 @@ import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
 import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.shareAsUtf8Text
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,7 +42,9 @@ internal class TransactionActivity : BaseChuckerActivity() {
             setContentView(root)
             setSupportActionBar(toolbar)
             setupViewPager(viewPager)
-            tabLayout.setupWithViewPager(viewPager)
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = (viewPager.adapter as TransactionPagerAdapter).getPageTitle(position)
+            }.attach()
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -146,10 +149,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         return true
     }
 
-    private fun setupViewPager(viewPager: ViewPager) {
-        viewPager.adapter = TransactionPagerAdapter(this, supportFragmentManager)
-        viewPager.addOnPageChangeListener(
-            object : ViewPager.SimpleOnPageChangeListener() {
+    private fun setupViewPager(viewPager: ViewPager2) {
+        viewPager.adapter = TransactionPagerAdapter(this, this)
+        viewPager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     selectedTabPosition = position
                 }
