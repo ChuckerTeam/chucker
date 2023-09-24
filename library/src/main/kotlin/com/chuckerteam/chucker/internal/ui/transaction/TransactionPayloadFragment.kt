@@ -34,6 +34,9 @@ import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
 import com.chuckerteam.chucker.internal.support.gone
 import com.chuckerteam.chucker.internal.support.visible
+import com.google.gson.JsonParser
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.MalformedJsonException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -119,6 +122,8 @@ internal class TransactionPayloadFragment :
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
                     val result = processPayload(payloadType, transaction, formatRequestBody)
+                        .getCollapsableOrDefault()
+
                     if (result.isEmpty()) {
                         showEmptyState()
                     } else {
@@ -142,7 +147,8 @@ internal class TransactionPayloadFragment :
 
     private fun onSearchScrollerButtonClick(goNext: Boolean) {
         // hide the keyboard if visible
-        val inputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         if (inputMethodManager.isAcceptingText) {
             activity?.currentFocus?.clearFocus()
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
@@ -199,6 +205,14 @@ internal class TransactionPayloadFragment :
                     true
                 }
             }
+
+            menu.findItem(R.id.collapse).apply {
+                isVisible = true
+                setOnMenuItemClickListener {
+                    viewModel.toggleCollapsableJson()
+                    true
+                }
+            }
         }
 
         if (payloadType == PayloadType.REQUEST) {
@@ -223,6 +237,7 @@ internal class TransactionPayloadFragment :
         PayloadType.REQUEST -> {
             (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
+
         PayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
@@ -256,7 +271,11 @@ internal class TransactionPayloadFragment :
 
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
             scrollableIndices.addAll(
-                payloadAdapter.highlightQueryWithColors(newText, backgroundSpanColor, foregroundSpanColor)
+                payloadAdapter.highlightQueryWithColors(
+                    newText,
+                    backgroundSpanColor,
+                    foregroundSpanColor
+                )
             )
         } else {
             payloadAdapter.resetHighlight()
@@ -393,7 +412,11 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(
+        type: PayloadType,
+        uri: Uri,
+        transaction: HttpTransaction
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
@@ -455,5 +478,48 @@ internal class TransactionPayloadFragment :
             result.add(subSequence(0, length))
         }
         return result
+    }
+
+    private fun MutableList<TransactionPayloadItem>.getCollapsableOrDefault(): List<TransactionPayloadItem> {
+        val default = this
+
+        return if (viewModel.useJsonCollapsable) {
+            try {
+                mapToJsonElements()
+            } catch (t: MalformedJsonException) {
+                Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
+                Logger.error(t.message ?: "Error when formatting json")
+                viewModel.toggleCollapsableJson()
+                default
+            }
+        } else {
+            default
+        }
+    }
+
+    private fun MutableList<TransactionPayloadItem>.mapToJsonElements(): List<TransactionPayloadItem> {
+        val bodyBuilder = StringBuilder()
+        val newList = arrayListOf<TransactionPayloadItem>()
+
+        forEach { item ->
+            when (item) {
+                is TransactionPayloadItem.BodyLineItem -> bodyBuilder.append(item.line)
+                is TransactionPayloadItem.HeaderItem,
+                is TransactionPayloadItem.ImageItem -> newList.add(item)
+
+                else -> Unit
+            }
+        }
+
+        val reader = JsonReader(bodyBuilder.toString().reader())
+            .also { it.isLenient = true }
+
+        newList.add(
+            TransactionPayloadItem.BodyJsonItem(
+                jsonElement = JsonParser.parseReader(reader)
+            )
+        )
+
+        return newList
     }
 }

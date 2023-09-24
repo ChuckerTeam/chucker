@@ -43,4 +43,12 @@
         android:visible="false"
         app:showAsAction="ifRoom">
     </item>
+
+    <item
+        android:icon="@drawable/chucker_ic_collapse_all"
+        android:title="@string/chucker_collapse_all"
+        android:id="@+id/collapse"
+        android:visible="false"
+        app:showAsAction="ifRoom">
+    </item>
 </menu>

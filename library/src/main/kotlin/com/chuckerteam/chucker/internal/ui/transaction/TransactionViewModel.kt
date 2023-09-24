@@ -15,6 +15,10 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     val encodeUrl: LiveData<Boolean> = mutableEncodeUrl
 
+    private var _useJsonCollapsable: Boolean = false
+    val useJsonCollapsable: Boolean
+        get() = _useJsonCollapsable
+
     val transactionTitle: LiveData<String> = RepositoryProvider.transaction()
         .getTransaction(transactionId)
         .combineLatest(encodeUrl) { transaction, encodeUrl ->
@@ -34,10 +38,12 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
     val doesRequestBodyRequireEncoding: LiveData<Boolean> = RepositoryProvider.transaction()
         .getTransaction(transactionId)
         .map { transaction ->
-            transaction?.requestContentType?.contains("x-www-form-urlencoded", ignoreCase = true) ?: false
+            transaction?.requestContentType?.contains("x-www-form-urlencoded", ignoreCase = true)
+                ?: false
         }
 
-    val transaction: LiveData<HttpTransaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
+    val transaction: LiveData<HttpTransaction?> =
+        RepositoryProvider.transaction().getTransaction(transactionId)
 
     val formatRequestBody: LiveData<Boolean> = doesRequestBodyRequireEncoding
         .combineLatest(encodeUrl) { requiresEncoding, encodeUrl ->
@@ -48,6 +54,11 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     fun encodeUrl(encode: Boolean) {
         mutableEncodeUrl.value = encode
+    }
+
+    fun toggleCollapsableJson() {
+        _useJsonCollapsable = !_useJsonCollapsable
+        mutableEncodeUrl.value = encodeUrl.value // Just to fire observer again
     }
 }
 

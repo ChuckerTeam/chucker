@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
+import android.animation.Animator
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.text.getSpans
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyJsonBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
@@ -18,6 +20,9 @@ import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
 import com.chuckerteam.chucker.internal.support.highlightWithDefinedColorsSubstring
 import com.chuckerteam.chucker.internal.support.indicesOf
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 
 /**
  * Adapter responsible of showing the content of the Transaction Request/Response body.
@@ -53,6 +58,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
 
+            TYPE_BODY_JSON_LINE -> {
+                val bodyItemBinding =
+                    ChuckerTransactionItemBodyJsonBinding.inflate(inflater, parent, false)
+                TransactionPayloadViewHolder.BodyJsonViewHolder(bodyItemBinding)
+            }
+
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
@@ -66,6 +77,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         return when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
+            is TransactionPayloadItem.BodyJsonItem -> TYPE_BODY_JSON_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
         }
     }
@@ -144,7 +156,8 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     companion object {
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2
-        private const val TYPE_IMAGE = 3
+        private const val TYPE_BODY_JSON_LINE = 3
+        private const val TYPE_IMAGE = 4
     }
 
     /**
@@ -226,10 +239,173 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
             const val LUMINANCE_THRESHOLD = 0.25
         }
     }
+
+    internal class BodyJsonViewHolder(
+        private val bodyBinding: ChuckerTransactionItemBodyJsonBinding
+    ) : TransactionPayloadViewHolder(bodyBinding.root) {
+
+        override fun bind(item: TransactionPayloadItem) {
+            if (item !is TransactionPayloadItem.BodyJsonItem) return
+
+            if (item.jsonElement == null) {
+                bodyBinding.clRoot.visibility = View.GONE
+                return
+            }
+
+            val body = item.jsonElement
+
+            when {
+                body.isJsonPrimitive -> {
+                    bodyBinding.imgExpand.visibility = View.GONE
+                    bodyBinding.rvSectionData.visibility = View.GONE
+                    bodyBinding.txtStartValue.text = body.asString.plus(",")
+                }
+                body.isJsonObject -> body.asJsonObject.showObjects()
+                body.isJsonArray -> body.asJsonArray.showArrayObjects()
+                else -> Unit
+            }
+        }
+
+        private fun JsonObject.showProperties() {
+            val attrList = mutableListOf<TransactionPayloadItem.BodyJsonItem>()
+
+            for ((key, value) in entrySet()) {
+                JsonObject().also {
+                    it.add(key, value)
+                    attrList.add(TransactionPayloadItem.BodyJsonItem(jsonElement = it))
+                }
+            }
+
+            bodyBinding.rvSectionData.visibility = View.VISIBLE
+            bodyBinding.rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
+                adapter.setItems(attrList)
+            }
+        }
+
+        private fun JsonObject.showObjects() {
+            val obj = this
+            val keys = obj.keySet()
+
+            if (keys.size == 0) return
+
+            // { "key" : "value" }
+            if (keys.size == 1) {
+                val key = obj.keySet().first()
+                val value: JsonElement = obj.get(key) ?: return
+                val keyText = "\"" + key + "\""
+
+                bodyBinding.imgExpand.visibility = View.GONE
+                bodyBinding.txtKey.text = keyText
+
+                when {
+                    value.isJsonPrimitive -> {
+                        val text = "\"" + value.asString + "\","
+                        bodyBinding.txtStartValue.text = text
+                        bodyBinding.txtEndValue.visibility = View.GONE
+                    }
+
+                    value.isJsonObject -> {
+                        if (value.asJsonObject.isEmpty) {
+                            bodyBinding.rvSectionData.visibility = View.GONE
+                            bodyBinding.txtStartValue.text = "{},"
+                            bodyBinding.txtEndValue.visibility = View.GONE
+                        } else {
+                            bodyBinding.root.setClickForValue(element = value)
+                        }
+                    }
+
+                    value.isJsonArray -> {
+                        bodyBinding.root.setClickForValue(element = value)
+                    }
+                }
+            } else {
+                // { "key1" : "value1", "key2" : "value2" }
+                bodyBinding.imgExpand.visibility = View.GONE
+                bodyBinding.txtKey.visibility = View.GONE
+                bodyBinding.txtDivider.visibility = View.GONE
+                bodyBinding.txtStartValue.visibility = View.GONE
+                bodyBinding.txtEndValue.visibility = View.GONE
+                obj.showProperties()
+            }
+        }
+        private fun JsonArray.showArrayObjects() {
+            map {
+                TransactionPayloadItem.BodyJsonItem(jsonElement = it.asJsonObject)
+            }.also { list ->
+                with(bodyBinding) {
+                    imgExpand.visibility = View.GONE
+                    txtKey.visibility = View.GONE
+                    txtDivider.visibility = View.GONE
+                    txtStartValue.visibility = View.GONE
+                    txtEndValue.visibility = View.GONE
+                    rvSectionData.visibility = View.VISIBLE
+                    rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
+                        adapter.setItems(list)
+                    }
+                }
+            }
+        }
+
+        private fun View.setClickForValue(element: JsonElement) = with(bodyBinding) {
+            var isOpen = false
+
+            imgExpand.visibility = View.VISIBLE
+            txtStartValue.text = if (element.isJsonObject) "{...}" else "[...]"
+            txtEndValue.visibility = View.GONE
+
+            setOnClickListener { view ->
+                isOpen = isOpen.not()
+
+                imgExpand.animate()
+                    .rotationBy(if (isOpen) OPEN_ROTATION_VALUE else CLOSE_ROTATION_VALUE)
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(p0: Animator) {
+                            view.isClickable = false
+                        }
+
+                        override fun onAnimationEnd(p0: Animator) {
+                            view.isClickable = true
+
+                            if (isOpen) {
+                                rvSectionData.visibility = View.VISIBLE
+                                txtStartValue.text = if (element.isJsonObject) "{" else "["
+                                txtEndValue.visibility = View.VISIBLE
+                                txtEndValue.text = if (element.isJsonObject) "}," else "],"
+                            } else {
+                                rvSectionData.visibility = View.GONE
+                                txtStartValue.text =
+                                    if (element.isJsonObject) "{...}," else "[...],"
+                                txtEndValue.visibility = View.GONE
+                            }
+
+                            rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
+                                adapter.setItems(
+                                    listOf(TransactionPayloadItem.BodyJsonItem(jsonElement = element))
+                                )
+                            }
+                        }
+
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onAnimationCancel(p0: Animator) {
+                        }
+
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onAnimationRepeat(p0: Animator) {
+                        }
+                    })
+            }
+        }
+
+        internal companion object {
+            const val OPEN_ROTATION_VALUE = 180f
+            const val CLOSE_ROTATION_VALUE = -180f
+        }
+    }
 }
 
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
+    internal class BodyJsonItem(val jsonElement: JsonElement?) : TransactionPayloadItem()
     internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }
