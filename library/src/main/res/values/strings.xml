@@ -32,6 +32,7 @@
     <string name="chucker_share_as_file">Share as file</string>
     <string name="chucker_share_as_har">Share as .har file</string>
     <string name="chucker_save">Save body to file</string>
+    <string name="chucker_expand_all">Expand all</string>
     <string name="chucker_collapse_all">Collapse all</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>

@@ -16,7 +16,7 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
     val encodeUrl: LiveData<Boolean> = mutableEncodeUrl
 
     private var _useJsonCollapsable: Boolean = false
-    val useJsonCollapsable: Boolean
+    val isUsingCollapsableJson: Boolean
         get() = _useJsonCollapsable
 
     val transactionTitle: LiveData<String> = RepositoryProvider.transaction()

@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -209,7 +210,7 @@ internal class TransactionPayloadFragment :
             menu.findItem(R.id.collapse).apply {
                 isVisible = true
                 setOnMenuItemClickListener {
-                    viewModel.toggleCollapsableJson()
+                    handleCollapseMenu()
                     true
                 }
             }
@@ -241,6 +242,26 @@ internal class TransactionPayloadFragment :
         PayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
+    }
+
+    private fun MenuItem.handleCollapseMenu() {
+        viewModel.toggleCollapsableJson()
+
+        setTitle(
+            if (viewModel.isUsingCollapsableJson) {
+                R.string.chucker_expand_all
+            } else {
+                R.string.chucker_collapse_all
+            }
+        )
+
+        setIcon(
+            if (viewModel.isUsingCollapsableJson) {
+                R.drawable.chucker_ic_expand_all
+            } else {
+                R.drawable.chucker_ic_collapse_all
+            }
+        )
     }
 
     override fun onAttach(context: Context) {
@@ -483,7 +504,7 @@ internal class TransactionPayloadFragment :
     private fun MutableList<TransactionPayloadItem>.getCollapsableOrDefault(): List<TransactionPayloadItem> {
         val default = this
 
-        return if (viewModel.useJsonCollapsable) {
+        return if (viewModel.isUsingCollapsableJson) {
             try {
                 mapToJsonElements()
             } catch (t: JsonSyntaxException) {

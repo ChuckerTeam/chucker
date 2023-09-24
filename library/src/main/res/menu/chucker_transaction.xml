@@ -49,6 +49,6 @@
         android:title="@string/chucker_collapse_all"
         android:id="@+id/collapse"
         android:visible="false"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
     </item>
 </menu>
