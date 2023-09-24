@@ -306,8 +306,9 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
                 when {
                     value.isJsonPrimitive -> {
-                        val text = "\"" + value.asString + "\","
-                        bodyBinding.txtStartValue.text = text
+                        val text = if (value.isJsonNull) "null" else "\"${value.asString}\""
+
+                        bodyBinding.txtStartValue.text = text.plus(",")
                         bodyBinding.txtEndValue.visibility = View.GONE
                     }
 
