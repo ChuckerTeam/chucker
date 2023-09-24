@@ -35,8 +35,8 @@ import com.chuckerteam.chucker.internal.support.combineLatest
 import com.chuckerteam.chucker.internal.support.gone
 import com.chuckerteam.chucker.internal.support.visible
 import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import com.google.gson.stream.JsonReader
-import com.google.gson.stream.MalformedJsonException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -486,7 +486,7 @@ internal class TransactionPayloadFragment :
         return if (viewModel.useJsonCollapsable) {
             try {
                 mapToJsonElements()
-            } catch (t: MalformedJsonException) {
+            } catch (t: JsonSyntaxException) {
                 Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
                 Logger.error(t.message ?: "Error when formatting json")
                 viewModel.toggleCollapsableJson()
