@@ -37,7 +37,6 @@
             android:textColor="@color/chucker_json_key_color"
             android:textDirection="ltr"
             android:textIsSelectable="true"
-            android:textStyle="bold"
             android:typeface="monospace"
             app:layout_constraintStart_toEndOf="@id/imgExpand"
             app:layout_constraintTop_toTopOf="@id/imgExpand"

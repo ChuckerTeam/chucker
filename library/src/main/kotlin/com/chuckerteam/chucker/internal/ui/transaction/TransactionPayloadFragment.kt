@@ -515,7 +515,7 @@ internal class TransactionPayloadFragment :
             .also { it.isLenient = true }
 
         newList.add(
-            TransactionPayloadItem.BodyJsonItem(
+            TransactionPayloadItem.BodyCollapsableItem(
                 jsonElement = JsonParser.parseReader(reader)
             )
         )

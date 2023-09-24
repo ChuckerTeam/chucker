@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.core.text.getSpans
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
-import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyJsonBinding
+import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyCollapsableBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
@@ -45,27 +45,33 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TransactionPayloadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADERS -> {
-                val headersItemBinding = ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
+                val headersItemBinding =
+                    ChuckerTransactionItemHeadersBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.HeaderViewHolder(headersItemBinding)
             }
 
             TYPE_BODY_LINE -> {
-                val bodyItemBinding = ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
+                val bodyItemBinding =
+                    ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
 
-            TYPE_BODY_JSON_LINE -> {
+            TYPE_BODY_COLLAPSABLE -> {
                 val bodyItemBinding =
-                    ChuckerTransactionItemBodyJsonBinding.inflate(inflater, parent, false)
+                    ChuckerTransactionItemBodyCollapsableBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.BodyJsonViewHolder(bodyItemBinding)
             }
 
             else -> {
-                val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
+                val imageItemBinding =
+                    ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
             }
         }
@@ -77,7 +83,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         return when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
-            is TransactionPayloadItem.BodyJsonItem -> TYPE_BODY_JSON_LINE
+            is TransactionPayloadItem.BodyCollapsableItem -> TYPE_BODY_COLLAPSABLE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
         }
     }
@@ -156,7 +162,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     companion object {
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2
-        private const val TYPE_BODY_JSON_LINE = 3
+        private const val TYPE_BODY_COLLAPSABLE = 3
         private const val TYPE_IMAGE = 4
     }
 
@@ -241,11 +247,11 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class BodyJsonViewHolder(
-        private val bodyBinding: ChuckerTransactionItemBodyJsonBinding
+        private val bodyBinding: ChuckerTransactionItemBodyCollapsableBinding
     ) : TransactionPayloadViewHolder(bodyBinding.root) {
 
         override fun bind(item: TransactionPayloadItem) {
-            if (item !is TransactionPayloadItem.BodyJsonItem) return
+            if (item !is TransactionPayloadItem.BodyCollapsableItem) return
 
             if (item.jsonElement == null) {
                 bodyBinding.clRoot.visibility = View.GONE
@@ -260,6 +266,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                     bodyBinding.rvSectionData.visibility = View.GONE
                     bodyBinding.txtStartValue.text = body.asString.plus(",")
                 }
+
                 body.isJsonObject -> body.asJsonObject.showObjects()
                 body.isJsonArray -> body.asJsonArray.showArrayObjects()
                 else -> Unit
@@ -267,12 +274,12 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
         }
 
         private fun JsonObject.showProperties() {
-            val attrList = mutableListOf<TransactionPayloadItem.BodyJsonItem>()
+            val attrList = mutableListOf<TransactionPayloadItem.BodyCollapsableItem>()
 
             for ((key, value) in entrySet()) {
                 JsonObject().also {
                     it.add(key, value)
-                    attrList.add(TransactionPayloadItem.BodyJsonItem(jsonElement = it))
+                    attrList.add(TransactionPayloadItem.BodyCollapsableItem(jsonElement = it))
                 }
             }
 
@@ -328,9 +335,10 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                 obj.showProperties()
             }
         }
+
         private fun JsonArray.showArrayObjects() {
             map {
-                TransactionPayloadItem.BodyJsonItem(jsonElement = it.asJsonObject)
+                TransactionPayloadItem.BodyCollapsableItem(jsonElement = it.asJsonObject)
             }.also { list ->
                 with(bodyBinding) {
                     imgExpand.visibility = View.GONE
@@ -380,7 +388,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
                             rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
                                 adapter.setItems(
-                                    listOf(TransactionPayloadItem.BodyJsonItem(jsonElement = element))
+                                    listOf(TransactionPayloadItem.BodyCollapsableItem(jsonElement = element))
                                 )
                             }
                         }
@@ -406,6 +414,6 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
-    internal class BodyJsonItem(val jsonElement: JsonElement?) : TransactionPayloadItem()
+    internal class BodyCollapsableItem(val jsonElement: JsonElement?) : TransactionPayloadItem()
     internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }
