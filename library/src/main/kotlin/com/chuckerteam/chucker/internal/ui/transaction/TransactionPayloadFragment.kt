@@ -206,13 +206,26 @@ internal class TransactionPayloadFragment :
                     true
                 }
             }
+        }
 
-            menu.findItem(R.id.collapse).apply {
-                isVisible = true
-                setOnMenuItemClickListener {
-                    handleCollapseMenu()
-                    true
+        if (shouldShowCollapsableIcon(transaction)) {
+            val collapseIcon = menu.findItem(R.id.collapse).also { item ->
+                item.setOnMenuItemClickListener {
+                    it.handleCollapseMenu()
                 }
+            }
+            val expandIcon = menu.findItem(R.id.expand).also { item ->
+                item.setOnMenuItemClickListener {
+                    it.handleCollapseMenu()
+                }
+            }
+
+            if (viewModel.isUsingCollapsableJson) {
+                expandIcon.isVisible = true
+                collapseIcon.isVisible = false
+            } else {
+                collapseIcon.isVisible = true
+                expandIcon.isVisible = false
             }
         }
 
@@ -244,24 +257,30 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private fun MenuItem.handleCollapseMenu() {
+    private fun shouldShowCollapsableIcon(transaction: HttpTransaction?): Boolean {
+        var isJsonContentType = false
+        var hasContent = false
+        val jsonContentType = "application/json"
+
+        when (payloadType) {
+            PayloadType.REQUEST -> {
+                isJsonContentType = transaction?.requestContentType?.contains(jsonContentType) == true
+                hasContent = (0L != (transaction?.requestPayloadSize))
+            }
+
+            PayloadType.RESPONSE -> {
+                isJsonContentType = transaction?.responseContentType?.contains(jsonContentType) == true
+                hasContent = (0L != (transaction?.responsePayloadSize))
+            }
+        }
+
+        return isJsonContentType && hasContent
+    }
+
+    private fun MenuItem.handleCollapseMenu(): Boolean {
         viewModel.toggleCollapsableJson()
-
-        setTitle(
-            if (viewModel.isUsingCollapsableJson) {
-                R.string.chucker_expand_all
-            } else {
-                R.string.chucker_collapse_all
-            }
-        )
-
-        setIcon(
-            if (viewModel.isUsingCollapsableJson) {
-                R.drawable.chucker_ic_expand_all
-            } else {
-                R.drawable.chucker_ic_collapse_all
-            }
-        )
+        activity?.invalidateOptionsMenu()
+        return true
     }
 
     override fun onAttach(context: Context) {
