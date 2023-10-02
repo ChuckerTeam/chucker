@@ -34,6 +34,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:minLines="1"
+            android:layout_marginTop="4dp"
             android:textColor="@color/chucker_json_key_color"
             android:textDirection="ltr"
             android:textIsSelectable="true"
