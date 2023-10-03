@@ -7,19 +7,25 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
   <img src="assets/ic_launcher-web.png" alt="chucker icon" width="30%"/>
 </p>
 
-* [Getting Started](#getting-started-)
-* [Features](#features-)
-  * [Multi-Window](#multi-window-)
-* [Configure](#configure-)
-  * [Redact-Header️](#redact-header-️)
-  * [Decode-Body](#decode-body-)
-* [Migrating](#migrating-)
-* [Snapshots](#snapshots-)
-* [FAQ](#faq-)
-* [Contributing](#contributing-)
-  * [Building](#building-)
-* [Acknowledgments](#acknowledgments-)
-* [License](#license-)
+- [Chucker](#chucker)
+  - [Getting Started 👣](#getting-started-)
+  - [Features 🧰](#features-)
+    - [Multi-Window 🚪](#multi-window-)
+  - [Configure 🎨](#configure-)
+    - [Redact-Header 👮‍♂️](#redact-header-️)
+    - [Decode-Body 📖](#decode-body-)
+    - [Notification Permission 🔔](#notification-permission-)
+  - [Migrating 🚗](#migrating-)
+  - [Snapshots 📦](#snapshots-)
+  - [FAQ ❓](#faq-)
+- [Sponsors 💸](#sponsors-)
+  - [Contributing 🤝](#contributing-)
+    - [Building 🛠](#building-)
+  - [Acknowledgments 🌸](#acknowledgments-)
+    - [Maintainers](#maintainers)
+    - [Thanks](#thanks)
+    - [Libraries](#libraries)
+  - [License 📄](#license-)
 
 Chucker simplifies the inspection of **HTTP(S) requests/responses** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
@@ -37,8 +43,8 @@ Please note that you should add both the `library` and the `library-no-op` varia
 
 ```groovy
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
+  debugImplementation "com.github.chuckerteam.chucker:library:4.0.0"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0"
 }
 ```
 
@@ -48,20 +54,6 @@ To start using Chucker, just plug in a new `ChuckerInterceptor` to your OkHttp C
 val client = OkHttpClient.Builder()
                 .addInterceptor(ChuckerInterceptor(context))
                 .build()
-```
-
-[Enable Java 8 support](https://developer.android.com/studio/write/java8-support).
-
-```groovy
-android {
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-
-  // For Kotlin projects add also this line
-  kotlinOptions.jvmTarget = "1.8"
-}
 ```
 
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
@@ -117,7 +109,7 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // Use decoder when processing request and response bodies. When multiple decoders are installed they
         // are applied in an order they were added.
         .addBodyDecoder(decoder)
-        // Controls Android shortcut creation. Available in SNAPSHOTS versions only at the moment
+        // Controls Android shortcut creation.
         .createShortcut(true)
         .build()
 
@@ -142,12 +134,10 @@ interceptor.redactHeader("Auth-Token", "User-Session");
 
 ### Decode-Body 📖
 
-**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.2
-
 Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable of reading data from different encodings.
 
 ```kotlin
-object ProtoDecoder : BinaryDecoder {
+object ProtoDecoder : BodyDecoder {
     fun decodeRequest(request: Request, body: ByteString): String? = if (request.isExpectedProtoRequest) {
         decodeProtoBody(body)
     } else {
@@ -165,18 +155,16 @@ interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 
 ### Notification Permission 🔔
 
-**Warning** This feature is available in SNAPSHOT builds only at the moment
-
-Starting with Android 13, your apps needs to request the `POST_NOTIFICATION` permission to the user in order to show notifications.
+Starting with Android 13, your apps needs to request the `android.permission.POST_NOTIFICATIONS` permission to the user in order to show notifications.
 As Chucker also shows notifications to show network activity you need to handle permission request depending on your app features.
 Without this permission Chucker will track network activity, but there will be no notifications on devices with Android 13 and newer.
 
 There are 2 possible cases:
 1. If your app is already sending notifications, you don't need to do anything as Chucker will
-show a notification as soon as the `POST_NOTIFICATION` permission is granted to your app.
-2. If your app does not send notifications you would need to open Chucker directly (can be done via shortcut, which is added to your app by default when Chucker is added)
+show a notification as soon as the `android.permission.POST_NOTIFICATIONS` permission is granted to your app.
+1. If your app does not send notifications you would need to open Chucker directly (can be done via shortcut, which is added to your app by default when Chucker is added)
 and click `Allow` in the dialog with permission request. In case you don't allow this permission or dismiss that dialog by mistake, on every Chucker launch there will be
-a snackbar with a button to open your app settings where you can change permissions settings. Note, you need to grant `POST_NOTIFICATION` to your app in Settings as there
+a snackbar with a button to open your app settings where you can change permissions settings. Note, you need to grant `android.permission.POST_NOTIFICATIONS` to your app in Settings as there
 will be no separate app in Apps list in Settings.
 
 ## Migrating 🚗
@@ -195,8 +183,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:4.0.0-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:4.1.0-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.1.0-SNAPSHOT"
 }
 ```
 

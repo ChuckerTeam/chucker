@@ -22,6 +22,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -33,8 +34,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
-import com.chuckerteam.chucker.internal.support.gone
-import com.chuckerteam.chucker.internal.support.visible
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.google.gson.stream.JsonReader
@@ -148,8 +147,7 @@ internal class TransactionPayloadFragment :
 
     private fun onSearchScrollerButtonClick(goNext: Boolean) {
         // hide the keyboard if visible
-        val inputMethodManager =
-            activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         if (inputMethodManager.isAcceptingText) {
             activity?.currentFocus?.clearFocus()
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
@@ -310,13 +308,17 @@ internal class TransactionPayloadFragment :
         currentSearchScrollIndex = -1
 
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            scrollableIndices.addAll(
-                payloadAdapter.highlightQueryWithColors(
-                    newText,
-                    backgroundSpanColor,
-                    foregroundSpanColor
-                )
+            val listOfSearchQuery = payloadAdapter.highlightQueryWithColors(
+                newText,
+                backgroundSpanColor,
+                foregroundSpanColor
             )
+            if (listOfSearchQuery.isNotEmpty()) {
+                scrollableIndices.addAll(listOfSearchQuery)
+            } else {
+                payloadAdapter.resetHighlight()
+                makeToolbarSearchSummaryVisible(false)
+            }
         } else {
             payloadAdapter.resetHighlight()
             makeToolbarSearchSummaryVisible(false)
@@ -336,9 +338,7 @@ internal class TransactionPayloadFragment :
     }
 
     private fun makeToolbarSearchSummaryVisible(visible: Boolean = true) {
-        with(payloadBinding.rootSearchSummary) {
-            if (visible) visible() else gone()
-        }
+        payloadBinding.rootSearchSummary.isVisible = visible
     }
 
     private fun updateToolbarText(searchResultsCount: Int, currentIndex: Int = 1) {
@@ -452,11 +452,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(
-        type: PayloadType,
-        uri: Uri,
-        transaction: HttpTransaction
-    ): Boolean {
+    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {

@@ -38,12 +38,10 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
     val doesRequestBodyRequireEncoding: LiveData<Boolean> = RepositoryProvider.transaction()
         .getTransaction(transactionId)
         .map { transaction ->
-            transaction?.requestContentType?.contains("x-www-form-urlencoded", ignoreCase = true)
-                ?: false
+            transaction?.requestContentType?.contains("x-www-form-urlencoded", ignoreCase = true) ?: false
         }
 
-    val transaction: LiveData<HttpTransaction?> =
-        RepositoryProvider.transaction().getTransaction(transactionId)
+    val transaction: LiveData<HttpTransaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
 
     val formatRequestBody: LiveData<Boolean> = doesRequestBodyRequireEncoding
         .combineLatest(encodeUrl) { requiresEncoding, encodeUrl ->
