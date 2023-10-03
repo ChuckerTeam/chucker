@@ -13,6 +13,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
+import java.util.HashSet
 
 internal class NotificationHelper(val context: Context) {
 
