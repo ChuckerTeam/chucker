@@ -5,10 +5,10 @@ buildscript {
         coroutineVersion = '1.7.3'
 
         // Google libraries
-        activityVersion = '1.7.2'
+        activityVersion = '1.8.0'
         appCompatVersion = '1.6.1'
         constraintLayoutVersion = '2.1.4'
-        materialComponentsVersion = '1.9.0'
+        materialComponentsVersion = '1.10.0'
         fragmentVersion = '1.6.1'
         roomVersion = '2.5.2'
         lifecycleVersion = '2.6.2'
@@ -106,8 +106,8 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 33
-    compileSdkVersion = 33
+    targetSdkVersion = 34
+    compileSdkVersion = 34
 }
 
 nexusStaging {
