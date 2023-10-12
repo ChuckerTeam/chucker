@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.getSpans
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyCollapsableBinding
@@ -248,7 +249,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
             if (item !is TransactionPayloadItem.BodyCollapsableItem) return
 
             if (item.jsonElement == null) {
-                bodyBinding.clRoot.visibility = View.GONE
+                bodyBinding.clRoot.gone()
                 return
             }
 
@@ -256,8 +257,8 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
             when {
                 body.isJsonPrimitive -> {
-                    bodyBinding.imgExpand.visibility = View.GONE
-                    bodyBinding.rvSectionData.visibility = View.GONE
+                    bodyBinding.imgExpand.gone()
+                    bodyBinding.rvSectionData.gone()
                     bodyBinding.txtStartValue.text = body.asString.plus(",")
                 }
 
@@ -277,7 +278,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                 }
             }
 
-            bodyBinding.rvSectionData.visibility = View.VISIBLE
+            bodyBinding.rvSectionData.show()
             bodyBinding.rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
                 adapter.setItems(attrList)
             }
@@ -295,7 +296,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                 val value: JsonElement = obj.get(key) ?: return
                 val keyText = "\"" + key + "\""
 
-                bodyBinding.imgExpand.visibility = View.GONE
+                bodyBinding.imgExpand.gone()
                 bodyBinding.txtKey.text = keyText
 
                 when {
@@ -303,14 +304,14 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                         val text = if (value.isJsonNull) "null" else "\"${value.asString}\""
 
                         bodyBinding.txtStartValue.text = text.plus(",")
-                        bodyBinding.txtEndValue.visibility = View.GONE
+                        bodyBinding.txtEndValue.gone()
                     }
 
                     value.isJsonObject -> {
                         if (value.asJsonObject.isEmpty) {
-                            bodyBinding.rvSectionData.visibility = View.GONE
+                            bodyBinding.rvSectionData.gone()
                             bodyBinding.txtStartValue.text = "{},"
-                            bodyBinding.txtEndValue.visibility = View.GONE
+                            bodyBinding.txtEndValue.gone()
                         } else {
                             bodyBinding.root.setClickForValue(element = value)
                         }
@@ -322,12 +323,15 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                 }
             } else {
                 // { "key1" : "value1", "key2" : "value2" }
-                bodyBinding.imgExpand.visibility = View.GONE
-                bodyBinding.txtKey.visibility = View.GONE
-                bodyBinding.txtDivider.visibility = View.GONE
-                bodyBinding.txtStartValue.visibility = View.GONE
-                bodyBinding.txtEndValue.visibility = View.GONE
+                bodyBinding.imgExpand.gone()
+                bodyBinding.txtKey.gone()
+                bodyBinding.txtDivider.gone()
+
+                bodyBinding.txtStartValue.show()
+                bodyBinding.txtStartValue.text = "{"
                 obj.showProperties()
+                bodyBinding.txtEndValue.show()
+                bodyBinding.txtEndValue.text = "},"
             }
         }
 
@@ -336,12 +340,12 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                 TransactionPayloadItem.BodyCollapsableItem(jsonElement = it.asJsonObject)
             }.also { list ->
                 with(bodyBinding) {
-                    imgExpand.visibility = View.GONE
-                    txtKey.visibility = View.GONE
-                    txtDivider.visibility = View.GONE
-                    txtStartValue.visibility = View.GONE
-                    txtEndValue.visibility = View.GONE
-                    rvSectionData.visibility = View.VISIBLE
+                    imgExpand.gone()
+                    txtKey.gone()
+                    txtDivider.gone()
+                    txtStartValue.gone()
+                    txtEndValue.gone()
+                    rvSectionData.show()
                     rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
                         adapter.setItems(list)
                     }
@@ -352,9 +356,9 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
         private fun View.setClickForValue(element: JsonElement) = with(bodyBinding) {
             var isOpen = false
 
-            imgExpand.visibility = View.VISIBLE
+            imgExpand.show()
             txtStartValue.text = if (element.isJsonObject) "{...}" else "[...]"
-            txtEndValue.visibility = View.GONE
+            txtEndValue.gone()
 
             setOnClickListener { view ->
                 isOpen = isOpen.not()
@@ -370,15 +374,15 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                             view.isClickable = true
 
                             if (isOpen) {
-                                rvSectionData.visibility = View.VISIBLE
+                                rvSectionData.show()
                                 txtStartValue.text = if (element.isJsonObject) "{" else "["
-                                txtEndValue.visibility = View.VISIBLE
+                                txtEndValue.show()
                                 txtEndValue.text = if (element.isJsonObject) "}," else "],"
                             } else {
-                                rvSectionData.visibility = View.GONE
+                                rvSectionData.gone()
                                 txtStartValue.text =
                                     if (element.isJsonObject) "{...}," else "[...],"
-                                txtEndValue.visibility = View.GONE
+                                txtEndValue.gone()
                             }
 
                             rvSectionData.adapter = TransactionBodyAdapter().also { adapter ->
@@ -398,6 +402,9 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                     })
             }
         }
+
+        private fun View.show() = apply { isVisible = true }
+        private fun View.gone() = apply { isVisible = false }
 
         internal companion object {
             const val OPEN_ROTATION_VALUE = 180f
