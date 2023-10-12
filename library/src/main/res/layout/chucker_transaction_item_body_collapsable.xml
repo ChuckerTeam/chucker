@@ -24,7 +24,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/chuncker_ic_arrow_down"
+            app:srcCompat="@drawable/chucker_ic_arrow_down"
             app:tint="@color/chucker_json_key_color"
             tools:visibility="visible" />
 
