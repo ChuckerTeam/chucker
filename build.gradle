@@ -14,7 +14,7 @@ buildscript {
         lifecycleVersion = '2.6.2'
         androidXCoreVersion = '2.2.0'
         paletteKtxVersion = '1.0.0'
-        kspVersion = '1.9.10-1.0.13'
+        kspVersion = '1.9.20-1.0.14'
 
         // Networking
         brotliVersion = '0.1.2'
