@@ -9,9 +9,20 @@ import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
 
     private val transactionDao get() = database.transactionDao()
-
+    private val customQueryRegex = """method *: *(get|put|post|patch|delete) *"""
+        .toRegex(RegexOption.IGNORE_CASE)
     override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
-        val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
+        val pathQuery = if (path.isNotEmpty() &&
+            !customQueryRegex.containsMatchIn(path)
+        ) {
+            "%$path%"
+        } else if (customQueryRegex
+            .containsMatchIn(input = path)
+        ) {
+            path.substring(path.indexOf(':') + 1).trim()
+        } else {
+            "%"
+        }
         return transactionDao.getFilteredTuples(
             "$code%",
             pathQuery = pathQuery,
@@ -19,7 +30,8 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
              * Refer <a href='https://github.com/ChuckerTeam/chucker/issues/847">Issue #847</a> for
              * more context
              */
-            graphQlQuery = pathQuery
+            graphQlQuery = pathQuery,
+            methodQuery = pathQuery
         )
     }
 

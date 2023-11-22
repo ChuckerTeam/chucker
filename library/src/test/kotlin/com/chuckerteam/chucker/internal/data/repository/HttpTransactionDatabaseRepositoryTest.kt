@@ -299,4 +299,69 @@ internal class HttpTransactionDatabaseRepositoryTest {
             assertThat(it?.host).isEqualTo(newHost)
         }
     }
+
+    @Test
+    fun `tuples are filtered based on request method`() = runBlocking {
+        testObject.insertTransaction(transaction.withResponseData())
+        testObject.insertTransaction(otherTransaction.withResponseData())
+
+        testObject.getFilteredTransactionTuples("", "method  :  get  ").observeForever {
+            assertTuples(listOf(otherTransaction, transaction), it)
+        }
+        testObject.getFilteredTransactionTuples("", "method :  get").observeForever {
+            assertTuples(listOf(otherTransaction, transaction), it)
+        }
+        testObject.getFilteredTransactionTuples("", "method :  gEt").observeForever {
+            assertTuples(listOf(otherTransaction, transaction), it)
+        }
+        testObject.getFilteredTransactionTuples("", "method:gEt").observeForever {
+            assertTuples(listOf(otherTransaction, transaction), it)
+        }
+        testObject.getFilteredTransactionTuples("", "METHOD:GET   ").observeForever {
+            assertTuples(listOf(otherTransaction, transaction), it)
+        }
+    }
+
+    @Test
+    fun `tuples are filtered based on request method POST`() = runBlocking {
+        val anotherTransaction = createRequest("abc").apply {
+            requestDate = 200L
+            responseCode = 418
+            method = "POST"
+        }
+
+        testObject.insertTransaction(transaction)
+        testObject.insertTransaction(otherTransaction)
+        testObject.insertTransaction(anotherTransaction)
+
+        testObject.getFilteredTransactionTuples("", "method  :   POST   ").observeForever {
+            assertTuples(listOf(anotherTransaction), it)
+        }
+
+        testObject.getFilteredTransactionTuples("", "Method:   PoST  ").observeForever {
+            assertTuples(listOf(anotherTransaction), it)
+        }
+    }
+
+    @Test
+    fun `tuples are filtered based on request method PUT`() = runBlocking {
+        val anotherTransaction = createRequest("abc").apply {
+            requestDate = 200L
+            responseCode = 418
+            method = "POST"
+        }
+        val putTransaction = createRequest("abc").apply {
+            requestDate = 200L
+            responseCode = 418
+            method = "PUT"
+        }
+        testObject.insertTransaction(transaction)
+        testObject.insertTransaction(otherTransaction)
+        testObject.insertTransaction(anotherTransaction)
+        testObject.insertTransaction(putTransaction)
+
+        testObject.getFilteredTransactionTuples("", "method:   PUT  ").observeForever {
+            assertTuples(listOf(putTransaction), it)
+        }
+    }
 }
