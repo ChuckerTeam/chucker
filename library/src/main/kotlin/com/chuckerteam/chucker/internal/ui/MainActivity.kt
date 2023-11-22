@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -46,6 +47,8 @@ internal class MainActivity :
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter
+    private var isMultipleSelect: Boolean = false
+    private val selectedId = mutableListOf<Long>()
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
@@ -66,9 +69,21 @@ internal class MainActivity :
         super.onCreate(savedInstanceState)
 
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
-        transactionsAdapter = TransactionAdapter(this) { transactionId ->
-            TransactionActivity.start(this, transactionId)
-        }
+        transactionsAdapter =
+            TransactionAdapter(this, longPress = {
+                isMultipleSelect = true
+                selectedId.add(it)
+            }, onTransactionClick = { transactionId ->
+                if (isMultipleSelect && selectedId.isNotEmpty()) {
+                    if (selectedId.contains(transactionId)) selectedId.remove(transactionId) else selectedId.add(
+                        transactionId
+                    )
+                    true
+                } else {
+                    TransactionActivity.start(this, transactionId)
+                    false
+                }
+            })
 
         with(mainBinding) {
             setContentView(root)
@@ -109,6 +124,7 @@ internal class MainActivity :
             ) == PackageManager.PERMISSION_GRANTED -> {
                 /* We have permission, all good */
             }
+
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                 Snackbar.make(
                     mainBinding.root,
@@ -123,6 +139,7 @@ internal class MainActivity :
                     }
                 }.show()
             }
+
             else -> {
                 permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
@@ -148,15 +165,16 @@ internal class MainActivity :
                 showDialog(
                     getClearDialogData(),
                     onPositiveClick = {
-                        viewModel.clearTransactions()
+                        if (selectedId.isNotEmpty()) viewModel.clearSelectedTransactions(selectedId) else viewModel.clearTransactions()
                     },
                     onNegativeClick = null
                 )
                 true
             }
+
             R.id.share_text -> {
                 showDialog(
-                    getExportDialogData(R.string.chucker_export_text_http_confirmation),
+                    getExportDialogData(if (selectedId.isNotEmpty()) R.string.chucker_export_text_selected_http_confirmation else R.string.chucker_export_text_http_confirmation),
                     onPositiveClick = {
                         exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
                             TransactionListDetailsSharable(transactions, encodeUrls = false)
@@ -166,9 +184,10 @@ internal class MainActivity :
                 )
                 true
             }
+
             R.id.share_har -> {
                 showDialog(
-                    getExportDialogData(R.string.chucker_export_har_http_confirmation),
+                    getExportDialogData(if (selectedId.isNotEmpty()) R.string.chucker_export_har_selected_http_confirmation else R.string.chucker_export_har_http_confirmation),
                     onPositiveClick = {
                         exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
                             TransactionDetailsHarSharable(
@@ -184,6 +203,7 @@ internal class MainActivity :
                 )
                 true
             }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }
@@ -203,7 +223,8 @@ internal class MainActivity :
     ) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
-            val transactions = viewModel.getAllTransactions()
+            val transactions =
+                if (selectedId.isNotEmpty()) viewModel.getSelectedTransactions(selectedId) else viewModel.getAllTransactions()
             if (transactions.isEmpty()) {
                 showToast(applicationContext.getString(R.string.chucker_export_empty_text))
                 return@launch
@@ -229,7 +250,7 @@ internal class MainActivity :
 
     private fun getClearDialogData(): DialogData = DialogData(
         title = getString(R.string.chucker_clear),
-        message = getString(R.string.chucker_clear_http_confirmation),
+        message = getString(if (selectedId.isNotEmpty()) R.string.chucker_clear_selected_http_confirmation else R.string.chucker_clear_http_confirmation),
         positiveButtonText = getString(R.string.chucker_clear),
         negativeButtonText = getString(R.string.chucker_cancel)
     )

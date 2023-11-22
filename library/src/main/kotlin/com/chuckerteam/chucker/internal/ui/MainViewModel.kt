@@ -34,6 +34,8 @@ internal class MainViewModel : ViewModel() {
 
     suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 
+    suspend fun getSelectedTransactions(transactionId: List<Long>): List<HttpTransaction> = RepositoryProvider.transaction().getSelectedTransactions(transactionId)
+
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
     }
@@ -43,5 +45,11 @@ internal class MainViewModel : ViewModel() {
             RepositoryProvider.transaction().deleteAllTransactions()
         }
         NotificationHelper.clearBuffer()
+    }
+
+    fun clearSelectedTransactions(selectedTransaction: List<Long>) {
+        viewModelScope.launch {
+            RepositoryProvider.transaction().deleteSelectedTransactions(selectedTransaction)
+        }
     }
 }

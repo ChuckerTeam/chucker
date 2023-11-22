@@ -18,6 +18,7 @@ internal interface HttpTransactionRepository {
     suspend fun deleteOldTransactions(threshold: Long)
 
     suspend fun deleteAllTransactions()
+    suspend fun deleteSelectedTransactions(selectedTransactions: List<Long>)
 
     fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>>
 
@@ -28,4 +29,6 @@ internal interface HttpTransactionRepository {
     suspend fun getAllTransactions(): List<HttpTransaction>
 
     fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction>
+
+    suspend fun getSelectedTransactions(selectedTransactions: List<Long>): List<HttpTransaction>
 }

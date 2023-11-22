@@ -3,6 +3,8 @@ package com.chuckerteam.chucker.internal.ui.transaction
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
@@ -16,16 +18,19 @@ import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
+import okhttp3.internal.notify
 import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val onTransactionClick: (Long) -> Unit
+    private val onTransactionClick: (Long) -> Boolean,
+    private val longPress: (Long) -> Boolean
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
     TransactionDiffCallback
 ) {
 
+    private val selectedPos = mutableListOf<Number>()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int = ContextCompat.getColor(
         context,
@@ -35,6 +40,9 @@ internal class TransactionAdapter internal constructor(
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
+    val outValue = TypedValue()
+    private val defaultColor = context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val viewBinding = ChuckerListItemTransactionBinding.inflate(
@@ -57,15 +65,38 @@ internal class TransactionAdapter internal constructor(
         init {
             itemView.setOnClickListener {
                 transactionId?.let {
-                    onTransactionClick.invoke(it)
+                    if (onTransactionClick.invoke(it) && selectedPos.isNotEmpty()) {
+                        if (selectedPos.contains(adapterPosition)) {
+                            selectedPos.remove(adapterPosition)
+                        } else {
+                            selectedPos.add(adapterPosition)
+                        }
+                        notifyItemChanged(adapterPosition)
+                    }
                 }
+            }
+            itemView.setOnLongClickListener {
+                transactionId?.let {
+                    longPress.invoke(it)
+                    if (selectedPos.contains(adapterPosition)) {
+                        selectedPos.remove(adapterPosition)
+                    } else {
+                        selectedPos.add(adapterPosition)
+                    }
+                    notifyItemChanged(adapterPosition)
+                    true
+                } ?: kotlin.run { false }
             }
         }
 
         @SuppressLint("SetTextI18n")
         fun bind(transaction: HttpTransactionTuple) {
             transactionId = transaction.id
-
+            if (selectedPos.find { it == adapterPosition } != null) {
+                itemView.setBackgroundColor(color400)
+            } else {
+                itemView.setBackgroundResource(outValue.resourceId)
+            }
             itemBinding.apply {
                 displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected)
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
@@ -87,7 +118,6 @@ internal class TransactionAdapter internal constructor(
                     code.text = "!!!"
                 }
             }
-
             setStatusColor(transaction)
         }
 
@@ -128,6 +158,7 @@ private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
     graphqlPath.isVisible = graphQLDetected
 
     if (graphQLDetected) {
-        graphqlPath.text = graphQlOperationName ?: root.resources.getString(R.string.chucker_graphql_operation_is_empty)
+        graphqlPath.text = graphQlOperationName
+            ?: root.resources.getString(R.string.chucker_graphql_operation_is_empty)
     }
 }
