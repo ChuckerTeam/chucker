@@ -3,7 +3,6 @@ package com.chuckerteam.chucker.internal.ui.transaction
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,14 +17,13 @@ import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
-import okhttp3.internal.notify
 import java.text.DateFormat
 import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val onTransactionClick: (Long) -> Boolean,
-    private val longPress: (Long) -> Boolean
+    private val onTransactionClick: (Long) -> Unit,
+    private val longPress: (Long) -> Unit
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
     TransactionDiffCallback
 ) {
@@ -65,7 +63,8 @@ internal class TransactionAdapter internal constructor(
         init {
             itemView.setOnClickListener {
                 transactionId?.let {
-                    if (onTransactionClick.invoke(it) && selectedPos.isNotEmpty()) {
+                    onTransactionClick.invoke(it)
+                    if (selectedPos.isNotEmpty()) {
                         if (selectedPos.contains(adapterPosition)) {
                             selectedPos.remove(adapterPosition)
                         } else {
@@ -75,6 +74,7 @@ internal class TransactionAdapter internal constructor(
                     }
                 }
             }
+
             itemView.setOnLongClickListener {
                 transactionId?.let {
                     longPress.invoke(it)

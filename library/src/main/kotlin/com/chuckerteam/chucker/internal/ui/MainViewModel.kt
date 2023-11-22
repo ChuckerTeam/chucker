@@ -34,7 +34,7 @@ internal class MainViewModel : ViewModel() {
 
     suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 
-    suspend fun getSelectedTransactions(transactionId: List<Long>): List<HttpTransaction> = RepositoryProvider.transaction().getSelectedTransactions(transactionId)
+    suspend fun getSelectedTransactions(selectedTransaction: List<Long>): List<HttpTransaction> = RepositoryProvider.transaction().getSelectedTransactions(selectedTransaction)
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
