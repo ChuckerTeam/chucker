@@ -11,6 +11,7 @@ import androidx.core.content.getSystemService
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.ui.ComposeMainActivity
 import com.chuckerteam.chucker.internal.ui.MainActivity
 
 /**
