@@ -41,7 +41,6 @@ internal class TransactionAdapter internal constructor(
     val outValue = TypedValue()
     private val defaultColor = context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val viewBinding = ChuckerListItemTransactionBinding.inflate(
             LayoutInflater.from(parent.context),

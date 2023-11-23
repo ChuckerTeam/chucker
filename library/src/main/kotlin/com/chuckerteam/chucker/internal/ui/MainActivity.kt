@@ -75,9 +75,13 @@ internal class MainActivity :
                 },
                 onTransactionClick = { transactionId ->
                     if (selectedTransactions.isNotEmpty()) {
-                        if (selectedTransactions.contains(transactionId)) selectedTransactions.remove(transactionId) else selectedTransactions.add(
-                            transactionId
-                        )
+                        if (selectedTransactions.contains(transactionId)) {
+                            selectedTransactions.remove(transactionId)
+                        } else {
+                            selectedTransactions.add(
+                                transactionId
+                            )
+                        }
                     } else {
                         TransactionActivity.start(this, transactionId)
                     }

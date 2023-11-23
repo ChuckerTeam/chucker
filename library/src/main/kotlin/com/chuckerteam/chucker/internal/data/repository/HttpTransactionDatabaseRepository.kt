@@ -63,5 +63,4 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     override suspend fun getSelectedTransactions(selectedTransactions: List<Long>): List<HttpTransaction> {
         return transactionDao.getSelectedTransactions(selectedTransactions)
     }
-
 }
