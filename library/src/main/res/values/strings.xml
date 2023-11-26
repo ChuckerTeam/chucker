@@ -47,7 +47,7 @@
     <string name="chucker_share_transaction_subject">Transaction details</string>
     <string name="chucker_share_all_transactions_subject">All transactions</string>
     <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
-    <string name="chucker_clear_selected_http_confirmation">Do you want to clear selected network calls history?</string>
+    <string name="chucker_clear_selected_http_confirmation">Do you want to clear the selected network transactions?</string>
     <string name="chucker_export_text_http_confirmation">Do you want to export all network transactions as a text file?</string>
     <string name="chucker_export_text_selected_http_confirmation">Do you want to export selected network transactions as a text file?</string>
     <string name="chucker_export_har_selected_http_confirmation">Do you want to export selected network transactions as a .har file?</string>
