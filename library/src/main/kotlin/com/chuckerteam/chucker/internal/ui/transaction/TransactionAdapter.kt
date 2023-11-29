@@ -28,7 +28,7 @@ internal class TransactionAdapter internal constructor(
     TransactionDiffCallback
 ) {
 
-    private val selectedPos = mutableListOf<Number>()
+    private val selectedPos = mutableListOf<Int>()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int = ContextCompat.getColor(
         context,
@@ -40,6 +40,14 @@ internal class TransactionAdapter internal constructor(
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
     val outValue = TypedValue()
     private val defaultColor = context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+
+    fun clearSelections() {
+        val pos = selectedPos
+        selectedPos.clear()
+        pos.forEach {
+            notifyItemRemoved(it)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val viewBinding = ChuckerListItemTransactionBinding.inflate(

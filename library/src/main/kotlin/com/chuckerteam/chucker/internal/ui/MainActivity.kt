@@ -46,7 +46,7 @@ internal class MainActivity :
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter
-    private val selectedTransactions = mutableListOf<Long>()
+    private var selectedTransactions = mutableListOf<Long>()
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
@@ -168,7 +168,12 @@ internal class MainActivity :
                 showDialog(
                     getClearDialogData(),
                     onPositiveClick = {
-                        if (selectedTransactions.isNotEmpty()) viewModel.clearSelectedTransactions(selectedTransactions) else viewModel.clearTransactions()
+                        if (selectedTransactions.isNotEmpty()) {
+                            viewModel.clearSelectedTransactions(selectedTransactions)
+                            resetSelection()
+                        } else {
+                            viewModel.clearTransactions()
+                        }
                     },
                     onNegativeClick = null
                 )
@@ -218,6 +223,11 @@ internal class MainActivity :
     override fun onQueryTextChange(newText: String): Boolean {
         viewModel.updateItemsFilter(newText)
         return true
+    }
+
+    private fun resetSelection() {
+        transactionsAdapter.clearSelections()
+        selectedTransactions = mutableListOf()
     }
 
     private fun exportTransactions(
