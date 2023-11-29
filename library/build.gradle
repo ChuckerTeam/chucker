@@ -120,6 +120,9 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.8.1'
     // Optional - Integration with ViewModels
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    def nav_version = "2.7.5"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 

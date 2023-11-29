@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bodyLine"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,5 +8,6 @@
     android:minLines="1"
     android:textDirection="ltr"
     android:gravity="start"
+    tools:text="body here"
     android:layout_marginHorizontal="@dimen/chucker_doub_grid"
     android:typeface="monospace" />
