@@ -46,7 +46,6 @@ internal class MainActivity :
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter
-    private var selectedTransactions = mutableListOf<Long>()
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
@@ -71,19 +70,15 @@ internal class MainActivity :
             TransactionAdapter(
                 context = this,
                 longPress = { transactionId ->
-                    selectedTransactions.add(transactionId)
+                    viewModel.selectItem(transactionId)
                 },
                 onTransactionClick = { transactionId ->
-                    if (selectedTransactions.isNotEmpty()) {
-                        if (transactionId in selectedTransactions) {
-                            selectedTransactions.remove(transactionId)
+                    viewModel.isItemSelected.observe(this) {
+                        if (it) {
+                            viewModel.selectItem(transactionId)
                         } else {
-                            selectedTransactions.add(
-                                transactionId
-                            )
+                            TransactionActivity.start(this, transactionId)
                         }
-                    } else {
-                        TransactionActivity.start(this, transactionId)
                     }
                 }
             )
@@ -168,12 +163,8 @@ internal class MainActivity :
                 showDialog(
                     getClearDialogData(),
                     onPositiveClick = {
-                        if (selectedTransactions.isNotEmpty()) {
-                            viewModel.clearSelectedTransactions(selectedTransactions)
-                            resetSelection()
-                        } else {
-                            viewModel.clearTransactions()
-                        }
+                        viewModel.clearTransactions()
+                        resetSelection()
                     },
                     onNegativeClick = null
                 )
@@ -182,7 +173,7 @@ internal class MainActivity :
 
             R.id.share_text -> {
                 showDialog(
-                    getExportDialogData(if (selectedTransactions.isNotEmpty()) R.string.chucker_export_text_selected_http_confirmation else R.string.chucker_export_text_http_confirmation),
+                    getExportDialogData(if (viewModel.isItemSelected.value == true) R.string.chucker_export_text_selected_http_confirmation else R.string.chucker_export_text_http_confirmation),
                     onPositiveClick = {
                         exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
                             TransactionListDetailsSharable(transactions, encodeUrls = false)
@@ -195,7 +186,7 @@ internal class MainActivity :
 
             R.id.share_har -> {
                 showDialog(
-                    getExportDialogData(if (selectedTransactions.isNotEmpty()) R.string.chucker_export_har_selected_http_confirmation else R.string.chucker_export_har_http_confirmation),
+                    getExportDialogData(if (viewModel.isItemSelected.value == true) R.string.chucker_export_har_selected_http_confirmation else R.string.chucker_export_har_http_confirmation),
                     onPositiveClick = {
                         exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
                             TransactionDetailsHarSharable(
@@ -227,7 +218,6 @@ internal class MainActivity :
 
     private fun resetSelection() {
         transactionsAdapter.clearSelections()
-        selectedTransactions = mutableListOf()
     }
 
     private fun exportTransactions(
@@ -236,8 +226,7 @@ internal class MainActivity :
     ) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
-            val transactions =
-                if (selectedTransactions.isNotEmpty()) viewModel.getSelectedTransactions(selectedTransactions) else viewModel.getAllTransactions()
+            val transactions = viewModel.getAllTransactions()
             if (transactions.isEmpty()) {
                 showToast(applicationContext.getString(R.string.chucker_export_empty_text))
                 return@launch
@@ -263,7 +252,7 @@ internal class MainActivity :
 
     private fun getClearDialogData(): DialogData = DialogData(
         title = getString(R.string.chucker_clear),
-        message = getString(if (selectedTransactions.isNotEmpty()) R.string.chucker_clear_selected_http_confirmation else R.string.chucker_clear_http_confirmation),
+        message = getString(if (viewModel.isItemSelected.value == true) R.string.chucker_clear_selected_http_confirmation else R.string.chucker_clear_http_confirmation),
         positiveButtonText = getString(R.string.chucker_clear),
         negativeButtonText = getString(R.string.chucker_cancel)
     )
