@@ -46,6 +46,7 @@ internal class MainActivity :
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter
+    private var isMultipleSelected = false
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
@@ -73,12 +74,10 @@ internal class MainActivity :
                     viewModel.selectItem(transactionId)
                 },
                 onTransactionClick = { transactionId ->
-                    viewModel.isItemSelected.observe(this) {
-                        if (it) {
-                            viewModel.selectItem(transactionId)
-                        } else {
-                            TransactionActivity.start(this, transactionId)
-                        }
+                    if (isMultipleSelected) {
+                        viewModel.selectItem(transactionId)
+                    } else {
+                        TransactionActivity.start(this, transactionId)
                     }
                 }
             )
@@ -110,6 +109,9 @@ internal class MainActivity :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             handleNotificationsPermission()
+        }
+        viewModel.isItemSelected.observe(this) {
+            isMultipleSelected = it
         }
     }
 
