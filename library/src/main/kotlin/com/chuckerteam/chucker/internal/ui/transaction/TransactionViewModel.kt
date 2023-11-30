@@ -15,6 +15,10 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     val encodeUrl: LiveData<Boolean> = mutableEncodeUrl
 
+    private var _useJsonCollapsable: Boolean = false
+    val isUsingCollapsableJson: Boolean
+        get() = _useJsonCollapsable
+
     val transactionTitle: LiveData<String> = RepositoryProvider.transaction()
         .getTransaction(transactionId)
         .combineLatest(encodeUrl) { transaction, encodeUrl ->
@@ -48,6 +52,11 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
 
     fun encodeUrl(encode: Boolean) {
         mutableEncodeUrl.value = encode
+    }
+
+    fun toggleCollapsableJson() {
+        _useJsonCollapsable = !_useJsonCollapsable
+        mutableEncodeUrl.value = encodeUrl.value // Just to fire observer again
     }
 }
 

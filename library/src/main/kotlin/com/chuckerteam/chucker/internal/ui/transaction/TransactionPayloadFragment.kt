@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -33,6 +34,9 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
+import com.google.gson.stream.JsonReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -118,6 +122,8 @@ internal class TransactionPayloadFragment :
                     payloadBinding.loadingProgress.visibility = View.VISIBLE
 
                     val result = processPayload(payloadType, transaction, formatRequestBody)
+                        .getCollapsableOrDefault()
+
                     if (result.isEmpty()) {
                         showEmptyState()
                     } else {
@@ -200,6 +206,27 @@ internal class TransactionPayloadFragment :
             }
         }
 
+        if (shouldShowCollapsableIcon(transaction)) {
+            val collapseIcon = menu.findItem(R.id.collapse).also { item ->
+                item.setOnMenuItemClickListener {
+                    it.handleCollapseMenu()
+                }
+            }
+            val expandIcon = menu.findItem(R.id.expand).also { item ->
+                item.setOnMenuItemClickListener {
+                    it.handleCollapseMenu()
+                }
+            }
+
+            if (viewModel.isUsingCollapsableJson) {
+                expandIcon.isVisible = true
+                collapseIcon.isVisible = false
+            } else {
+                collapseIcon.isVisible = true
+                expandIcon.isVisible = false
+            }
+        }
+
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
@@ -222,9 +249,36 @@ internal class TransactionPayloadFragment :
         PayloadType.REQUEST -> {
             (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
         }
+
         PayloadType.RESPONSE -> {
             (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
         }
+    }
+
+    private fun shouldShowCollapsableIcon(transaction: HttpTransaction?): Boolean {
+        var isJsonContentType = false
+        var hasContent = false
+        val jsonContentType = "application/json"
+
+        when (payloadType) {
+            PayloadType.REQUEST -> {
+                isJsonContentType = transaction?.requestContentType?.contains(jsonContentType) == true
+                hasContent = (0L != (transaction?.requestPayloadSize))
+            }
+
+            PayloadType.RESPONSE -> {
+                isJsonContentType = transaction?.responseContentType?.contains(jsonContentType) == true
+                hasContent = (0L != (transaction?.responsePayloadSize))
+            }
+        }
+
+        return isJsonContentType && hasContent
+    }
+
+    private fun MenuItem.handleCollapseMenu(): Boolean {
+        viewModel.toggleCollapsableJson()
+        activity?.invalidateOptionsMenu()
+        return true
     }
 
     override fun onAttach(context: Context) {
@@ -460,5 +514,48 @@ internal class TransactionPayloadFragment :
             result.add(subSequence(0, length))
         }
         return result
+    }
+
+    private fun MutableList<TransactionPayloadItem>.getCollapsableOrDefault(): List<TransactionPayloadItem> {
+        val default = this
+
+        return if (viewModel.isUsingCollapsableJson) {
+            try {
+                mapToJsonElements()
+            } catch (t: JsonSyntaxException) {
+                Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
+                Logger.error(t.message ?: "Error when formatting json")
+                viewModel.toggleCollapsableJson()
+                default
+            }
+        } else {
+            default
+        }
+    }
+
+    private fun MutableList<TransactionPayloadItem>.mapToJsonElements(): List<TransactionPayloadItem> {
+        val bodyBuilder = StringBuilder()
+        val newList = arrayListOf<TransactionPayloadItem>()
+
+        forEach { item ->
+            when (item) {
+                is TransactionPayloadItem.BodyLineItem -> bodyBuilder.append(item.line)
+                is TransactionPayloadItem.HeaderItem,
+                is TransactionPayloadItem.ImageItem -> newList.add(item)
+
+                else -> Unit
+            }
+        }
+
+        val reader = JsonReader(bodyBuilder.toString().reader())
+            .also { it.isLenient = true }
+
+        newList.add(
+            TransactionPayloadItem.BodyCollapsableItem(
+                jsonElement = JsonParser.parseReader(reader)
+            )
+        )
+
+        return newList
     }
 }

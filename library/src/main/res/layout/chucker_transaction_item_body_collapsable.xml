@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRoot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgExpand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/chucker_ic_arrow_down"
+            app:tint="@color/chucker_json_key_color"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/txtKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:minLines="1"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/chucker_json_key_color"
+            android:textDirection="ltr"
+            android:textIsSelectable="true"
+            android:typeface="monospace"
+            app:layout_constraintStart_toEndOf="@id/imgExpand"
+            app:layout_constraintTop_toTopOf="@id/imgExpand"
+            app:layout_goneMarginStart="0dp"
+            tools:text="data" />
+
+        <TextView
+            android:id="@+id/txtDivider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chucker_base_grid"
+            android:text="@string/chucker_item_list_section_divider"
+            app:layout_constraintBottom_toBottomOf="@id/txtKey"
+            app:layout_constraintStart_toEndOf="@id/txtKey"
+            app:layout_constraintTop_toTopOf="@id/txtKey" />
+
+        <TextView
+            android:id="@+id/txtStartValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chucker_base_grid"
+            android:gravity="start"
+            android:textColor="@color/chucker_json_value_color"
+            android:textDirection="ltr"
+            android:textIsSelectable="true"
+            android:typeface="monospace"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/txtDivider"
+            app:layout_constraintTop_toTopOf="@id/txtKey"
+            tools:text="{" />
+
+        <TextView
+            android:id="@+id/txtEndValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chucker_base_grid"
+            android:textColor="@color/chucker_json_value_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/txtKey"
+            app:layout_constraintTop_toBottomOf="@id/rvSectionData"
+            app:layout_constraintVertical_bias="0"
+            tools:text="}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSectionData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chucker_base_grid"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/txtEndValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txtEndValue"
+            app:layout_constraintTop_toBottomOf="@id/txtStartValue"
+            tools:itemCount="5"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,6 +32,8 @@
     <string name="chucker_share_as_file">Share as file</string>
     <string name="chucker_share_as_har">Share as .har file</string>
     <string name="chucker_save">Save body to file</string>
+    <string name="chucker_expand_all">Expand all</string>
+    <string name="chucker_collapse_all">Collapse all</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>
     <string name="chucker_file_not_saved">Failed to save file</string>
@@ -64,4 +66,5 @@
     <string name="chucker_graphql_operation_is_empty"> &lt;Unable to discover GraphQL operation name&gt;</string>
     <string name="chucker_scroll_buttons_for_search">Buttons to scroll the search items</string>
     <string name="chucker_search_results_title">Search Results:</string>
+    <string name="chucker_item_list_section_divider">:</string>
 </resources>
