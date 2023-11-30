@@ -48,6 +48,9 @@ class MainActivity : AppCompatActivity() {
             launchChuckerDirectly.isVisible = Chucker.isOp
             launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
 
+            launchChuckerComposeDirectly?.isVisible = Chucker.isOp
+            launchChuckerComposeDirectly?.setOnClickListener { launchChuckerComposeDirectly() }
+
             exportToFile.isVisible = Chucker.isOp
             exportToFile.setOnClickListener {
                 generateExportFile(ExportFormat.LOG)
@@ -91,6 +94,11 @@ class MainActivity : AppCompatActivity() {
     private fun launchChuckerDirectly() {
         // Optionally launch Chucker directly from your own app UI
         startActivity(Chucker.getLaunchIntent(this))
+    }
+
+    private fun launchChuckerComposeDirectly() {
+        // Optionally launch Chucker directly from your own app UI
+        startActivity(Chucker.getComposeLaunchIntent(this))
     }
 
     private fun generateExportFile(exportFormat: ExportFormat) {

@@ -35,6 +35,11 @@ public object Chucker {
      */
     @JvmStatic
     public fun getLaunchIntent(context: Context): Intent {
+        return Intent(context, MainActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    @JvmStatic
+    public fun getComposeLaunchIntent(context: Context): Intent {
         return Intent(context, ComposeMainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }

@@ -19,6 +19,8 @@
             android:name=".internal.ui.ComposeMainActivity"
             android:exported="true"
             android:label="@string/title_activity_compose_main"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.chuckerteam.chucker.task"
             android:theme="@style/Chucker.Theme" />
         <activity
             android:name=".internal.ui.MainActivity"
@@ -26,6 +28,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.chuckerteam.chucker.task"
             android:theme="@style/Chucker.Theme" />
+
         <activity
             android:name=".internal.ui.transaction.TransactionActivity"
             android:parentActivityName=".internal.ui.MainActivity"
