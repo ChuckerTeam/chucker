@@ -18,28 +18,33 @@ import java.io.IOException
 internal class ReportingSink(
     private val downstreamFile: File?,
     private val callback: Callback,
-    private val writeByteLimit: Long = Long.MAX_VALUE
+    private val writeByteLimit: Long = Long.MAX_VALUE,
 ) : Sink {
     private var totalByteCount = 0L
     private var isFailure = false
     private var isClosed = false
-    private var downstream = try {
-        downstreamFile?.sink()
-    } catch (e: IOException) {
-        callDownstreamFailure(IOException("Failed to use file $downstreamFile by Chucker", e))
-        null
-    }
+    private var downstream =
+        try {
+            downstreamFile?.sink()
+        } catch (e: IOException) {
+            callDownstreamFailure(IOException("Failed to use file $downstreamFile by Chucker", e))
+            null
+        }
 
-    override fun write(source: Buffer, byteCount: Long) {
+    override fun write(
+        source: Buffer,
+        byteCount: Long,
+    ) {
         val previousTotalByteCount = totalByteCount
         totalByteCount += byteCount
         if (isFailure || previousTotalByteCount >= writeByteLimit) return
 
-        val bytesToWrite = if (previousTotalByteCount + byteCount <= writeByteLimit) {
-            byteCount
-        } else {
-            writeByteLimit - previousTotalByteCount
-        }
+        val bytesToWrite =
+            if (previousTotalByteCount + byteCount <= writeByteLimit) {
+                byteCount
+            } else {
+                writeByteLimit - previousTotalByteCount
+            }
 
         if (bytesToWrite == 0L) return
 
@@ -76,11 +81,12 @@ internal class ReportingSink(
         }
     }
 
-    private fun safeCloseDownstream() = try {
-        downstream?.close()
-    } catch (e: IOException) {
-        callDownstreamFailure(e)
-    }
+    private fun safeCloseDownstream() =
+        try {
+            downstream?.close()
+        } catch (e: IOException) {
+            callDownstreamFailure(e)
+        }
 
     interface Callback {
         /**
@@ -91,12 +97,18 @@ internal class ReportingSink(
          * [sourceByteCount] is the exact amount of bytes that the were read from upstream even if
          * the [file] is corrupted or does not exist. It is not limited by [writeByteLimit].
          */
-        fun onClosed(file: File?, sourceByteCount: Long)
+        fun onClosed(
+            file: File?,
+            sourceByteCount: Long,
+        )
 
         /**
          * Called when an [exception] was thrown while processing data.
          * Any written bytes are available in a [file].
          */
-        fun onFailure(file: File?, exception: IOException)
+        fun onFailure(
+            file: File?,
+            exception: IOException,
+        )
     }
 }

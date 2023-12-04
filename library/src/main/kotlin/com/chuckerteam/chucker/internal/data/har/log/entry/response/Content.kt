@@ -11,20 +11,20 @@ internal data class Content(
     @SerializedName("mimeType") val mimeType: String,
     @SerializedName("text") val text: String? = null,
     @SerializedName("encoding") val encoding: String? = null,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
-
     companion object {
-        internal val EMPTY = Content(
-            size = 0L,
-            compression = 0,
-            mimeType = "text/plain",
-            text = ""
-        )
+        internal val EMPTY =
+            Content(
+                size = 0L,
+                compression = 0,
+                mimeType = "text/plain",
+                text = "",
+            )
     }
     constructor(transaction: HttpTransaction) : this(
         size = transaction.responsePayloadSize,
         mimeType = transaction.responseContentType ?: "application/octet-stream",
-        text = transaction.responseBody
+        text = transaction.responseBody,
     )
 }

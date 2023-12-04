@@ -15,7 +15,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.combineLatest
 
 internal class TransactionOverviewFragment : Fragment() {
-
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
     private lateinit var overviewBinding: ChuckerFragmentTransactionOverviewBinding
@@ -28,32 +27,41 @@ internal class TransactionOverviewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         overviewBinding = ChuckerFragmentTransactionOverviewBinding.inflate(inflater, container, false)
         return overviewBinding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         menu.findItem(R.id.save_body).isVisible = false
         viewModel.doesUrlRequireEncoding.observe(
             viewLifecycleOwner,
-            Observer { menu.findItem(R.id.encode_url).isVisible = it }
+            Observer { menu.findItem(R.id.encode_url).isVisible = it },
         )
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.transaction.combineLatest(viewModel.encodeUrl).observe(
             viewLifecycleOwner,
-            Observer { (transaction, encodeUrl) -> populateUI(transaction, encodeUrl) }
+            Observer { (transaction, encodeUrl) -> populateUI(transaction, encodeUrl) },
         )
     }
 
-    private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
+    private fun populateUI(
+        transaction: HttpTransaction?,
+        encodeUrl: Boolean,
+    ) {
         with(overviewBinding) {
             url.text = transaction?.getFormattedUrl(encodeUrl)
             method.text = transaction?.method

@@ -16,7 +16,10 @@ public interface BodyDecoder {
      * uncompressed even if [request] has gzip or br header.
      */
     @Throws(IOException::class)
-    public fun decodeRequest(request: Request, body: ByteString): String?
+    public fun decodeRequest(
+        request: Request,
+        body: ByteString,
+    ): String?
 
     /**
      * Returns a text representation of [body] that will be displayed in Chucker UI transaction,
@@ -25,5 +28,8 @@ public interface BodyDecoder {
      * uncompressed even if [response] has gzip or br header.
      */
     @Throws(IOException::class)
-    public fun decodeResponse(response: Response, body: ByteString): String?
+    public fun decodeResponse(
+        response: Response,
+        body: ByteString,
+    ): String?
 }

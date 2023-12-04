@@ -13,24 +13,24 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
-
     private val currentFilter = MutableLiveData("")
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
-        with(RepositoryProvider.transaction()) {
-            when {
-                searchQuery.isNullOrBlank() -> {
-                    getSortedTransactionTuples()
-                }
-                TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
-                }
-                else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+    val transactions: LiveData<List<HttpTransactionTuple>> =
+        currentFilter.switchMap { searchQuery ->
+            with(RepositoryProvider.transaction()) {
+                when {
+                    searchQuery.isNullOrBlank() -> {
+                        getSortedTransactionTuples()
+                    }
+                    TextUtils.isDigitsOnly(searchQuery) -> {
+                        getFilteredTransactionTuples(searchQuery, "")
+                    }
+                    else -> {
+                        getFilteredTransactionTuples("", searchQuery)
+                    }
                 }
             }
         }
-    }
 
     suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
 

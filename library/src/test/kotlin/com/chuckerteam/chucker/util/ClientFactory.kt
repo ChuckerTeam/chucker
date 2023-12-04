@@ -17,7 +17,7 @@ internal enum class ClientFactory {
                 .addNetworkInterceptor(interceptor)
                 .build()
         }
-    };
+    }, ;
 
     abstract fun create(interceptor: Interceptor): OkHttpClient
 }

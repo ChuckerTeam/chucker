@@ -15,12 +15,15 @@ import java.io.IOException
  */
 internal class TeeSource(
     private val upstream: Source,
-    private val sideStream: Sink
+    private val sideStream: Sink,
 ) : Source {
     private val tempBuffer = Buffer()
     private var isFailure = false
 
-    override fun read(sink: Buffer, byteCount: Long): Long {
+    override fun read(
+        sink: Buffer,
+        byteCount: Long,
+    ): Long {
         val bytesRead = upstream.read(sink, byteCount)
 
         if (bytesRead == -1L) {
@@ -35,7 +38,10 @@ internal class TeeSource(
         return bytesRead
     }
 
-    private fun copyBytesToSideStream(sink: Buffer, bytesRead: Long) {
+    private fun copyBytesToSideStream(
+        sink: Buffer,
+        bytesRead: Long,
+    ) {
         val offset = sink.size - bytesRead
         sink.copyTo(tempBuffer, offset, bytesRead)
         try {
@@ -51,11 +57,12 @@ internal class TeeSource(
         upstream.close()
     }
 
-    private fun safeCloseSideStream() = try {
-        sideStream.close()
-    } catch (_: IOException) {
-        isFailure = true
-    }
+    private fun safeCloseSideStream() =
+        try {
+            sideStream.close()
+        } catch (_: IOException) {
+            isFailure = true
+        }
 
     override fun timeout(): Timeout = upstream.timeout()
 }

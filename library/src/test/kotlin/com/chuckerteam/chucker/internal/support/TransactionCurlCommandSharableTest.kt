@@ -33,17 +33,19 @@ internal class TransactionCurlCommandSharableTest {
         val convertedHeaders = JsonConverter.instance.toJson(headers)
 
         requestMethods.forEach { method ->
-            val transaction = TestTransactionFactory.createTransaction(method).apply {
-                requestHeaders = convertedHeaders
-            }
-            val sharableTransaction = TransactionCurlCommandSharable(transaction)
-            val expectedCurlCommand = buildString {
-                append("curl -X $method")
-                for (header in headers) {
-                    append(" -H \"${header.name}: ${header.value}\"")
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestHeaders = convertedHeaders
                 }
-                append(" http://localhost/getUsers")
-            }
+            val sharableTransaction = TransactionCurlCommandSharable(transaction)
+            val expectedCurlCommand =
+                buildString {
+                    append("curl -X $method")
+                    for (header in headers) {
+                        append(" -H \"${header.name}: ${header.value}\"")
+                    }
+                    append(" http://localhost/getUsers")
+                }
 
             val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
@@ -55,9 +57,10 @@ internal class TransactionCurlCommandSharableTest {
     fun `create cURL command with request bodies for PUT and POST methods`() {
         requestMethods.filter { it in listOf("POST", "PUT") }.forEach { method ->
             val dummyRequestBody = "{thing:put}"
-            val transaction = TestTransactionFactory.createTransaction(method).apply {
-                requestBody = dummyRequestBody
-            }
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestBody = dummyRequestBody
+                }
             val shareableTransaction = TransactionCurlCommandSharable(transaction)
             val expectedCurlCommand =
                 "curl -X $method --data $'$dummyRequestBody' http://localhost/getUsers"
@@ -74,9 +77,10 @@ internal class TransactionCurlCommandSharableTest {
         val convertedHeader = JsonConverter.instance.toJson(headers)
 
         requestMethods.forEach { method ->
-            val transaction = TestTransactionFactory.createTransaction(method).apply {
-                requestHeaders = convertedHeader
-            }
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestHeaders = convertedHeader
+                }
             val sharableTransaction = TransactionCurlCommandSharable(transaction)
 
             val sharedContent = sharableTransaction.toSharableUtf8Content(context)
@@ -93,9 +97,10 @@ internal class TransactionCurlCommandSharableTest {
         val convertedHeader = JsonConverter.instance.toJson(headers)
 
         requestMethods.forEach { method ->
-            val transaction = TestTransactionFactory.createTransaction(method).apply {
-                requestHeaders = convertedHeader
-            }
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestHeaders = convertedHeader
+                }
             val sharableTransaction = TransactionCurlCommandSharable(transaction)
 
             val sharedContent = sharableTransaction.toSharableUtf8Content(context)

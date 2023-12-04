@@ -10,13 +10,23 @@ internal class NoLoggerRule : BeforeAllCallback, AfterAllCallback {
     private val defaultLogger = Chucker.logger
 
     override fun beforeAll(context: ExtensionContext) {
-        Chucker.logger = object : Logger {
-            override fun info(message: String, throwable: Throwable?) = Unit
+        Chucker.logger =
+            object : Logger {
+                override fun info(
+                    message: String,
+                    throwable: Throwable?,
+                ) = Unit
 
-            override fun warn(message: String, throwable: Throwable?) = Unit
+                override fun warn(
+                    message: String,
+                    throwable: Throwable?,
+                ) = Unit
 
-            override fun error(message: String, throwable: Throwable?) = Unit
-        }
+                override fun error(
+                    message: String,
+                    throwable: Throwable?,
+                ) = Unit
+            }
     }
 
     override fun afterAll(context: ExtensionContext) {

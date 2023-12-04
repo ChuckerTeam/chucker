@@ -83,9 +83,10 @@ internal class ChuckerInterceptorTest {
     @EnumSource(value = ClientFactory::class)
     fun `gzipped response body is gunzipped for Chucker`(factory: ClientFactory) {
         val bytes = Buffer().writeUtf8("Hello, world!")
-        val gzippedBytes = Buffer().apply {
-            GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
-        }
+        val gzippedBytes =
+            Buffer().apply {
+                GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
+            }
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -101,9 +102,10 @@ internal class ChuckerInterceptorTest {
     @EnumSource(value = ClientFactory::class)
     fun `gzipped response body is gunzipped for consumer`(factory: ClientFactory) {
         val bytes = Buffer().writeUtf8("Hello, world!")
-        val gzippedBytes = Buffer().apply {
-            GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
-        }
+        val gzippedBytes =
+            Buffer().apply {
+                GzipSink(this).use { sink -> sink.write(bytes, bytes.size) }
+            }
         server.enqueue(MockResponse().addHeader("Content-Encoding: gzip").setBody(gzippedBytes))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -117,7 +119,7 @@ internal class ChuckerInterceptorTest {
     @EnumSource(value = ClientFactory::class)
     fun `compressed response body without content is transparent to Chucker`(factory: ClientFactory) {
         server.enqueue(
-            MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT)
+            MockResponse().addHeader("Content-Encoding: gzip").setResponseCode(HTTP_NO_CONTENT),
         )
         val request = Request.Builder().url(serverUrl).build()
 
@@ -132,7 +134,7 @@ internal class ChuckerInterceptorTest {
     @EnumSource(value = ClientFactory::class)
     fun `compressed response body without content is transparent to consumer`(factory: ClientFactory) {
         server.enqueue(
-            MockResponse().addHeader("Content-Encoding: br").setResponseCode(HTTP_NO_CONTENT)
+            MockResponse().addHeader("Content-Encoding: br").setResponseCode(HTTP_NO_CONTENT),
         )
         val request = Request.Builder().url(serverUrl).build()
 
@@ -241,9 +243,10 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response payload size depends on downloaded byte count`(factory: ClientFactory) {
-        val body = Buffer().apply {
-            repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
-        }
+        val body =
+            Buffer().apply {
+                repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
+            }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -259,17 +262,18 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.responsePayloadSize).isIn(
             Range.closed(
                 SEGMENT_SIZE,
-                2 * SEGMENT_SIZE
-            )
+                2 * SEGMENT_SIZE,
+            ),
         )
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response content length is read from a header`(factory: ClientFactory) {
-        val body = Buffer().apply {
-            repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
-        }
+        val body =
+            Buffer().apply {
+                repeat(10 * SEGMENT_SIZE.toInt()) { writeUtf8("!") }
+            }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
@@ -283,23 +287,25 @@ internal class ChuckerInterceptorTest {
             |    "name": "Content-Length",
             |    "value": "${body.size}"
             |  }
-            """.trimMargin()
+            """.trimMargin(),
         )
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response body length is limited by interceptor's max content length`(factory: ClientFactory) {
-        val body = Buffer().apply {
-            repeat(10_000) { writeUtf8("!") }
-        }
+        val body =
+            Buffer().apply {
+                repeat(10_000) { writeUtf8("!") }
+            }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            maxContentLength = 1_000
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+                maxContentLength = 1_000,
+            )
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
 
@@ -310,16 +316,18 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `response payload size is not limited by interceptor's max content length`(factory: ClientFactory) {
-        val body = Buffer().apply {
-            repeat(10_000) { writeUtf8("!") }
-        }
+        val body =
+            Buffer().apply {
+                repeat(10_000) { writeUtf8("!") }
+            }
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            maxContentLength = 1_000
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+                maxContentLength = 1_000,
+            )
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().readByteStringBody()
 
@@ -402,10 +410,11 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            alwaysReadResponseBody = true
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+                alwaysReadResponseBody = true,
+            )
         val client = factory.create(chuckerInterceptor)
         client.newCall(request).execute().body!!.close()
 
@@ -429,10 +438,11 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse().setBody(body))
         val request = Request.Builder().url(serverUrl).build()
 
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            alwaysReadResponseBody = true
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+                alwaysReadResponseBody = true,
+            )
         val client = factory.create(chuckerInterceptor)
         val responseBody = client.newCall(request).execute().body!!
 
@@ -498,13 +508,15 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val gzippedBytes = Buffer().apply {
-            GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
-        }.readByteString()
-        val request = gzippedBytes.toRequestBody().toServerRequest(serverUrl)
-            .newBuilder()
-            .header("Content-Encoding", "gzip")
-            .build()
+        val gzippedBytes =
+            Buffer().apply {
+                GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
+            }.readByteString()
+        val request =
+            gzippedBytes.toRequestBody().toServerRequest(serverUrl)
+                .newBuilder()
+                .header("Content-Encoding", "gzip")
+                .build()
         client.newCall(request).execute().readByteStringBody()
 
         val transaction = chuckerInterceptor.expectTransaction()
@@ -517,10 +529,11 @@ internal class ChuckerInterceptorTest {
     @EnumSource(value = ClientFactory::class)
     fun `request body is limited by interceptor's max content length`(factory: ClientFactory) {
         server.enqueue(MockResponse())
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            maxContentLength = SEGMENT_SIZE,
-            cacheDirectoryProvider = { tempDir }
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                maxContentLength = SEGMENT_SIZE,
+                cacheDirectoryProvider = { tempDir },
+            )
         val client = factory.create(chuckerInterceptor)
 
         val request =
@@ -534,7 +547,7 @@ internal class ChuckerInterceptorTest {
             ${"!".repeat(SEGMENT_SIZE.toInt())}
 
             --- Content truncated ---
-            """.trimIndent()
+            """.trimIndent(),
         )
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
     }
@@ -542,11 +555,12 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `request headers are redacted in case of server failures`(factory: ClientFactory) {
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            maxContentLength = SEGMENT_SIZE,
-            headersToRedact = setOf("Header-To-Redact"),
-            cacheDirectoryProvider = { tempDir }
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                maxContentLength = SEGMENT_SIZE,
+                headersToRedact = setOf("Header-To-Redact"),
+                cacheDirectoryProvider = { tempDir },
+            )
         val client = factory.create(chuckerInterceptor)
 
         val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
@@ -560,33 +574,35 @@ internal class ChuckerInterceptorTest {
             |    "name": "Header-To-Redact",
             |    "value": "**"
             |  }
-            """.trimMargin()
+            """.trimMargin(),
         )
     }
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `header sizes are computed before being redacted`(factory: ClientFactory) {
-        val chuckerInterceptor = ChuckerInterceptorDelegate(
-            maxContentLength = SEGMENT_SIZE,
-            headersToRedact = setOf("Header-To-Redact"),
-            cacheDirectoryProvider = { tempDir }
-        )
+        val chuckerInterceptor =
+            ChuckerInterceptorDelegate(
+                maxContentLength = SEGMENT_SIZE,
+                headersToRedact = setOf("Header-To-Redact"),
+                cacheDirectoryProvider = { tempDir },
+            )
         val client = factory.create(chuckerInterceptor)
 
         val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
         val call = client.newCall(request)
 
         server.enqueue(
-            MockResponse().addHeader("Header-To-Redact", "Goodbye").setResponseCode(HTTP_NO_CONTENT)
+            MockResponse().addHeader("Header-To-Redact", "Goodbye").setResponseCode(HTTP_NO_CONTENT),
         )
         val response = call.execute()
 
         val transaction = chuckerInterceptor.expectTransaction()
-        val expectedResponse = when (factory) {
-            ClientFactory.APPLICATION -> response
-            ClientFactory.NETWORK -> response.networkResponse!!
-        }
+        val expectedResponse =
+            when (factory) {
+                ClientFactory.APPLICATION -> response
+                ClientFactory.NETWORK -> response.networkResponse!!
+            }
         assertThat(transaction.requestHeadersSize).isEqualTo(expectedResponse.request.headers.byteCount())
         assertThat(transaction.responseHeadersSize).isEqualTo(expectedResponse.headers.byteCount())
     }
@@ -597,14 +613,18 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val oneShotRequest = object : RequestBody() {
-            private val content = Buffer().writeUtf8("Hello, world!")
-            override fun isOneShot() = true
-            override fun contentType() = "text/plain".toMediaType()
-            override fun writeTo(sink: BufferedSink) {
-                content.readAll(sink)
-            }
-        }.toServerRequest(serverUrl)
+        val oneShotRequest =
+            object : RequestBody() {
+                private val content = Buffer().writeUtf8("Hello, world!")
+
+                override fun isOneShot() = true
+
+                override fun contentType() = "text/plain".toMediaType()
+
+                override fun writeTo(sink: BufferedSink) {
+                    content.readAll(sink)
+                }
+            }.toServerRequest(serverUrl)
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
 
@@ -618,14 +638,18 @@ internal class ChuckerInterceptorTest {
         server.enqueue(MockResponse())
         val client = factory.create(chuckerInterceptor)
 
-        val oneShotRequest = object : RequestBody() {
-            private val content = Buffer().writeUtf8("Hello, world!")
-            override fun isOneShot() = true
-            override fun contentType() = "text/plain".toMediaType()
-            override fun writeTo(sink: BufferedSink) {
-                content.readAll(sink)
-            }
-        }.toServerRequest(serverUrl)
+        val oneShotRequest =
+            object : RequestBody() {
+                private val content = Buffer().writeUtf8("Hello, world!")
+
+                override fun isOneShot() = true
+
+                override fun contentType() = "text/plain".toMediaType()
+
+                override fun writeTo(sink: BufferedSink) {
+                    content.readAll(sink)
+                }
+            }.toServerRequest(serverUrl)
 
         client.newCall(oneShotRequest).execute().readByteStringBody()
         val serverRequestContent = server.takeRequest().body.readByteString()
@@ -636,9 +660,10 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `chucker processes all requests when no skipEndpoints are provided`(factory: ClientFactory) {
-        val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir }
-        )
+        val chuckerInterceptorWithoutSkipping =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+            )
         val client = factory.create(chuckerInterceptorWithoutSkipping)
         executeRequestForPath(client, "/", "Response from /")
         val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
@@ -652,21 +677,23 @@ internal class ChuckerInterceptorTest {
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
     fun `chucker skips requests when skipPaths are provided`(factory: ClientFactory) {
-        val chuckerInterceptorWithoutSkipping = ChuckerInterceptorDelegate(
-            cacheDirectoryProvider = { tempDir },
-            skipPaths = listOf(
-                "",
-                "    ",
-                "example",
-                "www.example.com/skip/path",
-                "example.com/skip/path",
-                "90",
-                "https://example/",
-                "/skip/path",
-                "/skip//",
-                "http://localhost:8080/skip/path/ext"
+        val chuckerInterceptorWithoutSkipping =
+            ChuckerInterceptorDelegate(
+                cacheDirectoryProvider = { tempDir },
+                skipPaths =
+                    listOf(
+                        "",
+                        "    ",
+                        "example",
+                        "www.example.com/skip/path",
+                        "example.com/skip/path",
+                        "90",
+                        "https://example/",
+                        "/skip/path",
+                        "/skip//",
+                        "http://localhost:8080/skip/path/ext",
+                    ),
             )
-        )
         val client = factory.create(chuckerInterceptorWithoutSkipping)
 
         executeRequestForPath(client, "", "Hello, world!")
@@ -697,11 +724,16 @@ internal class ChuckerInterceptorTest {
         chuckerInterceptorWithoutSkipping.expectNoTransactions()
     }
 
-    private fun executeRequestForPath(okHttpClient: OkHttpClient, path: String, responseBody: String) {
-        val httpUrl = HttpUrl.Builder().scheme("https")
-            .host("testexample.com")
-            .addPathSegment(path)
-            .build()
+    private fun executeRequestForPath(
+        okHttpClient: OkHttpClient,
+        path: String,
+        responseBody: String,
+    ) {
+        val httpUrl =
+            HttpUrl.Builder().scheme("https")
+                .host("testexample.com")
+                .addPathSegment(path)
+                .build()
 
         val request = Request.Builder().url(server.url(httpUrl.encodedPath)).build()
         server.enqueue(MockResponse().setBody(responseBody))

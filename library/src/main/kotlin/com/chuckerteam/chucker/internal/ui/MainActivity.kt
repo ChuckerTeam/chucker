@@ -41,7 +41,6 @@ import kotlinx.coroutines.withContext
 internal class MainActivity :
     BaseChuckerActivity(),
     SearchView.OnQueryTextListener {
-
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
@@ -50,25 +49,27 @@ internal class MainActivity :
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
 
-    private val permissionRequest = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isPermissionGranted: Boolean ->
-        if (!isPermissionGranted) {
-            showToast(
-                applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
-                Toast.LENGTH_LONG
-            )
-            Logger.error("Notification permission denied. Can't show transactions info")
+    private val permissionRequest =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isPermissionGranted: Boolean ->
+            if (!isPermissionGranted) {
+                showToast(
+                    applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
+                    Toast.LENGTH_LONG,
+                )
+                Logger.error("Notification permission denied. Can't show transactions info")
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
-        transactionsAdapter = TransactionAdapter(this) { transactionId ->
-            TransactionActivity.start(this, transactionId)
-        }
+        transactionsAdapter =
+            TransactionAdapter(this) { transactionId ->
+                TransactionActivity.start(this, transactionId)
+            }
 
         with(mainBinding) {
             setContentView(root)
@@ -81,15 +82,15 @@ internal class MainActivity :
                 addItemDecoration(
                     DividerItemDecoration(
                         this@MainActivity,
-                        DividerItemDecoration.VERTICAL
-                    )
+                        DividerItemDecoration.VERTICAL,
+                    ),
                 )
                 adapter = transactionsAdapter
             }
         }
 
         viewModel.transactions.observe(
-            this
+            this,
         ) { transactionTuples ->
             transactionsAdapter.submitList(transactionTuples)
             mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
@@ -105,15 +106,15 @@ internal class MainActivity :
         when {
             ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED -> {
-                /* We have permission, all good */
+                // We have permission, all good
             }
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                 Snackbar.make(
                     mainBinding.root,
                     applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_LONG,
                 ).setAction(applicationContext.getString(R.string.chucker_change)) {
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -150,7 +151,7 @@ internal class MainActivity :
                     onPositiveClick = {
                         viewModel.clearTransactions()
                     },
-                    onNegativeClick = null
+                    onNegativeClick = null,
                 )
                 true
             }
@@ -162,7 +163,7 @@ internal class MainActivity :
                             TransactionListDetailsSharable(transactions, encodeUrls = false)
                         }
                     },
-                    onNegativeClick = null
+                    onNegativeClick = null,
                 )
                 true
             }
@@ -175,12 +176,12 @@ internal class MainActivity :
                                 HarUtils.harStringFromTransactions(
                                     transactions,
                                     getString(R.string.chucker_name),
-                                    getString(R.string.chucker_version)
-                                )
+                                    getString(R.string.chucker_version),
+                                ),
                             )
                         }
                     },
-                    onNegativeClick = null
+                    onNegativeClick = null,
                 )
                 true
             }
@@ -199,7 +200,7 @@ internal class MainActivity :
 
     private fun exportTransactions(
         fileName: String,
-        block: suspend (List<HttpTransaction>) -> Sharable
+        block: suspend (List<HttpTransaction>) -> Sharable,
     ) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
@@ -210,15 +211,16 @@ internal class MainActivity :
             }
 
             val sharableTransactions = block(transactions)
-            val shareIntent = withContext(Dispatchers.IO) {
-                sharableTransactions.shareAsFile(
-                    activity = this@MainActivity,
-                    fileName = fileName,
-                    intentTitle = getString(R.string.chucker_share_all_transactions_title),
-                    intentSubject = getString(R.string.chucker_share_all_transactions_subject),
-                    clipDataLabel = "transactions"
-                )
-            }
+            val shareIntent =
+                withContext(Dispatchers.IO) {
+                    sharableTransactions.shareAsFile(
+                        activity = this@MainActivity,
+                        fileName = fileName,
+                        intentTitle = getString(R.string.chucker_share_all_transactions_title),
+                        intentSubject = getString(R.string.chucker_share_all_transactions_subject),
+                        clipDataLabel = "transactions",
+                    )
+                }
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
@@ -227,19 +229,23 @@ internal class MainActivity :
         }
     }
 
-    private fun getClearDialogData(): DialogData = DialogData(
-        title = getString(R.string.chucker_clear),
-        message = getString(R.string.chucker_clear_http_confirmation),
-        positiveButtonText = getString(R.string.chucker_clear),
-        negativeButtonText = getString(R.string.chucker_cancel)
-    )
+    private fun getClearDialogData(): DialogData =
+        DialogData(
+            title = getString(R.string.chucker_clear),
+            message = getString(R.string.chucker_clear_http_confirmation),
+            positiveButtonText = getString(R.string.chucker_clear),
+            negativeButtonText = getString(R.string.chucker_cancel),
+        )
 
-    private fun getExportDialogData(@StringRes dialogMessage: Int): DialogData = DialogData(
-        title = getString(R.string.chucker_export),
-        message = getString(dialogMessage),
-        positiveButtonText = getString(R.string.chucker_export),
-        negativeButtonText = getString(R.string.chucker_cancel)
-    )
+    private fun getExportDialogData(
+        @StringRes dialogMessage: Int,
+    ): DialogData =
+        DialogData(
+            title = getString(R.string.chucker_export),
+            message = getString(dialogMessage),
+            positiveButtonText = getString(R.string.chucker_export),
+            negativeButtonText = getString(R.string.chucker_cancel),
+        )
 
     companion object {
         private const val EXPORT_TXT_FILE_NAME = "transactions.txt"

@@ -20,9 +20,10 @@ internal class RepositoryProviderTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-        db = Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
+        db =
+            Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
+                .allowMainThreadQueries()
+                .build()
     }
 
     @After

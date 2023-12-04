@@ -19,8 +19,8 @@ internal class HttpTransactionTupleTest {
         assertThat(
             createTuple(
                 responseCode = 200,
-                error = null
-            ).status
+                error = null,
+            ).status,
         ).isEqualTo(HttpTransaction.Status.Complete)
     }
 
@@ -28,8 +28,8 @@ internal class HttpTransactionTupleTest {
     fun `transaction has failure status`() {
         assertThat(
             createTuple(
-                error = "foo"
-            ).status
+                error = "foo",
+            ).status,
         ).isEqualTo(HttpTransaction.Status.Failed)
     }
 
@@ -37,8 +37,8 @@ internal class HttpTransactionTupleTest {
     fun `transaction has requested status`() {
         assertThat(
             createTuple(
-                responseCode = null
-            ).status
+                responseCode = null,
+            ).status,
         ).isEqualTo(HttpTransaction.Status.Requested)
     }
 
@@ -57,22 +57,22 @@ internal class HttpTransactionTupleTest {
         assertThat(
             createTuple(
                 requestPayloadSize = null,
-                responsePayloadSize = null
-            ).totalSizeString
+                responsePayloadSize = null,
+            ).totalSizeString,
         ).isEqualTo("0 B")
 
         assertThat(
             createTuple(
                 requestPayloadSize = 0,
-                responsePayloadSize = null
-            ).totalSizeString
+                responsePayloadSize = null,
+            ).totalSizeString,
         ).isEqualTo("0 B")
 
         assertThat(
             createTuple(
                 requestPayloadSize = null,
-                responsePayloadSize = 0
-            ).totalSizeString
+                responsePayloadSize = 0,
+            ).totalSizeString,
         ).isEqualTo("0 B")
     }
 
@@ -81,8 +81,8 @@ internal class HttpTransactionTupleTest {
         assertThat(
             createTuple(
                 requestPayloadSize = 123,
-                responsePayloadSize = 456
-            ).totalSizeString
+                responsePayloadSize = 456,
+            ).totalSizeString,
         ).isEqualTo("579 B")
     }
 
@@ -120,7 +120,7 @@ internal class HttpTransactionTupleTest {
         responsePayloadSize: Long? = null,
         error: String? = null,
         graphQlOperationName: String? = null,
-        graphQLDetected: Boolean = false
+        graphQLDetected: Boolean = false,
     ) = HttpTransactionTuple(
         id = id,
         requestDate = requestDate,
@@ -135,6 +135,6 @@ internal class HttpTransactionTupleTest {
         responsePayloadSize = responsePayloadSize,
         error = error,
         graphQlOperationName = graphQlOperationName,
-        graphQlDetected = graphQLDetected
+        graphQlDetected = graphQLDetected,
     )
 }

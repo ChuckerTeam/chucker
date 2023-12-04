@@ -4,7 +4,6 @@ indent_size = 4
 indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
-ktlint_disabled_rules=function-start-of-body-spacing
 
 [*.yml]
 indent_size = 2

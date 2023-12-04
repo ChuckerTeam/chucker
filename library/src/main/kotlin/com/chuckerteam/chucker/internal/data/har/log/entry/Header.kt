@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
 internal data class Header(
     @SerializedName("name") val name: String,
     @SerializedName("value") val value: String,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
     constructor(header: HttpHeader) : this(
         name = header.name,
-        value = header.value
+        value = header.value,
     )
 }

@@ -17,32 +17,42 @@ import retrofit2.http.Query
 
 private const val GRAPHQL_BASE_URL = "https://rickandmortyapi.com/graphql/"
 private const val BASE_URL = "https://rickandmortyapi.com/"
+
 class GraphQlTask(
-    client: OkHttpClient
+    client: OkHttpClient,
 ) : HttpTask {
+    private val apolloClient =
+        ApolloClient.Builder()
+            .serverUrl(GRAPHQL_BASE_URL)
+            .okHttpClient(client)
+            .build()
 
-    private val apolloClient = ApolloClient.Builder()
-        .serverUrl(GRAPHQL_BASE_URL)
-        .okHttpClient(client)
-        .build()
-
-    private val api = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .build()
-        .create<Api>()
+    private val api =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .build()
+            .create<Api>()
 
     private val scope = MainScope()
 
     override fun run() {
         scope.launch {
-            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) = Unit
+            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(
+                object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>,
+                    ) = Unit
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
+                    override fun onFailure(
+                        call: Call<ResponseBody>,
+                        t: Throwable,
+                    ) {
+                        t.printStackTrace()
+                    }
+                },
+            )
             apolloClient
                 .query(SearchCharactersQuery(Optional.presentIfNotNull("Morty")))
                 .execute()
@@ -53,7 +63,7 @@ class GraphQlTask(
         @GET("graphql")
         fun getCharacterById(
             @Query("query") query: String,
-            @Query("variables") variables: String? = null
+            @Query("variables") variables: String? = null,
         ): Call<ResponseBody>
     }
 }

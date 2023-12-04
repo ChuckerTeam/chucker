@@ -30,10 +30,11 @@ public class HarTest {
     @Test
     public fun `har is created correctly with creator`() {
         val har = context.createSingleTransactionHar("GET")
-        val creator = Creator(
-            context.getString(R.string.chucker_name),
-            context.getString(R.string.chucker_version)
-        )
+        val creator =
+            Creator(
+                context.getString(R.string.chucker_name),
+                context.getString(R.string.chucker_version),
+            )
 
         assertThat(har.log.creator).isEqualTo(creator)
     }

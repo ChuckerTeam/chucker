@@ -4,7 +4,7 @@ import okhttp3.Interceptor
 
 enum class InterceptorType {
     APPLICATION,
-    NETWORK
+    NETWORK,
     ;
 
     interface Provider {
@@ -14,7 +14,7 @@ enum class InterceptorType {
 
 fun Interceptor.activeForType(
     activeType: InterceptorType,
-    typeProvider: InterceptorType.Provider
+    typeProvider: InterceptorType.Provider,
 ) = Interceptor { chain ->
     if (activeType == typeProvider.value) {
         intercept(chain)

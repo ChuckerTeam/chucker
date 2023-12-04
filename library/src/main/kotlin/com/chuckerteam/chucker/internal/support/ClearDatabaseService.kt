@@ -22,7 +22,10 @@ internal class ClearDatabaseService : JobIntentService() {
     companion object {
         private const val CLEAN_DATABASE_JOB_ID = 123321
 
-        fun enqueueWork(context: Context, work: Intent) {
+        fun enqueueWork(
+            context: Context,
+            work: Intent,
+        ) {
             enqueueWork(context, ClearDatabaseService::class.java, CLEAN_DATABASE_JOB_ID, work)
         }
     }

@@ -25,11 +25,13 @@ import kotlin.math.ln
 import kotlin.math.pow
 
 internal object FormatUtils {
-
     private const val SI_MULTIPLE = 1000
     private const val BASE_TWO_MULTIPLE = 1024
 
-    fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
+    fun formatHeaders(
+        httpHeaders: List<HttpHeader>?,
+        withMarkup: Boolean,
+    ): String {
         return httpHeaders?.joinToString(separator = "") { header ->
             if (withMarkup) {
                 "<b> ${header.name}: </b>${header.value} <br />"
@@ -39,7 +41,10 @@ internal object FormatUtils {
         } ?: ""
     }
 
-    fun formatByteCount(bytes: Long, si: Boolean): String {
+    fun formatByteCount(
+        bytes: Long,
+        si: Boolean,
+    ): String {
         val unit = if (si) SI_MULTIPLE else BASE_TWO_MULTIPLE
 
         if (bytes < unit) {

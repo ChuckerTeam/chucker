@@ -12,13 +12,17 @@ internal object HarUtils {
     suspend fun harStringFromTransactions(
         transactions: List<HttpTransaction>,
         name: String,
-        version: String
-    ): String = withContext(Dispatchers.Default) {
-        JsonConverter.nonNullSerializerInstance
-            .toJson(fromHttpTransactions(transactions, Creator(name, version)))
-    }
+        version: String,
+    ): String =
+        withContext(Dispatchers.Default) {
+            JsonConverter.nonNullSerializerInstance
+                .toJson(fromHttpTransactions(transactions, Creator(name, version)))
+        }
 
-    internal fun fromHttpTransactions(transactions: List<HttpTransaction>, creator: Creator): Har {
+    internal fun fromHttpTransactions(
+        transactions: List<HttpTransaction>,
+        creator: Creator,
+    ): Har {
         return Har(transactions, creator)
     }
 }
