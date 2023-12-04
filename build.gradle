@@ -9,7 +9,7 @@ buildscript {
         appCompatVersion = '1.6.1'
         constraintLayoutVersion = '2.1.4'
         materialComponentsVersion = '1.10.0'
-        fragmentVersion = '1.6.1'
+        fragmentVersion = '1.6.2'
         roomVersion = '2.6.1'
         lifecycleVersion = '2.6.2'
         androidXCoreVersion = '2.2.0'
