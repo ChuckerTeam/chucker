@@ -10,7 +10,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
  * uses Room and SqLite to run those operations.
  */
 internal interface HttpTransactionRepository {
-
     suspend fun insertTransaction(transaction: HttpTransaction)
 
     suspend fun updateTransaction(transaction: HttpTransaction): Int
@@ -21,7 +20,10 @@ internal interface HttpTransactionRepository {
 
     fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>>
 
-    fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>>
+    fun getFilteredTransactionTuples(
+        code: String,
+        path: String,
+    ): LiveData<List<HttpTransactionTuple>>
 
     fun getTransaction(transactionId: Long): LiveData<HttpTransaction?>
 

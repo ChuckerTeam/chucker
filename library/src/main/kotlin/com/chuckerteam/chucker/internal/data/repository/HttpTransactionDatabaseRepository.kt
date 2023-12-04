@@ -7,19 +7,21 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
-
     private val transactionDao get() = database.transactionDao()
 
-    override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
+    override fun getFilteredTransactionTuples(
+        code: String,
+        path: String,
+    ): LiveData<List<HttpTransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
         return transactionDao.getFilteredTuples(
             "$code%",
             pathQuery = pathQuery,
-            /**
+            /*
              * Refer <a href='https://github.com/ChuckerTeam/chucker/issues/847">Issue #847</a> for
              * more context
              */
-            graphQlQuery = pathQuery
+            graphQlQuery = pathQuery,
         )
     }
 

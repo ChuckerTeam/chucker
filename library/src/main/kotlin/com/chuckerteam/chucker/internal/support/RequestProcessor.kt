@@ -15,15 +15,21 @@ internal class RequestProcessor(
     private val collector: ChuckerCollector,
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
-    private val bodyDecoders: List<BodyDecoder>
+    private val bodyDecoders: List<BodyDecoder>,
 ) {
-    fun process(request: Request, transaction: HttpTransaction) {
+    fun process(
+        request: Request,
+        transaction: HttpTransaction,
+    ) {
         processMetadata(request, transaction)
         processPayload(request, transaction)
         collector.onRequestSent(transaction)
     }
 
-    private fun processMetadata(request: Request, transaction: HttpTransaction) {
+    private fun processMetadata(
+        request: Request,
+        transaction: HttpTransaction,
+    ) {
         transaction.apply {
             requestHeadersSize = request.headers.byteCount()
             request.headers.redact(headersToRedact).let {
@@ -40,7 +46,10 @@ internal class RequestProcessor(
         }
     }
 
-    private fun processPayload(request: Request, transaction: HttpTransaction) {
+    private fun processPayload(
+        request: Request,
+        transaction: HttpTransaction,
+    ) {
         val body = request.body ?: return
         if (body.isOneShot()) {
             Logger.info("Skipping one shot request body")
@@ -51,12 +60,13 @@ internal class RequestProcessor(
             return
         }
 
-        val requestSource = try {
-            Buffer().apply { body.writeTo(this) }
-        } catch (e: IOException) {
-            Logger.error("Failed to read request payload", e)
-            return
-        }
+        val requestSource =
+            try {
+                Buffer().apply { body.writeTo(this) }
+            } catch (e: IOException) {
+                Logger.error("Failed to read request payload", e)
+                return
+            }
         val limitingSource = LimitingSource(requestSource.uncompress(request.headers), maxContentLength)
 
         val contentBuffer = Buffer().apply { limitingSource.use { writeAll(it) } }
@@ -69,7 +79,10 @@ internal class RequestProcessor(
         }
     }
 
-    private fun decodePayload(request: Request, body: ByteString) = bodyDecoders.asSequence()
+    private fun decodePayload(
+        request: Request,
+        body: ByteString,
+    ) = bodyDecoders.asSequence()
         .mapNotNull { decoder ->
             try {
                 Logger.info("Decoding with: $decoder")
@@ -80,8 +93,10 @@ internal class RequestProcessor(
             }
         }.firstOrNull()
 
-    private fun isGraphQLRequest(graphQLOperationName: String?, request: Request) =
-        graphQLOperationName != null ||
-            request.url.pathSegments.contains("graphql") ||
-            request.url.host.contains("graphql")
+    private fun isGraphQLRequest(
+        graphQLOperationName: String?,
+        request: Request,
+    ) = graphQLOperationName != null ||
+        request.url.pathSegments.contains("graphql") ||
+        request.url.host.contains("graphql")
 }

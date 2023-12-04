@@ -7,7 +7,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 internal fun Context.showDialog(
     dialogData: DialogData,
     onPositiveClick: (() -> Unit)?,
-    onNegativeClick: (() -> Unit)?
+    onNegativeClick: (() -> Unit)?,
 ) {
     MaterialAlertDialogBuilder(this)
         .setTitle(dialogData.title)

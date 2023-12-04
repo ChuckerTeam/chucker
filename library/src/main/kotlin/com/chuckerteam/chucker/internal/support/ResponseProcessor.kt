@@ -19,14 +19,20 @@ internal class ResponseProcessor(
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
     private val alwaysReadResponseBody: Boolean,
-    private val bodyDecoders: List<BodyDecoder>
+    private val bodyDecoders: List<BodyDecoder>,
 ) {
-    fun process(response: Response, transaction: HttpTransaction): Response {
+    fun process(
+        response: Response,
+        transaction: HttpTransaction,
+    ): Response {
         processResponseMetadata(response, transaction)
         return multiCastResponse(response, transaction)
     }
 
-    private fun processResponseMetadata(response: Response, transaction: HttpTransaction) {
+    private fun processResponseMetadata(
+        response: Response,
+        transaction: HttpTransaction,
+    ) {
         transaction.apply {
             // includes headers added later in the chain
             requestHeadersSize = response.request.headers.byteCount()
@@ -51,7 +57,10 @@ internal class ResponseProcessor(
         }
     }
 
-    private fun multiCastResponse(response: Response, transaction: HttpTransaction): Response {
+    private fun multiCastResponse(
+        response: Response,
+        transaction: HttpTransaction,
+    ): Response {
         val responseBody = response.body
         if (!response.hasBody() || responseBody == null) {
             collector.onResponseReceived(transaction)
@@ -61,11 +70,12 @@ internal class ResponseProcessor(
         val contentType = responseBody.contentType()
         val contentLength = responseBody.contentLength()
 
-        val sideStream = ReportingSink(
-            createTempTransactionFile(),
-            ResponseReportingSinkCallback(response, transaction),
-            maxContentLength
-        )
+        val sideStream =
+            ReportingSink(
+                createTempTransactionFile(),
+                ResponseReportingSinkCallback(response, transaction),
+                maxContentLength,
+            )
         var upstream: Source = TeeSource(responseBody.source(), sideStream)
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
@@ -84,7 +94,11 @@ internal class ResponseProcessor(
         }
     }
 
-    private fun processPayload(response: Response, payload: Buffer, transaction: HttpTransaction) {
+    private fun processPayload(
+        response: Response,
+        payload: Buffer,
+        transaction: HttpTransaction,
+    ) {
         val responseBody = response.body ?: return
 
         val contentType = responseBody.contentType()
@@ -101,7 +115,10 @@ internal class ResponseProcessor(
         }
     }
 
-    private fun decodePayload(response: Response, body: ByteString) = bodyDecoders.asSequence()
+    private fun decodePayload(
+        response: Response,
+        body: ByteString,
+    ) = bodyDecoders.asSequence()
         .mapNotNull { decoder ->
             try {
                 decoder.decodeResponse(response, body)
@@ -113,10 +130,12 @@ internal class ResponseProcessor(
 
     private inner class ResponseReportingSinkCallback(
         private val response: Response,
-        private val transaction: HttpTransaction
+        private val transaction: HttpTransaction,
     ) : ReportingSink.Callback {
-
-        override fun onClosed(file: File?, sourceByteCount: Long) {
+        override fun onClosed(
+            file: File?,
+            sourceByteCount: Long,
+        ) {
             file?.readResponsePayload()?.let { payload ->
                 processPayload(response, payload, transaction)
             }
@@ -125,18 +144,22 @@ internal class ResponseProcessor(
             file?.delete()
         }
 
-        override fun onFailure(file: File?, exception: java.io.IOException) {
+        override fun onFailure(
+            file: File?,
+            exception: java.io.IOException,
+        ) {
             Logger.error("Failed to read response payload", exception)
         }
 
-        private fun File.readResponsePayload() = try {
-            source().uncompress(response.headers).use { source ->
-                Buffer().apply { writeAll(source) }
+        private fun File.readResponsePayload() =
+            try {
+                source().uncompress(response.headers).use { source ->
+                    Buffer().apply { writeAll(source) }
+                }
+            } catch (e: java.io.IOException) {
+                Logger.error("Response payload couldn't be processed", e)
+                null
             }
-        } catch (e: java.io.IOException) {
-            Logger.error("Response payload couldn't be processed", e)
-            null
-        }
     }
 
     private companion object {

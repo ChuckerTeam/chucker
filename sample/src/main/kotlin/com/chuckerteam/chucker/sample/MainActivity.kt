@@ -18,7 +18,6 @@ import kotlinx.coroutines.withContext
 private val interceptorTypeSelector = InterceptorTypeSelector()
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var mainBinding: ActivityMainSampleBinding
 
     private val client by lazy {
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             StrictMode.VmPolicy.Builder()
                 .detectLeakedClosableObjects()
                 .penaltyLog()
-                .build()
+                .build(),
         )
 
         StrictMode.setThreadPolicy(
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                 .detectDiskWrites()
                 .penaltyLog()
                 .penaltyDeath()
-                .build()
+                .build(),
         )
     }
 
@@ -95,10 +94,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateExportFile(exportFormat: ExportFormat) {
         lifecycleScope.launch {
-            val uri = withContext(Dispatchers.IO) {
-                ChuckerCollector(this@MainActivity)
-                    .writeTransactions(this@MainActivity, null, exportFormat)
-            }
+            val uri =
+                withContext(Dispatchers.IO) {
+                    ChuckerCollector(this@MainActivity)
+                        .writeTransactions(this@MainActivity, null, exportFormat)
+                }
             if (uri == null) {
                 Toast.makeText(applicationContext, R.string.export_to_file_failure, Toast.LENGTH_SHORT).show()
             } else {

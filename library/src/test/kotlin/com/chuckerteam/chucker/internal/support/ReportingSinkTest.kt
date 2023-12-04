@@ -19,7 +19,9 @@ internal class ReportingSinkTest {
     private val reportingCallback = TestReportingCallback()
 
     @Test
-    fun `downstream bytes are reported`(@TempDir tempDir: File) {
+    fun `downstream bytes are reported`(
+        @TempDir tempDir: File,
+    ) {
         val testFile = File(tempDir, "testFile")
         val repetitions = Random.nextInt(1, 100)
         val testSource = TestSource(repetitions * SEGMENT_SIZE.toInt())
@@ -31,7 +33,9 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun `downstream bytes can be limited`(@TempDir tempDir: File) {
+    fun `downstream bytes can be limited`(
+        @TempDir tempDir: File,
+    ) {
         val testFile = File(tempDir, "testFile")
         val testSource = TestSource(10_000)
         val reportingSink = ReportingSink(testFile, reportingCallback, writeByteLimit = 9_999)
@@ -43,7 +47,9 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun `partially consumed upstream bytes are reported`(@TempDir tempDir: File) {
+    fun `partially consumed upstream bytes are reported`(
+        @TempDir tempDir: File,
+    ) {
         val testFile = File(tempDir, "testFile")
         val testSource = TestSource(2 * SEGMENT_SIZE.toInt())
         val reportingSink = ReportingSink(testFile, reportingCallback)
@@ -55,7 +61,9 @@ internal class ReportingSinkTest {
     }
 
     @Test
-    fun `exception while creating downstream is reported`(@TempDir tempDir: File) {
+    fun `exception while creating downstream is reported`(
+        @TempDir tempDir: File,
+    ) {
         assertThat(tempDir.deleteRecursively()).isTrue()
 
         val testFile = File(tempDir, "testFile")
@@ -73,7 +81,10 @@ internal class ReportingSinkTest {
         val content: ByteString = ByteString.of(*Random.nextBytes(contentLength))
         private val buffer = Buffer().write(content)
 
-        override fun read(sink: Buffer, byteCount: Long): Long = buffer.read(sink, byteCount)
+        override fun read(
+            sink: Buffer,
+            byteCount: Long,
+        ): Long = buffer.read(sink, byteCount)
 
         override fun close() = buffer.close()
 
@@ -87,12 +98,18 @@ internal class ReportingSinkTest {
         var isSuccess = false
             private set
 
-        override fun onClosed(file: File?, sourceByteCount: Long) {
+        override fun onClosed(
+            file: File?,
+            sourceByteCount: Long,
+        ) {
             isSuccess = true
             this.file = file
         }
 
-        override fun onFailure(file: File?, exception: IOException) {
+        override fun onFailure(
+            file: File?,
+            exception: IOException,
+        ) {
             this.exception = exception
             this.file = file
         }

@@ -18,14 +18,15 @@ internal interface Sharable {
     fun toSharableContent(context: Context): Source
 }
 
-internal fun Sharable.toSharableUtf8Content(
-    context: Context
-) = toSharableContent(context).buffer().use(BufferedSource::readUtf8)
+internal fun Sharable.toSharableUtf8Content(context: Context) =
+    toSharableContent(context)
+        .buffer()
+        .use(BufferedSource::readUtf8)
 
 internal suspend fun Sharable.shareAsUtf8Text(
     activity: Activity,
     intentTitle: String,
-    intentSubject: String
+    intentSubject: String,
 ): Intent {
     val content = withContext(Dispatchers.Default) { toSharableUtf8Content(activity) }
     return ShareCompat.IntentBuilder(activity)
@@ -38,7 +39,7 @@ internal suspend fun Sharable.shareAsUtf8Text(
 
 internal fun Sharable.writeToFile(
     context: Context,
-    fileName: String
+    fileName: String,
 ): Uri? {
     val cache = context.cacheDir
     if (cache == null) {
@@ -58,7 +59,7 @@ internal fun Sharable.writeToFile(
     return FileProvider.getUriForFile(
         context,
         "${context.packageName}.com.chuckerteam.chucker.provider",
-        file
+        file,
     )
 }
 
@@ -67,15 +68,16 @@ internal fun Sharable.shareAsFile(
     fileName: String,
     intentTitle: String,
     intentSubject: String,
-    clipDataLabel: String
+    clipDataLabel: String,
 ): Intent? {
     val uri = writeToFile(activity, fileName) ?: return null
-    val shareIntent = ShareCompat.IntentBuilder(activity)
-        .setType(activity.contentResolver.getType(uri))
-        .setChooserTitle(intentTitle)
-        .setSubject(intentSubject)
-        .setStream(uri)
-        .intent
+    val shareIntent =
+        ShareCompat.IntentBuilder(activity)
+            .setType(activity.contentResolver.getType(uri))
+            .setChooserTitle(intentTitle)
+            .setSubject(intentSubject)
+            .setStream(uri)
+            .intent
     shareIntent.apply {
         clipData = ClipData.newRawUri(clipDataLabel, uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

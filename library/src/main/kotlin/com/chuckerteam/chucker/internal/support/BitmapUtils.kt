@@ -21,7 +21,9 @@ internal suspend fun Bitmap.calculateLuminance(): Double? {
     }
 }
 
-private fun Bitmap.replaceAlphaWithColor(@ColorInt color: Int): Bitmap {
+private fun Bitmap.replaceAlphaWithColor(
+    @ColorInt color: Int,
+): Bitmap {
     val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     result.eraseColor(color)
     Canvas(result).apply {
@@ -30,11 +32,14 @@ private fun Bitmap.replaceAlphaWithColor(@ColorInt color: Int): Bitmap {
     return result
 }
 
-private fun Bitmap.getLuminance(@ColorInt alphaSubstitute: Int): Double? {
-    val imagePalette = Palette.from(this)
-        .clearFilters()
-        .addFilter { rgb, _ -> (rgb != alphaSubstitute) }
-        .generate()
+private fun Bitmap.getLuminance(
+    @ColorInt alphaSubstitute: Int,
+): Double? {
+    val imagePalette =
+        Palette.from(this)
+            .clearFilters()
+            .addFilter { rgb, _ -> (rgb != alphaSubstitute) }
+            .generate()
     val dominantSwatch = imagePalette.dominantSwatch
     return dominantSwatch?.rgb?.let(ColorUtils::calculateLuminance)
 }

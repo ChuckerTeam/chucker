@@ -10,8 +10,14 @@ import okio.IOException
  */
 public interface BodyDecoder {
     @Throws(IOException::class)
-    public fun decodeRequest(request: Request, body: ByteString): String?
+    public fun decodeRequest(
+        request: Request,
+        body: ByteString,
+    ): String?
 
     @Throws(IOException::class)
-    public fun decodeResponse(response: Response, body: ByteString): String?
+    public fun decodeResponse(
+        response: Response,
+        body: ByteString,
+    ): String?
 }

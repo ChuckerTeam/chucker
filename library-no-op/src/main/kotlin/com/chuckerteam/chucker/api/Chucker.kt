@@ -8,7 +8,6 @@ import android.content.Intent
  */
 @Suppress("UnusedPrivateMember", "UNUSED_PARAMETER")
 public object Chucker {
-
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     public val isOp: Boolean = false
 

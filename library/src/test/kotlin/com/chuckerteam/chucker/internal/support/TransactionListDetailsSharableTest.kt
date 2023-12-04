@@ -14,19 +14,22 @@ internal class TransactionListDetailsSharableTest {
 
     @Test
     fun `create sharable content for multiple transactions`() {
-        val transactions = List(10) {
-            TestTransactionFactory.createTransaction(getRandomHttpMethod())
-        }
-        val expectedSharedContent = transactions.joinToString(
-            separator = "\n==================\n",
-            prefix = "/* Export Start */\n",
-            postfix = "\n/* Export End */\n"
-        ) { TransactionDetailsSharable(it, encodeUrls = false).toSharableUtf8Content(context) }
+        val transactions =
+            List(10) {
+                TestTransactionFactory.createTransaction(getRandomHttpMethod())
+            }
+        val expectedSharedContent =
+            transactions.joinToString(
+                separator = "\n==================\n",
+                prefix = "/* Export Start */\n",
+                postfix = "\n/* Export End */\n",
+            ) { TransactionDetailsSharable(it, encodeUrls = false).toSharableUtf8Content(context) }
 
-        val sharedContent = TransactionListDetailsSharable(
-            transactions,
-            encodeUrls = false
-        ).toSharableUtf8Content(context)
+        val sharedContent =
+            TransactionListDetailsSharable(
+                transactions,
+                encodeUrls = false,
+            ).toSharableUtf8Content(context)
         assertThat(sharedContent).isEqualTo(expectedSharedContent)
     }
 

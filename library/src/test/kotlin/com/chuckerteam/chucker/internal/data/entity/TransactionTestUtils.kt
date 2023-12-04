@@ -17,31 +17,33 @@ internal fun createRequest(path: String = ""): HttpTransaction =
         requestBody = randomString()
     }
 
-internal fun HttpTransaction.withResponseData(): HttpTransaction = this.apply {
-    setResponseHeaders(randomHeaders())
-    responseCode = 418 // I'm a teapot
-    responseDate = 321L
-    tookMs = 21L
-    responseTlsVersion = randomString()
-    responseCipherSuite = randomString()
-    responsePayloadSize = 0L
-    requestContentType = randomString()
-    responseMessage = randomString()
-    responseBody = randomString()
-    error = randomString()
-}
+internal fun HttpTransaction.withResponseData(): HttpTransaction =
+    this.apply {
+        setResponseHeaders(randomHeaders())
+        responseCode = 418 // I'm a teapot
+        responseDate = 321L
+        tookMs = 21L
+        responseTlsVersion = randomString()
+        responseCipherSuite = randomString()
+        responsePayloadSize = 0L
+        requestContentType = randomString()
+        responseMessage = randomString()
+        responseBody = randomString()
+        error = randomString()
+    }
 
-private fun randomHeaders(): Headers = Headers.Builder()
-    .add("name-one", randomString())
-    .add("name-two", randomString())
-    .add("Content-Encoding", "gzip")
-    .build()
+private fun randomHeaders(): Headers =
+    Headers.Builder()
+        .add("name-one", randomString())
+        .add("name-two", randomString())
+        .add("Content-Encoding", "gzip")
+        .build()
 
 internal fun randomString() = UUID.randomUUID().toString()
 
 internal fun assertTuples(
     expected: List<HttpTransaction>,
-    actual: List<HttpTransactionTuple>
+    actual: List<HttpTransactionTuple>,
 ) {
     assertThat(actual.size).isEqualTo(expected.size)
     expected.forEachIndexed { index, expectedTransaction ->
@@ -53,7 +55,7 @@ internal fun assertTuples(
 internal fun assertTuple(
     id: Long,
     expected: HttpTransaction,
-    actual: HttpTransactionTuple?
+    actual: HttpTransactionTuple?,
 ) {
     assertThat(actual?.id).isEqualTo(id)
     assertThat(actual?.requestDate).isEqualTo(expected.requestDate)
@@ -70,7 +72,7 @@ internal fun assertTuple(
 internal fun assertTransaction(
     transactionId: Long,
     expected: HttpTransaction,
-    actual: HttpTransaction?
+    actual: HttpTransaction?,
 ) {
     assertThat(actual?.id).isEqualTo(transactionId)
     assertThat(actual?.url).isEqualTo(expected.url)

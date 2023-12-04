@@ -9,5 +9,5 @@ internal data class SecondaryRequest(
     @SerializedName("lastAccess") val lastAccess: String,
     @SerializedName("eTag") val eTag: String,
     @SerializedName("hitCount") val hitCount: Int,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

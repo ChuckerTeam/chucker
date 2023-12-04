@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 internal data class Creator(
     @SerializedName("name") val name: String,
     @SerializedName("version") val version: String,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

@@ -4,7 +4,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date
 
 internal object TestTransactionFactory {
-
     internal fun createTransaction(method: String): HttpTransaction {
         return HttpTransaction(
             id = 0,
@@ -36,7 +35,7 @@ internal object TestTransactionFactory {
             isResponseBodyEncoded = false,
             responseImageData = null,
             graphQlDetected = false,
-            graphQlOperationName = null
+            graphQlOperationName = null,
         )
     }
 

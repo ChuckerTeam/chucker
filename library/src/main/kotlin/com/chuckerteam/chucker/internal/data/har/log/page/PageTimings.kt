@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 internal data class PageTimings(
     @SerializedName("onContentLoad") val onContentLoad: Long? = null,
     @SerializedName("onLoad") val onLoad: Long? = null,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

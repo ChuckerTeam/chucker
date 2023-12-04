@@ -21,37 +21,42 @@ import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
-    private val onTransactionClick: (Long) -> Unit
+    private val onTransactionClick: (Long) -> Unit,
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
-    TransactionDiffCallback
-) {
-
+        TransactionDiffCallback,
+    ) {
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
-    private val colorRequested: Int = ContextCompat.getColor(
-        context,
-        R.color.chucker_status_requested
-    )
+    private val colorRequested: Int =
+        ContextCompat.getColor(
+            context,
+            R.color.chucker_status_requested,
+        )
     private val colorError: Int = ContextCompat.getColor(context, R.color.chucker_status_error)
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val viewBinding = ChuckerListItemTransactionBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): TransactionViewHolder {
+        val viewBinding =
+            ChuckerListItemTransactionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
         return TransactionViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) =
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(
+        holder: TransactionViewHolder,
+        position: Int,
+    ) = holder.bind(getItem(position))
 
     inner class TransactionViewHolder(
-        private val itemBinding: ChuckerListItemTransactionBinding
+        private val itemBinding: ChuckerListItemTransactionBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-
         private var transactionId: Long? = null
 
         init {
@@ -95,25 +100,26 @@ internal class TransactionAdapter internal constructor(
             itemBinding.ssl.setImageDrawable(
                 AppCompatResources.getDrawable(
                     itemView.context,
-                    resources.icon
-                )
+                    resources.icon,
+                ),
             )
             ImageViewCompat.setImageTintList(
                 itemBinding.ssl,
-                ColorStateList.valueOf(ContextCompat.getColor(itemView.context, resources.color))
+                ColorStateList.valueOf(ContextCompat.getColor(itemView.context, resources.color)),
             )
         }
 
         private fun setStatusColor(transaction: HttpTransactionTuple) {
-            val color: Int = when {
-                (transaction.status === HttpTransaction.Status.Failed) -> colorError
-                (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
-                (transaction.responseCode == null) -> colorDefault
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
-                else -> colorDefault
-            }
+            val color: Int =
+                when {
+                    (transaction.status === HttpTransaction.Status.Failed) -> colorError
+                    (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
+                    (transaction.responseCode == null) -> colorDefault
+                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
+                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
+                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
+                    else -> colorDefault
+                }
             itemBinding.code.setTextColor(color)
             itemBinding.path.setTextColor(color)
         }
@@ -122,7 +128,7 @@ internal class TransactionAdapter internal constructor(
 
 private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
     graphQlOperationName: String?,
-    graphQLDetected: Boolean
+    graphQLDetected: Boolean,
 ) {
     graphqlIcon.isVisible = graphQLDetected
     graphqlPath.isVisible = graphQLDetected

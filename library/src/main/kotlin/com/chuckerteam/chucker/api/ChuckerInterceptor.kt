@@ -17,9 +17,8 @@ import java.io.IOException
  * in your application for later inspection.
  */
 public class ChuckerInterceptor private constructor(
-    builder: Builder
+    builder: Builder,
 ) : Interceptor {
-
     /**
      * An OkHttp Interceptor which persists and displays HTTP activity
      * in your application for later inspection.
@@ -37,22 +36,24 @@ public class ChuckerInterceptor private constructor(
 
     private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
-    private val requestProcessor = RequestProcessor(
-        builder.context,
-        collector,
-        builder.maxContentLength,
-        headersToRedact,
-        decoders
-    )
+    private val requestProcessor =
+        RequestProcessor(
+            builder.context,
+            collector,
+            builder.maxContentLength,
+            headersToRedact,
+            decoders,
+        )
 
-    private val responseProcessor = ResponseProcessor(
-        collector,
-        builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
-        builder.maxContentLength,
-        headersToRedact,
-        builder.alwaysReadResponseBody,
-        decoders
-    )
+    private val responseProcessor =
+        ResponseProcessor(
+            collector,
+            builder.cacheDirectoryProvider ?: CacheDirectoryProvider { builder.context.filesDir },
+            builder.maxContentLength,
+            headersToRedact,
+            builder.alwaysReadResponseBody,
+            decoders,
+        )
 
     private val skipPaths = builder.skipPaths.toSet()
 
@@ -75,13 +76,14 @@ public class ChuckerInterceptor private constructor(
         if (shouldProcessTheRequest) {
             requestProcessor.process(request, transaction)
         }
-        val response = try {
-            chain.proceed(request)
-        } catch (e: IOException) {
-            transaction.error = e.toString()
-            collector.onResponseReceived(transaction)
-            throw e
-        }
+        val response =
+            try {
+                chain.proceed(request)
+            } catch (e: IOException) {
+                transaction.error = e.toString()
+                collector.onResponseReceived(transaction)
+                throw e
+            }
         return if (shouldProcessTheRequest) {
             responseProcessor.process(response, transaction)
         } else {
@@ -108,34 +110,38 @@ public class ChuckerInterceptor private constructor(
         /**
          * Sets the [ChuckerCollector] to customize data retention.
          */
-        public fun collector(collector: ChuckerCollector): Builder = apply {
-            this.collector = collector
-        }
+        public fun collector(collector: ChuckerCollector): Builder =
+            apply {
+                this.collector = collector
+            }
 
         /**
          * Sets the maximum length for requests and responses content before their truncation.
          *
          * Warning: setting this value too high may cause unexpected results.
          */
-        public fun maxContentLength(length: Long): Builder = apply {
-            this.maxContentLength = length
-        }
+        public fun maxContentLength(length: Long): Builder =
+            apply {
+                this.maxContentLength = length
+            }
 
         /**
          * Sets headers that will be redacted if their names match.
          * They will be replaced with the `**` symbols in the Chucker UI.
          */
-        public fun redactHeaders(headerNames: Iterable<String>): Builder = apply {
-            this.headersToRedact = headerNames.toSet()
-        }
+        public fun redactHeaders(headerNames: Iterable<String>): Builder =
+            apply {
+                this.headersToRedact = headerNames.toSet()
+            }
 
         /**
          * Sets headers that will be redacted if their names match.
          * They will be replaced with the `**` symbols in the Chucker UI.
          */
-        public fun redactHeaders(vararg headerNames: String): Builder = apply {
-            this.headersToRedact = headerNames.toSet()
-        }
+        public fun redactHeaders(vararg headerNames: String): Builder =
+            apply {
+                this.headersToRedact = headerNames.toSet()
+            }
 
         /**
          * If set to `true` [ChuckerInterceptor] will read full content of response
@@ -144,44 +150,50 @@ public class ChuckerInterceptor private constructor(
          * Warning: enabling this feature may potentially cause different behaviour from the
          * production application.
          */
-        public fun alwaysReadResponseBody(enable: Boolean): Builder = apply {
-            this.alwaysReadResponseBody = enable
-        }
+        public fun alwaysReadResponseBody(enable: Boolean): Builder =
+            apply {
+                this.alwaysReadResponseBody = enable
+            }
 
         /**
          * Adds a [decoder] into Chucker's processing pipeline. Decoders are applied in an order they were added in.
          * Request and response bodies are set to the first non–null value returned by any of the decoders.
          */
-        public fun addBodyDecoder(decoder: BodyDecoder): Builder = apply {
-            this.decoders += decoder
-        }
+        public fun addBodyDecoder(decoder: BodyDecoder): Builder =
+            apply {
+                this.decoders += decoder
+            }
 
         /**
          * If set to `true`, [ChuckerInterceptor] will create a shortcut for your app
          * to access list of transaction in Chucker.
          */
-        public fun createShortcut(enable: Boolean): Builder = apply {
-            this.createShortcut = enable
-        }
+        public fun createShortcut(enable: Boolean): Builder =
+            apply {
+                this.createShortcut = enable
+            }
 
         /**
          * Sets provider of a directory where Chucker will save temporary responses
          * before processing them.
          */
         @VisibleForTesting
-        internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder = apply {
-            this.cacheDirectoryProvider = provider
-        }
-
-        public fun skipPaths(vararg skipPaths: String): Builder = apply {
-            skipPaths.forEach { candidatePath ->
-                val httpUrl = HttpUrl.Builder()
-                    .scheme("https")
-                    .host("example.com")
-                    .addPathSegment(candidatePath).build()
-                this@Builder.skipPaths.add(httpUrl.encodedPath)
+        internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder =
+            apply {
+                this.cacheDirectoryProvider = provider
             }
-        }
+
+        public fun skipPaths(vararg skipPaths: String): Builder =
+            apply {
+                skipPaths.forEach { candidatePath ->
+                    val httpUrl =
+                        HttpUrl.Builder()
+                            .scheme("https")
+                            .host("example.com")
+                            .addPathSegment(candidatePath).build()
+                    this@Builder.skipPaths.add(httpUrl.encodedPath)
+                }
+            }
 
         /**
          * Creates a new [ChuckerInterceptor] instance with values defined in this builder.

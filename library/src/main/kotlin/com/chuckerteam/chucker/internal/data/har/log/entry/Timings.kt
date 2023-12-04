@@ -13,10 +13,10 @@ internal data class Timings(
     @SerializedName("send") val send: Long = 0,
     @SerializedName("wait") val wait: Long,
     @SerializedName("receive") val receive: Long = 0,
-    @SerializedName("comment") val comment: String = "The information described by this object is incomplete."
+    @SerializedName("comment") val comment: String = "The information described by this object is incomplete.",
 ) {
     constructor(transaction: HttpTransaction) : this(
-        wait = transaction.tookMs ?: 0
+        wait = transaction.tookMs ?: 0,
     )
 
     fun getTime(): Long {

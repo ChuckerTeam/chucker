@@ -31,11 +31,12 @@ internal class DepletingSourceTest {
         val delegate = ThrowOnFirstReadSource("Hello, world!")
         val depletingSource = DepletingSource(delegate)
 
-        val exception = assertThrows<IOException> {
-            // Because delegate throws only on a first read, this also checks if DepletingSource
-            // does not try to read during close if a failure happened while reading.
-            depletingSource.use { it.read(Buffer(), 1) }
-        }
+        val exception =
+            assertThrows<IOException> {
+                // Because delegate throws only on a first read, this also checks if DepletingSource
+                // does not try to read during close if a failure happened while reading.
+                depletingSource.use { it.read(Buffer(), 1) }
+            }
         assertThat(exception.message).isEqualTo("Hello there!")
 
         assertThat(delegate.content).isEqualTo("Hello, world!")
@@ -86,7 +87,10 @@ internal class DepletingSourceTest {
         val content: String get() = source.snapshot().utf8()
         private var shouldThrow = true
 
-        override fun read(sink: Buffer, byteCount: Long): Long {
+        override fun read(
+            sink: Buffer,
+            byteCount: Long,
+        ): Long {
             if (shouldThrow) {
                 shouldThrow = false
                 throw IOException("Hello there!")

@@ -15,12 +15,12 @@ import kotlinx.coroutines.runBlocking
 import java.util.Date
 
 internal object HarTestUtils {
-
     internal fun createTransaction(method: String): HttpTransaction {
-        val requestBodySize = when (method) {
-            "GET" -> null
-            else -> 1000L
-        }
+        val requestBodySize =
+            when (method) {
+                "GET" -> null
+                else -> 1000L
+            }
         return HttpTransaction(
             id = 0,
             requestDate = Date(1300000).time,
@@ -51,21 +51,21 @@ internal object HarTestUtils {
             isResponseBodyEncoded = false,
             responseImageData = null,
             graphQlOperationName = null,
-            graphQlDetected = false
+            graphQlDetected = false,
         )
     }
 
     internal fun Context.createSingleTransactionHar(method: String): Har {
         return HarUtils.fromHttpTransactions(
             listOf(createTransaction(method)),
-            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version))
+            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version)),
         )
     }
 
     internal fun Context.createListTransactionHar(): Har {
         return HarUtils.fromHttpTransactions(
             listOf(createTransaction("GET"), createTransaction("POST")),
-            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version))
+            Creator(getString(R.string.chucker_name), getString(R.string.chucker_version)),
         )
     }
 
@@ -74,7 +74,7 @@ internal object HarTestUtils {
             HarUtils.harStringFromTransactions(
                 listOf(createTransaction("POST")),
                 getString(R.string.chucker_name),
-                getString(R.string.chucker_version)
+                getString(R.string.chucker_version),
             )
         }
     }
