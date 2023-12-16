@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.chuckerteam.chucker.internal.ui.navigations.ChuckerNav
 import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
 
-internal class ComposeMainActivity : ComponentActivity() {
+internal class ComposeMainActivity : BaseChuckerComposeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

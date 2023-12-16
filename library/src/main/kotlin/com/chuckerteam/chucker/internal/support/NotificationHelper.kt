@@ -42,7 +42,7 @@ internal class NotificationHelper(val context: Context) {
         PendingIntent.getActivity(
             context,
             TRANSACTION_NOTIFICATION_ID,
-            Chucker.getLaunchIntent(context),
+            Chucker.getComposeLaunchIntent(context),
             PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
         )
     }
