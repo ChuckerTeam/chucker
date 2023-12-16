@@ -3,6 +3,7 @@ package com.chuckerteam.chucker.internal.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -20,11 +21,10 @@ internal fun TransactionCard(transactionTuple: HttpTransactionTuple, modifier: M
     ){
         Row (modifier=Modifier.padding(8.dp)){
             Text(text = transactionTuple.responseCode.toString(), modifier = Modifier.padding(horizontal = 2.dp))
-            Column {
-                Text(text = transactionTuple.path.toString())
-                Text(text = transactionTuple.method.toString())
+            Column (modifier.fillMaxWidth()){
+                Text(text = "${transactionTuple.method.toString()} ${transactionTuple.path.toString()}")
                 Text(text = transactionTuple.host.toString())
-                Row (horizontalArrangement = Arrangement.SpaceEvenly){
+                Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
                     Text(text = DateFormat.getTimeInstance().format(transactionTuple.requestDate))
                     Text(text = transactionTuple.durationString.toString())
                     Text(text = transactionTuple.totalSizeString)
