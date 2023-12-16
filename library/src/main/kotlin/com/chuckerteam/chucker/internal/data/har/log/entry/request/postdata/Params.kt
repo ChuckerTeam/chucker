@@ -9,5 +9,5 @@ internal data class Params(
     @SerializedName("value") val value: String? = null,
     @SerializedName("fileName") val fileName: String? = null,
     @SerializedName("contentType") val contentType: String? = null,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

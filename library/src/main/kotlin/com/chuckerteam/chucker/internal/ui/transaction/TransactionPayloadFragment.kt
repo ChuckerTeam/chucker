@@ -43,7 +43,6 @@ import kotlin.math.abs
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
-
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
@@ -57,18 +56,19 @@ internal class TransactionPayloadFragment :
             if (uri != null && transaction != null) {
                 lifecycleScope.launch {
                     val result = saveToFile(payloadType, uri, transaction)
-                    val toastMessageId = if (result) {
-                        R.string.chucker_file_saved
-                    } else {
-                        R.string.chucker_file_not_saved
-                    }
+                    val toastMessageId =
+                        if (result) {
+                            R.string.chucker_file_saved
+                        } else {
+                            R.string.chucker_file_not_saved
+                        }
                     Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(
                     applicationContext,
                     R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
@@ -92,17 +92,21 @@ internal class TransactionPayloadFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        payloadBinding = ChuckerFragmentTransactionPayloadBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        payloadBinding =
+            ChuckerFragmentTransactionPayloadBinding.inflate(
+                inflater,
+                container,
+                false,
+            )
         return payloadBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         payloadBinding.payloadRecyclerView.apply {
@@ -129,7 +133,7 @@ internal class TransactionPayloadFragment :
 
                     payloadBinding.loadingProgress.visibility = View.GONE
                 }
-            }
+            },
         )
         payloadBinding.searchNavButton.setOnClickListener {
             onSearchScrollerButtonClick(true)
@@ -161,11 +165,12 @@ internal class TransactionPayloadFragment :
 
     private fun showEmptyState() {
         payloadBinding.apply {
-            emptyPayloadTextView.text = if (payloadType == PayloadType.RESPONSE) {
-                getString(R.string.chucker_response_is_empty)
-            } else {
-                getString(R.string.chucker_request_is_empty)
-            }
+            emptyPayloadTextView.text =
+                if (payloadType == PayloadType.RESPONSE) {
+                    getString(R.string.chucker_response_is_empty)
+                } else {
+                    getString(R.string.chucker_request_is_empty)
+                }
             emptyStateGroup.visibility = View.VISIBLE
             payloadRecyclerView.visibility = View.GONE
         }
@@ -179,7 +184,10 @@ internal class TransactionPayloadFragment :
     }
 
     @SuppressLint("NewApi")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         val transaction = viewModel.transaction.value
 
         if (shouldShowSearchIcon(transaction)) {
@@ -203,7 +211,7 @@ internal class TransactionPayloadFragment :
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
-                { menu.findItem(R.id.encode_url).isVisible = it }
+                { menu.findItem(R.id.encode_url).isVisible = it },
             )
         } else {
             menu.findItem(R.id.encode_url).isVisible = false
@@ -212,20 +220,22 @@ internal class TransactionPayloadFragment :
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
-        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
-        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
-        else -> true
-    }
+    private fun shouldShowSaveIcon(transaction: HttpTransaction?) =
+        when {
+            (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
+            (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
+            else -> true
+        }
 
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
-        PayloadType.REQUEST -> {
-            (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
+    private fun shouldShowSearchIcon(transaction: HttpTransaction?) =
+        when (payloadType) {
+            PayloadType.REQUEST -> {
+                (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
+            }
+            PayloadType.RESPONSE -> {
+                (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
+            }
         }
-        PayloadType.RESPONSE -> {
-            (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
-        }
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -239,7 +249,7 @@ internal class TransactionPayloadFragment :
             Toast.makeText(
                 activity,
                 R.string.chucker_file_not_saved_body_is_empty,
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
         } else {
             saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
@@ -254,11 +264,12 @@ internal class TransactionPayloadFragment :
         currentSearchScrollIndex = -1
 
         if (newText.isNotBlank() && newText.length > NUMBER_OF_IGNORED_SYMBOLS) {
-            val listOfSearchQuery = payloadAdapter.highlightQueryWithColors(
-                newText,
-                backgroundSpanColor,
-                foregroundSpanColor
-            )
+            val listOfSearchQuery =
+                payloadAdapter.highlightQueryWithColors(
+                    newText,
+                    backgroundSpanColor,
+                    foregroundSpanColor,
+                )
             if (listOfSearchQuery.isNotEmpty()) {
                 scrollableIndices.addAll(listOfSearchQuery)
             } else {
@@ -287,12 +298,16 @@ internal class TransactionPayloadFragment :
         payloadBinding.rootSearchSummary.isVisible = visible
     }
 
-    private fun updateToolbarText(searchResultsCount: Int, currentIndex: Int = 1) {
-        payloadBinding.searchSummary.text = SpannableStringBuilder().apply {
-            bold {
-                append("$currentIndex / $searchResultsCount")
+    private fun updateToolbarText(
+        searchResultsCount: Int,
+        currentIndex: Int = 1,
+    ) {
+        payloadBinding.searchSummary.text =
+            SpannableStringBuilder().apply {
+                bold {
+                    append("$currentIndex / $searchResultsCount")
+                }
             }
-        }
     }
 
     private fun scrollToSearchedItemPosition(positionOfScrollableIndices: Int) {
@@ -303,10 +318,9 @@ internal class TransactionPayloadFragment :
                 it.indexStartOfQuerySubString,
                 currentSearchQuery,
                 backgroundSpanColor,
-                foregroundSpanColor
+                foregroundSpanColor,
             )
         }
-
         currentSearchScrollIndex = positionOfScrollableIndices
         val scrollTo = scrollableIndices.getOrNull(positionOfScrollableIndices)
         if (scrollTo != null) {
@@ -316,7 +330,7 @@ internal class TransactionPayloadFragment :
                 scrollTo.indexStartOfQuerySubString,
                 currentSearchQuery,
                 backgroundSpanColorSearchItem,
-                foregroundSpanColor
+                foregroundSpanColor,
             )
             updateToolbarText(scrollableIndices.size, positionOfScrollableIndices + 1)
             makeToolbarSearchSummaryVisible()
@@ -326,10 +340,11 @@ internal class TransactionPayloadFragment :
         }
     }
 
+    @Suppress("LongMethod")
     private suspend fun processPayload(
         type: PayloadType,
         transaction: HttpTransaction,
-        formatRequestBody: Boolean
+        formatRequestBody: Boolean,
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
@@ -341,11 +356,12 @@ internal class TransactionPayloadFragment :
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
                 isBodyEncoded = transaction.isRequestBodyEncoded
-                bodyString = if (formatRequestBody) {
-                    transaction.getSpannedRequestBody(context)
-                } else {
-                    transaction.requestBody ?: ""
-                }
+                bodyString =
+                    if (formatRequestBody) {
+                        transaction.getSpannedRequestBody(context)
+                    } else {
+                        transaction.requestBody ?: ""
+                    }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
                 isBodyEncoded = transaction.isResponseBodyEncoded
@@ -356,9 +372,9 @@ internal class TransactionPayloadFragment :
                     TransactionPayloadItem.HeaderItem(
                         HtmlCompat.fromHtml(
                             headersString,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
+                            HtmlCompat.FROM_HTML_MODE_LEGACY,
+                        ),
+                    ),
                 )
             }
 
@@ -382,23 +398,28 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
 
-                else -> bodyString.lines().forEach {
-                    result.add(
-                        TransactionPayloadItem.BodyLineItem(
-                            if (it is SpannableStringBuilder) {
-                                it
-                            } else {
-                                SpannableStringBuilder.valueOf(it)
-                            }
+                else ->
+                    bodyString.lines().forEach {
+                        result.add(
+                            TransactionPayloadItem.BodyLineItem(
+                                if (it is SpannableStringBuilder) {
+                                    it
+                                } else {
+                                    SpannableStringBuilder.valueOf(it)
+                                },
+                            ),
                         )
-                    )
-                }
+                    }
             }
             return@withContext result
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(
+        type: PayloadType,
+        uri: Uri,
+        transaction: HttpTransaction,
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
@@ -424,7 +445,10 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private fun isBodyEmpty(type: PayloadType, transaction: HttpTransaction): Boolean =
+    private fun isBodyEmpty(
+        type: PayloadType,
+        transaction: HttpTransaction,
+    ): Boolean =
         when {
             type == PayloadType.REQUEST && transaction.requestBody == null -> true
             type == PayloadType.RESPONSE && transaction.responseBody == null -> true
@@ -442,9 +466,10 @@ internal class TransactionPayloadFragment :
 
         fun newInstance(type: PayloadType): TransactionPayloadFragment =
             TransactionPayloadFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_TYPE, type)
-                }
+                arguments =
+                    Bundle().apply {
+                        putSerializable(ARG_TYPE, type)
+                    }
             }
     }
 

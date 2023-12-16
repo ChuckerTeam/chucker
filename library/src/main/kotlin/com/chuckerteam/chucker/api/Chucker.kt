@@ -17,7 +17,6 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
  * Chucker methods and utilities to interact with the library.
  */
 public object Chucker {
-
     private const val SHORTCUT_ID = "chuckerShortcutId"
 
     /**
@@ -52,12 +51,13 @@ public object Chucker {
             return
         }
 
-        val shortcut = ShortcutInfo.Builder(context, SHORTCUT_ID)
-            .setShortLabel(context.getString(R.string.chucker_shortcut_label))
-            .setLongLabel(context.getString(R.string.chucker_shortcut_label))
-            .setIcon(Icon.createWithResource(context, R.mipmap.chucker_ic_launcher))
-            .setIntent(getLaunchIntent(context).setAction(Intent.ACTION_VIEW))
-            .build()
+        val shortcut =
+            ShortcutInfo.Builder(context, SHORTCUT_ID)
+                .setShortLabel(context.getString(R.string.chucker_shortcut_label))
+                .setLongLabel(context.getString(R.string.chucker_shortcut_label))
+                .setIcon(Icon.createWithResource(context, R.mipmap.chucker_ic_launcher))
+                .setIntent(getLaunchIntent(context).setAction(Intent.ACTION_VIEW))
+                .build()
         try {
             shortcutManager.addDynamicShortcuts(listOf(shortcut))
         } catch (e: IllegalArgumentException) {
@@ -75,19 +75,29 @@ public object Chucker {
         NotificationHelper(context).dismissNotifications()
     }
 
-    internal var logger: Logger = object : Logger {
-        val TAG = "Chucker"
+    internal var logger: Logger =
+        object : Logger {
+            val TAG = "Chucker"
 
-        override fun info(message: String, throwable: Throwable?) {
-            Log.i(TAG, message, throwable)
-        }
+            override fun info(
+                message: String,
+                throwable: Throwable?,
+            ) {
+                Log.i(TAG, message, throwable)
+            }
 
-        override fun warn(message: String, throwable: Throwable?) {
-            Log.w(TAG, message, throwable)
-        }
+            override fun warn(
+                message: String,
+                throwable: Throwable?,
+            ) {
+                Log.w(TAG, message, throwable)
+            }
 
-        override fun error(message: String, throwable: Throwable?) {
-            Log.e(TAG, message, throwable)
+            override fun error(
+                message: String,
+                throwable: Throwable?,
+            ) {
+                Log.e(TAG, message, throwable)
+            }
         }
-    }
 }

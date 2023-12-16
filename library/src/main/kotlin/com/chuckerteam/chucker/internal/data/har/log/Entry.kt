@@ -23,7 +23,7 @@ internal data class Entry(
     @SerializedName("timings") val timings: Timings,
     @SerializedName("serverIPAddress") val serverIPAddress: String? = null,
     @SerializedName("connection") val connection: String? = null,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
     constructor(transaction: HttpTransaction) : this(
         startedDateTime = transaction.requestDate?.harFormatted().orEmpty(),
@@ -31,7 +31,7 @@ internal data class Entry(
         request = Request(transaction),
         response = Response(transaction),
         cache = Cache(),
-        timings = Timings(transaction)
+        timings = Timings(transaction),
     )
 
     @VisibleForTesting

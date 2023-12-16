@@ -34,15 +34,16 @@ internal class HarUtilsTest {
     }
 
     @Test
-    fun `har content is created correctly`(): Unit = runBlocking {
-        val transaction = HarTestUtils.createTransaction("POST")
-        val result = context.createHarString()
-        val chuckerName = context.getString(R.string.chucker_name)
-        val chuckerVersion = context.getString(R.string.chucker_version)
-        val startedDateTime = Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
+    fun `har content is created correctly`(): Unit =
+        runBlocking {
+            val transaction = HarTestUtils.createTransaction("POST")
+            val result = context.createHarString()
+            val chuckerName = context.getString(R.string.chucker_name)
+            val chuckerVersion = context.getString(R.string.chucker_version)
+            val startedDateTime = Entry.DateFormat.get()!!.format(Date(transaction.requestDate!!))
 
-        assertThat(result).isEqualTo(
-            """
+            assertThat(result).isEqualTo(
+                """
                 {
                   "log": {
                     "version": "1.2",
@@ -96,7 +97,7 @@ internal class HarUtilsTest {
                     ]
                   }
                 }
-            """.trimIndent()
-        )
-    }
+                """.trimIndent(),
+            )
+        }
 }

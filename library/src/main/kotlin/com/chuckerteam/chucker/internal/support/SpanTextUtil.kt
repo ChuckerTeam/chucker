@@ -38,30 +38,31 @@ public class SpanTextUtil(context: Context) {
         KEY_SEPARATOR(setOf(":")),
         VALUE_SEPARATOR(setOf(",")),
         BOOLEAN(setOf("true", "false")),
-        NONE(setOf());
+        NONE(setOf()),
+        ;
 
         companion object {
             val allPossibleTokens = values().map { it.delimiters }.flatten().toSet()
         }
     }
 
-    private fun CharSequence.indexOfNextToken(
-        startIndex: Int = 0
-    ): Pair<Int, TokenType> {
-        val (index, matched) = findAnyOf(
-            strings = TokenType.allPossibleTokens,
-            startIndex = startIndex,
-            ignoreCase = true
-        ) ?: return -1 to TokenType.NONE
-        val tokenType = when (matched) {
-            in TokenType.ARRAY.delimiters -> TokenType.ARRAY
-            in TokenType.OBJECT.delimiters -> TokenType.OBJECT
-            in TokenType.KEY_SEPARATOR.delimiters -> TokenType.KEY_SEPARATOR
-            in TokenType.VALUE_SEPARATOR.delimiters -> TokenType.VALUE_SEPARATOR
-            in TokenType.STRING.delimiters -> TokenType.STRING
-            in TokenType.BOOLEAN.delimiters -> TokenType.BOOLEAN
-            else -> null
-        }
+    private fun CharSequence.indexOfNextToken(startIndex: Int = 0): Pair<Int, TokenType> {
+        val (index, matched) =
+            findAnyOf(
+                strings = TokenType.allPossibleTokens,
+                startIndex = startIndex,
+                ignoreCase = true,
+            ) ?: return -1 to TokenType.NONE
+        val tokenType =
+            when (matched) {
+                in TokenType.ARRAY.delimiters -> TokenType.ARRAY
+                in TokenType.OBJECT.delimiters -> TokenType.OBJECT
+                in TokenType.KEY_SEPARATOR.delimiters -> TokenType.KEY_SEPARATOR
+                in TokenType.VALUE_SEPARATOR.delimiters -> TokenType.VALUE_SEPARATOR
+                in TokenType.STRING.delimiters -> TokenType.STRING
+                in TokenType.BOOLEAN.delimiters -> TokenType.BOOLEAN
+                else -> null
+            }
         tokenType?.let {
             return index to it
         }
@@ -78,6 +79,7 @@ public class SpanTextUtil(context: Context) {
         }
         return -1
     }
+
     public fun spanJson(input: CharSequence): SpannableStringBuilder {
         // First handle the pretty printing step via gson built-in support
         val prettyPrintedInput = FormatUtils.formatJson(input.toString())
@@ -92,23 +94,26 @@ public class SpanTextUtil(context: Context) {
         while (index < prettyPrintedInput.length) {
             val (tokenIndex, tokenType) = prettyPrintedInput.indexOfNextToken(startIndex = index)
             when (tokenType) {
-                TokenType.BOOLEAN -> sb.setBooleanColor(tokenIndex).also { endIndex ->
-                    index = endIndex
-                }
+                TokenType.BOOLEAN ->
+                    sb.setBooleanColor(tokenIndex).also { endIndex ->
+                        index = endIndex
+                    }
                 TokenType.ARRAY,
                 TokenType.OBJECT,
                 TokenType.KEY_SEPARATOR,
-                TokenType.VALUE_SEPARATOR -> {
+                TokenType.VALUE_SEPARATOR,
+                -> {
                     sb.setColor(
                         start = tokenIndex,
                         end = tokenIndex + 1,
-                        color = jsonSignElementsColor
+                        color = jsonSignElementsColor,
                     )
                     index = tokenIndex + 1
                 }
-                TokenType.STRING -> sb.setStringColor(tokenIndex, lastTokenType)?.also { endIndex ->
-                    index = endIndex + 1
-                } ?: return sb
+                TokenType.STRING ->
+                    sb.setStringColor(tokenIndex, lastTokenType)?.also { endIndex ->
+                        index = endIndex + 1
+                    } ?: return sb
                 TokenType.NONE -> return sb
             }
             lastTokenType = tokenType
@@ -116,12 +121,16 @@ public class SpanTextUtil(context: Context) {
         return sb
     }
 
-    private fun SpannableStringBuilder.setColor(start: Int, end: Int, color: Int): SpannableStringBuilder {
+    private fun SpannableStringBuilder.setColor(
+        start: Int,
+        end: Int,
+        color: Int,
+    ): SpannableStringBuilder {
         this.setSpan(
             ChuckerForegroundColorSpan(color),
             start,
             end,
-            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE,
         )
         return this
     }
@@ -133,15 +142,16 @@ public class SpanTextUtil(context: Context) {
      * Returns the index of the end of the spanned boolean value
      */
     private fun SpannableStringBuilder.setBooleanColor(tokenIndex: Int): Int {
-        val endIndex = if (this[tokenIndex].equals('t', ignoreCase = true)) {
-            tokenIndex + BOOLEAN_TRUE_INDEX_OFFSET
-        } else {
-            tokenIndex + BOOLEAN_FALSE_INDEX_OFFSET
-        }
+        val endIndex =
+            if (this[tokenIndex].equals('t', ignoreCase = true)) {
+                tokenIndex + BOOLEAN_TRUE_INDEX_OFFSET
+            } else {
+                tokenIndex + BOOLEAN_FALSE_INDEX_OFFSET
+            }
         setColor(
             start = tokenIndex,
             end = endIndex,
-            color = jsonBooleanColor
+            color = jsonBooleanColor,
         )
         return endIndex
     }
@@ -153,19 +163,24 @@ public class SpanTextUtil(context: Context) {
      *
      * Otherwise, we will return the index of the end of the spanned string
      */
-    private fun SpannableStringBuilder.setStringColor(tokenIndex: Int, lastTokenType: TokenType? = null): Int? {
-        val color = when (lastTokenType) {
-            TokenType.ARRAY,
-            TokenType.OBJECT,
-            TokenType.VALUE_SEPARATOR,
-            TokenType.NONE,
-            null -> {
-                jsonKeyColor
+    private fun SpannableStringBuilder.setStringColor(
+        tokenIndex: Int,
+        lastTokenType: TokenType? = null,
+    ): Int? {
+        val color =
+            when (lastTokenType) {
+                TokenType.ARRAY,
+                TokenType.OBJECT,
+                TokenType.VALUE_SEPARATOR,
+                TokenType.NONE,
+                null,
+                -> {
+                    jsonKeyColor
+                }
+                else -> {
+                    jsonValueColor
+                }
             }
-            else -> {
-                jsonValueColor
-            }
-        }
 
         @Suppress("TooGenericExceptionCaught", "SwallowedException")
         val endIndex =

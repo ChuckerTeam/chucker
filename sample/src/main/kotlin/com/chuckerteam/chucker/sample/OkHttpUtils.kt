@@ -15,23 +15,25 @@ const val SEGMENT_SIZE = 8_192L
 
 fun createOkHttpClient(
     context: Context,
-    interceptorTypeProvider: InterceptorType.Provider
+    interceptorTypeProvider: InterceptorType.Provider,
 ): OkHttpClient {
-    val collector = ChuckerCollector(
-        context = context,
-        showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
-    )
+    val collector =
+        ChuckerCollector(
+            context = context,
+            showNotification = true,
+            retentionPeriod = RetentionManager.Period.ONE_HOUR,
+        )
 
     @Suppress("MagicNumber")
-    val chuckerInterceptor = ChuckerInterceptor.Builder(context)
-        .collector(collector)
-        .maxContentLength(250_000L)
-        .redactHeaders(emptySet())
-        .skipPaths("anything")
-        .alwaysReadResponseBody(false)
-        .addBodyDecoder(PokemonProtoBodyDecoder())
-        .build()
+    val chuckerInterceptor =
+        ChuckerInterceptor.Builder(context)
+            .collector(collector)
+            .maxContentLength(250_000L)
+            .redactHeaders(emptySet())
+            .skipPaths("anything")
+            .alwaysReadResponseBody(false)
+            .addBodyDecoder(PokemonProtoBodyDecoder())
+            .build()
 
     return OkHttpClient.Builder()
         // Add a ChuckerInterceptor instance to your OkHttp client as an application or a network interceptor.
@@ -44,13 +46,19 @@ fun createOkHttpClient(
 }
 
 class ReadBytesCallback(
-    private val byteCount: Long? = null
+    private val byteCount: Long? = null,
 ) : Callback {
-    override fun onFailure(call: Call, e: IOException) {
+    override fun onFailure(
+        call: Call,
+        e: IOException,
+    ) {
         e.printStackTrace()
     }
 
-    override fun onResponse(call: Call, response: Response) {
+    override fun onResponse(
+        call: Call,
+        response: Response,
+    ) {
         response.body?.source()?.use {
             try {
                 if (byteCount == null) {

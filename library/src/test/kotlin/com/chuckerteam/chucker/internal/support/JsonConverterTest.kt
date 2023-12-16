@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 internal class JsonConverterTest {
-
     @Test
     fun `JSON converter is a singleton`() {
         val instance1 = JsonConverter.instance
@@ -21,7 +20,7 @@ internal class JsonConverterTest {
             {
               "string": null
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 

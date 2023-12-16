@@ -86,7 +86,10 @@ internal class TeeSourceTest {
         val content: ByteString = ByteString.of(*Random.nextBytes(contentLength))
         private val buffer = Buffer().write(content)
 
-        override fun read(sink: Buffer, byteCount: Long): Long = buffer.read(sink, byteCount)
+        override fun read(
+            sink: Buffer,
+            byteCount: Long,
+        ): Long = buffer.read(sink, byteCount)
 
         override fun close() = buffer.close()
 
@@ -96,9 +99,12 @@ internal class TeeSourceTest {
     private class ThrowingSink(
         private val throwForWrite: Boolean = false,
         private val throwForFlush: Boolean = false,
-        private val throwForClose: Boolean = false
+        private val throwForClose: Boolean = false,
     ) : Sink {
-        override fun write(source: Buffer, byteCount: Long) {
+        override fun write(
+            source: Buffer,
+            byteCount: Long,
+        ) {
             if (throwForWrite) throw IOException("Hello there!")
         }
 

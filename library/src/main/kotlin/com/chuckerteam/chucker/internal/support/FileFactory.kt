@@ -9,18 +9,22 @@ internal object FileFactory {
 
     fun create(directory: File) = create(directory, fileName = "chucker-${uniqueIdGenerator.getAndIncrement()}")
 
-    fun create(directory: File, fileName: String): File? = try {
-        File(directory, fileName).apply {
-            if (exists() && !delete()) {
-                throw IOException("Failed to delete file $this")
+    fun create(
+        directory: File,
+        fileName: String,
+    ): File? =
+        try {
+            File(directory, fileName).apply {
+                if (exists() && !delete()) {
+                    throw IOException("Failed to delete file $this")
+                }
+                parentFile?.mkdirs()
+                if (!createNewFile()) {
+                    throw IOException("File $this already exists")
+                }
             }
-            parentFile?.mkdirs()
-            if (!createNewFile()) {
-                throw IOException("File $this already exists")
-            }
+        } catch (e: IOException) {
+            Logger.error("An error occurred while creating a file", e)
+            null
         }
-    } catch (e: IOException) {
-        Logger.error("An error occurred while creating a file", e)
-        null
-    }
 }

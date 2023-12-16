@@ -17,28 +17,28 @@ import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
-
     private val currentFilter = MutableLiveData("")
     private val selectedItemId:  MutableLiveData<MutableList<Long>> = MutableLiveData<MutableList<Long>>(mutableListOf())
 
     private var _isItemSelected = MutableLiveData<Boolean>(false)
     val isItemSelected = _isItemSelected.distinctUntilChanged()
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
-        with(RepositoryProvider.transaction()) {
-            when {
-                searchQuery.isNullOrBlank() -> {
-                    getSortedTransactionTuples()
-                }
-                TextUtils.isDigitsOnly(searchQuery) -> {
-                    getFilteredTransactionTuples(searchQuery, "")
-                }
-                else -> {
-                    getFilteredTransactionTuples("", searchQuery)
+    val transactions: LiveData<List<HttpTransactionTuple>> =
+        currentFilter.switchMap { searchQuery ->
+            with(RepositoryProvider.transaction()) {
+                when {
+                    searchQuery.isNullOrBlank() -> {
+                        getSortedTransactionTuples()
+                    }
+                    TextUtils.isDigitsOnly(searchQuery) -> {
+                        getFilteredTransactionTuples(searchQuery, "")
+                    }
+                    else -> {
+                        getFilteredTransactionTuples("", searchQuery)
+                    }
                 }
             }
         }
-    }
 
     fun selectItem(itemId: Long) {
         viewModelScope.launch {

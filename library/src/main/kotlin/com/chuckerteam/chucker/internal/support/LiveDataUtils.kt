@@ -8,7 +8,7 @@ import java.util.concurrent.Executor
 
 internal fun <T1, T2, R> LiveData<T1>.combineLatest(
     other: LiveData<T2>,
-    func: (T1, T2) -> R
+    func: (T1, T2) -> R,
 ): LiveData<R> {
     return MediatorLiveData<R>().apply {
         var lastA: T1? = null
@@ -45,7 +45,7 @@ internal fun <T1, T2> LiveData<T1>.combineLatest(other: LiveData<T2>): LiveData<
 // and result in frame drops.
 internal fun <T> LiveData<T>.distinctUntilChanged(
     executor: Executor = ioExecutor(),
-    areEqual: (old: T, new: T) -> Boolean = { old, new -> old == new }
+    areEqual: (old: T, new: T) -> Boolean = { old, new -> old == new },
 ): LiveData<T> {
     val distinctMediator = MediatorLiveData<T>()
     var old = uninitializedToken

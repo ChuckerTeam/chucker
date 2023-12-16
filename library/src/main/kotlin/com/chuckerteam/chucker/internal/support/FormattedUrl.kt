@@ -7,14 +7,15 @@ internal class FormattedUrl private constructor(
     val host: String,
     val port: Int,
     val path: String,
-    val query: String
+    val query: String,
 ) {
     val pathWithQuery: String
-        get() = if (query.isBlank()) {
-            path
-        } else {
-            "$path?$query"
-        }
+        get() =
+            if (query.isBlank()) {
+                path
+            } else {
+                "$path?$query"
+            }
 
     val url: String
         get() {
@@ -39,7 +40,10 @@ internal class FormattedUrl private constructor(
         private const val HTTPS_PORT = 443
         private const val HTTP_PORT = 80
 
-        fun fromHttpUrl(httpUrl: HttpUrl, encoded: Boolean): FormattedUrl {
+        fun fromHttpUrl(
+            httpUrl: HttpUrl,
+            encoded: Boolean,
+        ): FormattedUrl {
             return if (encoded) {
                 encodedUrl(httpUrl)
             } else {
@@ -54,7 +58,7 @@ internal class FormattedUrl private constructor(
                 httpUrl.host,
                 httpUrl.port,
                 if (path.isNotBlank()) "/$path" else "",
-                httpUrl.encodedQuery.orEmpty()
+                httpUrl.encodedQuery.orEmpty(),
             )
         }
 
@@ -65,7 +69,7 @@ internal class FormattedUrl private constructor(
                 httpUrl.host,
                 httpUrl.port,
                 if (path.isNotBlank()) "/$path" else "",
-                httpUrl.query.orEmpty()
+                httpUrl.query.orEmpty(),
             )
         }
     }

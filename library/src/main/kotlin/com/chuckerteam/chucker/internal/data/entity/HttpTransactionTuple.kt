@@ -24,16 +24,17 @@ internal data class HttpTransactionTuple(
     @ColumnInfo(name = "responsePayloadSize") var responsePayloadSize: Long?,
     @ColumnInfo(name = "error") var error: String?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
-    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
     val isSsl: Boolean get() = scheme.equals("https", ignoreCase = true)
 
     val status: HttpTransaction.Status
-        get() = when {
-            error != null -> HttpTransaction.Status.Failed
-            responseCode == null -> HttpTransaction.Status.Requested
-            else -> HttpTransaction.Status.Complete
-        }
+        get() =
+            when {
+                error != null -> HttpTransaction.Status.Failed
+                responseCode == null -> HttpTransaction.Status.Requested
+                else -> HttpTransaction.Status.Complete
+            }
 
     val durationString: String? get() = tookMs?.let { "$it ms" }
 
@@ -47,6 +48,7 @@ internal data class HttpTransactionTuple(
     private fun formatBytes(bytes: Long): String {
         return FormatUtils.formatByteCount(bytes, true)
     }
+
     fun getFormattedPath(encode: Boolean): String {
         val path = this.path ?: return ""
 

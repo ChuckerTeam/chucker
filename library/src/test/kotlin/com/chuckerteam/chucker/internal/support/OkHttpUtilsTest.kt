@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
 internal class OkHttpUtilsTest {
-
     @Test
     fun `response is not chunked without chunked encoding`() {
         val mockResponse = mockk<Response>()
@@ -51,9 +50,10 @@ internal class OkHttpUtilsTest {
         val source = Buffer()
         GzipSink(source).buffer().use { it.writeUtf8(content) }
 
-        val result = source.uncompress(headersOf("Content-Encoding", "gzip"))
-            .buffer()
-            .use(BufferedSource::readUtf8)
+        val result =
+            source.uncompress(headersOf("Content-Encoding", "gzip"))
+                .buffer()
+                .use(BufferedSource::readUtf8)
 
         assertThat(result).isEqualTo(content)
     }
@@ -68,9 +68,10 @@ internal class OkHttpUtilsTest {
 
         val brotliSource = Buffer().write(brotliEncodedString.decodeHex())
 
-        val result = brotliSource.uncompress(headersOf("Content-Encoding", "br"))
-            .buffer()
-            .use(BufferedSource::readUtf8)
+        val result =
+            brotliSource.uncompress(headersOf("Content-Encoding", "br"))
+                .buffer()
+                .use(BufferedSource::readUtf8)
 
         assertThat(result).contains("\"brotli\": true,")
         assertThat(result).contains("\"Accept-Encoding\": \"br\"")
@@ -81,9 +82,10 @@ internal class OkHttpUtilsTest {
         val content = "Hello there!"
         val source = Buffer().writeUtf8(content)
 
-        val result = source.uncompress(headersOf())
-            .buffer()
-            .use(BufferedSource::readUtf8)
+        val result =
+            source.uncompress(headersOf())
+                .buffer()
+                .use(BufferedSource::readUtf8)
 
         assertThat(result).isEqualTo(content)
     }
@@ -91,7 +93,10 @@ internal class OkHttpUtilsTest {
     @ParameterizedTest(name = "\"{0}\" must be supported: {1}")
     @MethodSource("supportedEncodingSource")
     @DisplayName("Check if body encoding is supported")
-    fun `recognizes supported encodings`(headers: Headers, isSupported: Boolean) {
+    fun `recognizes supported encodings`(
+        headers: Headers,
+        isSupported: Boolean,
+    ) {
         val result = headers.hasSupportedContentEncoding
 
         assertThat(result).isEqualTo(isSupported)
@@ -99,16 +104,17 @@ internal class OkHttpUtilsTest {
 
     companion object {
         @JvmStatic
-        fun supportedEncodingSource(): Stream<Arguments> = Stream.of(
-            null to true,
-            "" to true,
-            "br" to true,
-            "identity" to true,
-            "gzip" to true,
-            "other" to false
-        ).map { (encoding, result) ->
-            val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
-            Arguments.of(headers, result)
-        }
+        fun supportedEncodingSource(): Stream<Arguments> =
+            Stream.of(
+                null to true,
+                "" to true,
+                "br" to true,
+                "identity" to true,
+                "gzip" to true,
+                "other" to false,
+            ).map { (encoding, result) ->
+                val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
+                Arguments.of(headers, result)
+            }
     }
 }

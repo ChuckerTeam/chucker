@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class TransactionActivity : BaseChuckerActivity() {
-
     private val viewModel: TransactionViewModel by viewModels {
         TransactionViewModelFactory(intent.getLongExtra(EXTRA_TRANSACTION_ID, 0))
     }
@@ -48,7 +47,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         viewModel.transactionTitle.observe(
             this,
-            Observer { transactionBinding.toolbarTitle.text = it }
+            Observer { transactionBinding.toolbarTitle.text = it },
         )
     }
 
@@ -67,39 +66,45 @@ internal class TransactionActivity : BaseChuckerActivity() {
         viewModel.encodeUrl.observe(
             this,
             Observer { encode ->
-                val icon = if (encode) {
-                    R.drawable.chucker_ic_encoded_url_white
-                } else {
-                    R.drawable.chucker_ic_decoded_url_white
-                }
+                val icon =
+                    if (encode) {
+                        R.drawable.chucker_ic_encoded_url_white
+                    } else {
+                        R.drawable.chucker_ic_decoded_url_white
+                    }
                 encodeUrlMenuItem.setIcon(icon)
-            }
+            },
         )
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.share_text -> shareTransactionAsText { transaction ->
-            val encodeUrls = viewModel.encodeUrl.value!!
-            TransactionDetailsSharable(transaction, encodeUrls)
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
+            R.id.share_text ->
+                shareTransactionAsText { transaction ->
+                    val encodeUrls = viewModel.encodeUrl.value!!
+                    TransactionDetailsSharable(transaction, encodeUrls)
+                }
+            R.id.share_curl ->
+                shareTransactionAsText { transaction ->
+                    TransactionCurlCommandSharable(transaction)
+                }
+            R.id.share_file ->
+                shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
+                    val encodeUrls = viewModel.encodeUrl.value!!
+                    TransactionDetailsSharable(transaction, encodeUrls)
+                }
+            R.id.share_har ->
+                shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
+                    TransactionDetailsHarSharable(
+                        HarUtils.harStringFromTransactions(
+                            listOf(transaction),
+                            getString(R.string.chucker_name),
+                            getString(R.string.chucker_version),
+                        ),
+                    )
+                }
+            else -> super.onOptionsItemSelected(item)
         }
-        R.id.share_curl -> shareTransactionAsText { transaction ->
-            TransactionCurlCommandSharable(transaction)
-        }
-        R.id.share_file -> shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
-            val encodeUrls = viewModel.encodeUrl.value!!
-            TransactionDetailsSharable(transaction, encodeUrls)
-        }
-        R.id.share_har -> shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
-            TransactionDetailsHarSharable(
-                HarUtils.harStringFromTransactions(
-                    listOf(transaction),
-                    getString(R.string.chucker_name),
-                    getString(R.string.chucker_version)
-                )
-            )
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
 
     private fun shareTransactionAsText(block: (HttpTransaction) -> Sharable): Boolean {
         val transaction = viewModel.transaction.value
@@ -109,17 +114,21 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
         val sharable = block(transaction)
         lifecycleScope.launch {
-            val shareIntent = sharable.shareAsUtf8Text(
-                activity = this@TransactionActivity,
-                intentTitle = getString(R.string.chucker_share_transaction_title),
-                intentSubject = getString(R.string.chucker_share_transaction_subject)
-            )
+            val shareIntent =
+                sharable.shareAsUtf8Text(
+                    activity = this@TransactionActivity,
+                    intentTitle = getString(R.string.chucker_share_transaction_title),
+                    intentSubject = getString(R.string.chucker_share_transaction_subject),
+                )
             startActivity(shareIntent)
         }
         return true
     }
 
-    private fun shareTransactionAsFile(fileName: String, block: suspend (HttpTransaction) -> Sharable): Boolean {
+    private fun shareTransactionAsFile(
+        fileName: String,
+        block: suspend (HttpTransaction) -> Sharable,
+    ): Boolean {
         lifecycleScope.launch {
             val transaction = viewModel.transaction.value
             if (transaction == null) {
@@ -128,15 +137,16 @@ internal class TransactionActivity : BaseChuckerActivity() {
             }
 
             val sharable = block(transaction)
-            val shareIntent = withContext(Dispatchers.IO) {
-                sharable.shareAsFile(
-                    activity = this@TransactionActivity,
-                    fileName = fileName,
-                    intentTitle = getString(R.string.chucker_share_transaction_title),
-                    intentSubject = getString(R.string.chucker_share_transaction_subject),
-                    clipDataLabel = "transaction"
-                )
-            }
+            val shareIntent =
+                withContext(Dispatchers.IO) {
+                    sharable.shareAsFile(
+                        activity = this@TransactionActivity,
+                        fileName = fileName,
+                        intentTitle = getString(R.string.chucker_share_transaction_title),
+                        intentSubject = getString(R.string.chucker_share_transaction_subject),
+                        clipDataLabel = "transaction",
+                    )
+                }
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
@@ -153,7 +163,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 override fun onPageSelected(position: Int) {
                     selectedTabPosition = position
                 }
-            }
+            },
         )
         viewPager.currentItem = selectedTabPosition
     }
@@ -164,7 +174,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         private const val EXTRA_TRANSACTION_ID = "transaction_id"
         private var selectedTabPosition = 0
 
-        fun start(context: Context, transactionId: Long) {
+        fun start(
+            context: Context,
+            transactionId: Long,
+        ) {
             val intent = Intent(context, TransactionActivity::class.java)
             intent.putExtra(EXTRA_TRANSACTION_ID, transactionId)
             context.startActivity(intent)

@@ -5,58 +5,62 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 internal class FormatUtilsTest {
-
-    private val exampleHeadersList = listOf(
-        HttpHeader("Accept", "text/html"),
-        HttpHeader("Authorization", "exampleToken")
-    )
+    private val exampleHeadersList =
+        listOf(
+            HttpHeader("Accept", "text/html"),
+            HttpHeader("Authorization", "exampleToken"),
+        )
 
     @Test
     fun `JSON can have null fields`() {
-        val parsedJson = FormatUtils.formatJson(
-            """{ "field": null }"""
-        )
+        val parsedJson =
+            FormatUtils.formatJson(
+                """{ "field": null }""",
+            )
 
         assertThat(parsedJson).isEqualTo(
             """
             {
               "field": null
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
     @Test
     fun `JSON can have empty fields`() {
-        val parsedJson = FormatUtils.formatJson(
-            """{ "field": "" }"""
-        )
+        val parsedJson =
+            FormatUtils.formatJson(
+                """{ "field": "" }""",
+            )
 
         assertThat(parsedJson).isEqualTo(
             """
             {
               "field": ""
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
     @Test
     fun `JSON can be invalid`() {
-        val parsedJson = FormatUtils.formatJson(
-            """[{ "field": null }"""
-        )
+        val parsedJson =
+            FormatUtils.formatJson(
+                """[{ "field": null }""",
+            )
 
         assertThat(parsedJson).isEqualTo(
-            """[{ "field": null }"""
+            """[{ "field": null }""",
         )
     }
 
     @Test
     fun `JSON object is pretty printed`() {
-        val parsedJson = FormatUtils.formatJson(
-            """{ "field1": "something", "field2": "else" }"""
-        )
+        val parsedJson =
+            FormatUtils.formatJson(
+                """{ "field1": "something", "field2": "else" }""",
+            )
 
         assertThat(parsedJson).isEqualTo(
             """
@@ -64,15 +68,16 @@ internal class FormatUtilsTest {
               "field1": "something",
               "field2": "else"
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
     @Test
     fun `JSON array is pretty printed`() {
-        val parsedJson = FormatUtils.formatJson(
-            """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]"""
-        )
+        val parsedJson =
+            FormatUtils.formatJson(
+                """[{ "field1": "something1", "field2": "else1" }, { "field1": "something2", "field2": "else2" }]""",
+            )
 
         assertThat(parsedJson).isEqualTo(
             """
@@ -86,7 +91,7 @@ internal class FormatUtilsTest {
                 "field2": "else2"
               }
             ]
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
@@ -138,7 +143,7 @@ internal class FormatUtilsTest {
     private fun testFormatByteCount(
         byteCountToTest: Long,
         expectedSi: String,
-        expectedNonSi: String
+        expectedNonSi: String,
     ) {
         val resultNonSi = FormatUtils.formatByteCount(byteCountToTest, si = false)
         val resultSi = FormatUtils.formatByteCount(byteCountToTest, si = true)

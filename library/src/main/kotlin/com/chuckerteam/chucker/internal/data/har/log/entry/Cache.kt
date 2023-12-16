@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
 internal data class Cache(
     @SerializedName("afterRequest") val afterRequest: SecondaryRequest? = null,
     @SerializedName("beforeRequest") val beforeRequest: SecondaryRequest? = null,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

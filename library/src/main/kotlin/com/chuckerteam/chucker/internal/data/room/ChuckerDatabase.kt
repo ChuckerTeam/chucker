@@ -8,7 +8,6 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 
 @Database(entities = [HttpTransaction::class], version = 9, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
-
     abstract fun transactionDao(): HttpTransactionDao
 
     companion object {

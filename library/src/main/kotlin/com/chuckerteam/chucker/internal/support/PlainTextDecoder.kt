@@ -11,17 +11,17 @@ import kotlin.text.Charsets.UTF_8
 internal object PlainTextDecoder : BodyDecoder {
     override fun decodeRequest(
         request: Request,
-        body: ByteString
+        body: ByteString,
     ) = body.tryDecodeAsPlainText(request.headers, request.body?.contentType())
 
     override fun decodeResponse(
         response: Response,
-        body: ByteString
+        body: ByteString,
     ) = body.tryDecodeAsPlainText(response.headers, response.body?.contentType())
 
     private fun ByteString.tryDecodeAsPlainText(
         headers: Headers,
-        contentType: MediaType?
+        contentType: MediaType?,
     ) = if (headers.hasSupportedContentEncoding && isProbablyPlainText) {
         string(contentType?.charset() ?: UTF_8)
     } else {

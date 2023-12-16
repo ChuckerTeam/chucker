@@ -37,8 +37,8 @@ internal class ResponseTest {
                 compression = null,
                 mimeType = "application/json",
                 text = """{"field": "value"}""",
-                encoding = null
-            )
+                encoding = null,
+            ),
         )
     }
 
