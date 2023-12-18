@@ -1,10 +1,12 @@
 package com.chuckerteam.chucker.internal.ui.screen.transaction_list
 
 import android.app.Activity
+import android.view.inputmethod.TextSnapshot
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.asFlow
@@ -76,13 +79,13 @@ internal fun TransactionList(
     }
     val context = LocalContext.current
     val applicationName = context.applicationInfo.loadLabel(context.packageManager).toString()
-    LaunchedEffect(key1 = true, block = {
+    LaunchedEffect(key1 = true) {
         viewModel.transactions.asFlow().collectLatest {
             transactions.value = it
             delay(400)
-            isLoading = it.isEmpty()
+            isLoading = false
         }
-    })
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -134,6 +137,9 @@ internal fun TransactionList(
                 },
                 confirmButton = {
                     TextButton(onClick = {
+                        scope.launch {
+                            viewModel.clearTransactions()
+                        }
                         showDeleteDialog = false
                     }) {
                         Text(text = "Clear")
@@ -203,6 +209,20 @@ internal fun TransactionList(
             AnimatedVisibility(visible = isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
+                }
+            }
+            AnimatedVisibility(visible = (isLoading.not() && transactions.value.isNullOrEmpty())) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp), contentAlignment = Alignment.Center) {
+                    Column {
+                        Text(text = context.getString(R.string.chucker_setup), style = Typography.headlineMedium)
+                        Text(text = context.getString(R.string.chucker_network_tutorial))
+                        Text(text = context.getString(R.string.chucker_check_readme), color = Color.Cyan,
+                            modifier = Modifier.clickable {
+
+                        })
+                    }
                 }
             }
             AnimatedVisibility(visible = isLoading.not()) {
