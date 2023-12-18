@@ -31,6 +31,11 @@ internal class ComposeMainActivity : BaseChuckerComposeActivity() {
             }
         }
     }
+
+    companion object {
+        const val EXPORT_TXT_FILE_NAME = "transactions.txt"
+        const val EXPORT_HAR_FILE_NAME = "transactions.har"
+    }
 }
 
 @Composable
