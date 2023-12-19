@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    if: ${{ github.repository == 'ChuckerTeam/chucker'}}
+    if: ${{ github.repository == 'rohitjakhar/ComposeChucker'}}
     runs-on: [ubuntu-latest]
 
     steps:

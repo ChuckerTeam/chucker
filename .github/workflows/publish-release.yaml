@@ -1,12 +1,12 @@
 name: Publish Release
-on: 
+on:
   push:
     tags:
       - '*'
 
 jobs:
   publish:
-    if: ${{ github.repository == 'ChuckerTeam/chucker'}}
+    if: ${{ github.repository == 'rohitjakhar/ComposeChucker'}}
     runs-on: [ubuntu-latest]
 
     steps:
@@ -31,7 +31,7 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: 'chucker-release-artifacts'
+        name: 'compose-chucker-release-artifacts'
         path: '~/.m2/repository/'
 
     - name: Publish to the Staging Repository

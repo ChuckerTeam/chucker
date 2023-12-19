@@ -1,10 +1,10 @@
 name: Pre Merge Checks
-on: 
+on:
   push:
     branches:
       - develop
   pull_request:
-    branches: 
+    branches:
       - '*'
   workflow_dispatch:
     branches:
@@ -89,7 +89,7 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
- 
+
     - name: Run ktlint
       run: ./gradlew ktlintCheck
 
@@ -127,7 +127,7 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
-          
+
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
       env:
@@ -137,5 +137,5 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: 'chucker-local-artifacts'
+        name: 'compose-chucker-local-artifacts'
         path: '~/.m2/repository/'
