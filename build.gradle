@@ -8,7 +8,7 @@ buildscript {
         activityVersion = '1.8.1'
         appCompatVersion = '1.6.1'
         constraintLayoutVersion = '2.1.4'
-        materialComponentsVersion = '1.10.0'
+        materialComponentsVersion = '1.11.0'
         fragmentVersion = '1.6.2'
         roomVersion = '2.6.1'
         lifecycleVersion = '2.6.2'
