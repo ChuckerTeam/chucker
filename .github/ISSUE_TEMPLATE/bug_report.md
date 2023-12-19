@@ -23,7 +23,7 @@ about: Create a report to help us improve
 ## :iphone: Tech info
  - Device: <!-- e.g. Nexus 6P -->
  - OS: <!-- e.g. 7.1.1 -->
- - Chucker version: <!-- e.g. 3.1.2 -->
+ - ComposeChucker version: <!-- e.g. 3.1.2 -->
 
 ## :page_facing_up: Additional context
 <!-- Add any other context about the problem here. -->
