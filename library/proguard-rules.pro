@@ -1,1 +1,1 @@
--keep class com.chuckerteam.chucker.internal.data.entity.HttpTransaction { *; }
+-keep class com.rohitjakhar.composechucker.internal.data.entity.HttpTransaction { *; }

@@ -9,12 +9,12 @@ wire {
 
 android {
     compileSdk rootProject.compileSdkVersion
-    namespace "com.chuckerteam.chucker.sample"
+    namespace "com.rohitjakhar.composechucker.sample"
 
     defaultConfig {
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
-        applicationId "com.chuckerteam.chucker.sample"
+        applicationId "com.rohitjakhar.composechucker.sample"
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
     }
@@ -66,8 +66,8 @@ android {
 
 apollo {
     service("rickandmortyapi") {
-        packageName.set("com.chuckerteam.chucker.sample")
-        schemaFile.set(file("src/main/graphql/com/chuckerteam/chucker/sample/schema.json.graphql"))
+        packageName.set("com.rohitjakhar.composechucker.sample")
+        schemaFile.set(file("src/main/graphql/com/rohitjakhar/composechucker/sample/schema.json.graphql"))
         srcDir("src/main/graphql")
         excludes.add("**/schema.json.graphql")
         excludes.add("**/schema.json")

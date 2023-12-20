@@ -45,12 +45,12 @@ val client = OkHttpClient.Builder()
 
 to this:
 
-```java 
-import com.chuckerteam.chucker.api.ChuckerInterceptor;
+```java
+import com.rohitjakhar.composechucker.api.ChuckerInterceptor;
 
-val client = OkHttpClient.Builder()
-  .addInterceptor(new ChuckerInterceptor(context))
-  .build()
+val client=OkHttpClient.Builder()
+    .addInterceptor(new ChuckerInterceptor(context))
+    .build()
 ```
 
 ## 3. Update the code to configure the interceptor

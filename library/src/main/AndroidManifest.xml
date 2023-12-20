@@ -45,7 +45,7 @@
 
         <provider
             android:name=".internal.support.ChuckerFileProvider"
-            android:authorities="${applicationId}.com.chuckerteam.chucker.provider"
+            android:authorities="${applicationId}.com.rohitjakhar.composechucker.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

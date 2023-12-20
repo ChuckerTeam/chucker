@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.chuckerteam.chucker.sample.MainActivity"
+            android:name="com.rohitjakhar.composechucker.sample.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

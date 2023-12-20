@@ -5,7 +5,7 @@ apply plugin: 'com.google.devtools.ksp'
 
 android {
     compileSdk rootProject.compileSdkVersion
-    namespace "com.chuckerteam.chucker"
+    namespace "com.rohitjakhar.composechucker"
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += [

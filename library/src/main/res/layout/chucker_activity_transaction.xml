@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity">
+    tools:context="com.rohitjakhar.composechucker.internal.ui.transaction.TransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
