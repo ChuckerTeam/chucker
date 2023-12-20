@@ -46,19 +46,9 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'cortinico'
-                        name = 'Nicola Corti'
-                        email = 'corti.nico@gmail.com'
-                    }
-                    developer {
-                        id = 'vbuberen'
-                        name = 'Volodymyr Buberenko'
-                        email = 'v.buberenko@gmail.com'
-                    }
-                    developer {
-                        id = 'olivierperez'
-                        name = 'Olivier Perez'
-                        email = 'olivier@olivierperez.fr'
+                        id = 'rohitjakhar'
+                        name = 'Rohit Jakhar'
+                        email = 'rohitjakhar940@gmail.com'
                     }
                 }
             }
