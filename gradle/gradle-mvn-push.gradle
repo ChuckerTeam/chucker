@@ -8,7 +8,7 @@ publishing {
     repositories {
         maven {
             name "snapshot"
-            url = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
             credentials {
                 username = findProperty("NEXUS_USERNAME")
                 password = findProperty("NEXUS_PASSWORD")
@@ -16,7 +16,7 @@ publishing {
         }
         maven {
             name "staging"
-            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
                 username = findProperty("NEXUS_USERNAME")
                 password = findProperty("NEXUS_PASSWORD")

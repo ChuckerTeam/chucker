@@ -111,7 +111,8 @@ ext {
 }
 
 nexusStaging {
-    username = findProperty("NEXUS_USERNAME")
-    password = findProperty("NEXUS_PASSWORD")
-    stagingProfileId = "ea09119de9f4"
+    serverUrl = "https://s01.oss.sonatype.org/service/local/" //required only for projects registered in Sonatype after 2021-02-24
+
+    username = ""
+    password = ""
 }
