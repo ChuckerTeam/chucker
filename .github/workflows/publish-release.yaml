@@ -1,8 +1,8 @@
 name: Publish Release
 on:
-  push:
-      branches:
-          - dev
+    push:
+        tags:
+            - '*'
 
 jobs:
   publish:

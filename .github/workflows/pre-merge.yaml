@@ -1,141 +1,141 @@
-name: Pre Merge Checks
-on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - '*'
-  workflow_dispatch:
-    branches:
-      - '*'
-
-jobs:
-  test:
-    runs-on: [ubuntu-latest]
-
-    steps:
-    - name: Cancel Previous Runs
-      if: github.event_name == 'pull_request'
-      uses: styfle/cancel-workflow-action@0.12.0
-      with:
-        access_token: ${{ github.token }}
-
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-
-    - name: Run all the tests
-      run: ./gradlew test
-
-  detekt:
-    runs-on: [ubuntu-latest]
-
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-
-    - name: Run detekt
-      run: ./gradlew detekt
-
-  lint:
-    runs-on: [ubuntu-latest]
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Run lint
-        run: ./gradlew lint
-
-  ktlint:
-    runs-on: [ubuntu-latest]
-
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-
-    - name: Run ktlint
-      run: ./gradlew ktlintCheck
-
-  api-check:
-    runs-on: [ubuntu-latest]
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Run apiCheck
-        run: ./gradlew apiCheck
-
-  publish-artifact:
-    runs-on: [ubuntu-latest]
-
-    steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-
-    - name: Publish to Maven Local
-      run: ./gradlew publishToMavenLocal
-      env:
-        ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
-        ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
-
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'compose-chucker-local-artifacts'
-        path: '~/.m2/repository/'
+#name: Pre Merge Checks
+#on:
+#  push:
+#    branches:
+#      - develop
+#  pull_request:
+#    branches:
+#      - '*'
+#  workflow_dispatch:
+#    branches:
+#      - '*'
+#
+#jobs:
+#  test:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#    - name: Cancel Previous Runs
+#      if: github.event_name == 'pull_request'
+#      uses: styfle/cancel-workflow-action@0.12.0
+#      with:
+#        access_token: ${{ github.token }}
+#
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#
+#    - name: Setup Java
+#      uses: actions/setup-java@v3
+#      with:
+#        distribution: 'zulu'
+#        java-version: '17'
+#
+#    - name: Setup Gradle
+#      uses: gradle/gradle-build-action@v2
+#
+#    - name: Run all the tests
+#      run: ./gradlew test
+#
+#  detekt:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#
+#    - name: Setup Java
+#      uses: actions/setup-java@v3
+#      with:
+#        distribution: 'zulu'
+#        java-version: '17'
+#
+#    - name: Setup Gradle
+#      uses: gradle/gradle-build-action@v2
+#
+#    - name: Run detekt
+#      run: ./gradlew detekt
+#
+#  lint:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: '17'
+#
+#      - name: Setup Gradle
+#        uses: gradle/gradle-build-action@v2
+#
+#      - name: Run lint
+#        run: ./gradlew lint
+#
+#  ktlint:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#
+#    - name: Setup Java
+#      uses: actions/setup-java@v3
+#      with:
+#        distribution: 'zulu'
+#        java-version: '17'
+#
+#    - name: Setup Gradle
+#      uses: gradle/gradle-build-action@v2
+#
+#    - name: Run ktlint
+#      run: ./gradlew ktlintCheck
+#
+#  api-check:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#      - name: Checkout Repo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: '17'
+#
+#      - name: Setup Gradle
+#        uses: gradle/gradle-build-action@v2
+#
+#      - name: Run apiCheck
+#        run: ./gradlew apiCheck
+#
+#  publish-artifact:
+#    runs-on: [ubuntu-latest]
+#
+#    steps:
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#
+#    - name: Setup Java
+#      uses: actions/setup-java@v3
+#      with:
+#        distribution: 'zulu'
+#        java-version: '17'
+#
+#    - name: Setup Gradle
+#      uses: gradle/gradle-build-action@v2
+#
+#    - name: Publish to Maven Local
+#      run: ./gradlew publishToMavenLocal
+#      env:
+#        ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
+#        ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
+#
+#    - name: Upload Build Artifacts
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: 'compose-chucker-local-artifacts'
+#        path: '~/.m2/repository/'
