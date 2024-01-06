@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData("")
+    val searchText: LiveData<String> = currentFilter
 
     val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {

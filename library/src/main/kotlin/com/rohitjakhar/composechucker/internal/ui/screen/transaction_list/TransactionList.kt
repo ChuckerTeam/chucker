@@ -45,6 +45,7 @@ import com.rohitjakhar.composechucker.internal.support.TransactionListDetailsSha
 import com.rohitjakhar.composechucker.internal.support.shareAsFile
 import com.rohitjakhar.composechucker.internal.ui.ComposeMainActivity
 import com.rohitjakhar.composechucker.internal.ui.MainViewModel
+import com.rohitjakhar.composechucker.internal.ui.components.ExpandableSearchView
 import com.rohitjakhar.composechucker.internal.ui.components.TransactionCard
 import com.rohitjakhar.composechucker.internal.ui.theme.Typography
 import kotlinx.coroutines.Dispatchers
@@ -69,6 +70,9 @@ internal fun TransactionList(
     var showDeleteDialog by remember {
         mutableStateOf(false)
     }
+    var showSearchBar by remember {
+        mutableStateOf(false)
+    }
     var showShareDialog by remember {
         mutableStateOf(false)
     }
@@ -91,16 +95,14 @@ internal fun TransactionList(
                     Text(text = applicationName, style = Typography.headlineSmall)
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .clickable {
-                                Toast
-                                    .makeText(context, "search clicked", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                    ExpandableSearchView(
+                        searchDisplay = viewModel.searchText.value ?: "",
+                        onSearchDisplayChanged = {
+                            viewModel.updateItemsFilter(it)
+                        },
+                        onSearchDisplayClosed = {
+                            viewModel.updateItemsFilter("")
+                        },
                     )
                     Icon(
                         imageVector = Icons.Rounded.Share,
@@ -169,10 +171,12 @@ internal fun TransactionList(
                         scope.launch {
                             val allTransactions = viewModel.getAllTransactions()
                             if (allTransactions.isEmpty()) {
-                                Toast.makeText(context, "Transcation empty", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Transcation empty", Toast.LENGTH_SHORT)
+                                    .show()
                                 return@launch
                             }
-                            val sharableTransactions = TransactionListDetailsSharable(allTransactions, encodeUrls = false)
+                            val sharableTransactions =
+                                TransactionListDetailsSharable(allTransactions, encodeUrls = false)
                             val shareIntent = withContext(Dispatchers.IO) {
                                 sharableTransactions.shareAsFile(
                                     activity = context.getActivity() as Activity,
@@ -185,7 +189,8 @@ internal fun TransactionList(
                             if (shareIntent != null) {
                                 context.startActivity(shareIntent)
                             } else {
-                                Toast.makeText(context, "Share intent null", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Share intent null", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                         showShareDialog = false
@@ -210,16 +215,22 @@ internal fun TransactionList(
                 }
             }
             AnimatedVisibility(visible = (isLoading.not() && transactions.value.isNullOrEmpty())) {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp), contentAlignment = Alignment.Center
+                ) {
                     Column {
-                        Text(text = context.getString(R.string.chucker_setup), style = Typography.headlineMedium)
+                        Text(
+                            text = context.getString(R.string.chucker_setup),
+                            style = Typography.headlineMedium
+                        )
                         Text(text = context.getString(R.string.chucker_network_tutorial))
-                        Text(text = context.getString(R.string.chucker_check_readme), color = Color.Cyan,
+                        Text(text = context.getString(R.string.chucker_check_readme),
+                            color = Color.Cyan,
                             modifier = Modifier.clickable {
 
-                        })
+                            })
                     }
                 }
             }
