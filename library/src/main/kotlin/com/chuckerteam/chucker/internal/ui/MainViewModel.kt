@@ -1,24 +1,22 @@
 package com.chuckerteam.chucker.internal.ui
 
 import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
-import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
     private val currentFilter = MutableLiveData("")
-    private val selectedItemId:  MutableLiveData<MutableList<Long>> = MutableLiveData<MutableList<Long>>(mutableListOf())
+    private val selectedItemId: MutableLiveData<MutableList<Long>> =
+        MutableLiveData<MutableList<Long>>(mutableListOf())
 
     private var _isItemSelected = MutableLiveData<Boolean>(false)
     val isItemSelected = _isItemSelected.distinctUntilChanged()
@@ -75,5 +73,4 @@ internal class MainViewModel : ViewModel() {
         }
         NotificationHelper.clearBuffer()
     }
-
 }

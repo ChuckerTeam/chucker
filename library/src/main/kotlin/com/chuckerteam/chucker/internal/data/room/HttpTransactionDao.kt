@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 
+@Suppress("TooManyFunctions")
 @Dao
 internal interface HttpTransactionDao {
     @Query(
