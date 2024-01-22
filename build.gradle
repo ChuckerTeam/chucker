@@ -39,7 +39,7 @@ buildscript {
         junit4Version = '4.13.2'
         mockkVersion = '1.13.9'
         robolectricVersion = '4.11'
-        truthVersion = '1.2.0'
+        truthVersion = '1.3.0'
         androidXTestRunner = '1.5.2'
         androidXTestRules = '1.5.0'
         androidXTestExt = '1.1.5'
