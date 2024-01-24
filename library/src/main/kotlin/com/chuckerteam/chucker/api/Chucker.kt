@@ -19,6 +19,8 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
 public object Chucker {
     private const val SHORTCUT_ID = "chuckerShortcutId"
 
+    internal var showNotifications: Boolean = true
+
     /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.

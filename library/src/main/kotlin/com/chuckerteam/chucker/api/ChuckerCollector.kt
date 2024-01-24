@@ -41,6 +41,7 @@ public class ChuckerCollector
 
         init {
             RepositoryProvider.initialize(context)
+            Chucker.showNotifications = showNotification
         }
 
         /**
