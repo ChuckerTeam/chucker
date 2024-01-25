@@ -8,6 +8,7 @@ Please add your entries according to this format.
 ### Added
 
 ### Fixed
+* Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]
 
 ### Removed
 
