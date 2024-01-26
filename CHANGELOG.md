@@ -5,6 +5,8 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+* Fixed activity still asking for notification permission when notifications are disabled [#1165]
+
 ### Added
 
 ### Fixed

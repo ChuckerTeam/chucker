@@ -20,6 +20,11 @@ public object Chucker {
     private const val SHORTCUT_ID = "chuckerShortcutId"
 
     /**
+     * Keep track of latest show notifications value from ChuckerCollector.
+     */
+    internal var showNotifications: Boolean = true
+
+    /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
