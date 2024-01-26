@@ -19,6 +19,9 @@ import com.chuckerteam.chucker.internal.ui.MainActivity
 public object Chucker {
     private const val SHORTCUT_ID = "chuckerShortcutId"
 
+    /**
+     * Keep track of latest show notifications value from ChuckerCollector.
+     */
     internal var showNotifications: Boolean = true
 
     /**
