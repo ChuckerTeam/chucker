@@ -218,6 +218,16 @@ internal class MainActivity :
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putIntArray("selectedItems", (transactionsAdapter.getSelectedItem().toIntArray()));
+        super.onSaveInstanceState(outState)
+    }
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val itemList = savedInstanceState.getIntArray("selectedItems")
+        transactionsAdapter.setSelectedItem(itemList?.toList() ?: emptyList())
+    }
+
     override fun onQueryTextSubmit(query: String): Boolean = true
 
     override fun onQueryTextChange(newText: String): Boolean {

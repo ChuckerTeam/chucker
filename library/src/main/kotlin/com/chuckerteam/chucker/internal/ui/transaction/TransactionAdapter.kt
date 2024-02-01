@@ -52,6 +52,14 @@ internal class TransactionAdapter internal constructor(
             true,
         )
 
+    fun getSelectedItem(): List<Int> {
+        return selectedPos
+    }
+
+    fun setSelectedItem(selectedItem: List<Int>) {
+        selectedPos.addAll(selectedItem)
+    }
+
     fun clearSelections() {
         val pos = selectedPos
         selectedPos.clear()
