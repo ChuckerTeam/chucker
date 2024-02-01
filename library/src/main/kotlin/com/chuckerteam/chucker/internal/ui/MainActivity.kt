@@ -177,7 +177,7 @@ internal class MainActivity :
                             R.string.chucker_export_text_selected_http_confirmation
                         } else {
                             R.string.chucker_export_text_http_confirmation
-                        }
+                        },
                     ),
                     onPositiveClick = {
                         exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
@@ -195,7 +195,7 @@ internal class MainActivity :
                             R.string.chucker_export_har_selected_http_confirmation
                         } else {
                             R.string.chucker_export_har_http_confirmation
-                        }
+                        },
                     ),
                     onPositiveClick = {
                         exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
@@ -257,23 +257,27 @@ internal class MainActivity :
             } else {
                 showToast(
                     applicationContext.getString(
-                        R.string.chucker_export_no_file
-                    )
+                        R.string.chucker_export_no_file,
+                    ),
                 )
             }
         }
     }
 
-    private fun getClearDialogData(): DialogData = DialogData(
-        title = getString(R.string.chucker_clear),
-        message = getString(
-            if (viewModel.isItemSelected.value == true)
-                R.string.chucker_clear_selected_http_confirmation
-            else
-                R.string.chucker_clear_http_confirmation),
-        positiveButtonText = getString(R.string.chucker_clear),
-        negativeButtonText = getString(R.string.chucker_cancel)
-    )
+    private fun getClearDialogData(): DialogData =
+        DialogData(
+            title = getString(R.string.chucker_clear),
+            message =
+                getString(
+                    if (viewModel.isItemSelected.value == true) {
+                        R.string.chucker_clear_selected_http_confirmation
+                    } else {
+                        R.string.chucker_clear_http_confirmation
+                    },
+                ),
+            positiveButtonText = getString(R.string.chucker_clear),
+            negativeButtonText = getString(R.string.chucker_cancel),
+        )
 
     private fun getExportDialogData(
         @StringRes dialogMessage: Int,

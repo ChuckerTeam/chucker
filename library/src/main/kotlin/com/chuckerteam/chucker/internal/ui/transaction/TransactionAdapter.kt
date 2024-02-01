@@ -25,9 +25,10 @@ internal class TransactionAdapter internal constructor(
     private val onTransactionClick: (Long) -> Unit,
     private val longPress: (Long) -> Unit,
 ) : ListAdapter<
-    HttpTransactionTuple,
-    TransactionAdapter.TransactionViewHolder>(
-    TransactionDiffCallback
+        HttpTransactionTuple,
+        TransactionAdapter.TransactionViewHolder,
+        >(
+        TransactionDiffCallback,
     ) {
     private val selectedPos = mutableListOf<Int>()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -40,14 +41,16 @@ internal class TransactionAdapter internal constructor(
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
+    private val chuckerStatusHighlighted: Int = ContextCompat.getColor(context, R.color.chucker_status_highlighted)
     val outValue = TypedValue()
+
     @Suppress("UnusedPrivateProperty")
     private val defaultColor =
         context.theme.resolveAttribute(
-        android.R.attr.selectableItemBackground,
-        outValue,
-        true,
-    )
+            android.R.attr.selectableItemBackground,
+            outValue,
+            true,
+        )
 
     fun clearSelections() {
         val pos = selectedPos
@@ -105,7 +108,7 @@ internal class TransactionAdapter internal constructor(
                     }
                     notifyItemChanged(adapterPosition)
                     true
-                } ?: kotlin.run { false }
+                } ?: false
             }
         }
 
@@ -113,7 +116,7 @@ internal class TransactionAdapter internal constructor(
         fun bind(transaction: HttpTransactionTuple) {
             transactionId = transaction.id
             if (selectedPos.find { it == adapterPosition } != null) {
-                itemView.setBackgroundColor(color400)
+                itemView.setBackgroundColor(chuckerStatusHighlighted)
             } else {
                 itemView.setBackgroundResource(outValue.resourceId)
             }
