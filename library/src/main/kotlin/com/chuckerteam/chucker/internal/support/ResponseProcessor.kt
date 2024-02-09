@@ -43,7 +43,7 @@ internal class ResponseProcessor(
             requestDate = response.sentRequestAtMillis
             responseDate = response.receivedResponseAtMillis
             protocol = response.protocol.toString()
-            hostIp = response.getHostIp()
+            hostIp = response.body?.source()?.getHostIp()
             responseCode = response.code
             responseMessage = response.message
 
