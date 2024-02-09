@@ -60,6 +60,7 @@ internal class ResponseTest {
         val hostIp = buffer?.getHostIp()
         assertThat(hostIp).isEqualTo("192.168.1.1")
     }
+
     @Test
     fun `host ip address from response doesn't exist`() {
         val body =
