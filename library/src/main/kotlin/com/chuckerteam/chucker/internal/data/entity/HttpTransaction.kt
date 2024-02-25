@@ -233,6 +233,11 @@ internal class HttpTransaction(
         return FormattedUrl.fromHttpUrl(httpUrl, encode).url
     }
 
+    fun isResponseImage(): Boolean {
+        val contentType = responseContentType
+        return contentType != null && contentType.startsWith("image/", ignoreCase = true)
+    }
+
     fun getFormattedPath(encode: Boolean): String {
         val httpUrl = url?.toHttpUrl() ?: return ""
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery

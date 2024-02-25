@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -56,6 +57,9 @@ internal class TransactionOverviewFragment : Fragment() {
     private fun populateUI(transaction: HttpTransaction?, encodeUrl: Boolean) {
         with(overviewBinding) {
             url.text = transaction?.getFormattedUrl(encodeUrl)
+            if (transaction?.isResponseImage() == true) {
+                Linkify.addLinks(url, Linkify.WEB_URLS)
+            }
             method.text = transaction?.method
             protocol.text = transaction?.protocol
             status.text = transaction?.status.toString()
