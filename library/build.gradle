@@ -112,7 +112,7 @@ def libraryVersion = versionName()
 
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
+    from android.sourceSets.main.kotlin.srcDirs
 }
 
 artifactoryPublish.dependsOn('build')
