@@ -94,8 +94,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
 
-apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
-
 ext.versionName = { ->
     def currentTag = 'git tag --points-at HEAD'.execute().in.text.toString().trim()
     def currentBranch = 'git rev-parse --abbrev-ref HEAD'.execute().in.text.toString().trim()
