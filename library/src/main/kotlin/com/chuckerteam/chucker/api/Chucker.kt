@@ -9,9 +9,14 @@ import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.support.TransactionDetailsHarSharable
 import com.chuckerteam.chucker.internal.ui.MainActivity
+import okio.buffer
 
 /**
  * Chucker methods and utilities to interact with the library.
@@ -73,6 +78,24 @@ public object Chucker {
     @JvmStatic
     public fun dismissNotifications(context: Context) {
         NotificationHelper(context).dismissNotifications()
+    }
+
+    public suspend fun clearTransactions() {
+        RepositoryProvider.transaction().deleteAllTransactions()
+        NotificationHelper.clearBuffer()
+    }
+
+    public suspend fun generateHar(context: Context): ByteArray {
+        val transactions: List<HttpTransaction> =
+            RepositoryProvider.transaction().getAllTransactions()
+        val sharable = TransactionDetailsHarSharable(
+            content = HarUtils.harStringFromTransactions(
+                transactions,
+                context.getString(R.string.chucker_name),
+                context.getString(R.string.chucker_version)
+            )
+        )
+        return sharable.toSharableContent(context).buffer().use { it.readByteArray() }
     }
 
     internal var logger: Logger = object : Logger {
