@@ -20,7 +20,7 @@ buildscript {
         brotliVersion = '0.1.2'
         gsonVersion = '2.10.1'
         okhttpVersion = '4.11.0'
-        retrofitVersion = '2.9.0'
+        retrofitVersion = '2.10.0'
         wireVersion = '4.9.8'
 
         // Debug and quality control
