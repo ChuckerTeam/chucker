@@ -26,4 +26,6 @@ internal interface HttpTransactionRepository {
     fun getTransaction(transactionId: Long): LiveData<HttpTransaction?>
 
     suspend fun getAllTransactions(): List<HttpTransaction>
+
+    suspend fun getTransactions(limit: Int): List<HttpTransaction>
 }

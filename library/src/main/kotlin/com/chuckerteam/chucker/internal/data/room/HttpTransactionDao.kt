@@ -44,4 +44,7 @@ internal interface HttpTransactionDao {
 
     @Query("SELECT * FROM transactions")
     suspend fun getAll(): List<HttpTransaction>
+
+    @Query("SELECT * FROM transactions LIMIT :limit")
+    suspend fun getN(limit: Int): List<HttpTransaction>
 }

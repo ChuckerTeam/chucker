@@ -85,9 +85,9 @@ public object Chucker {
         NotificationHelper.clearBuffer()
     }
 
-    public suspend fun generateHar(context: Context): ByteArray {
+    public suspend fun generateHar(context: Context, transactionsLimit: Int = 1000): ByteArray {
         val transactions: List<HttpTransaction> =
-            RepositoryProvider.transaction().getAllTransactions()
+            RepositoryProvider.transaction().getTransactions(transactionsLimit)
         val sharable = TransactionDetailsHarSharable(
             content = HarUtils.harStringFromTransactions(
                 transactions,
