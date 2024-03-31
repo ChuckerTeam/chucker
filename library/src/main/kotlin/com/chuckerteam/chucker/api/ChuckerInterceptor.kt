@@ -36,6 +36,8 @@ public class ChuckerInterceptor private constructor(
 
     private val collector = builder.collector ?: ChuckerCollector(builder.context)
 
+    private val saveImageResponses = builder.saveImageResponses
+
     private val requestProcessor = RequestProcessor(
         builder.context,
         collector,
@@ -51,6 +53,7 @@ public class ChuckerInterceptor private constructor(
         headersToRedact,
         builder.alwaysReadResponseBody,
         decoders,
+        saveImageResponses,
     )
 
     init {
@@ -95,6 +98,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+        internal var saveImageResponses = false
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -153,6 +157,10 @@ public class ChuckerInterceptor private constructor(
          */
         public fun createShortcut(enable: Boolean): Builder = apply {
             this.createShortcut = enable
+        }
+
+        public fun saveImageResponses(enable: Boolean): Builder = apply {
+            this.saveImageResponses = enable
         }
 
         /**

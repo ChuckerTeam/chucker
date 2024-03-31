@@ -20,6 +20,7 @@ internal class ResponseProcessor(
     private val headersToRedact: Set<String>,
     private val alwaysReadResponseBody: Boolean,
     private val bodyDecoders: List<BodyDecoder>,
+    private val saveImageResponses: Boolean,
 ) {
     fun process(response: Response, transaction: HttpTransaction): Response {
         processResponseMetadata(response, transaction)
@@ -90,7 +91,7 @@ internal class ResponseProcessor(
         val contentType = responseBody.contentType()
 
         val isImageContentType = contentType?.toString()?.contains(CONTENT_TYPE_IMAGE, ignoreCase = true) == true
-        if (isImageContentType) {
+        if (isImageContentType && saveImageResponses) {
             if (payload.size < MAX_BLOB_SIZE) {
                 transaction.responseImageData = payload.readByteArray()
             }

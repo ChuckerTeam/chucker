@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlinVersion = '1.6.21'
-        androidGradleVersion = '7.0.4'
+        androidGradleVersion = '7.4.2'
         coroutineVersion = '1.5.2'
 
         // Google libraries
@@ -25,7 +25,6 @@ buildscript {
 
         // Debug and quality control
         binaryCompatibilityValidator = '0.8.0'
-        detektVersion = '1.14.0'
         dokkaVersion = '1.4.10.2'
         ktLintVersion = '0.39.0'
         ktLintGradleVersion = '10.0.0'
@@ -55,7 +54,6 @@ buildscript {
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrogExtractor"
         classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"

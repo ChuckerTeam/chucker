@@ -94,8 +94,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
 
-apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
-
 ext.versionName = { ->
     def currentTag = 'git tag --points-at HEAD'.execute().in.text.toString().trim()
     def currentBranch = 'git rev-parse --abbrev-ref HEAD'.execute().in.text.toString().trim()
@@ -112,7 +110,7 @@ def libraryVersion = versionName()
 
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
+    from android.sourceSets.main.kotlin.srcDirs
 }
 
 artifactoryPublish.dependsOn('build')
