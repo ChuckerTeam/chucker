@@ -87,7 +87,7 @@ public object Chucker {
 
     public suspend fun generateHar(context: Context, transactionsLimit: Int = 1000): ByteArray {
         val transactions: List<HttpTransaction> =
-            RepositoryProvider.transaction().getTransactions(transactionsLimit)
+            RepositoryProvider.transaction().getLastTransactions(transactionsLimit)
         val sharable = TransactionDetailsHarSharable(
             content = HarUtils.harStringFromTransactions(
                 transactions,
