@@ -7,6 +7,7 @@ Please add your entries according to this format.
 
 * Fixed activity still asking for notification permission when notifications are disabled [#1165]
 * Fixed Gson issue, when using Chucker with ProGuard [#1183]
+* Fixed share of curl when header values contain quotes [#1211]
 
 ### Added
 
