@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -30,6 +29,7 @@ import androidx.lifecycle.withResumed
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FileSaver
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
@@ -37,7 +37,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileOutputStream
+import okio.Source
+import okio.source
 import java.io.IOException
 import kotlin.math.abs
 
@@ -55,7 +56,14 @@ internal class TransactionPayloadFragment :
             val applicationContext = requireContext().applicationContext
             if (uri != null && transaction != null) {
                 lifecycleScope.launch {
-                    val result = saveToFile(payloadType, uri, transaction)
+                    val source =
+                        runCatching {
+                            prepareDataToSave(payloadType, transaction)
+                        }.getOrElse {
+                            Logger.error("Failed to save transaction to a file", it)
+                            return@launch
+                        }
+                    val result = FileSaver.saveFile(source, uri, applicationContext.contentResolver)
                     val toastMessageId =
                         if (result) {
                             R.string.chucker_file_saved
@@ -232,6 +240,7 @@ internal class TransactionPayloadFragment :
             PayloadType.REQUEST -> {
                 (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
             }
+
             PayloadType.RESPONSE -> {
                 (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
             }
@@ -415,33 +424,20 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private suspend fun saveToFile(
+    private fun prepareDataToSave(
         type: PayloadType,
-        uri: Uri,
         transaction: HttpTransaction,
-    ): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
-                    FileOutputStream(it.fileDescriptor).use { fos ->
-                        when (type) {
-                            PayloadType.REQUEST -> {
-                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                                    ?: throw IOException(TRANSACTION_EXCEPTION)
-                            }
-
-                            PayloadType.RESPONSE -> {
-                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                                    ?: throw IOException(TRANSACTION_EXCEPTION)
-                            }
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                Logger.error("Failed to save transaction to a file", e)
-                return@withContext false
+    ): Source {
+        return when (type) {
+            PayloadType.REQUEST -> {
+                transaction.requestBody?.byteInputStream()?.source()
+                    ?: throw IOException(TRANSACTION_EXCEPTION)
             }
-            return@withContext true
+
+            PayloadType.RESPONSE -> {
+                transaction.responseBody?.byteInputStream()?.source()
+                    ?: throw IOException(TRANSACTION_EXCEPTION)
+            }
         }
     }
 
