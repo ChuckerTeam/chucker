@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okio.BufferedSink
 import okio.Source
 import okio.buffer
 import okio.sink
@@ -19,7 +18,7 @@ public object FileSaver {
             runCatching {
                 contentResolver.openOutputStream(uri)?.use { outputStream ->
                     outputStream.sink().buffer().use { sink ->
-                        saveToFile(sink, source)
+                        sink.writeAll(source)
                     }
                 }
             }.onFailure {
@@ -28,12 +27,5 @@ public object FileSaver {
             }
             return@withContext true
         }
-    }
-
-    private fun saveToFile(
-        sink: BufferedSink,
-        source: Source,
-    ) {
-        sink.writeAll(source)
     }
 }
