@@ -10,6 +10,7 @@ Please add your entries according to this format.
 * Fixed share of curl when header values contain quotes [#1211]
 
 ### Added
+* Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
 
 ### Fixed
 * Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]

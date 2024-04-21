@@ -151,7 +151,7 @@ internal class MainActivity :
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.chucker_transactions_list, menu) //
+        menuInflater.inflate(R.menu.chucker_transactions_list, menu)
         MenuCompat.setGroupDividerEnabled(menu, true)
         setUpSearch(menu)
         return super.onCreateOptionsMenu(menu)
