@@ -24,9 +24,18 @@ internal data class Response(
         statusText = transaction.responseMessage ?: "",
         httpVersion = transaction.protocol ?: "",
         headers = transaction.getParsedResponseHeaders()?.map { Header(it) } ?: emptyList(),
-        content = transaction.responsePayloadSize?.run { Content(transaction) },
+        content = transaction.responsePayloadSize?.run { Content(transaction) } ?: emptyContent(),
         headersSize = transaction.responseHeadersSize ?: 0,
         bodySize = transaction.getHarResponseBodySize(),
         totalSize = transaction.getResponseTotalSize()
     )
+
+    companion object {
+        fun emptyContent(): Content {
+            return Content(
+                size = 0,
+                mimeType = "application/octet-stream",
+            )
+        }
+    }
 }
