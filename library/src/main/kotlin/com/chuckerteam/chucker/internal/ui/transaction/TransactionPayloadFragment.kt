@@ -427,8 +427,8 @@ internal class TransactionPayloadFragment :
     private fun prepareDataToSave(
         type: PayloadType,
         transaction: HttpTransaction,
-    ): Source {
-        return when (type) {
+    ): Source =
+        when (type) {
             PayloadType.REQUEST -> {
                 transaction.requestBody?.byteInputStream()?.source()
                     ?: throw IOException(TRANSACTION_EXCEPTION)
@@ -439,7 +439,6 @@ internal class TransactionPayloadFragment :
                     ?: throw IOException(TRANSACTION_EXCEPTION)
             }
         }
-    }
 
     private fun isBodyEmpty(
         type: PayloadType,

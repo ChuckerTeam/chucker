@@ -24,8 +24,8 @@ public object FileSaver {
         source: Source,
         uri: Uri,
         contentResolver: ContentResolver,
-    ): Boolean {
-        return withContext(Dispatchers.IO) {
+    ): Boolean =
+        withContext(Dispatchers.IO) {
             runCatching {
                 contentResolver.openOutputStream(uri)?.use { outputStream ->
                     outputStream.sink().buffer().use { sink ->
@@ -38,5 +38,4 @@ public object FileSaver {
             }
             return@withContext true
         }
-    }
 }
