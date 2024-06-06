@@ -79,6 +79,7 @@ dependencies {
     ksp "androidx.room:room-compiler:$roomVersion"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
 

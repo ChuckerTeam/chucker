@@ -25,13 +25,17 @@
     <string name="chucker_no">No</string>
     <string name="chucker_share">Share</string>
     <string name="chucker_export">Export</string>
+    <string name="chucker_save">Save</string>
     <string name="chucker_export_empty_text">Nothing to export</string>
     <string name="chucker_export_no_file">Failed to create file for export</string>
     <string name="chucker_share_as_text">Share as text</string>
     <string name="chucker_share_as_curl">Share as curl command</string>
     <string name="chucker_share_as_file">Share as file</string>
     <string name="chucker_share_as_har">Share as .har file</string>
-    <string name="chucker_save">Save body to file</string>
+    <string name="chucker_save_as_text">Save as text</string>
+    <string name="chucker_save_as_har">Save as .har file</string>
+    <string name="chucker_save_body">Save body to file</string>
+    <string name="chucker_save_empty_text">Nothing to save</string>
     <string name="chucker_save_failed_to_open_document">Failed to open file chooser</string>
     <string name="chucker_file_saved">File saved successfully!</string>
     <string name="chucker_file_not_saved">Failed to save file</string>
@@ -52,6 +56,8 @@
     <string name="chucker_export_text_selected_http_confirmation">Do you want to export selected network transactions as a text file?</string>
     <string name="chucker_export_har_selected_http_confirmation">Do you want to export selected network transactions as a .har file?</string>
     <string name="chucker_export_har_http_confirmation">Do you want to export all network transactions as a .har file?</string>
+    <string name="chucker_save_text_http_confirmation">Do you want to save all network transactions as a text file?</string>
+    <string name="chucker_save_har_http_confirmation">Do you want to save all network transactions as a .har file?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Export Start */</string>
     <string name="chucker_export_postfix">/*  Export End  */</string>

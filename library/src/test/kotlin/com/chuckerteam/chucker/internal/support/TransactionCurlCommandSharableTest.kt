@@ -54,6 +54,32 @@ internal class TransactionCurlCommandSharableTest {
     }
 
     @Test
+    fun `create cURL command with quote value in header`() {
+        val headers =
+            listOf(
+                HttpHeader("X-JSON-Object", "{\"name\": \"value\"}"),
+                HttpHeader("Etag", "W/\"0815\""),
+            )
+        val convertedHeaders = JsonConverter.instance.toJson(headers)
+
+        requestMethods.forEach { method ->
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestHeaders = convertedHeaders
+                }
+            val sharableTransaction = TransactionCurlCommandSharable(transaction)
+            val expectedCurlCommand =
+                """
+                curl -X $method -H "X-JSON-Object: {\"name\": \"value\"}" -H "Etag: W/\"0815\"" http://localhost/getUsers
+                """.trimIndent()
+
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
+
+            assertThat(sharedContent).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
     fun `create cURL command with request bodies for PUT and POST methods`() {
         requestMethods.filter { it in listOf("POST", "PUT") }.forEach { method ->
             val dummyRequestBody = "{thing:put}"
@@ -85,7 +111,8 @@ internal class TransactionCurlCommandSharableTest {
 
             val sharedContent = sharableTransaction.toSharableUtf8Content(context)
 
-            val expected = "curl -X $method -H \"Accept-Encoding: gzip\" --compressed http://localhost/getUsers"
+            val expected =
+                "curl -X $method -H \"Accept-Encoding: gzip\" --compressed http://localhost/getUsers"
 
             assertThat(sharedContent).isEqualTo(expected)
         }

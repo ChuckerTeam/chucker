@@ -173,16 +173,14 @@ internal class HttpTransaction(
     fun getParsedRequestHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             requestHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type,
+            TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             responseHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type,
+            TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
     }
 

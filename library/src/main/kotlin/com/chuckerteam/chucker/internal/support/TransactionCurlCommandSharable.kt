@@ -19,7 +19,8 @@ internal class TransactionCurlCommandSharable(
                 if (isCompressed(header)) {
                     compressed = true
                 }
-                writeUtf8(" -H \"${header.name}: ${header.value}\"")
+                val headerValue = escapeHeaderValue(header.value)
+                writeUtf8(" -H \"${header.name}: ${headerValue}\"")
             }
 
             val requestBody = transaction.requestBody
@@ -36,5 +37,10 @@ internal class TransactionCurlCommandSharable(
                 "gzip".contains(header.value, ignoreCase = true) ||
                 "br".contains(header.value, ignoreCase = true)
         )
+    }
+
+    private fun escapeHeaderValue(value: String): String {
+        // escape double quotes from header value to prevent getting an invalid curl
+        return value.replace("\"", "\\\"")
     }
 }
