@@ -193,46 +193,12 @@ internal class MainActivity :
             }
 
             R.id.share_text -> {
-                showDialog(
-                    getExportDialogData(
-                        if (viewModel.isItemSelected.value == true) {
-                            R.string.chucker_export_text_selected_http_confirmation
-                        } else {
-                            R.string.chucker_export_text_http_confirmation
-                        },
-                    ),
-                    onPositiveClick = {
-                        exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
-                            TransactionListDetailsSharable(transactions, encodeUrls = false)
-                        }
-                    },
-                    onNegativeClick = null,
-                )
+                showShareTextDialog()
                 true
             }
 
             R.id.share_har -> {
-                showDialog(
-                    getExportDialogData(
-                        if (viewModel.isItemSelected.value == true) {
-                            R.string.chucker_export_har_selected_http_confirmation
-                        } else {
-                            R.string.chucker_export_har_http_confirmation
-                        },
-                    ),
-                    onPositiveClick = {
-                        exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
-                            TransactionDetailsHarSharable(
-                                HarUtils.harStringFromTransactions(
-                                    transactions,
-                                    getString(R.string.chucker_name),
-                                    getString(R.string.chucker_version),
-                                ),
-                            )
-                        }
-                    },
-                    onNegativeClick = null,
-                )
+                showShareHarDialog()
                 true
             }
 
@@ -252,10 +218,53 @@ internal class MainActivity :
         }
     }
 
+    private fun showShareHarDialog() {
+        showDialog(
+            getExportDialogData(
+                if (viewModel.isItemSelected.value == true) {
+                    R.string.chucker_export_har_selected_http_confirmation
+                } else {
+                    R.string.chucker_export_har_http_confirmation
+                },
+            ),
+            onPositiveClick = {
+                exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
+                    TransactionDetailsHarSharable(
+                        HarUtils.harStringFromTransactions(
+                            transactions,
+                            getString(R.string.chucker_name),
+                            getString(R.string.chucker_version),
+                        ),
+                    )
+                }
+            },
+            onNegativeClick = null,
+        )
+    }
+
+    private fun showShareTextDialog() {
+        showDialog(
+            getExportDialogData(
+                if (viewModel.isItemSelected.value == true) {
+                    R.string.chucker_export_text_selected_http_confirmation
+                } else {
+                    R.string.chucker_export_text_http_confirmation
+                },
+            ),
+            onPositiveClick = {
+                exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
+                    TransactionListDetailsSharable(transactions, encodeUrls = false)
+                }
+            },
+            onNegativeClick = null,
+        )
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putIntArray("selectedItems", (transactionsAdapter.getSelectedItem().toIntArray()));
+        outState.putIntArray("selectedItems", (transactionsAdapter.getSelectedItem().toIntArray()))
         super.onSaveInstanceState(outState)
     }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val itemList = savedInstanceState.getIntArray("selectedItems")
