@@ -46,6 +46,7 @@ import okio.Source
 import okio.buffer
 import okio.source
 
+@Suppress("TooManyFunctions")
 internal class MainActivity :
     BaseChuckerActivity(),
     SearchView.OnQueryTextListener {
