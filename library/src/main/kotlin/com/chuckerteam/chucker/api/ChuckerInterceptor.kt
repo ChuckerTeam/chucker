@@ -11,6 +11,7 @@ import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
+import java.util.regex.PatternSyntaxException
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -56,6 +57,8 @@ public class ChuckerInterceptor private constructor(
         )
 
     private val skipPaths = builder.skipPaths.toSet()
+    private val skipPathsRegex = builder.skipPathsRegex.toSet()
+    private val skipDomainRegex = builder.skipDomainRegex.toSet()
 
     init {
         if (builder.createShortcut) {
@@ -72,7 +75,11 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
-        val shouldProcessTheRequest = !skipPaths.any { it == request.url.encodedPath }
+        val path = request.url.encodedPath
+        val shouldSkipPath = skipPaths.contains(path) || skipPathsRegex.any { it.matches(path) }
+        val shouldSkipDomain = skipDomainRegex.any { it.matches(request.url.host) }
+        val shouldProcessTheRequest = !(shouldSkipPath || shouldSkipDomain)
+
         if (shouldProcessTheRequest) {
             requestProcessor.process(request, transaction)
         }
@@ -105,7 +112,9 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
-        internal var skipPaths = mutableSetOf<String>()
+        internal val skipPaths = mutableSetOf<String>()
+        internal val skipPathsRegex = mutableSetOf<Regex>()
+        internal val skipDomainRegex = mutableSetOf<Regex>()
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -183,6 +192,10 @@ public class ChuckerInterceptor private constructor(
                 this.cacheDirectoryProvider = provider
             }
 
+        /**
+         * Sets a list of [String] to skip paths. When any of the [String] matches
+         * a request path, the request will be skipped.
+         */
         public fun skipPaths(vararg skipPaths: String): Builder =
             apply {
                 skipPaths.forEach { candidatePath ->
@@ -196,7 +209,59 @@ public class ChuckerInterceptor private constructor(
             }
 
         /**
-         * Creates a new [ChuckerInterceptor] instance with values defined in this builder.
+         * Sets a list of [Regex] to skip paths. When any of the [Regex] matches a
+         * request path, the request will be skipped. Include [RegexOption] where
+         * necessary.
+         *
+         * ```
+         * ".*(jpg|jpeg|png|gif|webp|svg|bmp|ico)$".toRegex(), // Ignore all image requests
+         *  ".*iGnOrE.*"toRegex(RegexOption.IGNORE_CASE), // Case insensitive
+         *  ".*path/to/skip.*".toRegex(),
+         *  ".*path/ends/with/dev$".toRegex(),
+         * ```
+         */
+        public fun skipPaths(skipPaths: Regex): Builder =
+            apply {
+                this.skipPathsRegex.add(skipPaths)
+            }
+
+        /**
+         * Sets a list of [String] to skip domains. Domain names are evaluated in
+         * lowercase format. When any of the [String] matches a request domain,
+         * the request will be skipped.
+         * ```
+         * example.com, subdomain.example.com, exam-ple.com, eXaMpLe.CoM, example.co.uk
+         * ```
+         * @throws PatternSyntaxException if the domain pattern is invalid.
+         */
+        @Throws(PatternSyntaxException::class)
+        public fun skipDomains(vararg skipDomains: String): Builder =
+            apply {
+                skipDomains.forEach { domain ->
+                    this.skipDomainRegex.add("^${domain}\$".toRegex(RegexOption.IGNORE_CASE))
+                }
+            }
+
+        /**
+         * Sets a list of [Regex] to skip domains. Domain names are evaluated in
+         * lowercase format. When any of the [Regex] matches a request domain,
+         * the request will be skipped. Include [RegexOption] where necessary.
+         *
+         * ```
+         *  ".*iGnOrE.*"toRegex(RegexOption.IGNORE_CASE),
+         *  "ignoresubdomain.*".toRegex(),
+         *  "domainname.*".toRegex(),
+         *  ".*.dev$".toRegex(),
+         * ```
+         */
+        public fun skipDomains(skipDomains: Regex): Builder =
+            apply {
+                this.skipDomainRegex.add(skipDomains)
+            }
+
+        /**
+         * Creates a new [ChuckerInterceptor] instance with values defined in this
+         * builder.
          */
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }
