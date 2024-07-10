@@ -31,6 +31,11 @@ fun createOkHttpClient(
             .maxContentLength(250_000L)
             .redactHeaders(emptySet())
             .skipPaths("anything")
+            // Filter Images
+//            .skipPaths(".*(jpg|jpeg|png|gif|webp|svg|bmp|ico)$".toRegex())
+            // Filter domains
+//            .skipDomains("httpbin.org", "postman-echo.com")
+//            .skipDomains(".*akamai.com".toRegex())
             .alwaysReadResponseBody(false)
             .addBodyDecoder(PokemonProtoBodyDecoder())
             .build()
