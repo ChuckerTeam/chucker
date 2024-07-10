@@ -11,7 +11,6 @@ import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import java.util.regex.PatternSyntaxException
 
 /**
  * An OkHttp Interceptor which persists and displays HTTP activity
@@ -58,6 +57,7 @@ public class ChuckerInterceptor private constructor(
 
     private val skipPaths = builder.skipPaths.toSet()
     private val skipPathsRegex = builder.skipPathsRegex.toSet()
+    private val skipDomains = builder.skipDomains.toSet()
     private val skipDomainRegex = builder.skipDomainRegex.toSet()
 
     init {
@@ -76,8 +76,11 @@ public class ChuckerInterceptor private constructor(
         val transaction = HttpTransaction()
         val request = chain.request()
         val path = request.url.encodedPath
+        val host = request.url.host
         val shouldSkipPath = skipPaths.contains(path) || skipPathsRegex.any { it.matches(path) }
-        val shouldSkipDomain = skipDomainRegex.any { it.matches(request.url.host) }
+        // Skip evaluation of domain if the path is already skipped
+        val shouldSkipDomain =
+            shouldSkipPath || skipDomains.contains(host) || skipDomainRegex.any { it.matches(host) }
         val shouldProcessTheRequest = !(shouldSkipPath || shouldSkipDomain)
 
         if (shouldProcessTheRequest) {
@@ -114,6 +117,7 @@ public class ChuckerInterceptor private constructor(
         internal var createShortcut = true
         internal val skipPaths = mutableSetOf<String>()
         internal val skipPathsRegex = mutableSetOf<Regex>()
+        internal val skipDomains = mutableSetOf<String>()
         internal val skipDomainRegex = mutableSetOf<Regex>()
 
         /**
@@ -227,19 +231,16 @@ public class ChuckerInterceptor private constructor(
 
         /**
          * Sets a list of [String] to skip domains. Domain names are evaluated in
-         * lowercase format. When any of the [String] matches a request domain,
-         * the request will be skipped.
+         * lowercase format. When any of the [String] matches a request domain, the
+         * request will be skipped.
+         *
          * ```
          * example.com, subdomain.example.com, exam-ple.com, eXaMpLe.CoM, example.co.uk
          * ```
-         * @throws PatternSyntaxException if the domain pattern is invalid.
          */
-        @Throws(PatternSyntaxException::class)
         public fun skipDomains(vararg skipDomains: String): Builder =
             apply {
-                skipDomains.forEach { domain ->
-                    this.skipDomainRegex.add("^${domain}\$".toRegex(RegexOption.IGNORE_CASE))
-                }
+                this@Builder.skipDomains.addAll(skipDomains.map { it.lowercase() })
             }
 
         /**
