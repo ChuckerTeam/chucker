@@ -94,6 +94,8 @@ internal class ChuckerInterceptorTest {
 
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -126,6 +128,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
 
         assertThat(transaction.responseBody).isNull()
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -163,6 +167,8 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).contains("\"brotli\": true")
         assertThat(transaction.responseBody).contains("\"Accept-Encoding\": \"br\"")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -198,6 +204,8 @@ internal class ChuckerInterceptorTest {
 
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -224,6 +232,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
 
         assertThat(transaction.responseBody).isNull()
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -263,6 +273,8 @@ internal class ChuckerInterceptorTest {
                 2 * SEGMENT_SIZE,
             ),
         )
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -309,6 +321,8 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody?.length).isEqualTo(1_000)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -385,6 +399,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isNull()
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -419,6 +435,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -455,6 +473,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo(providedJson)
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     private data class Expected(val string: String, val boolean: Boolean, val secondString: String)
@@ -498,6 +518,8 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.requestBody).isEqualTo("Hello, world!")
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest

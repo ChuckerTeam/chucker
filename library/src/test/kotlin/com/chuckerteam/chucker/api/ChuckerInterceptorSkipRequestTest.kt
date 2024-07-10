@@ -41,10 +41,12 @@ internal class ChuckerInterceptorSkipRequestTest {
         executeRequestForPath(client, "/", "Response from /")
         val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo("Response from /")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
 
         executeRequestForPath(client, "/skip/path", "Response from /skip/path")
         val secondTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
         assertThat(secondTransaction.responseBody).isEqualTo("Response from /skip/path")
+        chuckerInterceptorWithoutSkipping.expectNoTransactions()
     }
 
     @ParameterizedTest
