@@ -35,7 +35,7 @@ buildscript {
         // Testing
         androidxTestCoreVersion = '1.5.0'
         junitGradlePluignVersion = '1.10.0.0'
-        junitVersion = '5.10.2'
+        junitVersion = '5.10.3'
         junit4Version = '4.13.2'
         mockkVersion = '1.13.12'
         robolectricVersion = '4.13'
