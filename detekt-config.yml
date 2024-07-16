@@ -21,6 +21,7 @@ complexity:
     active: true
     ignoreDefaultParameters: true
   TooManyFunctions:
+    thresholdInClasses: 13
     active: true
     ignoreOverridden: true
 

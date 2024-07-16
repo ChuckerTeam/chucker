@@ -47,6 +47,12 @@ public class ChuckerInterceptor private constructor(
 
         public fun skipPaths(vararg paths: String): Builder = this
 
+        public fun skipPaths(paths: Regex): Builder = this
+
+        public fun skipDomains(vararg domains: String): Builder = this
+
+        public fun skipDomains(domains: Regex): Builder = this
+
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }
 }
