@@ -200,9 +200,9 @@ public class ChuckerInterceptor private constructor(
          * Sets a list of [String] to skip paths. When any of the [String] matches
          * a request path, the request will be skipped.
          */
-        public fun skipPaths(vararg skipPaths: String): Builder =
+        public fun skipPaths(vararg paths: String): Builder =
             apply {
-                skipPaths.forEach { candidatePath ->
+                paths.forEach { candidatePath ->
                     val httpUrl =
                         HttpUrl.Builder()
                             .scheme("https")
@@ -224,9 +224,9 @@ public class ChuckerInterceptor private constructor(
          *  ".*path/ends/with/dev$".toRegex(),
          * ```
          */
-        public fun skipPaths(skipPaths: Regex): Builder =
+        public fun skipPaths(paths: Regex): Builder =
             apply {
-                this.skipPathsRegex.add(skipPaths)
+                this.skipPathsRegex.add(paths)
             }
 
         /**
@@ -238,9 +238,9 @@ public class ChuckerInterceptor private constructor(
          * example.com, subdomain.example.com, exam-ple.com, eXaMpLe.CoM, example.co.uk
          * ```
          */
-        public fun skipDomains(vararg skipDomains: String): Builder =
+        public fun skipDomains(vararg domains: String): Builder =
             apply {
-                this@Builder.skipDomains.addAll(skipDomains.map { it.lowercase() })
+                this@Builder.skipDomains.addAll(domains.map { it.lowercase() })
             }
 
         /**
@@ -255,9 +255,9 @@ public class ChuckerInterceptor private constructor(
          *  ".*.dev$".toRegex(),
          * ```
          */
-        public fun skipDomains(skipDomains: Regex): Builder =
+        public fun skipDomains(domains: Regex): Builder =
             apply {
-                this.skipDomainRegex.add(skipDomains)
+                this.skipDomainRegex.add(domains)
             }
 
         /**
