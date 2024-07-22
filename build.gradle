@@ -33,7 +33,7 @@ buildscript {
         apolloVersion = '3.8.4'
 
         // Testing
-        androidxTestCoreVersion = '1.5.0'
+        androidxTestCoreVersion = '1.6.1'
         junitGradlePluignVersion = '1.10.0.0'
         junitVersion = '5.10.3'
         junit4Version = '4.13.2'
