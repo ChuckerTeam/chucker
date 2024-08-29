@@ -62,16 +62,18 @@ private val Headers.containsBrotli: Boolean
 private val supportedEncodings = listOf("identity", "gzip", "br")
 
 internal val Headers.hasSupportedContentEncoding: Boolean
-    get() = get("Content-Encoding")
-        ?.takeIf { it.isNotEmpty() }
-        ?.let { it.lowercase(Locale.ROOT) in supportedEncodings }
-        ?: true
+    get() =
+        get("Content-Encoding")
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { it.lowercase(Locale.ROOT) in supportedEncodings }
+            ?: true
 
-internal fun Source.uncompress(headers: Headers) = when {
-    headers.containsGzip -> gzip()
-    headers.containsBrotli -> BrotliInputStream(this.buffer().inputStream()).source()
-    else -> this
-}
+internal fun Source.uncompress(headers: Headers) =
+    when {
+        headers.containsGzip -> gzip()
+        headers.containsBrotli -> BrotliInputStream(this.buffer().inputStream()).source()
+        else -> this
+    }
 
 internal fun Headers.redact(names: Iterable<String>): Headers {
     val builder = newBuilder()

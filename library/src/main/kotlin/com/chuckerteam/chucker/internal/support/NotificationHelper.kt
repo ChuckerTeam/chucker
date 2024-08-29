@@ -16,7 +16,6 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import java.util.HashSet
 
 internal class NotificationHelper(val context: Context) {
-
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
 
@@ -43,17 +42,18 @@ internal class NotificationHelper(val context: Context) {
             context,
             TRANSACTION_NOTIFICATION_ID,
             Chucker.getLaunchIntent(context),
-            PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag()
+            PendingIntent.FLAG_UPDATE_CURRENT or immutableFlag(),
         )
     }
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val transactionsChannel = NotificationChannel(
-                TRANSACTIONS_CHANNEL_ID,
-                context.getString(R.string.chucker_network_notification_category),
-                NotificationManager.IMPORTANCE_LOW
-            )
+            val transactionsChannel =
+                NotificationChannel(
+                    TRANSACTIONS_CHANNEL_ID,
+                    context.getString(R.string.chucker_network_notification_category),
+                    NotificationManager.IMPORTANCE_LOW,
+                )
             notificationManager.createNotificationChannels(listOf(transactionsChannel))
         }
     }
@@ -122,16 +122,17 @@ internal class NotificationHelper(val context: Context) {
         val clearTitle = context.getString(R.string.chucker_clear)
         val clearTransactionsBroadcastIntent =
             Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
-        val pendingBroadcastIntent = PendingIntent.getBroadcast(
-            context,
-            INTENT_REQUEST_CODE,
-            clearTransactionsBroadcastIntent,
-            PendingIntent.FLAG_ONE_SHOT or immutableFlag()
-        )
+        val pendingBroadcastIntent =
+            PendingIntent.getBroadcast(
+                context,
+                INTENT_REQUEST_CODE,
+                clearTransactionsBroadcastIntent,
+                PendingIntent.FLAG_ONE_SHOT or immutableFlag(),
+            )
         return NotificationCompat.Action(
             R.drawable.chucker_ic_delete_white,
             clearTitle,
-            pendingBroadcastIntent
+            pendingBroadcastIntent,
         )
     }
 
@@ -139,9 +140,10 @@ internal class NotificationHelper(val context: Context) {
         notificationManager.cancel(TRANSACTION_NOTIFICATION_ID)
     }
 
-    private fun immutableFlag() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_IMMUTABLE
-    } else {
-        0
-    }
+    private fun immutableFlag() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE
+        } else {
+            0
+        }
 }

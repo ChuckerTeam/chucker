@@ -5,9 +5,16 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+* Fixed activity still asking for notification permission when notifications are disabled [#1165]
+* Fixed Gson issue, when using Chucker with ProGuard [#1183]
+* Fixed share of curl when header values contain quotes [#1211]
+
 ### Added
+* Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
+* Added `skipPaths(paths Regex)`, `skipDomains(domains Regex)` and  `skipDomains(domains... String)` to skip paths/domains from chucker [#1236]
 
 ### Fixed
+* Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]
 
 ### Removed
 

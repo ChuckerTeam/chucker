@@ -10,7 +10,6 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
  * Make sure you call [initialize] before accessing the stored instance.
  */
 internal object RepositoryProvider {
-
     private var transactionRepository: HttpTransactionRepository? = null
 
     fun transaction(): HttpTransactionRepository {

@@ -8,5 +8,5 @@ public enum class ExportFormat(public val extension: String) {
     LOG("txt"),
 
     /** HAR format with har extension */
-    HAR("har")
+    HAR("har"),
 }

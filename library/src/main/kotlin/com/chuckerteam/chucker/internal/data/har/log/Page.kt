@@ -10,5 +10,5 @@ internal data class Page(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,
     @SerializedName("pageTimings") val pageTimings: PageTimings,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 )

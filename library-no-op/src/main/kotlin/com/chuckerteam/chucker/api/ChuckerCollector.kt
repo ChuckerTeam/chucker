@@ -7,15 +7,17 @@ import android.net.Uri
  * No-op implementation.
  */
 @Suppress("UnusedPrivateMember", "UNUSED_PARAMETER")
-public class ChuckerCollector @JvmOverloads constructor(
-    context: Context,
-    public var showNotification: Boolean = true,
-    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
-) {
-    @Suppress("FunctionOnlyReturningConstant")
-    public fun writeTransactions(
+public class ChuckerCollector
+    @JvmOverloads
+    constructor(
         context: Context,
-        startTimestamp: Long?,
-        exportFormat: ExportFormat = ExportFormat.LOG
-    ): Uri? = null
-}
+        public var showNotification: Boolean = true,
+        retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK,
+    ) {
+        @Suppress("FunctionOnlyReturningConstant")
+        public fun writeTransactions(
+            context: Context,
+            startTimestamp: Long?,
+            exportFormat: ExportFormat = ExportFormat.LOG,
+        ): Uri? = null
+    }

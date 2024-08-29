@@ -60,9 +60,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "isResponseBodyEncoded") var isResponseBodyEncoded: Boolean = false,
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
-    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?
+    @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
 ) {
-
     @Ignore
     constructor() : this(
         requestDate = null,
@@ -90,21 +89,22 @@ internal class HttpTransaction(
         responseHeadersSize = null,
         responseBody = null,
         responseImageData = null,
-        graphQlOperationName = null
+        graphQlOperationName = null,
     )
 
     enum class Status {
         Requested,
         Complete,
-        Failed
+        Failed,
     }
 
     val status: Status
-        get() = when {
-            error != null -> Status.Failed
-            responseCode == null -> Status.Requested
-            else -> Status.Complete
-        }
+        get() =
+            when {
+                error != null -> Status.Failed
+                responseCode == null -> Status.Requested
+                else -> Status.Complete
+            }
 
     val requestDateString: String?
         get() = requestDate?.let { Date(it).toString() }
@@ -165,23 +165,22 @@ internal class HttpTransaction(
     }
 
     fun setGraphQlOperationName(headers: Headers) {
-        graphQlOperationName = toHttpHeaderList(headers)
-            .find { it.name.lowercase().contains("operation-name") }?.value
+        graphQlOperationName =
+            toHttpHeaderList(headers)
+                .find { it.name.lowercase().contains("operation-name") }?.value
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             requestHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
+            TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
     }
 
     fun getParsedResponseHeaders(): List<HttpHeader>? {
         return JsonConverter.instance.fromJson<List<HttpHeader>>(
             responseHeaders,
-            object : TypeToken<List<HttpHeader>>() {
-            }.type
+            TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
     }
 
@@ -209,7 +208,10 @@ internal class HttpTransaction(
         return httpHeaders
     }
 
-    private fun formatBody(body: String, contentType: String?): String {
+    private fun formatBody(
+        body: String,
+        contentType: String?,
+    ): String {
         return when {
             contentType.isNullOrBlank() -> body
             contentType.contains("json", ignoreCase = true) -> FormatUtils.formatJson(body)
@@ -228,7 +230,11 @@ internal class HttpTransaction(
      * This method just works with json content-type yet, and calls [formatBody]
      * for other content-type until parser function will be developed for other content-types.
      */
-    private fun spanBody(body: CharSequence, contentType: String?, context: Context?): CharSequence {
+    private fun spanBody(
+        body: CharSequence,
+        contentType: String?,
+        context: Context?,
+    ): CharSequence {
         return when {
             // TODO Implement Other Content Types
             contentType.isNullOrBlank() -> body

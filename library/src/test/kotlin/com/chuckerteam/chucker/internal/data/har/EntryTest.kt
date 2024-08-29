@@ -43,8 +43,8 @@ internal class EntryTest {
                 postData = PostData(mimeType = "application/json", params = null, text = null),
                 headersSize = 0,
                 bodySize = 1000,
-                totalSize = 1000
-            )
+                totalSize = 1000,
+            ),
         )
     }
 
@@ -59,18 +59,19 @@ internal class EntryTest {
                 httpVersion = "HTTP",
                 cookies = emptyList(),
                 headers = emptyList(),
-                content = Content(
-                    size = 1000,
-                    compression = null,
-                    mimeType = "application/json",
-                    text = """{"field": "value"}""",
-                    encoding = null
-                ),
+                content =
+                    Content(
+                        size = 1000,
+                        compression = null,
+                        mimeType = "application/json",
+                        text = """{"field": "value"}""",
+                        encoding = null,
+                    ),
                 redirectUrl = "",
                 headersSize = 0,
                 bodySize = 1000,
-                totalSize = 1000
-            )
+                totalSize = 1000,
+            ),
         )
     }
 

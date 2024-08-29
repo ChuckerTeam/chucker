@@ -16,7 +16,7 @@ internal fun SpannableStringBuilder.highlightWithDefinedColors(
     search: String,
     startIndices: List<Int>,
     backgroundColor: Int,
-    foregroundColor: Int
+    foregroundColor: Int,
 ): SpannableStringBuilder {
     return applyColoredSpannable(this, startIndices, search.length, backgroundColor, foregroundColor)
 }
@@ -31,7 +31,7 @@ internal fun SpannableStringBuilder.highlightWithDefinedColorsSubstring(
     search: String,
     startIndex: Int,
     backgroundColor: Int,
-    foregroundColor: Int
+    foregroundColor: Int,
 ): SpannableStringBuilder {
     return applyColoredSpannableSubstring(this, startIndex, search.length, backgroundColor, foregroundColor)
 }
@@ -41,26 +41,26 @@ private fun applyColoredSpannableSubstring(
     subStringStartPosition: Int,
     subStringLength: Int,
     backgroundColor: Int,
-    foregroundColor: Int
+    foregroundColor: Int,
 ): SpannableStringBuilder {
     return text.apply {
         setSpan(
             UnderlineSpan(),
             subStringStartPosition,
             subStringStartPosition + subStringLength,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
         setSpan(
             ForegroundColorSpan(foregroundColor),
             subStringStartPosition,
             subStringStartPosition + subStringLength,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
         setSpan(
             BackgroundColorSpan(backgroundColor),
             subStringStartPosition,
             subStringStartPosition + subStringLength,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
 }
@@ -70,7 +70,7 @@ private fun applyColoredSpannable(
     indexes: List<Int>,
     length: Int,
     backgroundColor: Int,
-    foregroundColor: Int
+    foregroundColor: Int,
 ): SpannableStringBuilder {
     return text.apply {
         indexes.forEach {

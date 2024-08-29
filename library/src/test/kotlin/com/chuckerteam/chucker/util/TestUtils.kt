@@ -46,7 +46,7 @@ internal fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
 }
 
 internal class LiveDataRecord<T> internal constructor(
-    private val observer: RecordingObserver<T>
+    private val observer: RecordingObserver<T>,
 ) {
     fun expectData(): T {
         if (observer.records.isEmpty()) {

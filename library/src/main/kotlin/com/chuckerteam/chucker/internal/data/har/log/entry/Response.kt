@@ -18,7 +18,7 @@ internal data class Response(
     @SerializedName("headersSize") val headersSize: Long,
     @SerializedName("bodySize") val bodySize: Long,
     @SerializedName("totalSize") val totalSize: Long,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
     constructor(transaction: HttpTransaction) : this(
         status = transaction.responseCode ?: 0,
@@ -28,6 +28,6 @@ internal data class Response(
         content = transaction.responsePayloadSize?.run { Content(transaction) } ?: EMPTY,
         headersSize = transaction.responseHeadersSize ?: 0,
         bodySize = transaction.getHarResponseBodySize(),
-        totalSize = transaction.getResponseTotalSize()
+        totalSize = transaction.getResponseTotalSize(),
     )
 }

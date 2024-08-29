@@ -38,7 +38,7 @@
     </item>
     <item
         android:icon="@drawable/chucker_ic_save_white"
-        android:title="@string/chucker_save"
+        android:title="@string/chucker_save_body"
         android:id="@+id/save_body"
         android:visible="false"
         app:showAsAction="ifRoom">

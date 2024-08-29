@@ -25,7 +25,6 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  * performances when loading big payloads.
  */
 internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
-
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
@@ -36,11 +35,17 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         notifyItemRangeInserted(0, items.size)
     }
 
-    override fun onBindViewHolder(holder: TransactionPayloadViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: TransactionPayloadViewHolder,
+        position: Int,
+    ) {
         holder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionPayloadViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): TransactionPayloadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADERS -> {
@@ -73,7 +78,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     internal fun highlightQueryWithColors(
         newText: String,
         backgroundColor: Int,
-        foregroundColor: Int
+        foregroundColor: Int,
     ): List<SearchItemBodyLine> {
         val listOfSearchItems = arrayListOf<SearchItemBodyLine>()
         items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
@@ -86,19 +91,20 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                         listOfSearchItems.add(
                             SearchItemBodyLine(
                                 indexBodyLine = index + 1,
-                                indexStartOfQuerySubString = it
-                            )
+                                indexStartOfQuerySubString = it,
+                            ),
                         )
                     }
 
                     // highlighting the occurrences
                     item.line.clearHighlightSpans()
-                    item.line = item.line.highlightWithDefinedColors(
-                        newText,
-                        listOfOccurrences,
-                        backgroundColor,
-                        foregroundColor
-                    )
+                    item.line =
+                        item.line.highlightWithDefinedColors(
+                            newText,
+                            listOfOccurrences,
+                            backgroundColor,
+                            foregroundColor,
+                        )
                     notifyItemChanged(index + 1)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
@@ -116,16 +122,17 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         queryStartPosition: Int,
         queryText: String,
         backgroundColor: Int,
-        foregroundColor: Int
+        foregroundColor: Int,
     ) {
         val item = items.getOrNull(position) as? TransactionPayloadItem.BodyLineItem
         if (item != null) {
-            item.line = item.line.highlightWithDefinedColorsSubstring(
-                queryText,
-                queryStartPosition,
-                backgroundColor,
-                foregroundColor
-            )
+            item.line =
+                item.line.highlightWithDefinedColorsSubstring(
+                    queryText,
+                    queryStartPosition,
+                    backgroundColor,
+                    foregroundColor,
+                )
             notifyItemChanged(position)
         }
     }
@@ -164,7 +171,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
 
     internal data class SearchItemBodyLine(
         val indexBodyLine: Int,
-        val indexStartOfQuerySubString: Int
+        val indexStartOfQuerySubString: Int,
     )
 }
 
@@ -172,7 +179,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(
-        private val headerBinding: ChuckerTransactionItemHeadersBinding
+        private val headerBinding: ChuckerTransactionItemHeadersBinding,
     ) : TransactionPayloadViewHolder(headerBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
@@ -182,7 +189,7 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class BodyLineViewHolder(
-        private val bodyBinding: ChuckerTransactionItemBodyLineBinding
+        private val bodyBinding: ChuckerTransactionItemBodyLineBinding,
     ) : TransactionPayloadViewHolder(bodyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
@@ -192,9 +199,8 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class ImageViewHolder(
-        private val imageBinding: ChuckerTransactionItemImageBinding
+        private val imageBinding: ChuckerTransactionItemImageBinding,
     ) : TransactionPayloadViewHolder(imageBinding.root) {
-
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.ImageItem) {
                 imageBinding.binaryData.setImageBitmap(item.image)
@@ -210,14 +216,14 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
                     itemView.context,
                     R.color.chucker_chessboard_even_square_light,
                     R.color.chucker_chessboard_odd_square_light,
-                    R.dimen.chucker_half_grid
+                    R.dimen.chucker_half_grid,
                 )
             } else {
                 ChessboardDrawable.createPattern(
                     itemView.context,
                     R.color.chucker_chessboard_even_square_dark,
                     R.color.chucker_chessboard_odd_square_dark,
-                    R.dimen.chucker_half_grid
+                    R.dimen.chucker_half_grid,
                 )
             }
         }
@@ -230,6 +236,8 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
+
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
+
     internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
 }

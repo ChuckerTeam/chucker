@@ -20,32 +20,41 @@ internal class ChuckerInterceptorDelegate(
     alwaysReadResponseBody: Boolean = false,
     cacheDirectoryProvider: CacheDirectoryProvider,
     decoders: List<BodyDecoder> = emptyList(),
-    skipPaths: List<String> = emptyList()
+    skipPaths: List<String> = emptyList(),
+    skipPathsRegex: List<Regex> = emptyList(),
+    skipDomains: List<String> = emptyList(),
+    skipDomainsRegex: List<Regex> = emptyList(),
 ) : Interceptor {
     private val idGenerator = AtomicLong()
     private val transactions = CopyOnWriteArrayList<HttpTransaction>()
 
-    private val mockContext = mockk<Context> {
-        every { getString(R.string.chucker_body_content_truncated) } returns "\n\n--- Content truncated ---"
-    }
-    private val mockCollector = mockk<ChuckerCollector> {
-        every { onRequestSent(any()) } returns Unit
-        every { onResponseReceived(any()) } answers {
-            val transaction = (args[0] as HttpTransaction)
-            transaction.id = idGenerator.getAndIncrement()
-            transactions.add(transaction)
+    private val mockContext =
+        mockk<Context> {
+            every { getString(R.string.chucker_body_content_truncated) } returns "\n\n--- Content truncated ---"
         }
-    }
+    private val mockCollector =
+        mockk<ChuckerCollector> {
+            every { onRequestSent(any()) } returns Unit
+            every { onResponseReceived(any()) } answers {
+                val transaction = (args[0] as HttpTransaction)
+                transaction.id = idGenerator.getAndIncrement()
+                transactions.add(transaction)
+            }
+        }
 
-    private val chucker = ChuckerInterceptor.Builder(context = mockContext)
-        .collector(mockCollector)
-        .maxContentLength(maxContentLength)
-        .redactHeaders(headersToRedact)
-        .alwaysReadResponseBody(alwaysReadResponseBody)
-        .cacheDirectorProvider(cacheDirectoryProvider)
-        .skipPaths(skipPaths = skipPaths.toTypedArray())
-        .apply { decoders.forEach(::addBodyDecoder) }
-        .build()
+    private val chucker =
+        ChuckerInterceptor.Builder(context = mockContext)
+            .collector(mockCollector)
+            .maxContentLength(maxContentLength)
+            .redactHeaders(headersToRedact)
+            .alwaysReadResponseBody(alwaysReadResponseBody)
+            .cacheDirectorProvider(cacheDirectoryProvider)
+            .skipPaths(paths = skipPaths.toTypedArray())
+            .skipDomains(domains = skipDomains.toTypedArray())
+            .apply { skipPathsRegex.forEach(::skipPaths) }
+            .apply { skipDomainsRegex.forEach(::skipDomains) }
+            .apply { decoders.forEach(::addBodyDecoder) }
+            .build()
 
     internal fun expectTransaction(): HttpTransaction {
         if (transactions.isEmpty()) {

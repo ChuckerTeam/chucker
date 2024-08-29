@@ -8,14 +8,14 @@ import okhttp3.HttpUrl
 internal data class QueryString(
     @SerializedName("name") val name: String,
     @SerializedName("value") val value: String,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
     companion object {
         fun fromUrl(url: HttpUrl): List<QueryString> {
             return List(url.querySize) { index ->
                 QueryString(
                     name = url.queryParameterName(index),
-                    value = url.queryParameterValue(index).orEmpty()
+                    value = url.queryParameterValue(index).orEmpty(),
                 )
             }
         }

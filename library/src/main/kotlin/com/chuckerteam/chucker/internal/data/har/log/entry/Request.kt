@@ -19,7 +19,7 @@ internal data class Request(
     @SerializedName("headersSize") val headersSize: Long,
     @SerializedName("bodySize") val bodySize: Long,
     @SerializedName("totalSize") val totalSize: Long,
-    @SerializedName("comment") val comment: String? = null
+    @SerializedName("comment") val comment: String? = null,
 ) {
     constructor(transaction: HttpTransaction) : this(
         method = transaction.method ?: "",
@@ -30,6 +30,6 @@ internal data class Request(
         postData = transaction.requestPayloadSize?.run { PostData(transaction) },
         headersSize = transaction.requestHeadersSize ?: 0,
         bodySize = transaction.requestPayloadSize ?: 0,
-        totalSize = transaction.getRequestTotalSize()
+        totalSize = transaction.getRequestTotalSize(),
     )
 }
