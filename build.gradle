@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlinVersion = '1.9.23'
-        androidGradleVersion = '8.3.2'
+        kotlinVersion = '2.0.20'
+        androidGradleVersion = '8.5.2'
         coroutineVersion = '1.8.1'
 
         // Google libraries
@@ -14,7 +14,7 @@ buildscript {
         lifecycleVersion = '2.8.3'
         androidXCoreVersion = '2.2.0'
         paletteKtxVersion = '1.0.0'
-        kspVersion = '1.9.23-1.0.20'
+        kspVersion = '2.0.20-1.0.24'
 
         // Networking
         brotliVersion = '0.1.2'
