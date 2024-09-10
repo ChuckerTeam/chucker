@@ -10,6 +10,7 @@ Please add your entries according to this format.
 * Fixed share of curl when header values contain quotes [#1211]
 * Kotlin to 2.0.20
 * AGP to 8.5.2
+* Fix Toolbar is not accessible on api level 35 [#1280]
 
 ### Added
 * Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
