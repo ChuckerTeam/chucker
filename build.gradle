@@ -106,8 +106,8 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 34
-    compileSdkVersion = 34
+    targetSdkVersion = 35
+    compileSdkVersion = 35
 }
 
 nexusStaging {
