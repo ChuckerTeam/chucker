@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import com.chuckerteam.chucker.internal.support.addNonBlankPathSegments
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -199,6 +200,7 @@ public class ChuckerInterceptor private constructor(
         /**
          * Sets a list of [String] to skip paths. When any of the [String] matches
          * a request path, the request will be skipped.
+         * NOTE: empty path segments like '/', '//' and so on are not supported and will be skipped
          */
         public fun skipPaths(vararg paths: String): Builder =
             apply {
@@ -207,7 +209,8 @@ public class ChuckerInterceptor private constructor(
                         HttpUrl.Builder()
                             .scheme("https")
                             .host("example.com")
-                            .addPathSegment(candidatePath).build()
+                            .addNonBlankPathSegments(candidatePath)
+                            .build()
                     this@Builder.skipPaths.add(httpUrl.encodedPath)
                 }
             }

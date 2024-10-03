@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.api
 
+import com.chuckerteam.chucker.internal.support.addNonBlankPathSegments
 import com.chuckerteam.chucker.util.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.util.ClientFactory
 import com.chuckerteam.chucker.util.NoLoggerRule
@@ -379,7 +380,11 @@ internal class ChuckerInterceptorSkipRequestTest {
         responseBody: String,
     ) {
         val httpUrl =
-            HttpUrl.Builder().scheme("https").host("testexample.com").addPathSegment(path).build()
+            HttpUrl.Builder()
+                .scheme("https")
+                .host("testexample.com")
+                .addNonBlankPathSegments(path)
+                .build()
 
         val request = Request.Builder().url(server.url(httpUrl.encodedPath)).build()
         server.enqueue(MockResponse().setBody(responseBody))
