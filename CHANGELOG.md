@@ -11,6 +11,7 @@ Please add your entries according to this format.
 * Kotlin to 2.0.20
 * AGP to 8.5.2
 * Fix Toolbar is not accessible on api level 35 [#1280]
+* Fixed the `skipPaths` method unexpectedly modified the passed arguments [#1237]
 
 ### Added
 * Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
