@@ -200,7 +200,9 @@ public class ChuckerInterceptor private constructor(
         /**
          * Sets a list of [String] to skip paths. When any of the [String] matches
          * a request path, the request will be skipped.
-         * NOTE: empty path segments like '/', '//' and so on are not supported and will be skipped
+         *
+         * **Note:** An empty path will be treated as the '/'.
+         * '//' will also be treated as the '/' path.
          */
         public fun skipPaths(vararg paths: String): Builder =
             apply {
