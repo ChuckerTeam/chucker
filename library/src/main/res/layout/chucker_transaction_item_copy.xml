@@ -1,0 +1,17 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="end">
+
+    <ImageButton
+        android:id="@+id/responseCopy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/chucker_doub_grid"
+        android:layout_marginVertical="@dimen/chucker_half_grid"
+        android:background="@color/chucker_color_on_primary"
+        android:contentDescription="@string/chucker_copy_response"
+        android:src="@drawable/chucker_ic_copy_white"/>
+</LinearLayout>
