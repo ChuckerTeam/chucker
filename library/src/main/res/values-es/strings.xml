@@ -69,4 +69,6 @@
     <string name="chucker_graphql_operation_is_empty"> &lt;No se puede descubrir en nombre de la operación GrahpQL&gt;</string>
     <string name="chucker_scroll_buttons_for_search">Botones para desplazarse en los resultados de la búsqueda</string>
     <string name="chucker_search_results_title">Resultados de la búsqueda:</string>
+    <string name="chucker_copy_response">Copiar Respuesta</string>
+    <string name="chucker_response_copied">Respuesta Copiadad</string>
 </resources>
