@@ -25,7 +25,8 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter(private val onCopyResp: () -> Unit) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter(private val onCopyResp: () -> Unit) :
+    RecyclerView.Adapter<TransactionPayloadViewHolder>() {
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
