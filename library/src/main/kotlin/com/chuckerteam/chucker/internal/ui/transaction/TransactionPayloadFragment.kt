@@ -4,6 +4,8 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -82,7 +84,7 @@ internal class TransactionPayloadFragment :
         }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter()
+    private val payloadAdapter = TransactionBodyAdapter(::copyResponse)
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -149,6 +151,22 @@ internal class TransactionPayloadFragment :
         payloadBinding.searchNavButtonUp.setOnClickListener {
             onSearchScrollerButtonClick(false)
         }
+    }
+
+    private fun copyResponse() {
+        val transaction = viewModel.transaction.value
+        if (transaction?.responseBody != null) {
+            copyToClipboard(transaction.responseBody.toString())
+        }
+    }
+
+    private fun copyToClipboard(response: String) {
+        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(getString(R.string.chucker_response), response)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(activity, getString(R.string.chucker_response_copied), Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun onSearchScrollerButtonClick(goNext: Boolean) {
@@ -407,7 +425,10 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
 
-                else ->
+                else -> {
+                    // adding copy item
+                    result.add(TransactionPayloadItem.CopyItem(getString(R.string.chucker_copy_response)))
+
                     bodyString.lines().forEach {
                         result.add(
                             TransactionPayloadItem.BodyLineItem(
@@ -419,6 +440,7 @@ internal class TransactionPayloadFragment :
                             ),
                         )
                     }
+                }
             }
             return@withContext result
         }
