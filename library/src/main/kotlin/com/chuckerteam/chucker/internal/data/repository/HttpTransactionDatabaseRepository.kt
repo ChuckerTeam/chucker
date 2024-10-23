@@ -38,6 +38,10 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         transactionDao.deleteAll()
     }
 
+    override suspend fun deleteSelectedTransactions(selectedTransactions: List<Long>) {
+        transactionDao.deleteSelected(selectedTransactions)
+    }
+
     override suspend fun insertTransaction(transaction: HttpTransaction) {
         val id = transactionDao.insert(transaction)
         transaction.id = id ?: 0
@@ -56,5 +60,9 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     override fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction> {
         val timestamp = minTimestamp ?: 0L
         return transactionDao.getTransactionsInTimeRange(timestamp)
+    }
+
+    override suspend fun getSelectedTransactions(selectedTransactions: List<Long>): List<HttpTransaction> {
+        return transactionDao.getSelectedTransactions(selectedTransactions)
     }
 }
