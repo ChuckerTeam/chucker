@@ -155,17 +155,40 @@ internal class TransactionPayloadFragment :
 
     private fun copyResponse() {
         val transaction = viewModel.transaction.value
-        if (transaction?.responseBody != null) {
-            copyToClipboard(transaction.responseBody.toString())
+
+        when (payloadType.name) {
+            PayloadType.REQUEST.name -> {
+                transaction?.requestBody?.let { request ->
+                    copyToClipboard(
+                        request,
+                        getString(R.string.chucker_request),
+                        getString(R.string.chucker_request_copied),
+                    )
+                }
+            }
+
+            PayloadType.RESPONSE.name -> {
+                transaction?.responseBody?.let { response ->
+                    copyToClipboard(
+                        response,
+                        getString(R.string.chucker_response),
+                        getString(R.string.chucker_response_copied),
+                    )
+                }
+            }
         }
     }
 
-    private fun copyToClipboard(response: String) {
+    private fun copyToClipboard(
+        payload: String,
+        payloadType: String,
+        payloadTypeCopied: String,
+    ) {
         val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(getString(R.string.chucker_response), response)
+        val clip = ClipData.newPlainText(payloadType, payload)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(activity, getString(R.string.chucker_response_copied), Toast.LENGTH_LONG)
+        Toast.makeText(activity, payloadTypeCopied, Toast.LENGTH_LONG)
             .show()
     }
 

@@ -71,4 +71,5 @@
     <string name="chucker_search_results_title">Resultados de la búsqueda:</string>
     <string name="chucker_copy_response">Copiar Respuesta</string>
     <string name="chucker_response_copied">Respuesta Copiadad</string>
+    <string name="chucker_request_copied">Solicitud Copiadad</string>
 </resources>
