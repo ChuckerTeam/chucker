@@ -13,5 +13,5 @@
         android:layout_marginVertical="@dimen/chucker_half_grid"
         android:background="@color/chucker_color_on_primary"
         android:contentDescription="@string/chucker_copy_response"
-        android:src="@drawable/chucker_ic_copy_white"/>
+        android:src="@drawable/chucker_ic_copy"/>
 </LinearLayout>
