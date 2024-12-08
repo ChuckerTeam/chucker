@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/chucker_doub_grid"
         android:layout_marginVertical="@dimen/chucker_half_grid"
-        android:background="@color/chucker_color_on_primary"
+        android:background="@android:color/transparent"
         android:contentDescription="@string/chucker_copy_response"
         android:src="@drawable/chucker_ic_copy"/>
 </LinearLayout>

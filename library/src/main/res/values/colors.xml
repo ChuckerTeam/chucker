@@ -33,5 +33,6 @@
     <color name="chucker_json_elements_color">#474747</color>
     <color name="chucker_json_boolean_color">#2F99AA</color>
 
+    <color name="chucker_copy_icon_color">#80474747</color>
 
 </resources>
