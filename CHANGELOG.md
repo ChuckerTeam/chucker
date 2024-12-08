@@ -5,6 +5,16 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Added
+
+### Fixed
+
+### Changed
+
+### Deleted
+
+### Dependency Updates
+
 ## Version 4.1.0 _(2024-12-08)_
 
 ### Added
