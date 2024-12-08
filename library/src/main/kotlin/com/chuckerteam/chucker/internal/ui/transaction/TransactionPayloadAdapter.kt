@@ -200,13 +200,13 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
     internal class CopyViewHolder(
         private val copyBinding: ChuckerTransactionItemCopyBinding,
-        private val onCopyResp: () -> Unit,
+        private val onCopyBodyListener: () -> Unit,
     ) : TransactionPayloadViewHolder(copyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.CopyItem) {
                 copyBinding.responseCopy.visibility = View.VISIBLE
                 copyBinding.responseCopy.setOnClickListener {
-                    onCopyResp.invoke()
+                    onCopyBodyListener.invoke()
                 }
             }
         }
