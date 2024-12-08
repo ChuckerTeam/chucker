@@ -11,6 +11,7 @@ import androidx.core.text.getSpans
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
+import com.chuckerteam.chucker.databinding.ChuckerTransactionItemCopyBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
 import com.chuckerteam.chucker.internal.support.ChessboardDrawable
@@ -24,7 +25,8 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit) :
+    RecyclerView.Adapter<TransactionPayloadViewHolder>() {
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
@@ -58,6 +60,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
 
+            TYPE_COPY -> {
+                val copyItemBinding =
+                    ChuckerTransactionItemCopyBinding.inflate(inflater, parent, false)
+                TransactionPayloadViewHolder.CopyViewHolder(copyItemBinding, onCopyBodyListener)
+            }
+
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
@@ -72,6 +80,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
+            is TransactionPayloadItem.CopyItem -> TYPE_COPY
         }
     }
 
@@ -152,6 +161,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2
         private const val TYPE_IMAGE = 3
+        private const val TYPE_COPY = 4
     }
 
     /**
@@ -184,6 +194,20 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
                 headerBinding.responseHeaders.text = item.headers
+            }
+        }
+    }
+
+    internal class CopyViewHolder(
+        private val copyBinding: ChuckerTransactionItemCopyBinding,
+        private val onCopyBodyListener: () -> Unit,
+    ) : TransactionPayloadViewHolder(copyBinding.root) {
+        override fun bind(item: TransactionPayloadItem) {
+            if (item is TransactionPayloadItem.CopyItem) {
+                copyBinding.responseCopy.visibility = View.VISIBLE
+                copyBinding.responseCopy.setOnClickListener {
+                    onCopyBodyListener.invoke()
+                }
             }
         }
     }
@@ -236,6 +260,8 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 
 internal sealed class TransactionPayloadItem {
     internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
+
+    internal class CopyItem(val copy: String) : TransactionPayloadItem()
 
     internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
 

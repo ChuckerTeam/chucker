@@ -28,4 +28,5 @@
     <color name="chucker_json_elements_color">#777777</color>
     <color name="chucker_json_boolean_color">#9FA162</color>
 
+    <color name="chucker_copy_icon_color">#CCFFFFFF</color>
 </resources>
