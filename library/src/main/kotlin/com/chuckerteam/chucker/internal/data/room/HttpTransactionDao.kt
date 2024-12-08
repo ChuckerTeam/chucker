@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 
+@Suppress("TooManyFunctions")
 @Dao
 internal interface HttpTransactionDao {
     @Query(
@@ -39,6 +40,9 @@ internal interface HttpTransactionDao {
     @Query("DELETE FROM transactions")
     suspend fun deleteAll(): Int
 
+    @Query("DELETE FROM transactions WHERE id IN (:selectedTransactions)")
+    suspend fun deleteSelected(selectedTransactions: List<Long>)
+
     @Query("SELECT * FROM transactions WHERE id = :id")
     fun getById(id: Long): LiveData<HttpTransaction?>
 
@@ -47,6 +51,9 @@ internal interface HttpTransactionDao {
 
     @Query("SELECT * FROM transactions")
     suspend fun getAll(): List<HttpTransaction>
+
+    @Query("SELECT * FROM transactions WHERE id IN (:selectedTransactions)")
+    suspend fun getSelectedTransactions(selectedTransactions: List<Long>): List<HttpTransaction>
 
     @Query("SELECT * FROM transactions WHERE requestDate >= :timestamp")
     fun getTransactionsInTimeRange(timestamp: Long): List<HttpTransaction>
