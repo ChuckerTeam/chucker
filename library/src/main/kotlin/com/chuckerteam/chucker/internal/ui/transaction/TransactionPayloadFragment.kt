@@ -182,13 +182,13 @@ internal class TransactionPayloadFragment :
     private fun copyToClipboard(
         payload: String,
         payloadType: String,
-        payloadTypeCopied: String,
+        toastSuccessMessage: String,
     ) {
         val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(payloadType, payload)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(activity, payloadTypeCopied, Toast.LENGTH_LONG)
+        Toast.makeText(activity, toastSuccessMessage, Toast.LENGTH_LONG)
             .show()
     }
 
