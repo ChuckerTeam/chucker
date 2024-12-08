@@ -5,117 +5,127 @@ Please add your entries according to this format.
 
 ## Unreleased
 
-* Fixed activity still asking for notification permission when notifications are disabled [#1165]
-* Fixed Gson issue, when using Chucker with ProGuard [#1183]
-* Fixed share of curl when header values contain quotes [#1211]
-* Kotlin to 2.0.20
-* AGP to 8.5.2
-* Fix Toolbar is not accessible on api level 35 [#1280]
-* Fixed the `skipPaths` method unexpectedly modified the passed arguments [#1237]
+## Version 4.1.0 _(2024-12-08)_
 
 ### Added
-* Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
-* Added `skipPaths(paths Regex)`, `skipDomains(domains Regex)` and  `skipDomains(domains... String)` to skip paths/domains from chucker [#1236]
 
-### Fixed
-* Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]
-
-### Removed
-
-### Changed
-
-## Version 4.0.0 *(2023-06-29)*
-
-### Added
-* Add `skipPaths` to selectively skip requests from Chucker [#970]
-* Add syntax highlighting to the request/response body when is JSON [#930]
-* Decoding of request and response bodies can now be customized. In order to do this a `BinaryDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
-* Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder` [#588]
-* Brotli compression support [#563]
-* Added `writeTransactions` method to `ChuckerCollector` to export transactions to a file programmatically [#784]
-* Added ability to save single transaction as `.har` file. [#696]
-* Added ability to export list of transactions as `.har` file. [#880]
-* Added support for Android 13 and notifications permission handling [#887]
-* GraphQL
-  * Add support for GraphQL [#805] [#884]
-  * Show GraphQL OperationName header to transaction title [#69], [#116]
-  * Allows to filter transactions based on graphqlOperationName [#920]
-* Added scroll to highlighted text search in response screen [#988]
+-   Added _copy_ icon to copy the request/response body on clipboard [#1300]
+-   Added _save as text_ and _save as .har file_ options to save all transactions [#1214]
+-   Added `skipPaths(paths Regex)`, `skipDomains(domains Regex)` and `skipDomains(domains... String)` to skip paths/domains from chucker [#1242]
+-   Added spanish translations [#1281]
 
 ### Fixed
 
-* Fixed a bug showing empty bodies as `encoded or binary` [#569] [#562]
-* Fixed DiskReadViolation on ChuckerCollector [#975]
-* Fixed request headers not being redacted in case of failures [#545].
-* Fixed wrongful processing of one shot and duplex requests [#544].
-* Fixed writing to database on the main thread [#487].
-* Fixed RTL issue in payload view [#733]
-* Fixed StrictMode ThreadPolicy violations [#737]
-* Fixed Memory Leak with Toasts: Use applicationContext instead of Activity [#810]
-* Improved error message when trying to save empty bodies [#1038]
+-   Fix Toolbar is not accessible on API level 35 [#1280]
+-   Fix edge-to-edge layout on API level 35 [#1282]
+-   Fixed activity still asking for notification permission when notifications are disabled [#1165]
+-   Fixed Gson issue, when using Chucker with ProGuard [#1183]
+-   Fixed share of `curl` when header values contain quotes [#1211]
+-   Fix Toolbar subtitle getting truncated on some devices [#1218]
+-   Fixed the `skipPaths` method unexpectedly modified the passed arguments [#1237]
+-   Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]
+-   Fixed bug with scroll to search and navigation bar visibility Fix [#1076]
+
+### Depedency Updates
+
+-   Kotlin to 2.0.21
+-   AGP to 8.7.2
+-   ConstraintLayout to 2.2.0
+-   Compile SDK to 35
+
+## Version 4.0.0 _(2023-06-29)_
+
+### Added
+
+-   Add `skipPaths` to selectively skip requests from Chucker [#970]
+-   Add syntax highlighting to the request/response body when is JSON [#930]
+-   Decoding of request and response bodies can now be customized. In order to do this a `BinaryDecoder` interface needs to be implemented and installed in the `ChuckerInterceptor` via `ChuckerInterceptor.addBinaryDecoder(decoder)` method. Decoded bodies are then displayed in the Chucker UI. [#555]
+-   Create dynamic shortcut when `ChuckerInterceptor` added. Users can opt out of this feature using `createShortcut(false)` in `ChuckerInterceptor.Builder` [#588]
+-   Brotli compression support [#563]
+-   Added `writeTransactions` method to `ChuckerCollector` to export transactions to a file programmatically [#784]
+-   Added ability to save single transaction as `.har` file. [#696]
+-   Added ability to export list of transactions as `.har` file. [#880]
+-   Added support for Android 13 and notifications permission handling [#887]
+-   GraphQL
+    -   Add support for GraphQL [#805] [#884]
+    -   Show GraphQL OperationName header to transaction title [#69], [#116]
+    -   Allows to filter transactions based on graphqlOperationName [#920]
+-   Added scroll to highlighted text search in response screen [#988]
+
+### Fixed
+
+-   Fixed a bug showing empty bodies as `encoded or binary` [#569] [#562]
+-   Fixed DiskReadViolation on ChuckerCollector [#975]
+-   Fixed request headers not being redacted in case of failures [#545].
+-   Fixed wrongful processing of one shot and duplex requests [#544].
+-   Fixed writing to database on the main thread [#487].
+-   Fixed RTL issue in payload view [#733]
+-   Fixed StrictMode ThreadPolicy violations [#737]
+-   Fixed Memory Leak with Toasts: Use applicationContext instead of Activity [#810]
+-   Improved error message when trying to save empty bodies [#1038]
 
 ### Removed
 
-* Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
-* Removed the Throwable reporting feature as well as all the @Deprecated related methods.
+-   Removed parametrized `ChuckerInterceptor` constructor in favour of builder pattern. Constructor that accepts only `Context` is still available.
+-   Removed the Throwable reporting feature as well as all the @Deprecated related methods.
 
 ### Changed
 
-* Updated OkHttp to 4.11.0
-* Updated Material to 1.8.0
-* Updated AGP to 8.0.2
-* Updated Kotlin to 1.8.22
+-   Updated OkHttp to 4.11.0
+-   Updated Material to 1.8.0
+-   Updated AGP to 8.0.2
+-   Updated Kotlin to 1.8.22
 
-## Version 3.5.2 *(2021-07-28)*
+## Version 3.5.2 _(2021-07-28)_
 
 This release is a re-deployment of 3.5.1, since 3.5.1 `aar` didn't upload properly on Maven Central.
 
-## Version 3.5.1 *(2021-07-19)*
+## Version 3.5.1 _(2021-07-19)_
 
 Note: this release wasn't properly uploaded to Maven Central, so update to a newer verion is required.
 
 ### Fixed
 
-* Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
+-   Fix crash on Android 12 due to missing immutability flags in deprecated error reporting feature [#653].
 
-## Version 3.5.0 *(2021-06-29)*
+## Version 3.5.0 _(2021-06-29)_
 
 Note: this release has issue with Android 12 support, so update to 3.5.2 is highly recommended.
 
 ### Added
 
-* Android 12 support.
+-   Android 12 support.
 
 ### Fixed
 
-* Fix crash on Android 12 due to missing immutability flags [#593].
-* Fix not setting request body type correctly [#538].
+-   Fix crash on Android 12 due to missing immutability flags [#593].
+-   Fix not setting request body type correctly [#538].
 
-## Version 3.4.0 *(2020-11-05)*
+## Version 3.4.0 _(2020-11-05)_
 
 ### Added
 
-* `ChuckerInterceptor.Builder` for fluent creation of the interceptor. It will also help us with preserving binary compatibility in future releases of `4.x`. [#462]
+-   `ChuckerInterceptor.Builder` for fluent creation of the interceptor. It will also help us with preserving binary compatibility in future releases of `4.x`. [#462]
 
 ### Changed
 
-* Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
+-   Bumped `targetSDK` and `compileSDK` to 30 (Android 11).
 
 ### Removed
 
-* `kotlin-android-extensions` plugin for better compatibility with Kotlin 1.4.20.
+-   `kotlin-android-extensions` plugin for better compatibility with Kotlin 1.4.20.
 
 ### Fixed
 
-* Fixed memory leak in MainActivity [#465].
-* Fixed `GzipSource is not closed` error reported by StrictMode [#472].
-* Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
+-   Fixed memory leak in MainActivity [#465].
+-   Fixed `GzipSource is not closed` error reported by StrictMode [#472].
+-   Fixed build failure for projects with new `kotlin-parcelize` plugin [#480].
 
 ### Deprecated
 
-* `ChuckerInterceptor` constructor is now deprecated. Unless `Context` is the only parameter that you pass into the constructor you should migrate to builder.
+-   `ChuckerInterceptor` constructor is now deprecated. Unless `Context` is the only parameter that you pass into the constructor you should migrate to builder.
 
-## Version 3.3.0 *(2020-09-30)*
+## Version 3.3.0 _(2020-09-30)_
 
 This is a new minor release with multiple fixes and improvements.
 After this release we are starting to work on a new major release 4.x with minSDK 21.
@@ -124,44 +134,44 @@ Versions 3.x will be supported for 6 months (till March 2021) getting bugfixes a
 
 ### Summary of changes
 
-* Added a new flag `alwaysReadResponseBody` into Chucker configuration to read the whole response body even if consumer fails to consume it.
-* Added port numbers as part of the URL. Numbers appear if they are different from default 80 or 443.
-* Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI.
-* Transaction size is defined by actual payload size now, not by `Content-length` header.
-* Added empty state UI for payloads, so no more guessing if there is some error or the payload is really empty.
-* Added ability to export list of transactions.
-* Added ability to save single transaction as file.
-* Added ability to format URL encoded forms with button to switch between encoded/decoded URLs.
-* Added generation of contrast background for image payload to distinguish Chucker UI from the image itself.
-* Switched OkHttp dependency from `implementation` to `api`, since it is available in the public API.
-* List items are now focusable on Android TV devices.
-* Further improved test coverage.
+-   Added a new flag `alwaysReadResponseBody` into Chucker configuration to read the whole response body even if consumer fails to consume it.
+-   Added port numbers as part of the URL. Numbers appear if they are different from default 80 or 443.
+-   Chucker now shows partially read application responses properly. Earlier in 3.2.0 such responses didn't appear in the UI.
+-   Transaction size is defined by actual payload size now, not by `Content-length` header.
+-   Added empty state UI for payloads, so no more guessing if there is some error or the payload is really empty.
+-   Added ability to export list of transactions.
+-   Added ability to save single transaction as file.
+-   Added ability to format URL encoded forms with button to switch between encoded/decoded URLs.
+-   Added generation of contrast background for image payload to distinguish Chucker UI from the image itself.
+-   Switched OkHttp dependency from `implementation` to `api`, since it is available in the public API.
+-   List items are now focusable on Android TV devices.
+-   Further improved test coverage.
 
 ### Deprecations
 
-* Throwables capturing feature is officially deprecated and will be removed in next releases. More info in [#321].
+-   Throwables capturing feature is officially deprecated and will be removed in next releases. More info in [#321].
 
 ### Bugfixes
 
-* Fixed [#311] with leaking Closable resource.
-* Fixed [#314] with overlapping UI on some device.
-* Fixed [#367] with empty shared text when `Don't keep activities` is turned on.
-* Fixed [#366] with crash when process dies.
-* Fixed [#394] with failing requests when FileNotFound error happens.
-* Fixed [#410] with conflicts when other apps already use generic FileProvider.
-* Fixed [#422] with IOException.
+-   Fixed [#311] with leaking Closable resource.
+-   Fixed [#314] with overlapping UI on some device.
+-   Fixed [#367] with empty shared text when `Don't keep activities` is turned on.
+-   Fixed [#366] with crash when process dies.
+-   Fixed [#394] with failing requests when FileNotFound error happens.
+-   Fixed [#410] with conflicts when other apps already use generic FileProvider.
+-   Fixed [#422] with IOException.
 
 ### Dependency updates
 
-* Added Fragment-ktx 1.2.5
-* Added Palette-ktx 1.0.0
-* Updated Kotlin to 1.4.10
-* Updated Android Gradle plugin to 4.0.1
-* Updated Coroutine to 1.3.9
-* Updated AppCompat to 1.2.0
-* Updated ConstraintLayout to 2.0.1
-* Updated MaterialComponents to 1.2.1
-* Updated Gradle to 6.6.1
+-   Added Fragment-ktx 1.2.5
+-   Added Palette-ktx 1.0.0
+-   Updated Kotlin to 1.4.10
+-   Updated Android Gradle plugin to 4.0.1
+-   Updated Coroutine to 1.3.9
+-   Updated AppCompat to 1.2.0
+-   Updated ConstraintLayout to 2.0.1
+-   Updated MaterialComponents to 1.2.1
+-   Updated Gradle to 6.6.1
 
 ### Credits
 
@@ -176,45 +186,45 @@ This release was possible thanks to the contribution of:
 @vbuberen
 @psh
 
-## Version 3.2.0 *(2020-04-04)*
+## Version 3.2.0 _(2020-04-04)_
 
 This is a new minor release with numerous internal changes.
 
 ### Summary of changes
 
-* Chucker won't load the whole response into memory anymore, but will mutlicast it with the help of temporary files. It allows to avoid issues with OOM, like in reported in [#218].
-This change also allows to avoid problems with Chucker consuming responses, like reported in [#242].
-* Added a red open padlock icon to clearly indicate HTTP requests in transactions list.
-* Added TLS info (version and cipher suite) into `Overview` tab.
-* Added ability to encode/decode URLs.
-* Added RTL support.
-* Switched from AsyncTasks to Kotlin coroutines.
-* Switched to [ViewBinding](https://developer.android.com/topic/libraries/view-binding).
-* Bumped targetSDK to 29.
-* Greatly increased test coverage (we will add exact numbers and reports pretty soon).
+-   Chucker won't load the whole response into memory anymore, but will mutlicast it with the help of temporary files. It allows to avoid issues with OOM, like in reported in [#218].
+    This change also allows to avoid problems with Chucker consuming responses, like reported in [#242].
+-   Added a red open padlock icon to clearly indicate HTTP requests in transactions list.
+-   Added TLS info (version and cipher suite) into `Overview` tab.
+-   Added ability to encode/decode URLs.
+-   Added RTL support.
+-   Switched from AsyncTasks to Kotlin coroutines.
+-   Switched to [ViewBinding](https://developer.android.com/topic/libraries/view-binding).
+-   Bumped targetSDK to 29.
+-   Greatly increased test coverage (we will add exact numbers and reports pretty soon).
 
 ### Bugfixes
 
-* Fix for [#218] with OOM exceptions on big responses.
-* Fix for [#242] with Chucker throwing exceptions when used as `networkInterceptor()`.
-* Fix for [#240] with HttpHeader serialisation exceptions when obfuscation is used.
-* Fix for [#254] with response body search being case-sensitive.
-* Fix for [#255] with missing search icon on Response tab.
-* Fix for [#241] with overlapping texts.
+-   Fix for [#218] with OOM exceptions on big responses.
+-   Fix for [#242] with Chucker throwing exceptions when used as `networkInterceptor()`.
+-   Fix for [#240] with HttpHeader serialisation exceptions when obfuscation is used.
+-   Fix for [#254] with response body search being case-sensitive.
+-   Fix for [#255] with missing search icon on Response tab.
+-   Fix for [#241] with overlapping texts.
 
 ### Dependency updates
 
-* Added kotlinx-coroutines-core 1.3.5
-* Added kotlinx-coroutines-android 1.3.5
-* Updated Kotlin to 1.3.71
-* Updated Android Gradle plugin to 3.6.1
-* Updated Room to 2.2.5
-* Updated OkHttp to 3.12.10
-* Updated Detekt to 1.7.3
-* Updated Dokka to 0.10.1
-* Updated KtLint plugin to 9.2.1
-* Updated MaterialComponents to 1.1.0
-* Updated Gradle to 6.3
+-   Added kotlinx-coroutines-core 1.3.5
+-   Added kotlinx-coroutines-android 1.3.5
+-   Updated Kotlin to 1.3.71
+-   Updated Android Gradle plugin to 3.6.1
+-   Updated Room to 2.2.5
+-   Updated OkHttp to 3.12.10
+-   Updated Detekt to 1.7.3
+-   Updated Dokka to 0.10.1
+-   Updated KtLint plugin to 9.2.1
+-   Updated MaterialComponents to 1.1.0
+-   Updated Gradle to 6.3
 
 ### Credits
 
@@ -228,21 +238,22 @@ This release was possible thanks to the contribution of:
 @technoir42
 @vbuberen
 
-## Version 3.1.2 *(2020-02-09)*
+## Version 3.1.2 _(2020-02-09)_
 
 This is hot-fix release to fix multiple issues introduced in `3.1.0`.
 
 ### Summary of Changes
-* All Chucker screens now have their own `ViewModel`. Due to this change user can now open the transaction in progress and the content will appear as soon as transaction finishes. No need for reopening transaction anymore.
+
+-   All Chucker screens now have their own `ViewModel`. Due to this change user can now open the transaction in progress and the content will appear as soon as transaction finishes. No need for reopening transaction anymore.
 
 ### Bugfixes
 
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/225) introduced in 3.1.0 where image downloading fails if OkHttp was used for image loading in libraries like Glide, Picasso or Coil.
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/214) with invalid CURL command generation.
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/217) with crashes if ProGuard/R8 minification is applied to Chucker.
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/221) with crash when user taps Save in a transaction, which is still in progress.
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/222) with crash when user taps Clear from notification shade while the original app is already dead.
-* Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/223) with possible NPEs.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/225) introduced in 3.1.0 where image downloading fails if OkHttp was used for image loading in libraries like Glide, Picasso or Coil.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/214) with invalid CURL command generation.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/217) with crashes if ProGuard/R8 minification is applied to Chucker.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/221) with crash when user taps Save in a transaction, which is still in progress.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/222) with crash when user taps Clear from notification shade while the original app is already dead.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/pull/223) with possible NPEs.
 
 ### Credits
 
@@ -251,13 +262,13 @@ This release was possible thanks to the contribution of:
 @MiSikora
 @vbuberen
 
-## Version 3.1.1 *(2020-01-25)*
+## Version 3.1.1 _(2020-01-25)_
 
 This is hot-fix release to fix issue introduced in `3.1.0`.
 
 ### Summary of Changes
 
-- Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/203) introduced in 3.1.0 where some of response bodies were shown as `null` and their sizes were 0 bytes.
+-   Fixed an [issue](https://github.com/ChuckerTeam/chucker/issues/203) introduced in 3.1.0 where some of response bodies were shown as `null` and their sizes were 0 bytes.
 
 ### Credits
 
@@ -265,7 +276,7 @@ This release was possible thanks to the contribution of:
 
 @cortinico
 
-## Version 3.1.0 *(2020-01-24)*
+## Version 3.1.0 _(2020-01-24)_
 
 ### This version shouldn't be used as dependency due to [#203](https://github.com/ChuckerTeam/chucker/issues/203). Use 3.1.1 instead.
 
@@ -273,33 +284,33 @@ This is a new minor release of Chucker. Please note that this minor release cont
 
 ### Summary of Changes
 
-* The library is now fully converted to Kotlin and migrated to AndroidX!
-* The whole UI has been revamped to support Dark Theme which follows your device theme.
-* The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
-* HTTP Response/Request Body can now be saved in file.
-* Notifications for Throwable and HTTP Traffic are now going into separate channels.
-* A lot of classes inside the `.internal` package have restricted visibility (from public to internal). Also, resources like strings, dimens and drawables from Chucker won't appear in your autocomplete suggestions.
+-   The library is now fully converted to Kotlin and migrated to AndroidX!
+-   The whole UI has been revamped to support Dark Theme which follows your device theme.
+-   The Response/Request Body is now displayed in a `RecyclerView`, drastically improving performances on big payloads.
+-   HTTP Response/Request Body can now be saved in file.
+-   Notifications for Throwable and HTTP Traffic are now going into separate channels.
+-   A lot of classes inside the `.internal` package have restricted visibility (from public to internal). Also, resources like strings, dimens and drawables from Chucker won't appear in your autocomplete suggestions.
 
 ### Bugfixes
 
-* Fixed ANRs during big response payloads processing.
-* Fixed contentType response formatting.
-* Fixed notifications importance in Android Q.
-* Fixed date formatting in transaction overview.
-* Fixed visibility of internal library classes and resources.
-* Fixed XML formatting crash
+-   Fixed ANRs during big response payloads processing.
+-   Fixed contentType response formatting.
+-   Fixed notifications importance in Android Q.
+-   Fixed date formatting in transaction overview.
+-   Fixed visibility of internal library classes and resources.
+-   Fixed XML formatting crash
 
 ### Dependency Updates
 
-- Updated Kotlin to 1.3.61
-- Updated Retrofit to 2.6.4
-- Updated Room to 2.2.3
-- Updated OkHttp to 3.12.6
-- Updated Gson to 2.8.6
-- Updated Dokka to 0.10.0
-- Updated KtLint to 9.1.1
-- Updated Gradle wrapper to 6.1
-- Updated Android Gradle plugin to 3.5.3
+-   Updated Kotlin to 1.3.61
+-   Updated Retrofit to 2.6.4
+-   Updated Room to 2.2.3
+-   Updated OkHttp to 3.12.6
+-   Updated Gson to 2.8.6
+-   Updated Dokka to 0.10.0
+-   Updated KtLint to 9.1.1
+-   Updated Gradle wrapper to 6.1
+-   Updated Android Gradle plugin to 3.5.3
 
 #### Credits
 
@@ -323,33 +334,32 @@ This release was possible thanks to the contribution of:
 @sprohaszka
 @PaulWoitaschek
 
-
-## Version 3.0.1 *(2019-08-16)*
+## Version 3.0.1 _(2019-08-16)_
 
 This is a hotfix release for Chucker `3.0.0`.
 
 ### Summary of Changes
 
-* Fix: [#96] Limit size of binary image to 1 million bytes.
+-   Fix: [#96] Limit size of binary image to 1 million bytes.
 
 ### Credits
 
 This release was possible thanks to the contribution of: @redwarp
 
-## Version 3.0.0 *(2019-08-12)*
+## Version 3.0.0 _(2019-08-12)_
 
 This is a new major release of Chucker. Please note that this major release contains multiple new features (see below) as well as several breaking changes. Please refer to the [migration guide](/docs/migrating-from-2.0.md) if you need support in migrating from `2.x` -> `3.0.0` or feel free to open an issue.
 
 ### Summary of Changes
 
-* Chucker DB is now using [Room](https://developer.android.com/topic/libraries/architecture/room) instead of [Cupboard](https://bitbucket.org/littlerobots/cupboard/wiki/Home) as ORM.
-* The public api of Chucker (classes in `com.chuckerteam.chucker.api`) is now rewritten in Kotlin.
-* Classes inside the `.internal` package should now not be considered part of the public api and expect them to change without major version bump.
-* Removed usage of `okhttp3.internal` methods.
-* General UI update of the library (new using ConstraintLayout)
-* Added support to render images in Response page.
-* Added support to search and highlight text in the Http Response body.
-* We moved the artifact from JCenter to JitPack
+-   Chucker DB is now using [Room](https://developer.android.com/topic/libraries/architecture/room) instead of [Cupboard](https://bitbucket.org/littlerobots/cupboard/wiki/Home) as ORM.
+-   The public api of Chucker (classes in `com.chuckerteam.chucker.api`) is now rewritten in Kotlin.
+-   Classes inside the `.internal` package should now not be considered part of the public api and expect them to change without major version bump.
+-   Removed usage of `okhttp3.internal` methods.
+-   General UI update of the library (new using ConstraintLayout)
+-   Added support to render images in Response page.
+-   Added support to search and highlight text in the Http Response body.
+-   We moved the artifact from JCenter to JitPack
 
 ### Contributors
 
@@ -366,60 +376,60 @@ This release was possible thanks to the contribution of:
 @redwarp
 @uOOOO
 
-## Version 2.0.4 *(2019-05-18)*
+## Version 2.0.4 _(2019-05-18)_
 
- * Fix: [#27] no-op Chuck#init method is missing
+-   Fix: [#27] no-op Chuck#init method is missing
 
-## Version 2.0.3 *(2018-11-28)*
+## Version 2.0.3 _(2018-11-28)_
 
- * Fix: [#20] Changed SqLite DB Version Number 3 -> 4
+-   Fix: [#20] Changed SqLite DB Version Number 3 -> 4
 
-## Version 2.0.2 *(2018-11-14)*
+## Version 2.0.2 _(2018-11-14)_
 
- * Fix: [#5] Empty Content-Encoding are allowed again
+-   Fix: [#5] Empty Content-Encoding are allowed again
 
-## Version 2.0.1 *(2018-11-05)*
+## Version 2.0.1 _(2018-11-05)_
 
- * New: Adds a class ChuckCollector that can be used out of ChuckInterceptor.
- * New: Chucker can now collect throwables.
- * New: Adds a notification for throwables.
- * New: Adds screens for throwables.
- * New: Transaction class offers a fluent writing.
- * New: Adds Chuck.registerDefaultCrashHanlder for **debugging purpose only**.
- * Breaking: Chuck.getLaunchIntent needs one more parameter.
- * Breaking: Built with Android plugin 3.1.x.
- * Breaking: Target SDK version 27.
- * Breaking: Support library 27.1.1.
- * Breaking: API classes are now in package `api`.
- * Misc: Move some internal classes.
+-   New: Adds a class ChuckCollector that can be used out of ChuckInterceptor.
+-   New: Chucker can now collect throwables.
+-   New: Adds a notification for throwables.
+-   New: Adds screens for throwables.
+-   New: Transaction class offers a fluent writing.
+-   New: Adds Chuck.registerDefaultCrashHanlder for **debugging purpose only**.
+-   Breaking: Chuck.getLaunchIntent needs one more parameter.
+-   Breaking: Built with Android plugin 3.1.x.
+-   Breaking: Target SDK version 27.
+-   Breaking: Support library 27.1.1.
+-   Breaking: API classes are now in package `api`.
+-   Misc: Move some internal classes.
 
-## Version 1.1.0 *(2017-08-06)*
+## Version 1.1.0 _(2017-08-06)_
 
- * Fix: Supports apps targeting Android O (API 26).
+-   Fix: Supports apps targeting Android O (API 26).
 
-## Version 1.0.4 *(2017-02-22)*
+## Version 1.0.4 _(2017-02-22)_
 
- * New: Displays uncompressed gzip encoded request/response bodies when used as a network interceptor.
+-   New: Displays uncompressed gzip encoded request/response bodies when used as a network interceptor.
 
-## Version 1.0.3 *(2017-02-14)*
+## Version 1.0.3 _(2017-02-14)_
 
- * New: Adds a maximum content length threshold, beyond which bodies are truncated.
- * New: Adds a data retention length property and cleanup task.
- * New: Adds a clear action to the notification.
- * Fix: Mitigates against CursorWindow blowout when transactions are large.
+-   New: Adds a maximum content length threshold, beyond which bodies are truncated.
+-   New: Adds a data retention length property and cleanup task.
+-   New: Adds a clear action to the notification.
+-   Fix: Mitigates against CursorWindow blowout when transactions are large.
 
-## Version 1.0.2 *(2017-02-10)*
+## Version 1.0.2 _(2017-02-10)_
 
- * Fix: Added Proguard rule for compat SearchView.
- * Fix: Null search query displaying invalid results.
+-   Fix: Added Proguard rule for compat SearchView.
+-   Fix: Null search query displaying invalid results.
 
-## Version 1.0.1 *(2017-02-09)*
+## Version 1.0.1 _(2017-02-09)_
 
- * New: Adds a search action which filters on request path or response code.
- * New: Adds a transaction count to the notification.
- * Fix: Limits the size of the static transaction buffer correctly.
+-   New: Adds a search action which filters on request path or response code.
+-   New: Adds a transaction count to the notification.
+-   Fix: Limits the size of the static transaction buffer correctly.
 
-## Version 1.0.0 *(2017-02-07)*
+## Version 1.0.0 _(2017-02-07)_
 
 Initial release.
 
@@ -583,3 +593,16 @@ Initial release.
 [#975]: https://github.com/ChuckerTeam/chucker/pull/975
 [#988]: https://github.com/ChuckerTeam/chucker/pull/988
 [#1038]: https://github.com/ChuckerTeam/chucker/pull/1038
+[#1076]: https://github.com/ChuckerTeam/chucker/pull/1076
+[#1165]: https://github.com/ChuckerTeam/chucker/pull/1165
+[#1166]: https://github.com/ChuckerTeam/chucker/pull/1166
+[#1183]: https://github.com/ChuckerTeam/chucker/pull/1183
+[#1211]: https://github.com/ChuckerTeam/chucker/pull/1211
+[#1214]: https://github.com/ChuckerTeam/chucker/pull/1214
+[#1218]: https://github.com/ChuckerTeam/chucker/pull/1218
+[#1237]: https://github.com/ChuckerTeam/chucker/pull/1237
+[#1242]: https://github.com/ChuckerTeam/chucker/pull/1242
+[#1280]: https://github.com/ChuckerTeam/chucker/pull/1280
+[#1281]: https://github.com/ChuckerTeam/chucker/pull/1281
+[#1282]: https://github.com/ChuckerTeam/chucker/pull/1282
+[#1300]: https://github.com/ChuckerTeam/chucker/pull/1300
