@@ -79,7 +79,6 @@ dependencies {
     ksp "androidx.room:room-compiler:$roomVersion"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
 
@@ -99,6 +98,7 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion"
 
     androidTestImplementation "junit:junit:$junit4Version"
     androidTestImplementation "androidx.test:runner:$androidXTestRunner"
