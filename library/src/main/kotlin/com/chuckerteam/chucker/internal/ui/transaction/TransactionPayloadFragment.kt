@@ -320,6 +320,7 @@ internal class TransactionPayloadFragment :
                     backgroundSpanColor,
                     foregroundSpanColor,
                 )
+            println("listOfSearchQuery: $listOfSearchQuery")
             if (listOfSearchQuery.isNotEmpty()) {
                 scrollableIndices.addAll(listOfSearchQuery)
             } else {

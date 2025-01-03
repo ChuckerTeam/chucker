@@ -90,16 +90,16 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
         foregroundColor: Int,
     ): List<SearchItemBodyLine> {
         val listOfSearchItems = arrayListOf<SearchItemBodyLine>()
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
-            .withIndex()
+        items.withIndex()
             .forEach { (index, item) ->
+                if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val listOfOccurrences = item.line.indicesOf(newText)
                 if (listOfOccurrences.isNotEmpty()) {
                     // storing the occurrences and their positions
                     listOfOccurrences.forEach {
                         listOfSearchItems.add(
                             SearchItemBodyLine(
-                                indexBodyLine = index + 1,
+                                indexBodyLine = index,
                                 indexStartOfQuerySubString = it,
                             ),
                         )
@@ -114,12 +114,12 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
                             backgroundColor,
                             foregroundColor,
                         )
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
-                        notifyItemChanged(index + 1)
+                        notifyItemChanged(index)
                     }
                 }
             }
@@ -147,12 +147,12 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
     }
 
     internal fun resetHighlight() {
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
-            .withIndex()
+        items.withIndex()
             .forEach { (index, item) ->
+                if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val removedSpansCount = item.line.clearHighlightSpans()
                 if (removedSpansCount > 0) {
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index)
                 }
             }
     }
