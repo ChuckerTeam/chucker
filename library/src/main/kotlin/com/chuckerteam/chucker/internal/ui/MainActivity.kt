@@ -46,6 +46,7 @@ import okio.Source
 import okio.buffer
 import okio.source
 
+@Suppress("TooManyFunctions")
 internal class MainActivity :
     BaseChuckerActivity(),
     SearchView.OnQueryTextListener {
@@ -53,6 +54,7 @@ internal class MainActivity :
 
     private lateinit var mainBinding: ChuckerActivityMainBinding
     private lateinit var transactionsAdapter: TransactionAdapter
+    private var isMultipleSelected = false
 
     private val applicationName: CharSequence
         get() = applicationInfo.loadLabel(packageManager)
@@ -85,9 +87,19 @@ internal class MainActivity :
 
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
         transactionsAdapter =
-            TransactionAdapter(this) { transactionId ->
-                TransactionActivity.start(this, transactionId)
-            }
+            TransactionAdapter(
+                context = this,
+                longPress = { transactionId ->
+                    viewModel.selectItem(transactionId)
+                },
+                onTransactionClick = { transactionId ->
+                    if (isMultipleSelected) {
+                        viewModel.selectItem(transactionId)
+                    } else {
+                        TransactionActivity.start(this, transactionId)
+                    }
+                },
+            )
 
         with(mainBinding) {
             setContentView(root)
@@ -116,6 +128,9 @@ internal class MainActivity :
 
         if (Chucker.showNotifications && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             handleNotificationsPermission()
+        }
+        viewModel.isItemSelected.observe(this) {
+            isMultipleSelected = it
         }
     }
 
@@ -171,6 +186,7 @@ internal class MainActivity :
                     getClearDialogData(),
                     onPositiveClick = {
                         viewModel.clearTransactions()
+                        resetSelection()
                     },
                     onNegativeClick = null,
                 )
@@ -178,34 +194,12 @@ internal class MainActivity :
             }
 
             R.id.share_text -> {
-                showDialog(
-                    getExportDialogData(R.string.chucker_export_text_http_confirmation),
-                    onPositiveClick = {
-                        exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
-                            TransactionListDetailsSharable(transactions, encodeUrls = false)
-                        }
-                    },
-                    onNegativeClick = null,
-                )
+                showShareTextDialog()
                 true
             }
 
             R.id.share_har -> {
-                showDialog(
-                    getExportDialogData(R.string.chucker_export_har_http_confirmation),
-                    onPositiveClick = {
-                        exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
-                            TransactionDetailsHarSharable(
-                                HarUtils.harStringFromTransactions(
-                                    transactions,
-                                    getString(R.string.chucker_name),
-                                    getString(R.string.chucker_version),
-                                ),
-                            )
-                        }
-                    },
-                    onNegativeClick = null,
-                )
+                showShareHarDialog()
                 true
             }
 
@@ -225,11 +219,68 @@ internal class MainActivity :
         }
     }
 
+    private fun showShareHarDialog() {
+        showDialog(
+            getExportDialogData(
+                if (viewModel.isItemSelected.value == true) {
+                    R.string.chucker_export_har_selected_http_confirmation
+                } else {
+                    R.string.chucker_export_har_http_confirmation
+                },
+            ),
+            onPositiveClick = {
+                exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
+                    TransactionDetailsHarSharable(
+                        HarUtils.harStringFromTransactions(
+                            transactions,
+                            getString(R.string.chucker_name),
+                            getString(R.string.chucker_version),
+                        ),
+                    )
+                }
+            },
+            onNegativeClick = null,
+        )
+    }
+
+    private fun showShareTextDialog() {
+        showDialog(
+            getExportDialogData(
+                if (viewModel.isItemSelected.value == true) {
+                    R.string.chucker_export_text_selected_http_confirmation
+                } else {
+                    R.string.chucker_export_text_http_confirmation
+                },
+            ),
+            onPositiveClick = {
+                exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
+                    TransactionListDetailsSharable(transactions, encodeUrls = false)
+                }
+            },
+            onNegativeClick = null,
+        )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putIntArray("selectedItems", (transactionsAdapter.getSelectedItem().toIntArray()))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val itemList = savedInstanceState.getIntArray("selectedItems")
+        transactionsAdapter.setSelectedItem(itemList?.toList() ?: emptyList())
+    }
+
     override fun onQueryTextSubmit(query: String): Boolean = true
 
     override fun onQueryTextChange(newText: String): Boolean {
         viewModel.updateItemsFilter(newText)
         return true
+    }
+
+    private fun resetSelection() {
+        transactionsAdapter.clearSelections()
     }
 
     private fun exportTransactions(
@@ -258,7 +309,11 @@ internal class MainActivity :
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
-                showToast(applicationContext.getString(R.string.chucker_export_no_file))
+                showToast(
+                    applicationContext.getString(
+                        R.string.chucker_export_no_file,
+                    ),
+                )
             }
         }
     }
@@ -266,7 +321,14 @@ internal class MainActivity :
     private fun getClearDialogData(): DialogData =
         DialogData(
             title = getString(R.string.chucker_clear),
-            message = getString(R.string.chucker_clear_http_confirmation),
+            message =
+                getString(
+                    if (viewModel.isItemSelected.value == true) {
+                        R.string.chucker_clear_selected_http_confirmation
+                    } else {
+                        R.string.chucker_clear_http_confirmation
+                    },
+                ),
             positiveButtonText = getString(R.string.chucker_clear),
             negativeButtonText = getString(R.string.chucker_cancel),
         )
