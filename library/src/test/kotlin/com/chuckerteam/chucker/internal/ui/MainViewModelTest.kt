@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 
 @ExperimentalCoroutinesApi
 internal class MainViewModelTest {
-
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -63,7 +62,7 @@ internal class MainViewModelTest {
         every {
             transactionRepository.getFilteredTransactionTuples(
                 any(),
-                any()
+                any(),
             )
         } returns emptyTransactionList
 
@@ -83,19 +82,20 @@ internal class MainViewModelTest {
     }
 
     @Test
-    fun `when search query is empty, getSortedTransactionTuples is called`() = runTest {
-        val expectedTuples = listOf(mockk<HttpTransactionTuple>(relaxed = true))
-        val transactionLiveData = MutableLiveData<List<HttpTransactionTuple>>()
-        every { transactionRepository.getSortedTransactionTuples() } returns transactionLiveData
-        every { TextUtils.isDigitsOnly(any()) } returns false
+    fun `when search query is empty, getSortedTransactionTuples is called`() =
+        runTest {
+            val expectedTuples = listOf(mockk<HttpTransactionTuple>(relaxed = true))
+            val transactionLiveData = MutableLiveData<List<HttpTransactionTuple>>()
+            every { transactionRepository.getSortedTransactionTuples() } returns transactionLiveData
+            every { TextUtils.isDigitsOnly(any()) } returns false
 
-        viewModel.transactions.observeForever(transactionObserver)
-        viewModel.updateItemsFilter("")
-        transactionLiveData.value = expectedTuples
+            viewModel.transactions.observeForever(transactionObserver)
+            viewModel.updateItemsFilter("")
+            transactionLiveData.value = expectedTuples
 
-        verify { transactionRepository.getSortedTransactionTuples() }
-        verify { transactionObserver.onChanged(expectedTuples) }
-    }
+            verify { transactionRepository.getSortedTransactionTuples() }
+            verify { transactionObserver.onChanged(expectedTuples) }
+        }
 
     @Test
     fun `when search query contains only digits, getFilteredTransactionTuples is called with correct parameters`() =
@@ -106,7 +106,7 @@ internal class MainViewModelTest {
             every {
                 transactionRepository.getFilteredTransactionTuples(
                     searchQuery,
-                    ""
+                    "",
                 )
             } returns transactionLiveData
             every { TextUtils.isDigitsOnly(searchQuery) } returns true
@@ -128,7 +128,7 @@ internal class MainViewModelTest {
             every {
                 transactionRepository.getFilteredTransactionTuples(
                     "",
-                    searchQuery
+                    searchQuery,
                 )
             } returns transactionLiveData
             every { TextUtils.isDigitsOnly(searchQuery) } returns false
@@ -142,24 +142,26 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `getAllTransactions returns repository data`() = runTest {
-        val expectedTransactions = listOf(mockk<HttpTransaction>(relaxed = true))
-        coEvery { transactionRepository.getAllTransactions() } returns expectedTransactions
+    fun `getAllTransactions returns repository data`() =
+        runTest {
+            val expectedTransactions = listOf(mockk<HttpTransaction>(relaxed = true))
+            coEvery { transactionRepository.getAllTransactions() } returns expectedTransactions
 
-        val result = viewModel.getAllTransactions()
+            val result = viewModel.getAllTransactions()
 
-        assertEquals(expectedTransactions, result)
-        coVerify { transactionRepository.getAllTransactions() }
-    }
+            assertEquals(expectedTransactions, result)
+            coVerify { transactionRepository.getAllTransactions() }
+        }
 
     @Test
-    fun `clearTransactions clears repository and notification buffer`() = runTest {
-        coEvery { transactionRepository.deleteAllTransactions() } just runs
+    fun `clearTransactions clears repository and notification buffer`() =
+        runTest {
+            coEvery { transactionRepository.deleteAllTransactions() } just runs
 
-        viewModel.clearTransactions()
-        testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.clearTransactions()
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        coVerify { transactionRepository.deleteAllTransactions() }
-        verify { NotificationHelper.clearBuffer() }
-    }
+            coVerify { transactionRepository.deleteAllTransactions() }
+            verify { NotificationHelper.clearBuffer() }
+        }
 }
