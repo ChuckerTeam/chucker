@@ -145,7 +145,7 @@ internal class TransactionAdapter internal constructor(
                         method = method,
                         scheme = scheme,
                         host = host,
-                        path = transaction.getFormattedPath(encode = false),
+                        path = getFormattedPath(encode = false),
                         responseCode = responseCode,
                         requestDate = requestDate,
                         tookMs = tookMs,
