@@ -18,4 +18,9 @@ public object Chucker {
     public fun dismissNotifications(context: Context) {
         // Empty method for the library-no-op artifact
     }
+
+    @JvmStatic
+    public fun setHttpTransactionNameFormatter(formatter: ChuckerHttpTransactionNameFormatter?) {
+        // Empty method for the library-no-op artifact
+    }
 }

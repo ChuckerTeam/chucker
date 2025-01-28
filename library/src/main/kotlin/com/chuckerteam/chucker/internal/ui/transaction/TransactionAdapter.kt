@@ -12,6 +12,8 @@ import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
+import com.chuckerteam.chucker.api.ChuckerHttpTransaction
+import com.chuckerteam.chucker.api.ChuckerHttpTransactionNameFormatter
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
@@ -21,10 +23,13 @@ import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
+    private val transactionNameFormatter: ChuckerHttpTransactionNameFormatter? = null,
     private val onTransactionClick: (Long) -> Unit,
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
         TransactionDiffCallback,
     ) {
+    private val displayTransactionsCacheMap: MutableMap<Long, ChuckerHttpTransaction> =
+        mutableMapOf()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int =
         ContextCompat.getColor(
@@ -54,6 +59,11 @@ internal class TransactionAdapter internal constructor(
         position: Int,
     ) = holder.bind(getItem(position))
 
+    override fun submitList(list: List<HttpTransactionTuple>?) {
+        displayTransactionsCacheMap.clear()
+        super.submitList(list)
+    }
+
     inner class TransactionViewHolder(
         private val itemBinding: ChuckerListItemTransactionBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
@@ -73,7 +83,7 @@ internal class TransactionAdapter internal constructor(
 
             itemBinding.apply {
                 displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected)
-                path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
+                setTransactionDisplayName(transaction)
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
@@ -123,6 +133,26 @@ internal class TransactionAdapter internal constructor(
             itemBinding.code.setTextColor(color)
             itemBinding.path.setTextColor(color)
         }
+    }
+
+    private fun ChuckerListItemTransactionBinding.setTransactionDisplayName(
+        transaction: HttpTransactionTuple,
+    ) {
+        path.text = transactionNameFormatter
+            ?.provideTransactionDisplayName(displayTransactionsCacheMap.getOrPut(transaction.id) {
+                with(transaction) {
+                    ChuckerHttpTransaction(
+                        method = method,
+                        scheme = scheme,
+                        host = host,
+                        path = transaction.getFormattedPath(encode = false),
+                        responseCode = responseCode,
+                        requestDate = requestDate,
+                        tookMs = tookMs,
+                    )
+                }
+            })
+            ?: "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
     }
 }
 
