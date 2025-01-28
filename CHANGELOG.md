@@ -5,6 +5,8 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+-   Added transaction display name formatter [#1339]
+
 ### Added
 
 ### Fixed
