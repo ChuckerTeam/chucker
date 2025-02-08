@@ -6,6 +6,7 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 
 /**
  * Highlight parts of the String when it matches the search.
@@ -22,10 +23,15 @@ internal fun SpannableStringBuilder.highlightWithDefinedColors(
 }
 
 internal fun CharSequence.indicesOf(input: String): List<Int> =
-    Pattern.compile(input, Pattern.CASE_INSENSITIVE).toRegex()
-        .findAll(this)
-        .map { it.range.first }
-        .toCollection(mutableListOf())
+    try {
+        Pattern.quote(input).toRegex(RegexOption.IGNORE_CASE)
+            .findAll(this)
+            .map { it.range.first }
+            .toList()
+    } catch (e: PatternSyntaxException) {
+        Logger.warn("Unable to compile pattern for input: $input", e)
+        emptyList()
+    }
 
 internal fun SpannableStringBuilder.highlightWithDefinedColorsSubstring(
     search: String,
