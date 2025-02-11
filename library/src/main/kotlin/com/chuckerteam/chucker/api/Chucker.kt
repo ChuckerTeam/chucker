@@ -25,6 +25,11 @@ public object Chucker {
     internal var showNotifications: Boolean = true
 
     /**
+     * Keep track of latest transaction name formatted.
+     */
+    internal var formatter: ChuckerHttpTransactionNameFormatter? = null
+
+    /**
      * Check if this instance is the operation one or no-op.
      * @return `true` if this is the operation instance.
      */
@@ -40,6 +45,15 @@ public object Chucker {
     public fun getLaunchIntent(context: Context): Intent {
         return Intent(context, MainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    /**
+     * Sets the [ChuckerHttpTransactionNameFormatter] to customize transaction display name.
+     * Changes take place only after transaction list screen start/restart.
+     */
+    @JvmStatic
+    public fun setHttpTransactionNameFormatter(formatter: ChuckerHttpTransactionNameFormatter?) {
+        this.formatter = formatter
     }
 
     /**

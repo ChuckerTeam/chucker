@@ -15,6 +15,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
     - [Redact-Header 👮‍♂️](#redact-header-️)
     - [Decode-Body 📖](#decode-body-)
     - [Notification Permission 🔔](#notification-permission-)
+    - [Display Name Formatter ✍️](#display-name-formatter-)
   - [Migrating 🚗](#migrating-)
   - [Snapshots 📦](#snapshots-)
   - [FAQ ❓](#faq-)
@@ -166,6 +167,19 @@ show a notification as soon as the `android.permission.POST_NOTIFICATIONS` permi
 and click `Allow` in the dialog with permission request. In case you don't allow this permission or dismiss that dialog by mistake, on every Chucker launch there will be
 a snackbar with a button to open your app settings where you can change permissions settings. Note, you need to grant `android.permission.POST_NOTIFICATIONS` to your app in Settings as there
 will be no separate app in Apps list in Settings.
+
+### Display Name Formatter ✍️
+
+Allows to customize transaction display name on the screen with transactions list.
+Could be useful to map long paths into short display names for reading convenience.
+Providing null values will fallback to default display name.
+Please note, that new formatter will take place only after transactions list screen start/restart.
+
+```kotlin
+Chucker.setHttpTransactionNameFormatter { transaction ->
+    // provide CharSequence that acts as custom display name of transaction
+}
+```
 
 ## Migrating 🚗
 
