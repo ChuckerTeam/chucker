@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="4dp"
+            app:popupTheme="@style/Chucker.BaseTheme"
             app:subtitleTextAppearance="?attr/textAppearanceSubtitle2" />
 
     </com.google.android.material.appbar.AppBarLayout>
