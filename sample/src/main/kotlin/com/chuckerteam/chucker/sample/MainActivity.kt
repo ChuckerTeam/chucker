@@ -5,7 +5,11 @@ import android.os.StrictMode
 import android.text.method.LinkMovementMethod
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
@@ -28,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
+    private val applicationName: CharSequence
+        get() = applicationInfo.loadLabel(packageManager)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +42,9 @@ class MainActivity : AppCompatActivity() {
 
         with(mainBinding) {
             setContentView(root)
+            applyInsets()
+            setSupportActionBar(toolbar)
+            toolbar?.subtitle = applicationName
             doHttp.setOnClickListener {
                 for (task in httpTasks) {
                     task.run()
@@ -85,6 +95,19 @@ class MainActivity : AppCompatActivity() {
                 .penaltyDeath()
                 .build(),
         )
+    }
+
+    private fun applyInsets() {
+        // Set up window insets to properly handle the UI around system bars
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Apply insets to the main content to avoid overlap with system bars
+        ViewCompat.setOnApplyWindowInsetsListener(mainBinding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            mainBinding.appBarLayout?.updatePadding(top = insets.top)
+            view.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     private fun launchChuckerDirectly() {

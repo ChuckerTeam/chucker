@@ -18,7 +18,11 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
@@ -91,6 +95,7 @@ internal class MainActivity :
 
         with(mainBinding) {
             setContentView(root)
+            applyInsets()
             setSupportActionBar(toolbar)
             toolbar.subtitle = applicationName
 
@@ -116,6 +121,19 @@ internal class MainActivity :
 
         if (Chucker.showNotifications && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             handleNotificationsPermission()
+        }
+    }
+
+    private fun applyInsets() {
+        // Set up window insets to properly handle the UI around system bars
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Apply insets to the main content to avoid overlap with system bars
+        ViewCompat.setOnApplyWindowInsetsListener(mainBinding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            mainBinding.appBarLayout.updatePadding(top = insets.top)
+            view.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
         }
     }
 
