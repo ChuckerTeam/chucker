@@ -3,4 +3,5 @@
     <dimen name="norm_grid_size" tools:ignore="UnusedResources">8dp</dimen>
     <dimen name="doub_grid_size">16dp</dimen>
     <dimen name="max_width">500dp</dimen>
+    <dimen name="_4dp">4dp</dimen>
 </resources>

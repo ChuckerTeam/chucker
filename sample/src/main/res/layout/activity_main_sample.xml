@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="4dp"
+            android:paddingBottom="@dimen/_4dp"
             app:subtitleTextAppearance="?attr/textAppearanceSubtitle2" />
 
     </com.google.android.material.appbar.AppBarLayout>
