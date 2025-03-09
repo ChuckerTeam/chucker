@@ -7,6 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
@@ -38,6 +42,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         with(transactionBinding) {
             setContentView(root)
+            applyInset()
             setSupportActionBar(toolbar)
             setupViewPager(viewPager)
             tabLayout.setupWithViewPager(viewPager)
@@ -49,6 +54,19 @@ internal class TransactionActivity : BaseChuckerActivity() {
             this,
             Observer { transactionBinding.toolbarTitle.text = it },
         )
+    }
+
+    private fun applyInset() {
+        // Set up window insets to properly handle the UI around system bars
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Apply insets to the main content to avoid overlap with system bars
+        ViewCompat.setOnApplyWindowInsetsListener(transactionBinding.root) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            transactionBinding.appBarLayout.updatePadding(top = insets.top)
+            view.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

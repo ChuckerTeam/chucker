@@ -4,16 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/doub_grid_size"
     tools:context="com.chuckerteam.chucker.sample.MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_4dp"
+            app:subtitleTextAppearance="?attr/textAppearanceSubtitle2" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
+        android:layout_marginBottom="@dimen/norm_grid_size"
         android:gravity="center"
         android:text="@string/intro_body"
-        android:layout_marginBottom="@dimen/norm_grid_size"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintBottom_toTopOf="@+id/interceptor_type_label"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,12 +45,13 @@
         android:id="@+id/interceptor_type_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:text="@string/interceptor_type"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintBottom_toTopOf="@+id/interceptor_type_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"
-        app:layout_constraintBottom_toTopOf="@+id/interceptor_type_group"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_max="@dimen/max_width" />
 
@@ -39,6 +59,7 @@
         android:id="@+id/interceptor_type_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:layout_marginVertical="@dimen/norm_grid_size"
         android:checkedButton="@+id/use_application_interceptor"
         android:orientation="horizontal"
@@ -68,6 +89,7 @@
         android:id="@+id/do_http"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/do_http_activity"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +101,7 @@
         android:id="@+id/do_graphql"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:text="@string/do_graphql_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,6 +112,7 @@
         android:id="@+id/launch_chucker_directly"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/doub_grid_size"
         android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/launch_chucker_directly"
         app:layout_constraintBottom_toTopOf="@id/export_to_file"
@@ -101,7 +125,9 @@
         android:id="@+id/export_to_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/doub_grid_size"
         android:layout_marginEnd="@dimen/doub_grid_size"
+        android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/export_to_file"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/export_to_file_har"
@@ -114,8 +140,10 @@
         android:id="@+id/export_to_file_har"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/doub_grid_size"
+        android:layout_marginBottom="@dimen/doub_grid_size"
         android:text="@string/export_to_file_har"
-        app:layout_constraintBottom_toBottomOf="@+id/export_to_file"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/export_to_file"

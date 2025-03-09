@@ -9,6 +9,8 @@ Please add your entries according to this format.
 
 ### Fixed
 
+-   List and scrollable data does not scroll to above the bottom navigation button bar on Android 15 [#1347]
+
 ### Changed
 
 ### Deleted
