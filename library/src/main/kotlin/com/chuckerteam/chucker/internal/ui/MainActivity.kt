@@ -89,9 +89,19 @@ internal class MainActivity :
 
         mainBinding = ChuckerActivityMainBinding.inflate(layoutInflater)
         transactionsAdapter =
-            TransactionAdapter(this) { transactionId ->
-                TransactionActivity.start(this, transactionId)
-            }
+            TransactionAdapter(
+                context = this,
+                onTransactionClick = { transactionId ->
+                    if (viewModel.isItemSelected.value == true) {
+                        viewModel.toggleSelection(transactionId)
+                    } else {
+                        TransactionActivity.start(this, transactionId)
+                    }
+                },
+                onTransactionLongClick = { transactionId ->
+                    viewModel.startSelection(transactionId)
+                },
+            )
 
         with(mainBinding) {
             setContentView(root)
@@ -122,6 +132,10 @@ internal class MainActivity :
         if (Chucker.showNotifications && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             handleNotificationsPermission()
         }
+
+        viewModel.isItemSelected.observe(this) { isSelected ->
+            transactionsAdapter.setSelectionMode(isSelected)
+        }
     }
 
     private fun applyInsets() {
@@ -148,18 +162,20 @@ internal class MainActivity :
             }
 
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                Snackbar.make(
-                    mainBinding.root,
-                    applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
-                    Snackbar.LENGTH_LONG,
-                ).setAction(applicationContext.getString(R.string.chucker_change)) {
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        data = Uri.fromParts("package", packageName, null)
-                    }.also { intent ->
-                        startActivity(intent)
-                    }
-                }.show()
+                Snackbar
+                    .make(
+                        mainBinding.root,
+                        applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
+                        Snackbar.LENGTH_LONG,
+                    ).setAction(applicationContext.getString(R.string.chucker_change)) {
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                data = Uri.fromParts("package", packageName, null)
+                            }.also { intent ->
+                                startActivity(intent)
+                            }
+                    }.show()
             }
 
             else -> {
@@ -182,13 +198,14 @@ internal class MainActivity :
         searchView.setIconifiedByDefault(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
             R.id.clear -> {
                 showDialog(
                     getClearDialogData(),
                     onPositiveClick = {
                         viewModel.clearTransactions()
+                        resetSelection()
                     },
                     onNegativeClick = null,
                 )
@@ -241,13 +258,25 @@ internal class MainActivity :
                 super.onOptionsItemSelected(item)
             }
         }
-    }
 
     override fun onQueryTextSubmit(query: String): Boolean = true
 
     override fun onQueryTextChange(newText: String): Boolean {
         viewModel.updateItemsFilter(newText)
         return true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        val selectedIds = viewModel.getSelectedIds()
+        outState.putLongArray(KEY_SELECTED_TRANSACTION_IDS, selectedIds.toLongArray())
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val selectedIds =
+            savedInstanceState.getLongArray(KEY_SELECTED_TRANSACTION_IDS)?.toList() ?: emptyList()
+        viewModel.restoreSelection(selectedIds)
     }
 
     private fun exportTransactions(
@@ -284,7 +313,14 @@ internal class MainActivity :
     private fun getClearDialogData(): DialogData =
         DialogData(
             title = getString(R.string.chucker_clear),
-            message = getString(R.string.chucker_clear_http_confirmation),
+            message =
+                getString(
+                    if (viewModel.isItemSelected.value == true) {
+                        R.string.chucker_clear_selected_http_confirmation
+                    } else {
+                        R.string.chucker_clear_http_confirmation
+                    },
+                ),
             positiveButtonText = getString(R.string.chucker_clear),
             negativeButtonText = getString(R.string.chucker_cancel),
         )
@@ -332,11 +368,12 @@ internal class MainActivity :
         exportType: ExportType,
     ) {
         if (uri == null) {
-            Toast.makeText(
-                applicationContext,
-                R.string.chucker_save_failed_to_open_document,
-                Toast.LENGTH_SHORT,
-            ).show()
+            Toast
+                .makeText(
+                    applicationContext,
+                    R.string.chucker_save_failed_to_open_document,
+                    Toast.LENGTH_SHORT,
+                ).show()
             return
         }
         lifecycleScope.launch {
@@ -371,23 +408,33 @@ internal class MainActivity :
                 }
 
                 HAR -> {
-                    HarUtils.harStringFromTransactions(
-                        transactions,
-                        getString(R.string.chucker_name),
-                        getString(R.string.chucker_version),
-                    ).byteInputStream().source().buffer()
+                    HarUtils
+                        .harStringFromTransactions(
+                            transactions,
+                            getString(R.string.chucker_name),
+                            getString(R.string.chucker_version),
+                        ).byteInputStream()
+                        .source()
+                        .buffer()
                 }
             }
         }
     }
 
-    private enum class ExportType(val mimeType: String) {
+    private enum class ExportType(
+        val mimeType: String,
+    ) {
         TEXT("text/plain"),
         HAR("application/har+json"),
+    }
+
+    private fun resetSelection() {
+        transactionsAdapter.clearSelections()
     }
 
     companion object {
         private const val EXPORT_TXT_FILE_NAME = "transactions.txt"
         private const val EXPORT_HAR_FILE_NAME = "transactions.har"
+        private const val KEY_SELECTED_TRANSACTION_IDS = "selectedTransactionIds"
     }
 }

@@ -50,11 +50,14 @@
     <string name="chucker_share_all_transactions_title">Share transactions</string>
     <string name="chucker_share_transaction_subject">Transaction details</string>
     <string name="chucker_share_all_transactions_subject">All transactions</string>
-    <string name="chucker_clear_http_confirmation">Do you want to clear complete network calls history?</string>
+    <string name="chucker_clear_http_confirmation">Do you want to clear the complete network calls history?</string>
+    <string name="chucker_clear_selected_http_confirmation">Do you want to clear the selected network transactions?</string>
     <string name="chucker_export_text_http_confirmation">Do you want to export all network transactions as a text file?</string>
     <string name="chucker_export_har_http_confirmation">Do you want to export all network transactions as a .har file?</string>
     <string name="chucker_save_text_http_confirmation">Do you want to save all network transactions as a text file?</string>
     <string name="chucker_save_har_http_confirmation">Do you want to save all network transactions as a .har file?</string>
+    <string name="chucker_export_text_selected_http_confirmation">Do you want to export selected network transactions as a text file?</string>
+    <string name="chucker_export_har_selected_http_confirmation">Do you want to export selected network transactions as a .har file?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Export Start */</string>
     <string name="chucker_export_postfix">/*  Export End  */</string>

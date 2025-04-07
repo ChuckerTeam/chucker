@@ -18,6 +18,7 @@
     <color name="chucker_status_500">#e53935</color>
     <color name="chucker_status_400">#ffb74d</color>
     <color name="chucker_status_300">#64b5f6</color>
+    <color name="chucker_status_multiple_selection">#40FFFFFF</color>
 
     <color name="chucker_background_span_color">#ffe082</color>
     <color name="chucker_foreground_span_color">#ef5350</color>

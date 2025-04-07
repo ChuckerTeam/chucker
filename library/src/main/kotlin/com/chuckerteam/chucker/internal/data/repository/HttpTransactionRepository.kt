@@ -30,4 +30,19 @@ internal interface HttpTransactionRepository {
     suspend fun getAllTransactions(): List<HttpTransaction>
 
     fun getTransactionsInTimeRange(minTimestamp: Long?): List<HttpTransaction>
+
+    /**
+     * Deletes all transactions that match the given list of transaction IDs.
+     *
+     * @param selectedTransactions A list of transaction IDs to be deleted.
+     */
+    suspend fun deleteSelectedTransactions(selectedTransactions: List<Long>)
+
+    /**
+     * Retrieves a list of full [HttpTransaction] objects for the provided list of IDs.
+     *
+     * @param selectedTransactions A list of transaction IDs to fetch.
+     * @return A list of [HttpTransaction] matching the given IDs.
+     */
+    suspend fun getSelectedTransactions(selectedTransactions: List<Long>): List<HttpTransaction>
 }
