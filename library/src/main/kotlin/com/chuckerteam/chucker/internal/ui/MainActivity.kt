@@ -274,9 +274,9 @@ internal class MainActivity :
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        val selectedIds =
-            savedInstanceState.getLongArray(KEY_SELECTED_TRANSACTION_IDS)?.toList() ?: emptyList()
+        val selectedIds = savedInstanceState.getLongArray(KEY_SELECTED_TRANSACTION_IDS)?.toList().orEmpty()
         viewModel.restoreSelection(selectedIds)
+        transactionsAdapter.setSelectedTransactionIds(selectedIds)
     }
 
     private fun exportTransactions(

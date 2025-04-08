@@ -37,7 +37,6 @@ internal class TransactionAdapter internal constructor(
     ) {
     // region private values
 
-    /** Holds the adapter positions of currently selected items */
     private var isSelectionMode = false
     private val selectedTransactionIds = mutableSetOf<Long>()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -106,6 +105,23 @@ internal class TransactionAdapter internal constructor(
             val position = currentList.indexOfFirst { it.id == id }
             if (position != -1) notifyItemChanged(position)
         }
+    }
+
+    /**
+     * Sets the list of selected transaction IDs.
+     *
+     * This is typically used to restore selection state after a configuration change (e.g., screen rotation),
+     * ensuring that the UI reflects the correct selection with proper background highlights.
+     *
+     * Since this affects potentially all items, a full data set refresh is triggered using [notifyDataSetChanged].
+     *
+     * @param ids The list of transaction IDs to mark as selected.
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    internal fun setSelectedTransactionIds(ids: List<Long>) {
+        selectedTransactionIds.clear()
+        selectedTransactionIds.addAll(ids)
+        notifyDataSetChanged()
     }
 
     inner class TransactionViewHolder(
