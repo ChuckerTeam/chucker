@@ -17,6 +17,7 @@ android {
         applicationId "com.chuckerteam.chucker.sample"
         versionName VERSION_NAME
         versionCode VERSION_CODE.toInteger()
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     buildFeatures {
@@ -75,6 +76,9 @@ apollo {
 }
 
 dependencies {
+    implementation "androidx.test:runner:$androidXTestRunner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidXExpresso"
+    androidTestImplementation "androidx.test.ext:junit:$androidXExtJUnit"
     debugImplementation project(':library')
     releaseImplementation project(':library-no-op')
 
