@@ -1,8 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.ColorFilter
@@ -17,6 +15,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.Px
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 
 internal class ChessboardDrawable(
     @ColorInt evenColor: Int,
@@ -25,7 +24,7 @@ internal class ChessboardDrawable(
 ) : Drawable() {
     private val chessboardPaint =
         Paint().apply {
-            val patternBitmap = Bitmap.createBitmap(squareSize * 2, squareSize * 2, ARGB_8888)
+            val patternBitmap = createBitmap(squareSize * 2, squareSize * 2)
             patternBitmap.eraseColor(evenColor)
 
             color = oddColor
