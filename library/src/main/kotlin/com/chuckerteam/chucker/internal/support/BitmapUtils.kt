@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.createBitmap
 import androidx.palette.graphics.Palette
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +25,7 @@ internal suspend fun Bitmap.calculateLuminance(): Double? {
 private fun Bitmap.replaceAlphaWithColor(
     @ColorInt color: Int,
 ): Bitmap {
-    val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val result = createBitmap(width, height)
     result.eraseColor(color)
     Canvas(result).apply {
         drawBitmap(this@replaceAlphaWithColor, Matrix(), BITMAP_PAINT)
