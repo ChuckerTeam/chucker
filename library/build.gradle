@@ -35,14 +35,6 @@ android {
         buildConfig = false
     }
 
-    lintOptions {
-        warningsAsErrors true
-        abortOnError true
-        // We don't want to impose RTL on consuming applications.
-        disable 'RtlEnabled'
-        // Don't fail build if some dependencies outdated
-        disable 'GradleDependency'
-    }
 
     testOptions {
         unitTests {
@@ -60,6 +52,11 @@ android {
             withSourcesJar()
             withJavadocJar()
         }
+    }
+    lint {
+        abortOnError true
+        disable 'RtlEnabled', 'GradleDependency'
+        warningsAsErrors true
     }
 }
 
