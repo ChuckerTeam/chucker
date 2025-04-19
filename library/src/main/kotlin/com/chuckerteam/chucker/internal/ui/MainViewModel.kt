@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.ui
 
-import android.text.TextUtils
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,9 +22,11 @@ internal class MainViewModel : ViewModel() {
                     searchQuery.isNullOrBlank() -> {
                         getSortedTransactionTuples()
                     }
-                    TextUtils.isDigitsOnly(searchQuery) -> {
+
+                    searchQuery.isDigitsOnly() -> {
                         getFilteredTransactionTuples(searchQuery, "")
                     }
+
                     else -> {
                         getFilteredTransactionTuples("", searchQuery)
                     }

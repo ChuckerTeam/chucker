@@ -9,11 +9,11 @@ import android.os.Build
 import android.util.LongSparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.size
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import java.util.HashSet
 
 internal class NotificationHelper(val context: Context) {
     companion object {
@@ -68,7 +68,7 @@ internal class NotificationHelper(val context: Context) {
         synchronized(transactionBuffer) {
             transactionIdsSet.add(transaction.id)
             transactionBuffer.put(transaction.id, transaction)
-            if (transactionBuffer.size() > BUFFER_SIZE) {
+            if (transactionBuffer.size > BUFFER_SIZE) {
                 transactionBuffer.removeAt(0)
             }
         }
@@ -97,7 +97,7 @@ internal class NotificationHelper(val context: Context) {
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
-                for (i in transactionBuffer.size() - 1 downTo 0) {
+                for (i in transactionBuffer.size - 1 downTo 0) {
                     val bufferedTransaction = transactionBuffer.valueAt(i)
                     if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
