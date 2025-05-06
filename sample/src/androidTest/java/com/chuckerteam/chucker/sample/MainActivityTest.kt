@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,5 +83,31 @@ class MainActivityTest {
         buttons.forEach { buttonText ->
             onView(withText(buttonText)).perform(click())
         }
+    }
+
+    @Test
+    fun testOnlyOneRadioButtonCheckedAtATime() {
+        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).perform(click())
+        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).check(matches(isDisplayed()))
+        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).check(matches(not(isChecked())))
+        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).perform(click())
+        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).check(matches(isChecked()))
+        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).check(matches(not(isChecked())))
+    }
+
+    @Test
+    fun testRadioButtonSelectionVisualState() {
+        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON))
+            .check(matches(isDisplayed()))
+            .perform(click())
+        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON))
+            .check(matches(isDisplayed()))
+            .perform(click())
+    }
+
+    @Test
+    fun testExportButtonsAreVisibleWithoutScrolling() {
+        onView(withText(ChuckerUITestLabels.EXPORT_LOG_FILE_BUTTON)).check(matches(isDisplayed()))
+        onView(withText(ChuckerUITestLabels.EXPORT_HAR_FILE_BUTTON)).check(matches(isDisplayed()))
     }
 }
