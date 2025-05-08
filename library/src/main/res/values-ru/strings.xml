@@ -50,10 +50,13 @@
     <string name="chucker_share_transaction_subject">Детали запроса</string>
     <string name="chucker_share_all_transactions_subject">Все запросы</string>
     <string name="chucker_clear_http_confirmation">Очистить всю историю запросов?</string>
+    <string name="chucker_clear_selected_http_confirmation">Вы хотите очистить выбранные сетевые запросы?</string>
     <string name="chucker_export_text_http_confirmation">Экспортировать все сетевые запросы как текстовый файл?</string>
     <string name="chucker_export_har_http_confirmation">Экспортировать все сетевые запросы как файл .har?</string>
     <string name="chucker_save_text_http_confirmation">Сохранить все сетевые запросы как текстовый файл?</string>
     <string name="chucker_save_har_http_confirmation">Сохранить все сетевые запросы как файл .har?</string>
+    <string name="chucker_export_text_selected_http_confirmation">Вы хотите экспортировать выбранные сетевые запросы в текстовый файл?</string>
+    <string name="chucker_export_har_selected_http_confirmation">Вы хотите экспортировать выбранные сетевые запросы в файл .har?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Начало экспорта */</string>
     <string name="chucker_export_postfix">/* Конец экспорта */</string>

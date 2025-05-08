@@ -50,10 +50,13 @@
     <string name="chucker_share_transaction_subject">Detalles de la transacción</string>
     <string name="chucker_share_all_transactions_subject">Todas las transacciones</string>
     <string name="chucker_clear_http_confirmation">¿Quieres limpiar por completo el historial de llamadas?</string>
+    <string name="chucker_clear_selected_http_confirmation">¿Desea borrar las transacciones de red seleccionadas?</string>
     <string name="chucker_export_text_http_confirmation">¿Quieres exportar todas las transacciones de red como un archivo de texto?</string>
     <string name="chucker_export_har_http_confirmation">¿Quieres exportar todas las transacciones de red como un archivo .har?</string>
     <string name="chucker_save_text_http_confirmation">¿Quieres guardar todas las transacciones de red como un archivo de texto?</string>
     <string name="chucker_save_har_http_confirmation">¿Quieres guardar todas las transacciones de red como un archivo .har?</string>
+    <string name="chucker_export_text_selected_http_confirmation">¿Desea exportar las transacciones de red seleccionadas como archivo de texto?</string>
+    <string name="chucker_export_har_selected_http_confirmation">¿Desea exportar las transacciones de red seleccionadas como archivo .har?</string>
     <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Exportación Iniciada */</string>
     <string name="chucker_export_postfix">/*  Exportación Finalizada  */</string>
