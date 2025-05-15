@@ -4,6 +4,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -14,6 +15,11 @@ import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
     private val currentFilter = MutableLiveData("")
+    private val selectedItemId: MutableLiveData<MutableList<Long>> =
+        MutableLiveData<MutableList<Long>>(mutableListOf())
+
+    private var _isItemSelected = MutableLiveData<Boolean>(false)
+    val isItemSelected = _isItemSelected.distinctUntilChanged()
 
     val transactions: LiveData<List<HttpTransactionTuple>> =
         currentFilter.switchMap { searchQuery ->
@@ -34,7 +40,25 @@ internal class MainViewModel : ViewModel() {
             }
         }
 
-    suspend fun getAllTransactions(): List<HttpTransaction> = RepositoryProvider.transaction().getAllTransactions()
+    fun selectItem(itemId: Long) {
+        viewModelScope.launch {
+            if (selectedItemId.value?.contains(itemId) == true) {
+                selectedItemId.value?.remove(itemId)
+                _isItemSelected.value = selectedItemId.value.isNullOrEmpty().not() == true
+            } else {
+                selectedItemId.value?.add(itemId)
+                _isItemSelected.value = true
+            }
+        }
+    }
+
+    suspend fun getAllTransactions(): List<HttpTransaction> {
+        return if (isItemSelected.value == true) {
+            RepositoryProvider.transaction().getSelectedTransactions(selectedItemId.value!!)
+        } else {
+            RepositoryProvider.transaction().getAllTransactions()
+        }
+    }
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery
@@ -42,7 +66,12 @@ internal class MainViewModel : ViewModel() {
 
     fun clearTransactions() {
         viewModelScope.launch {
-            RepositoryProvider.transaction().deleteAllTransactions()
+            if (isItemSelected.value == true) {
+                _isItemSelected.value = false
+                RepositoryProvider.transaction().deleteSelectedTransactions(selectedItemId.value!!)
+            } else {
+                RepositoryProvider.transaction().deleteAllTransactions()
+            }
         }
         NotificationHelper.clearBuffer()
     }
