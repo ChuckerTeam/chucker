@@ -5,7 +5,7 @@ buildscript {
         coroutineVersion = '1.10.2'
 
         // Google libraries
-        activityVersion = '1.9.3'
+        activityVersion = '1.10.1'
         appCompatVersion = '1.7.1'
         constraintLayoutVersion = '2.2.1'
         materialComponentsVersion = '1.12.0'
