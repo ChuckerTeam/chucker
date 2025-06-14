@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.api
 
+import android.annotation.SuppressLint
 import com.chuckerteam.chucker.util.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.util.ClientFactory
 import com.chuckerteam.chucker.util.NoLoggerRule
@@ -440,6 +441,7 @@ internal class ChuckerInterceptorTest {
     }
 
     @ParameterizedTest
+    @SuppressLint("CheckResult")
     @EnumSource(value = ClientFactory::class)
     fun `response body is available to Chucker if there are parsing errors`(factory: ClientFactory) {
         val providedJson =
