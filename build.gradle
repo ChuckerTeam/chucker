@@ -43,7 +43,7 @@ buildscript {
         androidXTestRunner = '1.6.2'
         androidXTestRules = '1.6.1'
         androidXTestExt = '1.2.1'
-        androidXExpresso = "3.5.1"
+        androidXExpresso = "3.6.1"
         androidXExtJUnit = "1.2.1"
 
         // Publishing
