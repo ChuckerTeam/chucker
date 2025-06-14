@@ -73,12 +73,14 @@ internal class MainViewModelTest {
         every { NotificationHelper.clearBuffer() } just runs
 
         viewModel = MainViewModel()
+        viewModel.isItemSelected.observeForever {}
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
         unmockkAll()
+        viewModel.isItemSelected.removeObserver {}
     }
 
     @Test
@@ -142,12 +144,12 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `getAllTransactions returns repository data`() =
+    fun `getTransactions returns repository data`() =
         runTest {
             val expectedTransactions = listOf(mockk<HttpTransaction>(relaxed = true))
             coEvery { transactionRepository.getAllTransactions() } returns expectedTransactions
 
-            val result = viewModel.getAllTransactions()
+            val result = viewModel.getTransactions()
 
             assertEquals(expectedTransactions, result)
             coVerify { transactionRepository.getAllTransactions() }
@@ -164,4 +166,73 @@ internal class MainViewModelTest {
             coVerify { transactionRepository.deleteAllTransactions() }
             verify { NotificationHelper.clearBuffer() }
         }
+
+    @Test
+    fun `toggleSelection should add item when not selected`() {
+        val id = 1L
+        viewModel.toggleSelection(id)
+
+        val selected = viewModel.getSelectedIds()
+        assertEquals(listOf(id), selected)
+        assertEquals(true, viewModel.isItemSelected.value)
+    }
+
+    @Test
+    fun `toggleSelection should remove item when already selected`() {
+        val id = 1L
+        viewModel.toggleSelection(id)
+        viewModel.toggleSelection(id)
+
+        val selected = viewModel.getSelectedIds()
+        assertEquals(emptyList<Long>(), selected)
+        assertEquals(false, viewModel.isItemSelected.value)
+    }
+
+    @Test
+    fun `startSelection should toggle item if already in selection mode`() {
+        val id = 1L
+        viewModel.toggleSelection(id)
+        viewModel.startSelection(id)
+
+        val selected = viewModel.getSelectedIds()
+        assertEquals(emptyList<Long>(), selected)
+        assertEquals(false, viewModel.isItemSelected.value)
+    }
+
+    @Test
+    fun `startSelection should start selection mode if not already active`() {
+        val id = 2L
+        viewModel.startSelection(id)
+
+        val selected = viewModel.getSelectedIds()
+        assertEquals(listOf(id), selected)
+        assertEquals(true, viewModel.isItemSelected.value)
+    }
+
+    @Test
+    fun `getSelectedIds should return currently selected IDs`() {
+        val ids = listOf(1L, 2L)
+        ids.forEach { viewModel.toggleSelection(it) }
+
+        val result = viewModel.getSelectedIds()
+        assertEquals(ids, result)
+    }
+
+    @Test
+    fun `restoreSelection should update selected IDs and state`() {
+        val restoredIds = listOf(1L, 2L, 3L)
+
+        viewModel.restoreSelection(restoredIds)
+
+        assertEquals(restoredIds, viewModel.getSelectedIds())
+        assertEquals(true, viewModel.isItemSelected.value)
+    }
+
+    @Test
+    fun `restoreSelection with empty list should clear selection state`() {
+        viewModel.restoreSelection(emptyList())
+
+        assertEquals(emptyList<Long>(), viewModel.getSelectedIds())
+        assertEquals(false, viewModel.isItemSelected.value)
+    }
 }
