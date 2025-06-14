@@ -89,10 +89,12 @@ dependencies {
     api("com.squareup.okhttp3:okhttp")
     testImplementation("com.squareup.okhttp3:mockwebserver")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${rootProject.extra["junitVersion"]}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${rootProject.extra["junitVersion"]}")
-    testImplementation("junit:junit:${rootProject.extra["junit4Version"]}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${rootProject.extra["junitPlatformLauncherVersion"]}")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${rootProject.extra["junitVersion"]}")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${rootProject.extra["junitVersion"]}")
+    testImplementation("junit:junit:${rootProject.extra["junit4Version"]}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${rootProject.extra["junitVersion"]}")
     testImplementation("io.mockk:mockk:${rootProject.extra["mockkVersion"]}")
     testImplementation("androidx.test:core:${rootProject.extra["androidxTestCoreVersion"]}")
