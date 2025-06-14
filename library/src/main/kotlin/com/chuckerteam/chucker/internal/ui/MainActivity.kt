@@ -198,6 +198,7 @@ internal class MainActivity :
         searchView.setIconifiedByDefault(true)
     }
 
+    @Suppress("LongMethod")
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.clear -> {
