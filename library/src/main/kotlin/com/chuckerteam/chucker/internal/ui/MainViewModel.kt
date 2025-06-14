@@ -14,8 +14,6 @@ import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
 
 internal class MainViewModel : ViewModel() {
-    // region private values
-
     /**
      * Holds the current search filter used to filter transactions.
      */
@@ -30,10 +28,6 @@ internal class MainViewModel : ViewModel() {
      * Indicates whether any transaction is currently selected.
      */
     private val mutableIsItemSelected = MutableLiveData(false)
-
-    // endregion Private values
-
-    // region public values
 
     internal val transactions: LiveData<List<HttpTransactionTuple>> =
         currentFilter.switchMap { searchQuery ->
@@ -52,15 +46,11 @@ internal class MainViewModel : ViewModel() {
      */
     internal val isItemSelected: LiveData<Boolean> = mutableIsItemSelected.distinctUntilChanged()
 
-    // endregion public values
-
-    // region public function
-
     /**
      * Returns either all transactions or only the selected ones,
      * depending on whether items are selected.
      */
-    suspend fun getAllTransactions(): List<HttpTransaction> {
+    suspend fun getTransactions(): List<HttpTransaction> {
         val ids = mutableSelectedItemIds.value.orEmpty()
         return if (mutableIsItemSelected.value == true && ids.isNotEmpty()) {
             RepositoryProvider.transaction().getSelectedTransactions(ids)
@@ -154,6 +144,4 @@ internal class MainViewModel : ViewModel() {
             mutableIsItemSelected.value = false
             NotificationHelper.clearBuffer()
         }
-
-    // endregion public function
 }

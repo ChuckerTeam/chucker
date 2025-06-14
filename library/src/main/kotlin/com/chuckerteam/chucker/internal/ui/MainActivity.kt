@@ -213,8 +213,14 @@ internal class MainActivity :
             }
 
             R.id.share_text -> {
+                val stringId =
+                    if (viewModel.isItemSelected.value == true) {
+                        R.string.chucker_export_text_selected_http_confirmation
+                    } else {
+                        R.string.chucker_export_text_http_confirmation
+                    }
                 showDialog(
-                    getExportDialogData(R.string.chucker_export_text_http_confirmation),
+                    getExportDialogData(stringId),
                     onPositiveClick = {
                         exportTransactions(EXPORT_TXT_FILE_NAME) { transactions ->
                             TransactionListDetailsSharable(transactions, encodeUrls = false)
@@ -226,8 +232,14 @@ internal class MainActivity :
             }
 
             R.id.share_har -> {
+                val stringId =
+                    if (viewModel.isItemSelected.value == true) {
+                        R.string.chucker_export_har_selected_http_confirmation
+                    } else {
+                        R.string.chucker_export_har_http_confirmation
+                    }
                 showDialog(
-                    getExportDialogData(R.string.chucker_export_har_http_confirmation),
+                    getExportDialogData(stringId),
                     onPositiveClick = {
                         exportTransactions(EXPORT_HAR_FILE_NAME) { transactions ->
                             TransactionDetailsHarSharable(
@@ -285,7 +297,7 @@ internal class MainActivity :
     ) {
         val applicationContext = this.applicationContext
         lifecycleScope.launch {
-            val transactions = viewModel.getAllTransactions()
+            val transactions = viewModel.getTransactions()
             if (transactions.isEmpty()) {
                 showToast(applicationContext.getString(R.string.chucker_export_empty_text))
                 return@launch
@@ -393,7 +405,7 @@ internal class MainActivity :
     }
 
     private suspend fun prepareDataToSave(exportType: ExportType): Source? {
-        val transactions = viewModel.getAllTransactions()
+        val transactions = viewModel.getTransactions()
         if (transactions.isEmpty()) {
             showToast(applicationContext.getString(R.string.chucker_save_empty_text))
             return null

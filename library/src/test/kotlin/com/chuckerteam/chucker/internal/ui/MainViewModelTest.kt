@@ -144,12 +144,12 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `getAllTransactions returns repository data`() =
+    fun `getTransactions returns repository data`() =
         runTest {
             val expectedTransactions = listOf(mockk<HttpTransaction>(relaxed = true))
             coEvery { transactionRepository.getAllTransactions() } returns expectedTransactions
 
-            val result = viewModel.getAllTransactions()
+            val result = viewModel.getTransactions()
 
             assertEquals(expectedTransactions, result)
             coVerify { transactionRepository.getAllTransactions() }

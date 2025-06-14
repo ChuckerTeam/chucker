@@ -35,8 +35,6 @@ internal class TransactionAdapter internal constructor(
 ) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
         TransactionDiffCallback,
     ) {
-    // region private values
-
     private var isSelectionMode = false
     private val selectedTransactionIds = mutableSetOf<Long>()
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
@@ -54,8 +52,6 @@ internal class TransactionAdapter internal constructor(
         TypedValue().also {
             context.theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
         }
-
-    // endregion Private values
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
