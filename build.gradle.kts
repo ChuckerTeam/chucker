@@ -41,7 +41,8 @@ buildscript {
     // Testing
     val androidxTestCoreVersion by extra("1.6.1")
     val junitGradlePluginVersion by extra("1.13.0.0")
-    val junitVersion by extra("5.11.4")
+    val junitVersion by extra("5.13.1")
+    val junitPlatformLauncherVersion by extra("1.13.1")
     val junit4Version by extra("4.13.2")
     val mockkVersion by extra("1.14.2")
     val robolectricVersion by extra("4.14.1")
