@@ -6,51 +6,51 @@ plugins {
 }
 
 buildscript {
-    val kotlinVersion by extra("2.1.0")
-    val androidGradleVersion by extra("8.9.1")
-    val coroutineVersion by extra("1.10.1")
+    val kotlinVersion by extra("2.1.21")
+    val androidGradleVersion by extra("8.10.1")
+    val coroutineVersion by extra("1.10.2")
 
     // Google libraries
-    val activityVersion by extra("1.9.3")
-    val appCompatVersion by extra("1.7.0")
-    val constraintLayoutVersion by extra("2.2.0")
+    val activityVersion by extra("1.10.1")
+    val appCompatVersion by extra("1.7.1")
+    val constraintLayoutVersion by extra("2.2.1")
     val materialComponentsVersion by extra("1.12.0")
-    val fragmentVersion by extra("1.8.5")
-    val roomVersion by extra("2.6.1")
-    val lifecycleVersion by extra("2.8.7")
+    val fragmentVersion by extra("1.8.8")
+    val roomVersion by extra("2.7.1")
+    val lifecycleVersion by extra("2.9.1")
     val androidXCoreVersion by extra("2.2.0")
     val paletteKtxVersion by extra("1.0.0")
-    val kspVersion by extra("2.0.21-1.0.28")
+    val kspVersion by extra("2.1.21-2.0.2")
 
     // Networking
     val brotliVersion by extra("0.1.2")
-    val gsonVersion by extra("2.11.0")
+    val gsonVersion by extra("2.13.1")
     val okhttpVersion by extra("4.12.0")
-    val retrofitVersion by extra("2.11.0")
-    val wireVersion by extra("5.1.0")
+    val retrofitVersion by extra("3.0.0")
+    val wireVersion by extra("5.3.3")
 
     // Debug and quality control
     val binaryCompatibilityValidator by extra("0.17.0")
-    val detektVersion by extra("1.23.7")
-    val ktLintGradleVersion by extra("12.1.2")
+    val detektVersion by extra("1.23.8")
+    val ktLintGradleVersion by extra("12.3.0")
     val leakcanaryVersion by extra("2.14")
 
     // Apollo
-    val apolloVersion by extra("3.8.5")
+    val apolloVersion by extra("3.8.6")
 
     // Testing
     val androidxTestCoreVersion by extra("1.6.1")
-    val junitGradlePluginVersion by extra("1.11.3.0")
+    val junitGradlePluginVersion by extra("1.13.0.0")
     val junitVersion by extra("5.11.4")
     val junit4Version by extra("4.13.2")
-    val mockkVersion by extra("1.13.14")
+    val mockkVersion by extra("1.14.2")
     val robolectricVersion by extra("4.14.1")
     val truthVersion by extra("1.4.4")
     val androidXTestRunner by extra("1.6.2")
     val androidXTestRules by extra("1.6.1")
     val androidXTestExt by extra("1.2.1")
-    val androidXExpresso by extra("3.5.1")
-    val androidXExtJUnit by extra("1.1.5")
+    val androidXExpresso by extra("3.6.1")
+    val androidXExtJUnit by extra("1.2.1")
 
     // Publishing
     val nexusStagingPlugin by extra("0.30.0")
