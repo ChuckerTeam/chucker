@@ -16,7 +16,7 @@ buildscript {
     val constraintLayoutVersion by extra("2.2.1")
     val materialComponentsVersion by extra("1.12.0")
     val fragmentVersion by extra("1.8.8")
-    val roomVersion by extra("2.7.1")
+    val roomVersion by extra("2.7.2")
     val lifecycleVersion by extra("2.9.1")
     val androidXCoreVersion by extra("2.2.0")
     val paletteKtxVersion by extra("1.0.0")
