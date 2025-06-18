@@ -1,0 +1,146 @@
+[versions]
+androidGradlePlugin = "8.10.1"
+converterGson = "3.0.0"
+core = "1.6.1"
+coreTesting = "2.2.0"
+dec = "0.1.2"
+junitJupiterParams = "5.13.1"
+junitVersion = "1.2.1"
+kotlin = "2.1.21"
+coroutines = "1.10.2"
+kotlinStdlib = "2.1.21"
+ksp = "2.1.21-2.0.2"
+
+# Google Libraries
+activity = "1.10.1"
+appCompat = "1.7.1"
+constraintLayout = "2.2.1"
+lifecycleLivedataKtx = "2.9.1"
+loggingInterceptor = "4.12.0"
+materialComponents = "1.12.0"
+fragment = "1.8.8"
+room = "2.7.1"
+lifecycle = "2.9.1"
+paletteKtx = "1.0.0"
+
+# Networking
+brotli = "0.1.2"
+gson = "2.13.1"
+okhttp = "4.12.0"
+retrofit = "3.0.0"
+wire = "5.3.3"
+
+# Debug and Quality Control
+binaryCompatibilityValidator = "0.17.0"
+detekt = "1.23.8"
+ktLintGradle = "12.3.0"
+leakcanary = "2.14"
+
+# Apollo
+apollo = "3.8.6"
+
+# Testing
+androidxTestCore = "1.6.1"
+junitGradlePlugin = "1.13.0.0"
+junit = "5.13.1"
+junitPlatformLauncher = "1.13.1"
+junit4 = "4.13.2"
+mockk = "1.14.2"
+robolectric = "4.14.1"
+truth = "1.4.4"
+androidxTestRunner = "1.6.2"
+androidxTestRules = "1.6.1"
+androidxTestExt = "1.2.1"
+androidxEspresso = "3.6.1"
+androidXExtJUnit = "1.2.1"
+
+# Publishing
+nexusStagingPlugin = "0.30.0"
+
+[libraries]
+# Google Libraries
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
+#androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+# compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "composeUi" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+dec = { module = "org.brotli:dec", version.ref = "dec" }
+jetbrains-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterParams" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialComponents" }
+
+# Networking
+brotli = { group = "com.github.brotilx", name = "brotli", version.ref = "brotli" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" } # Assuming com.squareup.retrofit2, adjust if needed
+wire-runtime = { group = "com.squareup.wire", name = "wire-runtime", version.ref = "wire" }
+
+# Kotlin & Coroutines
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# Debug and Quality Control
+leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+
+# Apollo
+apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+
+# Testing
+androidx-test-core = { group = "androidx.test.core", name = "core-ktx", version.ref = "androidxTestCore" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+junit = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
+junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncher" }
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junitGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLintGradle" }
+kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+wire = { id = "com.squareup.wire", version.ref = "wire" }
+nexus-staging = { id = "io.codearte.nexus-staging", version.ref = "nexusStagingPlugin" }
+
+[bundles]
+testing-android = [
+    "androidx-test-core",
+    "androidx-test-runner",
+    "androidx-test-rules",
+    "androidx-test-ext-junit",
+    "androidx-espresso-core",
+    "mockk",
+    "truth",
+    "robolectric"
+]
+room = ["androidx-room-runtime", "androidx-room-ktx"]
+
