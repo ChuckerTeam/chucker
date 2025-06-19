@@ -45,7 +45,7 @@ buildscript {
     val junitPlatformLauncherVersion by extra("1.13.1")
     val junit4Version by extra("4.13.2")
     val mockkVersion by extra("1.14.2")
-    val robolectricVersion by extra("4.14.1")
+    val robolectricVersion by extra("4.15")
     val truthVersion by extra("1.4.4")
     val androidXTestRunner by extra("1.6.2")
     val androidXTestRules by extra("1.6.1")
