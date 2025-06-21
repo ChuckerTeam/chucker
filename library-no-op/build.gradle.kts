@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -47,8 +47,8 @@ android {
 }
 
 dependencies {
-    api("com.squareup.okhttp3:okhttp:${rootProject.extra["okhttpVersion"]}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlinVersion"]}")
+    api(libs.okhttp)
+    implementation(libs.jetbrains.kotlin.stdlib)
 }
 
 apply(from = rootProject.file("gradle/gradle-mvn-push.gradle"))

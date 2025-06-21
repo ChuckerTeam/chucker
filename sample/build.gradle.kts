@@ -1,8 +1,8 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.squareup.wire")
-    id("com.apollographql.apollo3")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.wire)
+    alias(libs.plugins.apollo)
 }
 
 wire {
@@ -76,27 +76,27 @@ apollo {
 }
 
 dependencies {
-    implementation("androidx.test:runner:${rootProject.extra["androidXTestRunner"]}")
-    androidTestImplementation("androidx.test.espresso:espresso-core:${rootProject.extra["androidXExpresso"]}")
-    androidTestImplementation("androidx.test.ext:junit:${rootProject.extra["androidXExtJUnit"]}")
+    implementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
     debugImplementation(project(":library"))
     releaseImplementation(project(":library-no-op"))
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlinVersion"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.extra["coroutineVersion"]}")
-    implementation("androidx.activity:activity-ktx:${rootProject.extra["activityVersion"]}")
+    implementation(libs.jetbrains.kotlin.stdlib)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.activity.ktx)
 
-    implementation("com.google.android.material:material:${rootProject.extra["materialComponentsVersion"]}")
-    implementation("androidx.appcompat:appcompat:${rootProject.extra["appCompatVersion"]}")
-    implementation("androidx.constraintlayout:constraintlayout:${rootProject.extra["constraintLayoutVersion"]}")
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
 
-    implementation("com.squareup.okhttp3:logging-interceptor:${rootProject.extra["okhttpVersion"]}")
-    implementation("com.squareup.retrofit2:retrofit:${rootProject.extra["retrofitVersion"]}")
-    implementation("com.squareup.retrofit2:converter-gson:${rootProject.extra["retrofitVersion"]}")
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
-    implementation("com.apollographql.apollo3:apollo-runtime:${rootProject.extra["apolloVersion"]}")
+    implementation(libs.apollo.runtime)
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:${rootProject.extra["leakcanaryVersion"]}")
+    debugImplementation(libs.leakcanary.android)
 }
 
 apply(from = rootProject.file("gradle/kotlin-static-analysis.gradle"))
