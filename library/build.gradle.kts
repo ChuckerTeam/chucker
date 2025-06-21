@@ -1,8 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -65,49 +64,46 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlinVersion"]}")
+    implementation(libs.jetbrains.kotlin.stdlib)
 
-    implementation("com.google.android.material:material:${rootProject.extra["materialComponentsVersion"]}")
-    implementation("androidx.constraintlayout:constraintlayout:${rootProject.extra["constraintLayoutVersion"]}")
-    implementation("androidx.palette:palette-ktx:${rootProject.extra["paletteKtxVersion"]}")
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.palette.ktx)
 
-    implementation("androidx.activity:activity-ktx:${rootProject.extra["activityVersion"]}")
-    implementation("androidx.fragment:fragment-ktx:${rootProject.extra["fragmentVersion"]}")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.extra["lifecycleVersion"]}")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.extra["lifecycleVersion"]}")
-    implementation("androidx.room:room-ktx:${rootProject.extra["roomVersion"]}")
-    implementation("androidx.room:room-runtime:${rootProject.extra["roomVersion"]}")
-    ksp("androidx.room:room-compiler:${rootProject.extra["roomVersion"]}")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.extra["coroutineVersion"]}")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.gson)
+    implementation(libs.dec)
 
-    implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
+    api(libs.okhttp)
+    api(libs.okhttp3.okhttp)
+    testImplementation(libs.mockwebserver)
+    testRuntimeOnly(libs.junit.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.vintage.engine)
 
-    implementation("org.brotli:dec:${rootProject.extra["brotliVersion"]}")
+    testImplementation(libs.junit)
+    testImplementation(libs.junit4)
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.truth)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
 
-    api(platform("com.squareup.okhttp3:okhttp-bom:${rootProject.extra["okhttpVersion"]}"))
-    api("com.squareup.okhttp3:okhttp")
-    testImplementation("com.squareup.okhttp3:mockwebserver")
-
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${rootProject.extra["junitVersion"]}")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${rootProject.extra["junitPlatformLauncherVersion"]}")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${rootProject.extra["junitVersion"]}")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${rootProject.extra["junitVersion"]}")
-    testImplementation("junit:junit:${rootProject.extra["junit4Version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:${rootProject.extra["junitVersion"]}")
-    testImplementation("io.mockk:mockk:${rootProject.extra["mockkVersion"]}")
-    testImplementation("androidx.test:core:${rootProject.extra["androidxTestCoreVersion"]}")
-    testImplementation("androidx.arch.core:core-testing:${rootProject.extra["androidXCoreVersion"]}")
-    testImplementation("com.google.truth:truth:${rootProject.extra["truthVersion"]}")
-    testImplementation("org.robolectric:robolectric:${rootProject.extra["robolectricVersion"]}")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${rootProject.extra["coroutineVersion"]}")
-
-    androidTestImplementation("junit:junit:${rootProject.extra["junit4Version"]}")
-    androidTestImplementation("androidx.test:runner:${rootProject.extra["androidXTestRunner"]}")
-    androidTestImplementation("androidx.test:rules:${rootProject.extra["androidXTestRules"]}")
-    androidTestImplementation("com.google.truth:truth:${rootProject.extra["truthVersion"]}")
-    androidTestImplementation("androidx.test.ext:junit:${rootProject.extra["androidXTestExt"]}")
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.junit)
 }
 
 apply(from = rootProject.file("gradle/gradle-mvn-push.gradle"))
