@@ -6,9 +6,9 @@ coreTesting = "2.2.0"
 dec = "0.1.2"
 junitJupiterParams = "5.13.1"
 junitVersion = "1.2.1"
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 coroutines = "1.10.2"
-kotlinStdlib = "2.1.21"
+kotlinStdlib = "2.2.0"
 ksp = "2.1.21-2.0.2"
 
 # Google Libraries
