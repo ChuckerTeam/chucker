@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.wire)
     alias(libs.plugins.apollo)
+    alias(libs.plugins.compose.compiler)
 }
 
 wire {
@@ -25,6 +26,10 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = false
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     buildTypes {
@@ -95,6 +100,13 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation(libs.apollo.runtime)
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
 
     debugImplementation(libs.leakcanary.android)
 }

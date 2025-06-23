@@ -38,6 +38,10 @@ leakcanary = "2.14"
 # Apollo
 apollo = "3.8.6"
 
+# Compose
+composeBom = "2025.04.00"
+lifecycleViewmodelCompose = "2.8.4"
+
 # Testing
 junitGradlePlugin = "1.13.0.0"
 junit = "5.13.1"
@@ -91,6 +95,16 @@ leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-and
 # Apollo
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 
+# Jetpack Compose
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+
+
 # Testing
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
@@ -117,4 +131,5 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLintGradle" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
 wire = { id = "com.squareup.wire", version.ref = "wire" }
 nexus-staging = { id = "io.codearte.nexus-staging", version.ref = "nexusStagingPlugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
