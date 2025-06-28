@@ -104,6 +104,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.material3.window.size)
 
     debugImplementation(libs.leakcanary.android)
 }
