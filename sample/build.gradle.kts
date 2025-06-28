@@ -81,7 +81,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    debugImplementation(project(":library"))
+    implementation(project(":library"))
     releaseImplementation(project(":library-no-op"))
 
     implementation(libs.jetbrains.kotlin.stdlib)
