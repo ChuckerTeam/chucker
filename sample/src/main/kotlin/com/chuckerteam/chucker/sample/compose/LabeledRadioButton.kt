@@ -76,6 +76,7 @@ internal fun LabeledRadioButton(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }
