@@ -63,9 +63,9 @@ internal fun ChuckerSampleMainScreen(
     onExportToHarFile: () -> Unit,
     showChuckerOperations: Boolean,
 ) {
-    val useHorizontalLayout = widthSizeClass == WindowWidthSizeClass.Expanded
+    val isExpandedWidth = widthSizeClass == WindowWidthSizeClass.Expanded
 
-    if (useHorizontalLayout) {
+    if (isExpandedWidth) {
         Box(
             modifier =
                 Modifier
@@ -111,6 +111,7 @@ internal fun ChuckerSampleMainScreen(
                             onExportToLogFile = onExportToLogFile,
                             onExportToHarFile = onExportToHarFile,
                             showChuckerOperations = showChuckerOperations,
+                            isExpandedWidth = true,
                         )
                     }
                 }

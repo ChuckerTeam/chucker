@@ -48,7 +48,16 @@ internal fun ChuckerSampleControls(
     onExportToLogFile: () -> Unit,
     onExportToHarFile: () -> Unit,
     showChuckerOperations: Boolean,
+    isExpandedWidth: Boolean = false,
 ) {
+    val modifier =
+        if (isExpandedWidth) {
+            Modifier.fillMaxWidth()
+        } else {
+            Modifier
+                .widthIn(max = 500.dp)
+                .fillMaxWidth()
+        }
     val interceptorTypeLabel = stringResource(R.string.interceptor_type)
     Text(
         text = interceptorTypeLabel,
@@ -56,13 +65,12 @@ internal fun ChuckerSampleControls(
         color = AppAccentColor,
         textDecoration = TextDecoration.Underline,
         modifier =
-            Modifier
-                .widthIn(max = 500.dp)
-                .fillMaxWidth()
+            modifier
                 .clearAndSetSemantics {
                     contentDescription =
                         "$interceptorTypeLabel, opens external link, double tap to activate"
-                }.clickable {
+                }
+                .clickable {
                     onInterceptorTypeLabelClick.invoke()
                 },
     )
@@ -71,10 +79,7 @@ internal fun ChuckerSampleControls(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            Modifier
-                .widthIn(max = 500.dp)
-                .fillMaxWidth(),
+        modifier = modifier,
     ) {
         LabeledRadioButton(
             label = stringResource(R.string.application_type),
@@ -100,10 +105,7 @@ internal fun ChuckerSampleControls(
     ).forEach { (label, action) ->
         Button(
             onClick = action,
-            modifier =
-                Modifier
-                    .widthIn(max = 500.dp)
-                    .fillMaxWidth(),
+            modifier = modifier,
             shape = RoundedCornerShape(4.dp),
         ) {
             Text(text = label)
@@ -113,10 +115,7 @@ internal fun ChuckerSampleControls(
     if (showChuckerOperations) {
         Button(
             onClick = onLaunchChucker,
-            modifier =
-                Modifier
-                    .widthIn(max = 500.dp)
-                    .fillMaxWidth(),
+            modifier = modifier,
             shape =
                 androidx.compose.foundation.shape
                     .RoundedCornerShape(4.dp),
