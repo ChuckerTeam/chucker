@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -88,7 +89,10 @@ internal fun ChuckerSampleMainScreen(
                     text = stringResource(R.string.intro_body),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .widthIn(max = 500.dp)
+                            .fillMaxWidth(),
                 )
                 Text(
                     text = interceptorTypeLabel,
@@ -97,11 +101,13 @@ internal fun ChuckerSampleMainScreen(
                     textDecoration = TextDecoration.Underline,
                     modifier =
                         Modifier
+                            .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .clearAndSetSemantics {
                                 contentDescription =
                                     "$interceptorTypeLabel, opens external link, double tap to activate"
-                            }.clickable {
+                            }
+                            .clickable {
                                 onInterceptorTypeLabelClick.invoke()
                             },
                 )
@@ -110,7 +116,10 @@ internal fun ChuckerSampleMainScreen(
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .widthIn(max = 500.dp)
+                            .fillMaxWidth(),
                 ) {
                     LabeledRadioButton(
                         label = stringResource(R.string.application_type),
@@ -137,7 +146,9 @@ internal fun ChuckerSampleMainScreen(
                     Button(
                         onClick = action,
                         modifier =
-                            Modifier.fillMaxWidth(),
+                            Modifier
+                                .widthIn(max = 500.dp)
+                                .fillMaxWidth(),
                         shape = RoundedCornerShape(4.dp),
                     ) {
                         Text(text = label)
@@ -148,7 +159,9 @@ internal fun ChuckerSampleMainScreen(
                     Button(
                         onClick = onLaunchChucker,
                         modifier =
-                            Modifier.fillMaxWidth(),
+                            Modifier
+                                .widthIn(max = 500.dp)
+                                .fillMaxWidth(),
                         shape = RoundedCornerShape(4.dp),
                     ) {
                         Text(
