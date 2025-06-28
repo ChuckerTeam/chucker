@@ -10,3 +10,12 @@ indent_size = 2
 
 [**/test/**.kt]
 ktlint_ignore_back_ticked_identifier=true
+
+# Added to support compose function naming convection
+# for sample Compose screens:
+[sample/src/main/kotlin/com/chuckerteam/chucker/sample/compose/**/*.kt]
+ktlint_standard_function-naming = disabled
+
+# for library theme:
+[library/src/main/kotlin/com/chuckerteam/chucker/internal/ui/theme/**/*.kt]
+ktlint_standard_function-naming = disabled
