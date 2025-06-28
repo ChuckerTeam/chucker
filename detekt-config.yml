@@ -6,6 +6,14 @@ build:
     # style: 1
     # comments: 1
 
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][_A-Z0-9]*|[A-Z][A-Za-z0-9]*'
+
 complexity:
   active: true
   CyclomaticComplexMethod:
@@ -17,13 +25,17 @@ complexity:
   LongMethod:
     active: true
     excludes: ['**/test/**', '**/androidTest/**']
+    ignoreAnnotated: ['Composable', 'Preview']
   LongParameterList:
     active: true
     ignoreDefaultParameters: true
+    functionThreshold: 11
+    constructorThreshold: 11
   TooManyFunctions:
     thresholdInClasses: 13
     active: true
     ignoreOverridden: true
+    ignoreAnnotatedFunctions: ['Preview']
 
 style:
   ReturnCount:
@@ -34,3 +46,10 @@ style:
     excludeReturnFromLambda: true
   UnusedImports:
     active: true
+  MagicNumber:
+    active: true
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  UnusedPrivateMember:
+     active: true
+     ignoreAnnotated: [ 'Preview' ]
