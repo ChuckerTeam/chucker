@@ -10,6 +10,7 @@
     <string name="export_to_file_har">Export to HAR file</string>
     <string name="export_to_file_failure">Failed to export to file</string>
     <string name="export_to_file_success">Transactions exported to: %s</string>
+    <string name="interceptor_url">https://square.github.io/okhttp/interceptors/</string>
 
 
     <string name="intro_title">Welcome to Chucker Sample App</string>

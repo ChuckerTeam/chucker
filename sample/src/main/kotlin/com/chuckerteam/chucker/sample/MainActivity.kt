@@ -2,28 +2,30 @@ package com.chuckerteam.chucker.sample
 
 import android.os.Bundle
 import android.os.StrictMode
-import android.text.method.LinkMovementMethod
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ExportFormat
-import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
+import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
+import com.chuckerteam.chucker.sample.compose.ChuckerSampleMainScreen
+import com.chuckerteam.chucker.sample.util.openUrlInBrowser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private val interceptorTypeSelector = InterceptorTypeSelector()
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var mainBinding: ActivityMainSampleBinding
-
+class MainActivity : ComponentActivity() {
     private val client by lazy {
         createOkHttpClient(applicationContext, interceptorTypeSelector)
     }
@@ -32,82 +34,66 @@ class MainActivity : AppCompatActivity() {
         listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
     }
 
-    private val applicationName: CharSequence
-        get() = applicationInfo.loadLabel(packageManager)
-
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        mainBinding = ActivityMainSampleBinding.inflate(layoutInflater)
-
-        with(mainBinding) {
-            setContentView(root)
-            applyInsets()
-            setSupportActionBar(toolbar)
-            toolbar?.subtitle = applicationName
-            doHttp.setOnClickListener {
-                for (task in httpTasks) {
-                    task.run()
-                }
-            }
-            doGraphql.setOnClickListener {
-                GraphQlTask(client).run()
-            }
-
-            launchChuckerDirectly.isVisible = Chucker.isOp
-            launchChuckerDirectly.setOnClickListener { launchChuckerDirectly() }
-
-            exportToFile.isVisible = Chucker.isOp
-            exportToFile.setOnClickListener {
-                generateExportFile(ExportFormat.LOG)
-            }
-
-            exportToFileHar.isVisible = Chucker.isOp
-            exportToFileHar.setOnClickListener {
-                generateExportFile(ExportFormat.HAR)
-            }
-
-            interceptorTypeLabel.movementMethod = LinkMovementMethod.getInstance()
-            useApplicationInterceptor.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    interceptorTypeSelector.value = InterceptorType.APPLICATION
-                }
-            }
-            useNetworkInterceptor.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    interceptorTypeSelector.value = InterceptorType.NETWORK
-                }
+        enableEdgeToEdge()
+        setContent {
+            ChuckerTheme {
+                val windowSize = calculateWindowSizeClass(this)
+                var selectedType by remember { mutableStateOf(interceptorTypeSelector.value) }
+                ChuckerSampleMainScreen(
+                    widthSizeClass = windowSize.widthSizeClass,
+                    selectedInterceptorType = selectedType,
+                    onInterceptorTypeChange = { newType ->
+                        selectedType = newType
+                        interceptorTypeSelector.value = newType
+                    },
+                    onInterceptorTypeLabelClick = {
+                        openUrlInBrowser(
+                            context = this,
+                            url = getString(R.string.interceptor_url),
+                        )
+                    },
+                    onDoHttp = {
+                        for (task in httpTasks) {
+                            task.run()
+                        }
+                    },
+                    onDoGraphQL = {
+                        GraphQlTask(client).run()
+                    },
+                    onLaunchChucker = {
+                        launchChuckerDirectly()
+                    },
+                    onExportToLogFile = {
+                        generateExportFile(ExportFormat.LOG)
+                    },
+                    onExportToHarFile = {
+                        generateExportFile(ExportFormat.HAR)
+                    },
+                    showChuckerOperations = Chucker.isOp,
+                )
             }
         }
 
         StrictMode.setVmPolicy(
-            StrictMode.VmPolicy.Builder()
+            StrictMode.VmPolicy
+                .Builder()
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .build(),
         )
 
         StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder()
+            StrictMode.ThreadPolicy
+                .Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
                 .penaltyLog()
                 .penaltyDeath()
                 .build(),
         )
-    }
-
-    private fun applyInsets() {
-        // Set up window insets to properly handle the UI around system bars
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        // Apply insets to the main content to avoid overlap with system bars
-        ViewCompat.setOnApplyWindowInsetsListener(mainBinding.root) { view, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            mainBinding.appBarLayout?.updatePadding(top = insets.top)
-            view.updatePadding(bottom = insets.bottom)
-            WindowInsetsCompat.CONSUMED
-        }
     }
 
     private fun launchChuckerDirectly() {
@@ -123,9 +109,15 @@ class MainActivity : AppCompatActivity() {
                         .writeTransactions(this@MainActivity, null, exportFormat)
                 }
             if (uri == null) {
-                Toast.makeText(applicationContext, R.string.export_to_file_failure, Toast.LENGTH_SHORT).show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        R.string.export_to_file_failure,
+                        Toast.LENGTH_SHORT,
+                    ).show()
             } else {
-                val successMessage = applicationContext.getString(R.string.export_to_file_success, uri.path)
+                val successMessage =
+                    applicationContext.getString(R.string.export_to_file_success, uri.path)
                 Toast.makeText(applicationContext, successMessage, Toast.LENGTH_SHORT).show()
             }
         }
