@@ -1,15 +1,19 @@
 package com.chuckerteam.chucker.sample
 
+import android.util.Log
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.network.okHttpClient
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.create
 import retrofit2.http.GET
@@ -22,40 +26,47 @@ class GraphQlTask(
     client: OkHttpClient,
 ) : HttpTask {
     private val apolloClient =
-        ApolloClient.Builder()
+        ApolloClient
+            .Builder()
             .serverUrl(GRAPHQL_BASE_URL)
             .okHttpClient(client)
             .build()
 
     private val api =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .build()
             .create<Api>()
 
-    private val scope = MainScope()
+    val scope =
+        CoroutineScope(
+            SupervisorJob() +
+                Dispatchers.IO +
+                CoroutineExceptionHandler { _, error ->
+                    Log.e("NetworkScope", "Unexpected error", error)
+                },
+        )
 
     override fun run() {
         scope.launch {
-            api.getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE).enqueue(
-                object : Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>,
-                    ) = Unit
-
-                    override fun onFailure(
-                        call: Call<ResponseBody>,
-                        t: Throwable,
-                    ) {
-                        t.printStackTrace()
+            supervisorScope {
+                val deferredCharacter =
+                    async {
+                        api
+                            .getCharacterById(GRAPHQL_QUERY, GRAPHQL_QUERY_VARIABLE)
+                            .execute()
                     }
-                },
-            )
-            apolloClient
-                .query(SearchCharactersQuery(Optional.presentIfNotNull("Morty")))
-                .execute()
+                val deferredSearch =
+                    async {
+                        apolloClient
+                            .query(SearchCharactersQuery(Optional.presentIfNotNull("Morty")))
+                            .execute()
+                    }
+                runCatching { deferredCharacter.await() }
+                runCatching { deferredSearch.await() }
+            }
         }
     }
 
