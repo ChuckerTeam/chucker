@@ -15,7 +15,7 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
 
         fun create(applicationContext: Context): ChuckerDatabase {
             return Room.databaseBuilder(applicationContext, ChuckerDatabase::class.java, DB_NAME)
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
         }
     }
