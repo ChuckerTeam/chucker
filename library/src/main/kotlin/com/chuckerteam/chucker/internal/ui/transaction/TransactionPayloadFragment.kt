@@ -522,7 +522,6 @@ internal class TransactionPayloadFragment :
         for (index in linesList.indices) {
             val line = subSequence(lineIndex, lineIndex + linesList[index].length)
             if (line.length > LINE_LENGTH_THRESHOLD) {
-
                 if (line is SpannableStringBuilder) {
                     result.addAll(line.spannableChunked(LINE_LENGTH_THRESHOLD))
                 } else {
