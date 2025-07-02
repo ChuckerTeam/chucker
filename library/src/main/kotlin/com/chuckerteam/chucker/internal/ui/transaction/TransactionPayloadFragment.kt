@@ -22,6 +22,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
+import androidx.core.text.getSpans
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -501,6 +502,7 @@ internal class TransactionPayloadFragment :
         private const val DELAY_FOR_SEARCH_SCROLL: Long = 600L
 
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
+        private const val LINE_LENGTH_THRESHOLD = 500
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
@@ -518,7 +520,18 @@ internal class TransactionPayloadFragment :
         val result = mutableListOf<CharSequence>()
         var lineIndex = 0
         for (index in linesList.indices) {
-            result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
+            val line = subSequence(lineIndex, lineIndex + linesList[index].length)
+            if (line.length > LINE_LENGTH_THRESHOLD) {
+
+                if (line is SpannableStringBuilder) {
+                    result.addAll(line.spannableChunked(LINE_LENGTH_THRESHOLD))
+                } else {
+                    result.addAll(line.chunked(LINE_LENGTH_THRESHOLD))
+                }
+            } else {
+                result.add(line)
+            }
+
             lineIndex += linesList[index].length + 1
         }
         if (result.isEmpty()) {
@@ -526,4 +539,29 @@ internal class TransactionPayloadFragment :
         }
         return result
     }
+}
+
+private fun SpannableStringBuilder.spannableChunked(size: Int): List<SpannableStringBuilder> {
+    val result = mutableListOf<SpannableStringBuilder>()
+    var startIndex = 0
+    while (startIndex < length) {
+        val endIndex = (startIndex + size).coerceAtMost(length)
+        val chunk = SpannableStringBuilder(subSequence(startIndex, endIndex))
+
+        val spans = this.getSpans<Any>(startIndex, endIndex)
+        for (span in spans) {
+            val start = this.getSpanStart(span)
+            val end = this.getSpanEnd(span)
+            val flags = this.getSpanFlags(span)
+
+            val newStart = if (start < startIndex) 0 else start - startIndex
+            val newEnd = if (end > endIndex) chunk.length else end - startIndex
+
+            chunk.setSpan(span, newStart, newEnd, flags)
+        }
+        result.add(chunk)
+
+        startIndex += size
+    }
+    return result
 }
