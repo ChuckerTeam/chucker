@@ -22,7 +22,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
-import androidx.core.text.getSpans
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -36,6 +35,7 @@ import com.chuckerteam.chucker.internal.support.FileSaver
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.support.spannableChunked
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -538,29 +538,4 @@ internal class TransactionPayloadFragment :
         }
         return result
     }
-}
-
-private fun SpannableStringBuilder.spannableChunked(size: Int): List<SpannableStringBuilder> {
-    val result = mutableListOf<SpannableStringBuilder>()
-    var startIndex = 0
-    while (startIndex < length) {
-        val endIndex = (startIndex + size).coerceAtMost(length)
-        val chunk = SpannableStringBuilder(subSequence(startIndex, endIndex))
-
-        val spans = this.getSpans<Any>(startIndex, endIndex)
-        for (span in spans) {
-            val start = this.getSpanStart(span)
-            val end = this.getSpanEnd(span)
-            val flags = this.getSpanFlags(span)
-
-            val newStart = if (start < startIndex) 0 else start - startIndex
-            val newEnd = if (end > endIndex) chunk.length else end - startIndex
-
-            chunk.setSpan(span, newStart, newEnd, flags)
-        }
-        result.add(chunk)
-
-        startIndex += size
-    }
-    return result
 }
