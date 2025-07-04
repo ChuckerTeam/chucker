@@ -35,6 +35,7 @@ import com.chuckerteam.chucker.internal.support.FileSaver
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.support.spannableChunked
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -501,6 +502,7 @@ internal class TransactionPayloadFragment :
         private const val DELAY_FOR_SEARCH_SCROLL: Long = 600L
 
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
+        private const val LINE_LENGTH_THRESHOLD = 500
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
@@ -518,7 +520,17 @@ internal class TransactionPayloadFragment :
         val result = mutableListOf<CharSequence>()
         var lineIndex = 0
         for (index in linesList.indices) {
-            result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
+            val line = subSequence(lineIndex, lineIndex + linesList[index].length)
+            if (line.length > LINE_LENGTH_THRESHOLD) {
+                if (line is SpannableStringBuilder) {
+                    result.addAll(line.spannableChunked(LINE_LENGTH_THRESHOLD))
+                } else {
+                    result.addAll(line.chunked(LINE_LENGTH_THRESHOLD))
+                }
+            } else {
+                result.add(line)
+            }
+
             lineIndex += linesList[index].length + 1
         }
         if (result.isEmpty()) {
