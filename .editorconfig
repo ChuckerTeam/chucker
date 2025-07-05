@@ -9,10 +9,9 @@ trim_trailing_whitespace = true
 indent_size = 2
 
 [**/test/**.kt]
-ktlint_ignore_back_ticked_identifier=true
+ktlint_ignore_back_ticked_identifier = true
 
-# Added to support compose function naming convection
-# for sample Compose screens:
+# Added to support compose function naming convection for sample Compose screens:
 [sample/src/main/kotlin/com/chuckerteam/chucker/sample/compose/**/*.kt]
 ktlint_standard_function-naming = disabled
 
