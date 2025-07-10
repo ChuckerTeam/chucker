@@ -30,7 +30,7 @@ retrofit = "3.0.0"
 wire = "5.3.5"
 
 # Debug and Quality Control
-binaryCompatibilityValidator = "0.18.0"
+binaryCompatibilityValidator = "0.18.1"
 detekt = "1.23.8"
 ktLintGradle = "12.3.0"
 leakcanary = "2.14"
