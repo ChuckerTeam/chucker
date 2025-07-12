@@ -15,6 +15,9 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
     - name: Close and Release Staging Repository
       run: ./gradlew closeAndReleaseStagingRepository
       env:
