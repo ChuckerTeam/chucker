@@ -361,8 +361,12 @@ internal class ChuckerInterceptorSkipRequestTest {
         every { request() } returns
             mockk {
                 every { url } returns
-                    HttpUrl.Builder().scheme("https").host(host)
-                        .addEncodedPathSegments(path).build()
+                    HttpUrl
+                        .Builder()
+                        .scheme("https")
+                        .host(host)
+                        .addEncodedPathSegments(path)
+                        .build()
                 every { headers } returns Headers.Builder().build()
                 every { method } returns "GET"
                 every { body } returns null
@@ -380,7 +384,8 @@ internal class ChuckerInterceptorSkipRequestTest {
         responseBody: String,
     ) {
         val httpUrl =
-            HttpUrl.Builder()
+            HttpUrl
+                .Builder()
                 .scheme("https")
                 .host("testexample.com")
                 .addNonBlankPathSegments(path)

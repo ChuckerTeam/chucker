@@ -13,10 +13,10 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
     companion object {
         private const val DB_NAME = "chucker.db"
 
-        fun create(applicationContext: Context): ChuckerDatabase {
-            return Room.databaseBuilder(applicationContext, ChuckerDatabase::class.java, DB_NAME)
+        fun create(applicationContext: Context): ChuckerDatabase =
+            Room
+                .databaseBuilder(applicationContext, ChuckerDatabase::class.java, DB_NAME)
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
-        }
     }
 }

@@ -76,7 +76,9 @@ internal class ChuckerInterceptorDecodingTest {
             )
         val client = factory.create(chuckerInterceptor)
         val request =
-            Request.Builder().url(serverUrl)
+            Request
+                .Builder()
+                .url(serverUrl)
                 .post("Hello".toRequestBody())
                 .build()
         server.enqueue(MockResponse().setBody("Goodbye"))
@@ -99,7 +101,9 @@ internal class ChuckerInterceptorDecodingTest {
             )
         val client = factory.create(chuckerInterceptor)
         val request =
-            Request.Builder().url(serverUrl)
+            Request
+                .Builder()
+                .url(serverUrl)
                 .post("Hello".toRequestBody())
                 .build()
         server.enqueue(MockResponse().setBody("Goodbye"))
@@ -122,7 +126,9 @@ internal class ChuckerInterceptorDecodingTest {
             )
         val client = factory.create(chuckerInterceptor)
         val request =
-            Request.Builder().url(serverUrl)
+            Request
+                .Builder()
+                .url(serverUrl)
                 .post("Hello".toRequestBody())
                 .build()
         server.enqueue(MockResponse().setBody("Goodbye"))
@@ -145,7 +151,9 @@ internal class ChuckerInterceptorDecodingTest {
             )
         val client = factory.create(chuckerInterceptor)
         val request =
-            Request.Builder().url(serverUrl)
+            Request
+                .Builder()
+                .url(serverUrl)
                 .post("Hello".toRequestBody())
                 .build()
         server.enqueue(MockResponse().setBody("Goodbye"))
@@ -169,7 +177,9 @@ internal class ChuckerInterceptorDecodingTest {
             )
         val client = factory.create(chuckerInterceptor)
         val request =
-            Request.Builder().url(serverUrl)
+            Request
+                .Builder()
+                .url(serverUrl)
                 .post("Hello".toRequestBody())
                 .build()
         server.enqueue(MockResponse().setBody("Goodbye"))

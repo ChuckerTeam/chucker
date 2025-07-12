@@ -31,13 +31,12 @@ internal class TransactionCurlCommandSharable(
             writeUtf8((if (compressed) " --compressed " else " ") + transaction.getFormattedUrl(encode = false))
         }
 
-    private fun isCompressed(header: HttpHeader): Boolean {
-        return (
+    private fun isCompressed(header: HttpHeader): Boolean =
+        (
             "Accept-Encoding".equals(header.name, ignoreCase = true) &&
                 "gzip".contains(header.value, ignoreCase = true) ||
                 "br".contains(header.value, ignoreCase = true)
         )
-    }
 
     private fun escapeHeaderValue(value: String): String {
         // escape double quotes from header value to prevent getting an invalid curl

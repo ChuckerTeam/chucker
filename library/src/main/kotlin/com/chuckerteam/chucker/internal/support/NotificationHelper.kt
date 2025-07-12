@@ -15,7 +15,9 @@ import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 
-internal class NotificationHelper(val context: Context) {
+internal class NotificationHelper(
+    val context: Context,
+) {
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
 
@@ -74,19 +76,19 @@ internal class NotificationHelper(val context: Context) {
         }
     }
 
-    private fun canShowNotifications(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    private fun canShowNotifications(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationManager.areNotificationsEnabled()
         } else {
             true
         }
-    }
 
     fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground && canShowNotifications()) {
             val builder =
-                NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
+                NotificationCompat
+                    .Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_transaction_notification)

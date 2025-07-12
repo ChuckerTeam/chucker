@@ -32,7 +32,8 @@ internal class HttpTransactionDaoTest {
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
         db =
-            Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
+            Room
+                .inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
                 .allowMainThreadQueries()
                 .build()
         testObject = db.transactionDao()
@@ -232,7 +233,8 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionThree)
             insertTransaction(transactionFour)
 
-            testObject.getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
+            testObject
+                .getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
                 .observeForever { result ->
                     assertTuples(listOf(transactionFour), result)
                 }

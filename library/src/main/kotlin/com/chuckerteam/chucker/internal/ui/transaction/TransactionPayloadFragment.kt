@@ -46,7 +46,8 @@ import java.io.IOException
 import kotlin.math.abs
 
 internal class TransactionPayloadFragment :
-    Fragment(), SearchView.OnQueryTextListener {
+    Fragment(),
+    SearchView.OnQueryTextListener {
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
@@ -76,11 +77,12 @@ internal class TransactionPayloadFragment :
                     Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(
-                    applicationContext,
-                    R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT,
-                ).show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        R.string.chucker_save_failed_to_open_document,
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
 
@@ -189,7 +191,8 @@ internal class TransactionPayloadFragment :
         val clip = ClipData.newPlainText(payloadType, payload)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(activity, toastSuccessMessage, Toast.LENGTH_LONG)
+        Toast
+            .makeText(activity, toastSuccessMessage, Toast.LENGTH_LONG)
             .show()
     }
 
@@ -297,11 +300,12 @@ internal class TransactionPayloadFragment :
     private fun createFileToSaveBody() {
         val transaction = viewModel.transaction.value
         if (transaction != null && isBodyEmpty(payloadType, transaction)) {
-            Toast.makeText(
-                activity,
-                R.string.chucker_file_not_saved_body_is_empty,
-                Toast.LENGTH_SHORT,
-            ).show()
+            Toast
+                .makeText(
+                    activity,
+                    R.string.chucker_file_not_saved_body_is_empty,
+                    Toast.LENGTH_SHORT,
+                ).show()
         } else {
             saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
         }

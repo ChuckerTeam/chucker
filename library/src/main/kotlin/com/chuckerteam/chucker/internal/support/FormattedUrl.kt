@@ -43,13 +43,12 @@ internal class FormattedUrl private constructor(
         fun fromHttpUrl(
             httpUrl: HttpUrl,
             encoded: Boolean,
-        ): FormattedUrl {
-            return if (encoded) {
+        ): FormattedUrl =
+            if (encoded) {
                 encodedUrl(httpUrl)
             } else {
                 decodedUrl(httpUrl)
             }
-        }
 
         private fun encodedUrl(httpUrl: HttpUrl): FormattedUrl {
             val path = httpUrl.encodedPathSegments.joinToString("/")

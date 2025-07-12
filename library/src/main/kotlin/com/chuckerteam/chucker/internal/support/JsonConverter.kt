@@ -12,7 +12,8 @@ internal object JsonConverter {
     }
 
     val instance: Gson by lazy {
-        nonNullSerializerInstance.newBuilder()
+        nonNullSerializerInstance
+            .newBuilder()
             .serializeNulls()
             .create()
     }

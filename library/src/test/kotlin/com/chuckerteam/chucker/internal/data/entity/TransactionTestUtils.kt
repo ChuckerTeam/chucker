@@ -33,7 +33,8 @@ internal fun HttpTransaction.withResponseData(): HttpTransaction =
     }
 
 private fun randomHeaders(): Headers =
-    Headers.Builder()
+    Headers
+        .Builder()
         .add("name-one", randomString())
         .add("name-two", randomString())
         .add("Content-Encoding", "gzip")

@@ -19,7 +19,5 @@ internal data class Timings(
         wait = transaction.tookMs ?: 0,
     )
 
-    fun getTime(): Long {
-        return (blocked ?: 0) + (dns ?: 0) + (ssl ?: 0) + connect + send + wait + receive
-    }
+    fun getTime(): Long = (blocked ?: 0) + (dns ?: 0) + (ssl ?: 0) + connect + send + wait + receive
 }

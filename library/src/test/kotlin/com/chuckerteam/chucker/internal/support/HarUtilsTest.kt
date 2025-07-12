@@ -29,8 +29,14 @@ internal class HarUtilsTest {
         val har = context.createListTransactionHar()
 
         assertThat(har.log.entries).hasSize(2)
-        assertThat(har.log.entries[0].request.method).isEqualTo("GET")
-        assertThat(har.log.entries[1].request.method).isEqualTo("POST")
+        assertThat(
+            har.log.entries[0]
+                .request.method,
+        ).isEqualTo("GET")
+        assertThat(
+            har.log.entries[1]
+                .request.method,
+        ).isEqualTo("POST")
     }
 
     @Test

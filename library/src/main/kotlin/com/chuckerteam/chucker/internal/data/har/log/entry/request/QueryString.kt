@@ -11,13 +11,12 @@ internal data class QueryString(
     @SerializedName("comment") val comment: String? = null,
 ) {
     companion object {
-        fun fromUrl(url: HttpUrl): List<QueryString> {
-            return List(url.querySize) { index ->
+        fun fromUrl(url: HttpUrl): List<QueryString> =
+            List(url.querySize) { index ->
                 QueryString(
                     name = url.queryParameterName(index),
                     value = url.queryParameterValue(index).orEmpty(),
                 )
             }
-        }
     }
 }

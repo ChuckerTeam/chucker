@@ -82,7 +82,8 @@ internal class RequestProcessor(
     private fun decodePayload(
         request: Request,
         body: ByteString,
-    ) = bodyDecoders.asSequence()
+    ) = bodyDecoders
+        .asSequence()
         .mapNotNull { decoder ->
             try {
                 Logger.info("Decoding with: $decoder")

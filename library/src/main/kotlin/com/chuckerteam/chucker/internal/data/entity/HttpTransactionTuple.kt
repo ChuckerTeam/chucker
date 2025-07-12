@@ -45,9 +45,7 @@ internal data class HttpTransactionTuple(
             return formatBytes(reqBytes + resBytes)
         }
 
-    private fun formatBytes(bytes: Long): String {
-        return FormatUtils.formatByteCount(bytes, true)
-    }
+    private fun formatBytes(bytes: Long): String = FormatUtils.formatByteCount(bytes, true)
 
     fun getFormattedPath(encode: Boolean): String {
         val path = this.path ?: return ""

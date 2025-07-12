@@ -29,7 +29,8 @@ internal suspend fun Sharable.shareAsUtf8Text(
     intentSubject: String,
 ): Intent {
     val content = withContext(Dispatchers.Default) { toSharableUtf8Content(activity) }
-    return ShareCompat.IntentBuilder(activity)
+    return ShareCompat
+        .IntentBuilder(activity)
         .setType("text/plain")
         .setChooserTitle(intentTitle)
         .setSubject(intentSubject)
@@ -72,7 +73,8 @@ internal fun Sharable.shareAsFile(
 ): Intent? {
     val uri = writeToFile(activity, fileName) ?: return null
     val shareIntent =
-        ShareCompat.IntentBuilder(activity)
+        ShareCompat
+            .IntentBuilder(activity)
             .setType(activity.contentResolver.getType(uri))
             .setChooserTitle(intentTitle)
             .setSubject(intentSubject)

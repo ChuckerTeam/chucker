@@ -55,47 +55,34 @@ internal object HarTestUtils {
         )
     }
 
-    internal fun Context.createSingleTransactionHar(method: String): Har {
-        return HarUtils.fromHttpTransactions(
+    internal fun Context.createSingleTransactionHar(method: String): Har =
+        HarUtils.fromHttpTransactions(
             listOf(createTransaction(method)),
             Creator(getString(R.string.chucker_name), getString(R.string.chucker_version)),
         )
-    }
 
-    internal fun Context.createListTransactionHar(): Har {
-        return HarUtils.fromHttpTransactions(
+    internal fun Context.createListTransactionHar(): Har =
+        HarUtils.fromHttpTransactions(
             listOf(createTransaction("GET"), createTransaction("POST")),
             Creator(getString(R.string.chucker_name), getString(R.string.chucker_version)),
         )
-    }
 
-    internal fun Context.createHarString(): String {
-        return runBlocking {
+    internal fun Context.createHarString(): String =
+        runBlocking {
             HarUtils.harStringFromTransactions(
                 listOf(createTransaction("POST")),
                 getString(R.string.chucker_name),
                 getString(R.string.chucker_version),
             )
         }
-    }
 
-    internal fun createContent(method: String): Content {
-        return Content(createTransaction(method))
-    }
+    internal fun createContent(method: String): Content = Content(createTransaction(method))
 
-    internal fun createEntry(method: String): Entry {
-        return Entry(createTransaction(method))
-    }
+    internal fun createEntry(method: String): Entry = Entry(createTransaction(method))
 
-    internal fun createPostData(method: String): PostData {
-        return PostData(createTransaction(method))
-    }
+    internal fun createPostData(method: String): PostData = PostData(createTransaction(method))
 
-    internal fun createRequest(method: String): Request {
-        return Request(createTransaction(method))
-    }
+    internal fun createRequest(method: String): Request = Request(createTransaction(method))
 
-    internal fun createResponse(method: String): Response {
-        return Response(createTransaction(method))
-    }
+    internal fun createResponse(method: String): Response = Response(createTransaction(method))
 }

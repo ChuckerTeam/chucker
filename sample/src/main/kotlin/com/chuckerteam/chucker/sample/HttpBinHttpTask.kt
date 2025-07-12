@@ -29,7 +29,8 @@ class HttpBinHttpTask(
     client: OkHttpClient,
 ) : HttpTask {
     private val api =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .baseUrl("https://httpbin.org")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
@@ -246,6 +247,8 @@ class HttpBinHttpTask(
         @GET("/anything")
         fun anything(): Call<Any?>
 
-        class Data(val thing: String)
+        class Data(
+            val thing: String,
+        )
     }
 }

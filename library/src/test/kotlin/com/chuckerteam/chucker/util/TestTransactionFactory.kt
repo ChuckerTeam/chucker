@@ -4,8 +4,8 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import java.util.Date
 
 internal object TestTransactionFactory {
-    internal fun createTransaction(method: String): HttpTransaction {
-        return HttpTransaction(
+    internal fun createTransaction(method: String): HttpTransaction =
+        HttpTransaction(
             id = 0,
             requestDate = Date(1300000).time,
             responseDate = Date(1300300).time,
@@ -37,7 +37,6 @@ internal object TestTransactionFactory {
             graphQlDetected = false,
             graphQlOperationName = null,
         )
-    }
 
     val expectedGetHttpTransaction =
         """

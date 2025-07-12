@@ -17,7 +17,8 @@ class PostmanEchoHttpTask(
     private fun postResponsePartially() {
         val body = LARGE_JSON.toRequestBody("application/json".toMediaType())
         val request =
-            Request.Builder()
+            Request
+                .Builder()
                 .url("https://postman-echo.com/post")
                 .post(body)
                 .build()
@@ -28,7 +29,8 @@ class PostmanEchoHttpTask(
         val pokemon = Pokemon("Pikachu", level = 99)
         val body = pokemon.encodeByteString().toRequestBody("application/protobuf".toMediaType())
         val request =
-            Request.Builder()
+            Request
+                .Builder()
                 .url("https://postman-echo.com/post")
                 .post(body)
                 .build()
@@ -38,7 +40,8 @@ class PostmanEchoHttpTask(
     private fun postBase64LargeJson() {
         val body = LARGE_BASE_64_JSON.toRequestBody("application/json".toMediaType())
         val request =
-            Request.Builder()
+            Request
+                .Builder()
                 .url("https://postman-echo.com/post")
                 .post(body)
                 .build()

@@ -9,8 +9,8 @@ import java.util.concurrent.Executor
 internal fun <T1, T2, R> LiveData<T1>.combineLatest(
     other: LiveData<T2>,
     func: (T1, T2) -> R,
-): LiveData<R> {
-    return MediatorLiveData<R>().apply {
+): LiveData<R> =
+    MediatorLiveData<R>().apply {
         var lastA: T1? = null
         var lastB: T2? = null
 
@@ -34,11 +34,8 @@ internal fun <T1, T2, R> LiveData<T1>.combineLatest(
             }
         }
     }
-}
 
-internal fun <T1, T2> LiveData<T1>.combineLatest(other: LiveData<T2>): LiveData<Pair<T1, T2>> {
-    return combineLatest(other) { a, b -> a to b }
-}
+internal fun <T1, T2> LiveData<T1>.combineLatest(other: LiveData<T2>): LiveData<Pair<T1, T2>> = combineLatest(other) { a, b -> a to b }
 
 // Unlike built-in extension operation is performed on a provided thread pool.
 // This is needed in our case since we compare requests and responses which can be big

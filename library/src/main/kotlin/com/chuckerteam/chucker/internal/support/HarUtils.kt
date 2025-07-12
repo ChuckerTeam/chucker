@@ -22,7 +22,5 @@ internal object HarUtils {
     internal fun fromHttpTransactions(
         transactions: List<HttpTransaction>,
         creator: Creator,
-    ): Har {
-        return Har(transactions, creator)
-    }
+    ): Har = Har(transactions, creator)
 }
