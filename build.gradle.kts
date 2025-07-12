@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
-    alias(libs.plugins.nexus.staging)
+    alias(libs.plugins.nexus.publish)
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.library) apply false
@@ -59,8 +59,11 @@ extra.apply {
     set("compileSdkVersion", 35)
 }
 
-configure<io.codearte.gradle.nexus.NexusStagingExtension> {
-    username = findProperty("NEXUS_USERNAME") as String?
-    password = findProperty("NEXUS_PASSWORD") as String?
-    stagingProfileId = "ea09119de9f4"
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
+    }
 }
