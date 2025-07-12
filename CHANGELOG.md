@@ -5,6 +5,8 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+## Version 4.2.0 _(2025-07-12)_
+
 ### Added
 
 -   Implement support to select multiple request when exporting or saving them [#1351]
