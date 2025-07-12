@@ -183,7 +183,11 @@ internal class HttpTransaction(
             TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
 
-    fun getRequestHeadersString(withMarkup: Boolean): String = FormatUtils.formatHeaders(getParsedRequestHeaders(), withMarkup)
+    fun getRequestHeadersString(withMarkup: Boolean): String =
+        FormatUtils.formatHeaders(
+            httpHeaders = getParsedRequestHeaders(),
+            withMarkup = withMarkup,
+        )
 
     fun setResponseHeaders(headers: Headers) {
         setResponseHeaders(toHttpHeaderList(headers))
@@ -193,7 +197,11 @@ internal class HttpTransaction(
         responseHeaders = JsonConverter.instance.toJson(headers)
     }
 
-    fun getResponseHeadersString(withMarkup: Boolean): String = FormatUtils.formatHeaders(getParsedResponseHeaders(), withMarkup)
+    fun getResponseHeadersString(withMarkup: Boolean): String =
+        FormatUtils.formatHeaders(
+            httpHeaders = getParsedResponseHeaders(),
+            withMarkup = withMarkup,
+        )
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
         val httpHeaders = ArrayList<HttpHeader>()

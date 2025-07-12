@@ -38,7 +38,14 @@ internal fun SpannableStringBuilder.highlightWithDefinedColorsSubstring(
     startIndex: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder = applyColoredSpannableSubstring(this, startIndex, search.length, backgroundColor, foregroundColor)
+): SpannableStringBuilder =
+    applyColoredSpannableSubstring(
+        text = this,
+        subStringStartPosition = startIndex,
+        subStringLength = search.length,
+        backgroundColor = backgroundColor,
+        foregroundColor = foregroundColor,
+    )
 
 private fun applyColoredSpannableSubstring(
     text: SpannableStringBuilder,
