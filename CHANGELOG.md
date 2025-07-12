@@ -7,15 +7,25 @@ Please add your entries according to this format.
 
 ### Added
 
+-   Implement support to select multiple request when exporting or saving them [#1351]
+-   Better support for Android 15 and Insets [#1347]
+-   Added Russian translation [#1355]
+
 ### Fixed
 
 -   List and scrollable data does not scroll to above the bottom navigation button bar on Android 15 [#1347]
-
-### Changed
-
-### Deleted
+-   Fix `IndexOutOfBoundsException` when using the search bar in the body of request/responses [#1335]
+-   Fix `PatternSyntaxException` when typing `{` in the search bar in the body of request/responses [#1342]
+-   Correctly handle RTL in response view [#1357]
+-   Fix issue with large base_64 JSON visualization on request/response [#1411]
 
 ### Dependency Updates
+
+-   Kotlin to 2.2.0
+-   AGP to 8.11.1
+-   ConstraintLayout to 2.2.1
+-   Compile SDK to 35
+-   AppCompat to 1.7.1
 
 ## Version 4.1.0 _(2024-12-08)_
 
@@ -38,7 +48,7 @@ Please add your entries according to this format.
 -   Change GSON `TypeToken` creation to allow using Chucker in builds optimized by R8 [#1166]
 -   Fixed bug with scroll to search and navigation bar visibility Fix [#1076]
 
-### Depedency Updates
+### Dependency Updates
 
 -   Kotlin to 2.0.21
 -   AGP to 8.7.2
@@ -618,3 +628,11 @@ Initial release.
 [#1281]: https://github.com/ChuckerTeam/chucker/pull/1281
 [#1282]: https://github.com/ChuckerTeam/chucker/pull/1282
 [#1300]: https://github.com/ChuckerTeam/chucker/pull/1300
+[#1351]: https://github.com/ChuckerTeam/chucker/pull/1351
+[#1347]: https://github.com/ChuckerTeam/chucker/pull/1347
+[#1355]: https://github.com/ChuckerTeam/chucker/pull/1355
+[#1347]: https://github.com/ChuckerTeam/chucker/pull/1347
+[#1335]: https://github.com/ChuckerTeam/chucker/pull/1335
+[#1342]: https://github.com/ChuckerTeam/chucker/pull/1342
+[#1357]: https://github.com/ChuckerTeam/chucker/pull/1357
+[#1411]: https://github.com/ChuckerTeam/chucker/pull/1411
