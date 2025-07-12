@@ -19,8 +19,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.chuckerteam.chucker.internal.ui.theme.AppAccentColor
-import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
+import com.chuckerteam.chucker.sample.compose.theme.AppAccentColor
+import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
 /**
  * A composable that presents a radio button with an adjacent text label and full control over

@@ -2,7 +2,6 @@ package com.chuckerteam.chucker.sample.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
-import com.chuckerteam.chucker.internal.ui.theme.DarkTopAppBarBackground
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
+import com.chuckerteam.chucker.sample.compose.theme.DarkTopAppBarBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,17 +37,10 @@ internal fun ChuckerSampleTopBar() {
                 .fillMaxWidth()
                 .padding(bottom = 4.dp),
         title = {
-            Column {
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White.copy(alpha = 0.7f),
-                )
-            }
+            Text(
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.titleLarge,
+            )
         },
         colors =
             TopAppBarDefaults.topAppBarColors(

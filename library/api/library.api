@@ -4,7 +4,6 @@ public abstract interface class com/chuckerteam/chucker/api/BodyDecoder {
 }
 
 public final class com/chuckerteam/chucker/api/Chucker {
-	public static final field $stable I
 	public static final field INSTANCE Lcom/chuckerteam/chucker/api/Chucker;
 	public static final fun dismissNotifications (Landroid/content/Context;)V
 	public static final fun getLaunchIntent (Landroid/content/Context;)Landroid/content/Intent;
@@ -12,7 +11,6 @@ public final class com/chuckerteam/chucker/api/Chucker {
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerCollector {
-	public static final field $stable I
 	public fun <init> (Landroid/content/Context;)V
 	public fun <init> (Landroid/content/Context;Z)V
 	public fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;)V
@@ -24,7 +22,6 @@ public final class com/chuckerteam/chucker/api/ChuckerCollector {
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Interceptor {
-	public static final field $stable I
 	public fun <init> (Landroid/content/Context;)V
 	public synthetic fun <init> (Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
@@ -32,7 +29,6 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Inte
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
-	public static final field $stable I
 	public fun <init> (Landroid/content/Context;)V
 	public final fun addBodyDecoder (Lcom/chuckerteam/chucker/api/BodyDecoder;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun alwaysReadResponseBody (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
@@ -58,7 +54,6 @@ public final class com/chuckerteam/chucker/api/ExportFormat : java/lang/Enum {
 }
 
 public final class com/chuckerteam/chucker/api/RetentionManager {
-	public static final field $stable I
 	public fun <init> (Landroid/content/Context;)V
 	public fun <init> (Landroid/content/Context;Lcom/chuckerteam/chucker/api/RetentionManager$Period;)V
 	public synthetic fun <init> (Landroid/content/Context;Lcom/chuckerteam/chucker/api/RetentionManager$Period;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

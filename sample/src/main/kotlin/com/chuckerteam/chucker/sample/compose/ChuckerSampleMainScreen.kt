@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,9 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
 import com.chuckerteam.chucker.sample.InterceptorType
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
 /**
  * Main screen for the Chucker sample app, showing introduction text and controls.
@@ -47,7 +48,7 @@ import com.chuckerteam.chucker.sample.R
  * @param onLaunchChucker Called to open the Chucker transaction list UI.
  * @param onExportToLogFile Called to export network logs to a plaintext file.
  * @param onExportToHarFile Called to export network logs to a HAR (HTTP Archive) file.
- * @param showChuckerOperations If true, displays the Chucker-specific operation buttons.
+ * @param isChuckerInOpMode If true, displays the Chucker-specific operation buttons.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +62,7 @@ internal fun ChuckerSampleMainScreen(
     onLaunchChucker: () -> Unit,
     onExportToLogFile: () -> Unit,
     onExportToHarFile: () -> Unit,
-    showChuckerOperations: Boolean,
+    isChuckerInOpMode: Boolean,
 ) {
     val isExpandedWidth = widthSizeClass == WindowWidthSizeClass.Expanded
 
@@ -100,6 +101,7 @@ internal fun ChuckerSampleMainScreen(
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
+                    Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         ChuckerSampleControls(
                             selectedInterceptorType = selectedInterceptorType,
@@ -110,7 +112,7 @@ internal fun ChuckerSampleMainScreen(
                             onLaunchChucker = onLaunchChucker,
                             onExportToLogFile = onExportToLogFile,
                             onExportToHarFile = onExportToHarFile,
-                            showChuckerOperations = showChuckerOperations,
+                            isChuckerInOpMode = isChuckerInOpMode,
                             isExpandedWidth = true,
                         )
                     }
@@ -157,7 +159,7 @@ internal fun ChuckerSampleMainScreen(
                         onLaunchChucker = onLaunchChucker,
                         onExportToLogFile = onExportToLogFile,
                         onExportToHarFile = onExportToHarFile,
-                        showChuckerOperations = showChuckerOperations,
+                        isChuckerInOpMode = isChuckerInOpMode,
                     )
                 }
             }
@@ -222,7 +224,7 @@ private fun ChuckerSampleMainScreenPreview() {
             onExportToHarFile = {
                 // DO Nothing
             },
-            showChuckerOperations = true,
+            isChuckerInOpMode = true,
         )
     }
 }
@@ -268,7 +270,7 @@ private fun ChuckerSampleMainScreenTabletPreview() {
             onExportToHarFile = {
                 // DO Nothing
             },
-            showChuckerOperations = true,
+            isChuckerInOpMode = true,
         )
     }
 }

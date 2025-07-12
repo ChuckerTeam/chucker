@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -30,7 +29,6 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = false
-        compose = true
     }
 
     testOptions {
@@ -89,11 +87,6 @@ dependencies {
 
     api(libs.okhttp)
     api(libs.okhttp3.okhttp)
-
-    // Jetpack Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material3)
-
     testImplementation(libs.mockwebserver)
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)

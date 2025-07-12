@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.theme
+package com.chuckerteam.chucker.sample.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -44,7 +44,7 @@ private val DarkColors =
  * Applies light or dark color scheme based on system setting.
  */
 @Composable
-public fun ChuckerTheme(
+internal fun ChuckerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {

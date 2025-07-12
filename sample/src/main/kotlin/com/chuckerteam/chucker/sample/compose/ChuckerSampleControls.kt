@@ -1,7 +1,9 @@
 package com.chuckerteam.chucker.sample.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,10 +21,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.chuckerteam.chucker.internal.ui.theme.AppAccentColor
 import com.chuckerteam.chucker.sample.InterceptorType
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.theme.AppAccentColor
+import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
 /**
  * A container for the main controls and actions in the Chucker sample app.
@@ -35,7 +40,7 @@ import com.chuckerteam.chucker.sample.R
  * @param onLaunchChucker launches Chucker UI directly.
  * @param onExportToLogFile exports logs to file.
  * @param onExportToHarFile exports HAR to file.
- * @param showChuckerOperations controls visibility of Chucker-specific operations.
+ * @param isChuckerInOpMode controls visibility of Chucker-specific operations.
  */
 @Composable
 internal fun ChuckerSampleControls(
@@ -47,7 +52,7 @@ internal fun ChuckerSampleControls(
     onLaunchChucker: () -> Unit,
     onExportToLogFile: () -> Unit,
     onExportToHarFile: () -> Unit,
-    showChuckerOperations: Boolean,
+    isChuckerInOpMode: Boolean,
     isExpandedWidth: Boolean = false,
 ) {
     val modifier =
@@ -69,8 +74,7 @@ internal fun ChuckerSampleControls(
                 .clearAndSetSemantics {
                     contentDescription =
                         "$interceptorTypeLabel, opens external link, double tap to activate"
-                }
-                .clickable {
+                }.clickable {
                     onInterceptorTypeLabelClick.invoke()
                 },
     )
@@ -112,7 +116,7 @@ internal fun ChuckerSampleControls(
         }
     }
 
-    if (showChuckerOperations) {
+    if (isChuckerInOpMode) {
         Button(
             onClick = onLaunchChucker,
             modifier = modifier,
@@ -128,7 +132,7 @@ internal fun ChuckerSampleControls(
     }
 
     Spacer(modifier = Modifier.width(24.dp))
-    if (showChuckerOperations) {
+    if (isChuckerInOpMode) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -154,6 +158,116 @@ internal fun ChuckerSampleControls(
             ) {
                 Text(stringResource(R.string.export_to_file_har))
             }
+        }
+    }
+}
+
+@Preview(
+    name = "Phone - Light",
+    device = Devices.PIXEL_4,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+)
+@Preview(
+    name = "Phone - Dark",
+    device = Devices.PIXEL_4,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Preview(
+    name = "Phone Scaled - Light",
+    device = Devices.PIXEL_4,
+    showBackground = true,
+    fontScale = 1.5f,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+)
+@Preview(
+    name = "Phone – Light (Landscape)",
+    device = Devices.AUTOMOTIVE_1024p,
+    widthDp = 1024,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+)
+@Composable
+private fun ChuckerSampleControlsPreview() {
+    ChuckerTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ChuckerSampleControls(
+                selectedInterceptorType = InterceptorType.NETWORK,
+                onInterceptorTypeChange = {
+                    // DO Nothing
+                },
+                onInterceptorTypeLabelClick = {
+                    // DO Nothing
+                },
+                onDoHttp = {
+                    // DO Nothing
+                },
+                onDoGraphQL = {
+                    // DO Nothing
+                },
+                onLaunchChucker = {
+                    // DO Nothing
+                },
+                onExportToLogFile = {
+                    // DO Nothing
+                },
+                onExportToHarFile = {
+                    // DO Nothing
+                },
+                isChuckerInOpMode = true,
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Tablet - Light",
+    device = Devices.NEXUS_10,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+)
+@Preview(
+    name = "Tablet - Dark",
+    device = Devices.NEXUS_10,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun ChuckerSampleControlsTabletPreview() {
+    ChuckerTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ChuckerSampleControls(
+                selectedInterceptorType = InterceptorType.NETWORK,
+                onInterceptorTypeChange = {
+                    // DO Nothing
+                },
+                onInterceptorTypeLabelClick = {
+                    // DO Nothing
+                },
+                onDoHttp = {
+                    // DO Nothing
+                },
+                onDoGraphQL = {
+                    // DO Nothing
+                },
+                onLaunchChucker = {
+                    // DO Nothing
+                },
+                onExportToLogFile = {
+                    // DO Nothing
+                },
+                onExportToHarFile = {
+                    // DO Nothing
+                },
+                isChuckerInOpMode = true,
+            )
         }
     }
 }

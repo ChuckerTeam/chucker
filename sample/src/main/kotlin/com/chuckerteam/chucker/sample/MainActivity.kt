@@ -1,7 +1,10 @@
 package com.chuckerteam.chucker.sample
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,13 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ExportFormat
-import com.chuckerteam.chucker.internal.ui.theme.ChuckerTheme
 import com.chuckerteam.chucker.sample.compose.ChuckerSampleMainScreen
-import com.chuckerteam.chucker.sample.util.openUrlInBrowser
+import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,12 +52,7 @@ class MainActivity : ComponentActivity() {
                         selectedType = newType
                         interceptorTypeSelector.value = newType
                     },
-                    onInterceptorTypeLabelClick = {
-                        openUrlInBrowser(
-                            context = this,
-                            url = getString(R.string.interceptor_url),
-                        )
-                    },
+                    onInterceptorTypeLabelClick = ::openUrlInBrowser,
                     onDoHttp = {
                         for (task in httpTasks) {
                             task.run()
@@ -72,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     onExportToHarFile = {
                         generateExportFile(ExportFormat.HAR)
                     },
-                    showChuckerOperations = Chucker.isOp,
+                    isChuckerInOpMode = Chucker.isOp,
                 )
             }
         }
@@ -120,6 +118,20 @@ class MainActivity : ComponentActivity() {
                     applicationContext.getString(R.string.export_to_file_success, uri.path)
                 Toast.makeText(applicationContext, successMessage, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun openUrlInBrowser() {
+        val url = getString(R.string.interceptor_url)
+        val intent =
+            Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+
+        try {
+            startActivity(Intent.createChooser(intent, "Open with"))
+        } catch (e: ActivityNotFoundException) {
+            Log.e("openUrlInBrowser", "No application can handle this request: ${e.message}", e)
         }
     }
 }

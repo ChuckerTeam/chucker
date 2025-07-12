@@ -1,4 +1,4 @@
-package com.chuckerteam.chucker.internal.ui.theme
+package com.chuckerteam.chucker.sample.compose.theme
 
 import androidx.compose.ui.graphics.Color
 
