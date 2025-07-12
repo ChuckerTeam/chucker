@@ -50,7 +50,7 @@ tasks.register<Copy>("installGitHook") {
 
 tasks.register<Delete>("clean") {
     dependsOn("installGitHook")
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 extra.apply {
