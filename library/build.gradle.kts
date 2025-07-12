@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,15 +9,6 @@ plugins {
 android {
     compileSdk = rootProject.extra["compileSdkVersion"] as Int
     namespace = "com.chuckerteam.chucker"
-
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs +
-            listOf(
-                "-module-name",
-                "com.github.ChuckerTeam.Chucker.library",
-                "-Xexplicit-api=strict",
-            )
-    }
 
     defaultConfig {
         minSdk = rootProject.extra["minSdkVersion"] as Int
@@ -60,6 +53,16 @@ android {
         abortOnError = true
         disable.addAll(listOf("RtlEnabled", "GradleDependency"))
         warningsAsErrors = true
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-module-name",
+            "com.github.ChuckerTeam.Chucker.library",
+            "-Xexplicit-api=strict",
+        )
     }
 }
 

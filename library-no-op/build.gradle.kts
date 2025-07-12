@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -14,15 +17,6 @@ android {
 
     kotlin {
         jvmToolchain(11)
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs +
-            listOf(
-                "-module-name",
-                "com.github.ChuckerTeam.Chucker.library-no-op",
-                "-Xexplicit-api=strict",
-            )
     }
 
     buildFeatures {
@@ -43,6 +37,16 @@ android {
         abortOnError = true
         disable.addAll(listOf("RtlEnabled", "GradleDependency"))
         warningsAsErrors = true
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-module-name",
+            "com.github.ChuckerTeam.Chucker.library",
+            "-Xexplicit-api=strict",
+        )
     }
 }
 
