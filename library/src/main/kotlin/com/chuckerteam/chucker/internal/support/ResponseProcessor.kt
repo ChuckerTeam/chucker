@@ -79,7 +79,8 @@ internal class ResponseProcessor(
         var upstream: Source = TeeSource(responseBody.source(), sideStream)
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
-        return response.newBuilder()
+        return response
+            .newBuilder()
             .body(upstream.buffer().asResponseBody(contentType, contentLength))
             .build()
     }
@@ -118,7 +119,8 @@ internal class ResponseProcessor(
     private fun decodePayload(
         response: Response,
         body: ByteString,
-    ) = bodyDecoders.asSequence()
+    ) = bodyDecoders
+        .asSequence()
         .mapNotNull { decoder ->
             try {
                 decoder.decodeResponse(response, body)

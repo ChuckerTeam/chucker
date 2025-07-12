@@ -15,14 +15,13 @@ import java.io.File
 
 internal const val SEGMENT_SIZE = 8_192L
 
-internal fun getResourceFile(file: String): Buffer {
-    return Buffer().apply {
+internal fun getResourceFile(file: String): Buffer =
+    Buffer().apply {
         writeAll(File("./src/test/resources/$file").source().buffer())
     }
-}
 
-internal fun Response.readByteStringBody(length: Long? = null): ByteString? {
-    return if (hasBody()) {
+internal fun Response.readByteStringBody(length: Long? = null): ByteString? =
+    if (hasBody()) {
         body?.source()?.use { source ->
             if (length == null) {
                 source.readByteString()
@@ -33,9 +32,13 @@ internal fun Response.readByteStringBody(length: Long? = null): ByteString? {
     } else {
         null
     }
-}
 
-internal fun RequestBody.toServerRequest(serverUrl: HttpUrl) = Request.Builder().url(serverUrl).post(this).build()
+internal fun RequestBody.toServerRequest(serverUrl: HttpUrl) =
+    Request
+        .Builder()
+        .url(serverUrl)
+        .post(this)
+        .build()
 
 internal fun <T> LiveData<T>.test(test: LiveDataRecord<T>.() -> Unit) {
     val observer = RecordingObserver<T>()

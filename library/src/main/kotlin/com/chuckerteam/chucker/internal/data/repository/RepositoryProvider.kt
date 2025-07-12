@@ -12,11 +12,10 @@ import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 internal object RepositoryProvider {
     private var transactionRepository: HttpTransactionRepository? = null
 
-    fun transaction(): HttpTransactionRepository {
-        return checkNotNull(transactionRepository) {
+    fun transaction(): HttpTransactionRepository =
+        checkNotNull(transactionRepository) {
             "You can't access the transaction repository if you don't initialize it!"
         }
-    }
 
     /**
      * Idempotent method. Must be called before accessing the repositories.

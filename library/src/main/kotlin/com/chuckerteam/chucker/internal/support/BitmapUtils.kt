@@ -37,7 +37,8 @@ private fun Bitmap.getLuminance(
     @ColorInt alphaSubstitute: Int,
 ): Double? {
     val imagePalette =
-        Palette.from(this)
+        Palette
+            .from(this)
             .clearFilters()
             .addFilter { rgb, _ -> (rgb != alphaSubstitute) }
             .generate()

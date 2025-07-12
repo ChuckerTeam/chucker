@@ -51,7 +51,8 @@ internal class OkHttpUtilsTest {
         GzipSink(source).buffer().use { it.writeUtf8(content) }
 
         val result =
-            source.uncompress(headersOf("Content-Encoding", "gzip"))
+            source
+                .uncompress(headersOf("Content-Encoding", "gzip"))
                 .buffer()
                 .use(BufferedSource::readUtf8)
 
@@ -69,7 +70,8 @@ internal class OkHttpUtilsTest {
         val brotliSource = Buffer().write(brotliEncodedString.decodeHex())
 
         val result =
-            brotliSource.uncompress(headersOf("Content-Encoding", "br"))
+            brotliSource
+                .uncompress(headersOf("Content-Encoding", "br"))
                 .buffer()
                 .use(BufferedSource::readUtf8)
 
@@ -83,7 +85,8 @@ internal class OkHttpUtilsTest {
         val source = Buffer().writeUtf8(content)
 
         val result =
-            source.uncompress(headersOf())
+            source
+                .uncompress(headersOf())
                 .buffer()
                 .use(BufferedSource::readUtf8)
 
@@ -105,16 +108,17 @@ internal class OkHttpUtilsTest {
     companion object {
         @JvmStatic
         fun supportedEncodingSource(): Stream<Arguments> =
-            Stream.of(
-                null to true,
-                "" to true,
-                "br" to true,
-                "identity" to true,
-                "gzip" to true,
-                "other" to false,
-            ).map { (encoding, result) ->
-                val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
-                Arguments.of(headers, result)
-            }
+            Stream
+                .of(
+                    null to true,
+                    "" to true,
+                    "br" to true,
+                    "identity" to true,
+                    "gzip" to true,
+                    "other" to false,
+                ).map { (encoding, result) ->
+                    val headers = if (encoding == null) headersOf() else headersOf("Content-Encoding", encoding)
+                    Arguments.of(headers, result)
+                }
     }
 }

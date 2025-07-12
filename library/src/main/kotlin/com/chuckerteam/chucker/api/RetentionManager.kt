@@ -78,14 +78,13 @@ public class RetentionManager
 
         private fun getThreshold(now: Long) = if (period == 0L) now else now - period
 
-        private fun toMillis(period: Period): Long {
-            return when (period) {
+        private fun toMillis(period: Period): Long =
+            when (period) {
                 Period.ONE_HOUR -> TimeUnit.HOURS.toMillis(1)
                 Period.ONE_DAY -> TimeUnit.DAYS.toMillis(1)
                 Period.ONE_WEEK -> TimeUnit.DAYS.toMillis(7)
                 Period.FOREVER -> 0
             }
-        }
 
         public enum class Period {
             /** Retain data for the last hour. */
