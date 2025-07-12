@@ -6,8 +6,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.chuckerteam.chucker.R
 
-internal class TransactionPagerAdapter(context: Context, fm: FragmentManager) :
-    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+internal class TransactionPagerAdapter(
+    context: Context,
+    fm: FragmentManager,
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val titles =
         arrayOf(
             context.getString(R.string.chucker_overview),

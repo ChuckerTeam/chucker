@@ -24,5 +24,7 @@ internal class JsonConverterTest {
         )
     }
 
-    inner class NullTestClass(var string: String?)
+    inner class NullTestClass(
+        var string: String?,
+    )
 }

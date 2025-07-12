@@ -47,13 +47,12 @@ internal class ChessboardDrawable(
         chessboardPaint.alpha = alpha
     }
 
-    override fun getOpacity(): Int {
-        return if (chessboardPaint.colorFilter == null) {
+    override fun getOpacity(): Int =
+        if (chessboardPaint.colorFilter == null) {
             PixelFormat.OPAQUE
         } else {
             PixelFormat.TRANSLUCENT
         }
-    }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         chessboardPaint.colorFilter = colorFilter

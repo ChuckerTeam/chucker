@@ -18,13 +18,13 @@ internal fun SpannableStringBuilder.highlightWithDefinedColors(
     startIndices: List<Int>,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return applyColoredSpannable(this, startIndices, search.length, backgroundColor, foregroundColor)
-}
+): SpannableStringBuilder = applyColoredSpannable(this, startIndices, search.length, backgroundColor, foregroundColor)
 
 internal fun CharSequence.indicesOf(input: String): List<Int> =
     try {
-        Pattern.quote(input).toRegex(RegexOption.IGNORE_CASE)
+        Pattern
+            .quote(input)
+            .toRegex(RegexOption.IGNORE_CASE)
             .findAll(this)
             .map { it.range.first }
             .toList()
@@ -38,9 +38,14 @@ internal fun SpannableStringBuilder.highlightWithDefinedColorsSubstring(
     startIndex: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return applyColoredSpannableSubstring(this, startIndex, search.length, backgroundColor, foregroundColor)
-}
+): SpannableStringBuilder =
+    applyColoredSpannableSubstring(
+        text = this,
+        subStringStartPosition = startIndex,
+        subStringLength = search.length,
+        backgroundColor = backgroundColor,
+        foregroundColor = foregroundColor,
+    )
 
 private fun applyColoredSpannableSubstring(
     text: SpannableStringBuilder,
@@ -48,8 +53,8 @@ private fun applyColoredSpannableSubstring(
     subStringLength: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return text.apply {
+): SpannableStringBuilder =
+    text.apply {
         setSpan(
             UnderlineSpan(),
             subStringStartPosition,
@@ -69,7 +74,6 @@ private fun applyColoredSpannableSubstring(
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
-}
 
 private fun applyColoredSpannable(
     text: SpannableStringBuilder,
@@ -77,10 +81,9 @@ private fun applyColoredSpannable(
     length: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return text.apply {
+): SpannableStringBuilder =
+    text.apply {
         indexes.forEach {
             applyColoredSpannableSubstring(text, it, length, backgroundColor, foregroundColor)
         }
     }
-}

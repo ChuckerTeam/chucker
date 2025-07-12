@@ -14,9 +14,7 @@ internal fun Context.showDialog(
         .setMessage(dialogData.message)
         .setPositiveButton(dialogData.positiveButtonText) { _, _ ->
             onPositiveClick?.invoke()
-        }
-        .setNegativeButton(dialogData.negativeButtonText) { _, _ ->
+        }.setNegativeButton(dialogData.negativeButtonText) { _, _ ->
             onNegativeClick?.invoke()
-        }
-        .show()
+        }.show()
 }

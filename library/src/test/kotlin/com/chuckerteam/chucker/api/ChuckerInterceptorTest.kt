@@ -431,7 +431,11 @@ internal class ChuckerInterceptorTest {
                 alwaysReadResponseBody = true,
             )
         val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().body!!.close()
+        client
+            .newCall(request)
+            .execute()
+            .body!!
+            .close()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
@@ -479,7 +483,11 @@ internal class ChuckerInterceptorTest {
         chuckerInterceptor.expectNoTransactions()
     }
 
-    private data class Expected(val string: String, val boolean: Boolean, val secondString: String)
+    private data class Expected(
+        val string: String,
+        val boolean: Boolean,
+        val secondString: String,
+    )
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -488,7 +496,11 @@ internal class ChuckerInterceptorTest {
         val client = factory.create(chuckerInterceptor)
 
         val request = "\u0080".encodeUtf8().toRequestBody().toServerRequest(serverUrl)
-        client.newCall(request).execute().body!!.close()
+        client
+            .newCall(request)
+            .execute()
+            .body!!
+            .close()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.isRequestBodyEncoded).isTrue()
@@ -531,11 +543,14 @@ internal class ChuckerInterceptorTest {
         val client = factory.create(chuckerInterceptor)
 
         val gzippedBytes =
-            Buffer().apply {
-                GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
-            }.readByteString()
+            Buffer()
+                .apply {
+                    GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
+                }.readByteString()
         val request =
-            gzippedBytes.toRequestBody().toServerRequest(serverUrl)
+            gzippedBytes
+                .toRequestBody()
+                .toServerRequest(serverUrl)
                 .newBuilder()
                 .header("Content-Encoding", "gzip")
                 .build()
@@ -585,7 +600,12 @@ internal class ChuckerInterceptorTest {
             )
         val client = factory.create(chuckerInterceptor)
 
-        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        val request =
+            Request
+                .Builder()
+                .url(serverUrl)
+                .header("Header-To-Redact", "Hello")
+                .build()
         server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
         runCatching { client.newCall(request).execute() }
 
@@ -611,7 +631,12 @@ internal class ChuckerInterceptorTest {
             )
         val client = factory.create(chuckerInterceptor)
 
-        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        val request =
+            Request
+                .Builder()
+                .url(serverUrl)
+                .header("Header-To-Redact", "Hello")
+                .build()
         val call = client.newCall(request)
 
         server.enqueue(

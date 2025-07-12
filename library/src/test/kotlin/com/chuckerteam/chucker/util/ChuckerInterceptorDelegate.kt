@@ -43,7 +43,8 @@ internal class ChuckerInterceptorDelegate(
         }
 
     private val chucker =
-        ChuckerInterceptor.Builder(context = mockContext)
+        ChuckerInterceptor
+            .Builder(context = mockContext)
             .collector(mockCollector)
             .maxContentLength(maxContentLength)
             .redactHeaders(headersToRedact)
@@ -69,7 +70,5 @@ internal class ChuckerInterceptorDelegate(
         }
     }
 
-    override fun intercept(chain: Interceptor.Chain): Response {
-        return chucker.intercept(chain)
-    }
+    override fun intercept(chain: Interceptor.Chain): Response = chucker.intercept(chain)
 }

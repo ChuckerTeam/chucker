@@ -81,14 +81,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         StrictMode.setVmPolicy(
-            StrictMode.VmPolicy.Builder()
+            StrictMode.VmPolicy
+                .Builder()
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .build(),
         )
 
         StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder()
+            StrictMode.ThreadPolicy
+                .Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
                 .penaltyLog()

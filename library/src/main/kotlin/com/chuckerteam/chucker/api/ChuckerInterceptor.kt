@@ -108,7 +108,9 @@ public class ChuckerInterceptor private constructor(
      * @param context An Android [Context].
      */
     @Suppress("TooManyFunctions")
-    public class Builder(internal var context: Context) {
+    public class Builder(
+        internal var context: Context,
+    ) {
         internal var collector: ChuckerCollector? = null
         internal var maxContentLength = MAX_CONTENT_LENGTH
         internal var cacheDirectoryProvider: CacheDirectoryProvider? = null
@@ -208,7 +210,8 @@ public class ChuckerInterceptor private constructor(
             apply {
                 paths.forEach { candidatePath ->
                     val httpUrl =
-                        HttpUrl.Builder()
+                        HttpUrl
+                            .Builder()
                             .scheme("https")
                             .host("example.com")
                             .addNonBlankPathSegments(candidatePath)

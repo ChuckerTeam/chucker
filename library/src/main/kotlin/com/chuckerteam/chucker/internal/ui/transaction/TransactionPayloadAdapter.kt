@@ -25,8 +25,9 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit) :
-    RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter(
+    private val onCopyBodyListener: () -> Unit,
+) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
@@ -75,14 +76,13 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when (items[position]) {
+    override fun getItemViewType(position: Int): Int =
+        when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
             is TransactionPayloadItem.CopyItem -> TYPE_COPY
         }
-    }
 
     internal fun highlightQueryWithColors(
         newText: String,
@@ -90,7 +90,8 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
         foregroundColor: Int,
     ): List<SearchItemBodyLine> {
         val listOfSearchItems = arrayListOf<SearchItemBodyLine>()
-        items.withIndex()
+        items
+            .withIndex()
             .forEach { (index, item) ->
                 if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val listOfOccurrences = item.line.indicesOf(newText)
@@ -147,7 +148,8 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
     }
 
     internal fun resetHighlight() {
-        items.withIndex()
+        items
+            .withIndex()
             .forEach { (index, item) ->
                 if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val removedSpansCount = item.line.clearHighlightSpans()
@@ -171,11 +173,12 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
     private fun SpannableStringBuilder.clearHighlightSpans(): Int {
         var removedSpansCount = 0
         val spanList = getSpans<Any>(0, length)
-        for (span in spanList)
+        for (span in spanList) {
             if (span !is SpanTextUtil.ChuckerForegroundColorSpan) {
                 removeSpan(span)
                 removedSpansCount++
             }
+        }
         return removedSpansCount
     }
 
@@ -185,7 +188,9 @@ internal class TransactionBodyAdapter(private val onCopyBodyListener: () -> Unit
     )
 }
 
-internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+internal sealed class TransactionPayloadViewHolder(
+    view: View,
+) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(
@@ -259,11 +264,20 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 }
 
 internal sealed class TransactionPayloadItem {
-    internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
+    internal class HeaderItem(
+        val headers: Spanned,
+    ) : TransactionPayloadItem()
 
-    internal class CopyItem(val copy: String) : TransactionPayloadItem()
+    internal class CopyItem(
+        val copy: String,
+    ) : TransactionPayloadItem()
 
-    internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
+    internal class BodyLineItem(
+        var line: SpannableStringBuilder,
+    ) : TransactionPayloadItem()
 
-    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
+    internal class ImageItem(
+        val image: Bitmap,
+        val luminance: Double?,
+    ) : TransactionPayloadItem()
 }
