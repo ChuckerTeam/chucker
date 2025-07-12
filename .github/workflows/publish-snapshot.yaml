@@ -40,7 +40,7 @@ jobs:
         path: '~/.m2/repository/'
 
     - name: Publish to the Snapshot Repository
-      run: ./gradlew publishReleasePublicationToSnapshotRepository --no-parallel
+      run: ./gradlew publishToSonatype --no-parallel
       env:
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}

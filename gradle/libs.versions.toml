@@ -55,7 +55,7 @@ androidxTestRules = "1.6.1"
 androidxEspresso = "3.6.1"
 
 # Publishing
-nexusStagingPlugin = "0.30.0"
+nexusPublishPlugin = "2.0.0"
 
 [libraries]
 # Google Libraries
@@ -130,6 +130,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLintGradle" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
 wire = { id = "com.squareup.wire", version.ref = "wire" }
-nexus-staging = { id = "io.codearte.nexus-staging", version.ref = "nexusStagingPlugin" }
+nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublishPlugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
