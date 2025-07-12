@@ -13,6 +13,7 @@ import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
@@ -370,7 +371,8 @@ internal class ChuckerInterceptorSkipRequestTest {
         every { proceed(any<Request>()) } returns
             mockk(relaxed = true) {
                 every { headers } returns Headers.Builder().build()
-                every { body } returns null
+                every { code } returns 204 // No Content
+                every { body } returns ResponseBody.EMPTY
             }
     }
 
