@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -19,6 +20,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.chuckerteam.chucker.sample.compose.testtags.ChuckerTestTags
 import com.chuckerteam.chucker.sample.compose.theme.AppAccentColor
 import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
@@ -54,6 +56,7 @@ internal fun LabeledRadioButton(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
             modifier
+                .testTag(ChuckerTestTags.LABELED_RADIO_BUTTON_ROW + "_" + label)
                 .semantics(mergeDescendants = true) {
                     contentDescription =
                         "${if (selected) "Selected" else "Not selected"} " +
@@ -77,6 +80,7 @@ internal fun LabeledRadioButton(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.testTag(ChuckerTestTags.LABELED_RADIO_BUTTON_LABEL_TEXT + "_" + label),
         )
     }
 }

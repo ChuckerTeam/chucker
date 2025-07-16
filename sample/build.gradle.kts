@@ -78,8 +78,7 @@ apollo {
 }
 
 dependencies {
-    implementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(project(":library"))
     releaseImplementation(project(":library-no-op"))

@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chuckerteam.chucker.sample.InterceptorType
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.testtags.ChuckerTestTags
 import com.chuckerteam.chucker.sample.compose.theme.AppAccentColor
 import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
@@ -71,6 +73,7 @@ internal fun ChuckerSampleControls(
         textDecoration = TextDecoration.Underline,
         modifier =
             modifier
+                .testTag(ChuckerTestTags.CONTROLS_INTERCEPTOR_TYPE_LABEL)
                 .clearAndSetSemantics {
                     contentDescription =
                         "$interceptorTypeLabel, opens external link, double tap to activate"
@@ -103,13 +106,19 @@ internal fun ChuckerSampleControls(
 
     Spacer(modifier = Modifier.height(4.dp))
 
+    val buttonTags =
+        listOf(
+            ChuckerTestTags.CONTROLS_DO_HTTP_BUTTON,
+            ChuckerTestTags.CONTROLS_DO_GRAPHQL_BUTTON,
+        )
+
     listOf(
         stringResource(R.string.do_http_activity) to onDoHttp,
         stringResource(R.string.do_graphql_activity) to onDoGraphQL,
-    ).forEach { (label, action) ->
+    ).forEachIndexed { index, (label, action) ->
         Button(
             onClick = action,
-            modifier = modifier,
+            modifier = modifier.testTag(buttonTags[index]),
             shape = RoundedCornerShape(4.dp),
         ) {
             Text(text = label)
@@ -119,7 +128,7 @@ internal fun ChuckerSampleControls(
     if (isChuckerInOpMode) {
         Button(
             onClick = onLaunchChucker,
-            modifier = modifier,
+            modifier = modifier.testTag(ChuckerTestTags.CONTROLS_LAUNCH_CHUCKER_BUTTON),
             shape =
                 androidx.compose.foundation.shape
                     .RoundedCornerShape(4.dp),
@@ -140,7 +149,7 @@ internal fun ChuckerSampleControls(
             Button(
                 onClick = onExportToLogFile,
                 modifier =
-                    Modifier.weight(1f),
+                    Modifier.weight(1f).testTag(ChuckerTestTags.CONTROLS_EXPORT_LOG_BUTTON),
                 shape =
                     androidx.compose.foundation.shape
                         .RoundedCornerShape(4.dp),
@@ -151,7 +160,8 @@ internal fun ChuckerSampleControls(
                 onClick = onExportToHarFile,
                 modifier =
                     Modifier
-                        .weight(1f),
+                        .weight(1f)
+                        .testTag(ChuckerTestTags.CONTROLS_EXPORT_HAR_BUTTON),
                 shape =
                     androidx.compose.foundation.shape
                         .RoundedCornerShape(4.dp),

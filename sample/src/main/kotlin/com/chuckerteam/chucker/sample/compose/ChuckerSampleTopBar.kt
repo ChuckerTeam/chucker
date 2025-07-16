@@ -12,11 +12,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.testtags.ChuckerTestTags
 import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 import com.chuckerteam.chucker.sample.compose.theme.DarkTopAppBarBackground
 
@@ -40,6 +42,7 @@ internal fun ChuckerSampleTopBar() {
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.testTag(ChuckerTestTags.TOP_APP_BAR_TITLE),
             )
         },
         colors =
