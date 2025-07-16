@@ -1,0 +1,18 @@
+package com.chuckerteam.chucker.sample
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class HttpLogPayload (
+  val url: String,
+  val method: String,
+  val requestHeaders: Map<String, Any?>? = null,
+  val requestBody: String? = null,
+  val statusCode: Long? = null,
+  val responseHeaders: Map<String, Any?>? = null,
+  val responseBody: String? = null,
+  val error: String? = null,
+  val isError: Boolean,
+  val requestTime: Long? = null,
+  val responseTime: Long? = null,
+  val contentType: String? = null,
+  val headerContentType: String? = null
+)
