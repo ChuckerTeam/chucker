@@ -22,6 +22,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chuckerteam.chucker.sample.InterceptorType
 import com.chuckerteam.chucker.sample.R
+import com.chuckerteam.chucker.sample.compose.testtags.ChuckerTestTags
 import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 
 /**
@@ -148,7 +150,8 @@ internal fun ChuckerSampleMainScreen(
                         modifier =
                             Modifier
                                 .widthIn(max = 500.dp)
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .testTag(ChuckerTestTags.INTRO_BODY_TEXT_COMPACT),
                     )
                     ChuckerSampleControls(
                         selectedInterceptorType = selectedInterceptorType,

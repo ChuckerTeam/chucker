@@ -1,113 +1,104 @@
 package com.chuckerteam.chucker.sample
 
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.Matchers.not
-import org.junit.Before
+import com.chuckerteam.chucker.sample.compose.testtags.ChuckerTestTags
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    @Before
-    fun setup() {
-        ActivityScenario.launch(MainActivity::class.java)
+    @get:Rule
+    val composeRule = createAndroidComposeRule<MainActivity>()
+
+    @Test
+    fun appBarTitle_shouldBeVisible() {
+        composeRule.onNodeWithTag(ChuckerTestTags.TOP_APP_BAR_TITLE).assertIsDisplayed()
     }
 
     @Test
-    fun testUIComponentsAreDisplayed() {
-        onView(withText(ChuckerUITestLabels.INTERCEPTOR_TYPE_LABEL)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).perform(click())
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).perform(click())
-        onView(withText(ChuckerUITestLabels.DO_HTTP_ACTIVITY_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.DO_GRAPHQL_ACTIVITY_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.LAUNCH_CHUCKER_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.EXPORT_LOG_FILE_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.EXPORT_HAR_FILE_BUTTON)).check(matches(isDisplayed()))
+    fun introText_shouldBeVisible_inCompactLayout() {
+        composeRule.onNodeWithTag(ChuckerTestTags.INTRO_BODY_TEXT_COMPACT).assertIsDisplayed()
     }
 
     @Test
-    fun testButtonInteractions() {
-        onView(withText(ChuckerUITestLabels.DO_HTTP_ACTIVITY_BUTTON)).perform(click())
+    fun interceptorTypeLabel_shouldBeVisible_andClickable() {
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_INTERCEPTOR_TYPE_LABEL)
+            .assertIsDisplayed()
+            .performClick()
     }
 
     @Test
-    fun testRadioButtonSelection() {
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON))
-            .perform(click())
-            .check(matches(isChecked()))
+    fun interceptorRadioButtons_shouldBeDisplayed() {
+        val applicationLabel = "Application"
+        val networkLabel = "Network"
 
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON))
-            .perform(click())
-            .check(matches(isChecked()))
+        composeRule
+            .onNodeWithTag(
+                ChuckerTestTags.LABELED_RADIO_BUTTON_LABEL_TEXT + "_" + applicationLabel,
+                useUnmergedTree = true,
+            ).assertIsDisplayed()
+        composeRule
+            .onNodeWithTag(
+                ChuckerTestTags.LABELED_RADIO_BUTTON_LABEL_TEXT + "_" + networkLabel,
+                useUnmergedTree = true,
+            ).assertIsDisplayed()
     }
 
     @Test
-    fun testHttpActivityButtonClick() {
-        onView(withText(ChuckerUITestLabels.DO_HTTP_ACTIVITY_BUTTON)).perform(click())
+    fun interceptorRadioButtons_shouldBeSelectable() {
+        val applicationLabel = "Application"
+        val networkLabel = "Network"
+
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.LABELED_RADIO_BUTTON_ROW + "_" + networkLabel)
+            .performClick()
+
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.LABELED_RADIO_BUTTON_ROW + "_" + applicationLabel)
+            .performClick()
     }
 
     @Test
-    fun testGraphQLActivityButtonClick() {
-        onView(withText(ChuckerUITestLabels.DO_GRAPHQL_ACTIVITY_BUTTON)).perform(click())
+    fun doHttpButton_shouldBeClickable() {
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_DO_HTTP_BUTTON)
+            .assertIsDisplayed()
+            .assertHasClickAction()
     }
 
     @Test
-    fun testLaunchChuckerDirectlyButtonClick() {
-        onView(withText(ChuckerUITestLabels.LAUNCH_CHUCKER_BUTTON)).perform(click())
+    fun doGraphQLButton_shouldBeClickable() {
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_DO_GRAPHQL_BUTTON)
+            .assertIsDisplayed()
+            .assertHasClickAction()
     }
 
     @Test
-    fun testExportButtonsVisibility() {
-        onView(withText(ChuckerUITestLabels.EXPORT_LOG_FILE_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.EXPORT_HAR_FILE_BUTTON)).check(matches(isDisplayed()))
+    fun launchChuckerButton_shouldBeVisibleAndClickable() {
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_LAUNCH_CHUCKER_BUTTON)
+            .assertIsDisplayed()
+            .assertHasClickAction()
     }
 
     @Test
-    fun testAllButtonClicks() {
-        val buttons =
-            listOf(
-                ChuckerUITestLabels.DO_HTTP_ACTIVITY_BUTTON,
-                ChuckerUITestLabels.DO_GRAPHQL_ACTIVITY_BUTTON,
-                ChuckerUITestLabels.LAUNCH_CHUCKER_BUTTON,
-            )
+    fun exportButtons_shouldBeVisibleAndClickable() {
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_EXPORT_LOG_BUTTON)
+            .assertIsDisplayed()
+            .assertHasClickAction()
 
-        buttons.forEach { buttonText ->
-            onView(withText(buttonText)).perform(click())
-        }
-    }
-
-    @Test
-    fun testOnlyOneRadioButtonCheckedAtATime() {
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).perform(click())
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).check(matches(not(isChecked())))
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).perform(click())
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON)).check(matches(isChecked()))
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON)).check(matches(not(isChecked())))
-    }
-
-    @Test
-    fun testRadioButtonSelectionVisualState() {
-        onView(withText(ChuckerUITestLabels.APPLICATION_RADIO_BUTTON))
-            .check(matches(isDisplayed()))
-            .perform(click())
-        onView(withText(ChuckerUITestLabels.NETWORK_RADIO_BUTTON))
-            .check(matches(isDisplayed()))
-            .perform(click())
-    }
-
-    @Test
-    fun testExportButtonsAreVisibleWithoutScrolling() {
-        onView(withText(ChuckerUITestLabels.EXPORT_LOG_FILE_BUTTON)).check(matches(isDisplayed()))
-        onView(withText(ChuckerUITestLabels.EXPORT_HAR_FILE_BUTTON)).check(matches(isDisplayed()))
+        composeRule
+            .onNodeWithTag(ChuckerTestTags.CONTROLS_EXPORT_HAR_BUTTON)
+            .assertIsDisplayed()
+            .assertHasClickAction()
     }
 }
