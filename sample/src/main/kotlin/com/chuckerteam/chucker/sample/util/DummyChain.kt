@@ -1,4 +1,4 @@
-package com.fampay.`in`.helpers
+package com.chuckerteam.chucker.sample.util
 
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -8,9 +8,11 @@ import okhttp3.Callback
 import okhttp3.Connection
 import okhttp3.Handshake
 import okhttp3.Protocol
+import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.Route
 import okio.Buffer
+import okio.BufferedSource
 import okio.Timeout
 import java.io.IOException
 import java.net.Socket
@@ -25,17 +27,8 @@ class DummyChain(
     override fun request(): Request = request
 
     override fun proceed(request: Request): Response {
-        response?.body?.let { body ->
-            val content = body.string()
-            val newResponseBody = content.toByteArray().toResponseBody(body.contentType())
-
-            return response.newBuilder()
-                .body(newResponseBody)
-                .build()
-        }
         return response ?: throw IllegalStateException("Response cannot be null for proceed().")
     }
-
 
     override fun connection(): Connection = object : Connection {
         override fun socket(): Socket = Socket()

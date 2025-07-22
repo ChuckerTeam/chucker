@@ -3,16 +3,14 @@
     <string name="interceptor_type"><a href="https://square.github.io/okhttp/interceptors/">Interceptor type</a>:</string>
     <string name="application_type">Application</string>
     <string name="network_type">Network</string>
-    <string name="do_http_activity">Do HTTP activity</string>
-    <string name="do_graphql_activity">Do GraphQL activity</string>
+    <string name="do_http_activity">Do HTTP Call</string>
+    <string name="do_graphql_activity">Do GraphQL Call</string>
+    <string name="do_flutter_http_activity">Do Flutter HTTP Call</string>
     <string name="launch_chucker_directly">Launch Chucker directly</string>
     <string name="export_to_file">Export to LOG file</string>
     <string name="export_to_file_har">Export to HAR file</string>
-    <string name="export_to_file_failure">Failed to export to file</string>
-    <string name="export_to_file_success">Transactions exported to: %s</string>
-    <string name="interceptor_url">https://square.github.io/okhttp/interceptors/</string>
-
-
-    <string name="intro_title">Welcome to Chucker Sample App</string>
-    <string name="intro_body">You can use this sample app to do some HTTP networking and to see how Chucker can help you inspect your networking calls.</string>
+    <string name="export_to_file_failure">Failed to export transactions to file.</string>
+    <string name="export_to_file_success">Transactions exported to %1$s.</string>
+    <string name="intro_title">Welcome to Chucker Sample!</string>
+    <string name="intro_body">Here are some useful buttons to test the Chucker functionality:</string>
 </resources>
