@@ -46,39 +46,44 @@ class MainActivity : ComponentActivity() {
                 val windowSize = calculateWindowSizeClass(this)
                 var selectedType by remember { mutableStateOf(interceptorTypeSelector.value) }
                 ChuckerSampleMainScreen(
-                        widthSizeClass = windowSize.widthSizeClass,
-                        selectedInterceptorType = selectedType,
-                        onInterceptorTypeChange = { newType ->
-                            selectedType = newType
-                            interceptorTypeSelector.value = newType
-                        },
-                        onInterceptorTypeLabelClick = ::openUrlInBrowser,
-                        onDoHttp = {
-                            for (task in httpTasks) {
-                                task.run()
-                            }
-                        },
-                        onDoGraphQL = { GraphQlTask(client).run() },
-                        onLaunchChucker = { launchChuckerDirectly() },
-                        onExportToLogFile = { generateExportFile(ExportFormat.LOG) },
-                        onExportToHarFile = { generateExportFile(ExportFormat.HAR) },
-                        isChuckerInOpMode = Chucker.isOp,
-                    onDoFlutterHttp = { logDummyFlutterHttpCall() }
+                    widthSizeClass = windowSize.widthSizeClass,
+                    selectedInterceptorType = selectedType,
+                    onInterceptorTypeChange = { newType ->
+                        selectedType = newType
+                        interceptorTypeSelector.value = newType
+                    },
+                    onInterceptorTypeLabelClick = ::openUrlInBrowser,
+                    onDoHttp = {
+                        for (task in httpTasks) {
+                            task.run()
+                        }
+                    },
+                    onDoGraphQL = { GraphQlTask(client).run() },
+                    onLaunchChucker = { launchChuckerDirectly() },
+                    onExportToLogFile = { generateExportFile(ExportFormat.LOG) },
+                    onExportToHarFile = { generateExportFile(ExportFormat.HAR) },
+                    isChuckerInOpMode = Chucker.isOp,
+                    onDoFlutterHttp = { logDummyFlutterHttpCall() },
                 )
             }
         }
 
         StrictMode.setVmPolicy(
-                StrictMode.VmPolicy.Builder().detectLeakedClosableObjects().penaltyLog().build(),
+            StrictMode.VmPolicy
+                .Builder()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .build(),
         )
 
         StrictMode.setThreadPolicy(
-                StrictMode.ThreadPolicy.Builder()
-                        .detectDiskReads()
-                        .detectDiskWrites()
-                        .penaltyLog()
-                        .penaltyDeath()
-                        .build(),
+            StrictMode.ThreadPolicy
+                .Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .penaltyLog()
+                .penaltyDeath()
+                .build(),
         )
     }
 
@@ -90,17 +95,17 @@ class MainActivity : ComponentActivity() {
     private fun generateExportFile(exportFormat: ExportFormat) {
         lifecycleScope.launch {
             val uri =
-                    withContext(Dispatchers.IO) {
-                        ChuckerCollector(this@MainActivity)
-                                .writeTransactions(this@MainActivity, null, exportFormat)
-                    }
+                withContext(Dispatchers.IO) {
+                    ChuckerCollector(this@MainActivity)
+                        .writeTransactions(this@MainActivity, null, exportFormat)
+                }
             if (uri == null) {
-                Toast.makeText(
-                                applicationContext,
-                                R.string.export_to_file_failure,
-                                Toast.LENGTH_SHORT,
-                        )
-                        .show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        R.string.export_to_file_failure,
+                        Toast.LENGTH_SHORT,
+                    ).show()
             } else {
                 val successMessage =
                     applicationContext.getString(R.string.export_to_file_success, uri.path)
@@ -119,7 +124,7 @@ class MainActivity : ComponentActivity() {
                     requestHeaders =
                         mapOf(
                             "X-Flutter-App" to "true",
-                            "Content-Type" to "application/json"
+                            "Content-Type" to "application/json",
                         ),
                     requestBody =
                         """{"message": "This is a dummy request from Flutter."}""",
@@ -127,23 +132,24 @@ class MainActivity : ComponentActivity() {
                     responseHeaders =
                         mapOf(
                             "Content-Type" to "application/json",
-                            "Cache-Control" to "no-cache"
+                            "Cache-Control" to "no-cache",
                         ),
                     responseBody =
                         """{"status": "success", "data": "Dummy response received!"}""",
                     requestTime = System.currentTimeMillis() - 500, // 500ms ago
                     responseTime = System.currentTimeMillis(),
                     headerContentType = "application/json",
-                    contentType = "application/json"
+                    contentType = "application/json",
                 )
             flutterHttpLogger.forwardHttpLogToHost(dummyPayload)
 
             withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    applicationContext,
-                    "Dummy Flutter HTTP call logged!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        "Dummy Flutter HTTP call logged!",
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
     }
@@ -151,9 +157,9 @@ class MainActivity : ComponentActivity() {
     private fun openUrlInBrowser() {
         val url = getString(R.string.interceptor_type)
         val intent =
-                Intent(Intent.ACTION_VIEW, url.toUri()).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
+            Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
 
         try {
             startActivity(Intent.createChooser(intent, "Open with"))

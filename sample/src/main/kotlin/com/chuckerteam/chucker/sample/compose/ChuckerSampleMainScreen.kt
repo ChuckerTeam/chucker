@@ -53,94 +53,56 @@ import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ChuckerSampleMainScreen(
-        widthSizeClass: WindowWidthSizeClass,
-        selectedInterceptorType: InterceptorType,
-        onInterceptorTypeChange: (InterceptorType) -> Unit,
-        onInterceptorTypeLabelClick: () -> Unit,
-        onDoHttp: () -> Unit,
-        onDoGraphQL: () -> Unit,
-        onDoFlutterHttp: () -> Unit,
-        onLaunchChucker: () -> Unit,
-        onExportToLogFile: () -> Unit,
-        onExportToHarFile: () -> Unit,
-        isChuckerInOpMode: Boolean,
+    widthSizeClass: WindowWidthSizeClass,
+    selectedInterceptorType: InterceptorType,
+    onInterceptorTypeChange: (InterceptorType) -> Unit,
+    onInterceptorTypeLabelClick: () -> Unit,
+    onDoHttp: () -> Unit,
+    onDoGraphQL: () -> Unit,
+    onDoFlutterHttp: () -> Unit,
+    onLaunchChucker: () -> Unit,
+    onExportToLogFile: () -> Unit,
+    onExportToHarFile: () -> Unit,
+    isChuckerInOpMode: Boolean,
 ) {
     val isExpandedWidth = widthSizeClass == WindowWidthSizeClass.Expanded
 
     if (isExpandedWidth) {
         Box(
-                modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column(
-                    modifier =
-                            Modifier.align(Alignment.BottomCenter)
-                                    .fillMaxWidth()
-                                    .verticalScroll(rememberScrollState())
-                                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                                text = stringResource(R.string.intro_title),
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.intro_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                                text = stringResource(R.string.intro_body),
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.intro_body),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         ChuckerSampleControls(
-                                selectedInterceptorType = selectedInterceptorType,
-                                onInterceptorTypeChange = onInterceptorTypeChange,
-                                onInterceptorTypeLabelClick = onInterceptorTypeLabelClick,
-                                onDoHttp = onDoHttp,
-                                onDoGraphQL = onDoGraphQL,
-                                onDoFlutterHttp = onDoFlutterHttp,
-                                onLaunchChucker = onLaunchChucker,
-                                onExportToLogFile = onExportToLogFile,
-                                onExportToHarFile = onExportToHarFile,
-                                isChuckerInOpMode = isChuckerInOpMode,
-                                isExpandedWidth = true,
-                        )
-                    }
-                }
-            }
-        }
-    } else {
-        Scaffold(
-                topBar = { ChuckerSampleTopBar() },
-        ) { innerPadding ->
-            Box(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
-            ) {
-                Column(
-                        modifier =
-                                Modifier.align(Alignment.BottomCenter)
-                                        .fillMaxWidth()
-                                        .verticalScroll(rememberScrollState())
-                                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                            text = stringResource(R.string.intro_body),
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.widthIn(max = 500.dp).fillMaxWidth(),
-                    )
-                    ChuckerSampleControls(
                             selectedInterceptorType = selectedInterceptorType,
                             onInterceptorTypeChange = onInterceptorTypeChange,
                             onInterceptorTypeLabelClick = onInterceptorTypeLabelClick,
@@ -151,6 +113,46 @@ internal fun ChuckerSampleMainScreen(
                             onExportToLogFile = onExportToLogFile,
                             onExportToHarFile = onExportToHarFile,
                             isChuckerInOpMode = isChuckerInOpMode,
+                            isExpandedWidth = true,
+                        )
+                    }
+                }
+            }
+        }
+    } else {
+        Scaffold(
+            topBar = { ChuckerSampleTopBar() },
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(R.string.intro_body),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.widthIn(max = 500.dp).fillMaxWidth(),
+                    )
+                    ChuckerSampleControls(
+                        selectedInterceptorType = selectedInterceptorType,
+                        onInterceptorTypeChange = onInterceptorTypeChange,
+                        onInterceptorTypeLabelClick = onInterceptorTypeLabelClick,
+                        onDoHttp = onDoHttp,
+                        onDoGraphQL = onDoGraphQL,
+                        onDoFlutterHttp = onDoFlutterHttp,
+                        onLaunchChucker = onLaunchChucker,
+                        onExportToLogFile = onExportToLogFile,
+                        onExportToHarFile = onExportToHarFile,
+                        isChuckerInOpMode = isChuckerInOpMode,
                     )
                 }
             }
@@ -159,115 +161,115 @@ internal fun ChuckerSampleMainScreen(
 }
 
 @Preview(
-        name = "Phone - Light",
-        device = Devices.PIXEL_4,
-        showSystemUi = true,
-        showBackground = true,
-        uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+    name = "Phone - Light",
+    device = Devices.PIXEL_4,
+    showSystemUi = true,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
 )
 @Preview(
-        name = "Phone - Dark",
-        device = Devices.PIXEL_4,
-        showSystemUi = true,
-        showBackground = true,
-        uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Phone - Dark",
+    device = Devices.PIXEL_4,
+    showSystemUi = true,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Preview(
-        name = "Phone Scaled - Light",
-        device = Devices.PIXEL_4,
-        showSystemUi = true,
-        showBackground = true,
-        fontScale = 1.5f,
-        uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+    name = "Phone Scaled - Light",
+    device = Devices.PIXEL_4,
+    showSystemUi = true,
+    showBackground = true,
+    fontScale = 1.5f,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
 )
 @Preview(
-        name = "Phone – Light (Landscape)",
-        device = Devices.AUTOMOTIVE_1024p,
-        widthDp = 1024,
-        showSystemUi = true,
-        showBackground = true,
-        uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+    name = "Phone – Light (Landscape)",
+    device = Devices.AUTOMOTIVE_1024p,
+    widthDp = 1024,
+    showSystemUi = true,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
 )
 @Composable
 private fun ChuckerSampleMainScreenPreview() {
     ChuckerTheme {
         ChuckerSampleMainScreen(
-                widthSizeClass = WindowWidthSizeClass.Compact,
-                selectedInterceptorType = InterceptorType.APPLICATION,
-                onInterceptorTypeChange = {
-                    // DO Nothing
-                },
-                onInterceptorTypeLabelClick = {
-                    // DO Nothing
-                },
-                onDoHttp = {
-                    // DO Nothing
-                },
-                onDoGraphQL = {
-                    // DO Nothing
-                },
-                onDoFlutterHttp = {
-                    // DO Nothing
-                },
-                onLaunchChucker = {
-                    // DO Nothing
-                },
-                onExportToLogFile = {
-                    // DO Nothing
-                },
-                onExportToHarFile = {
-                    // DO Nothing
-                },
-                isChuckerInOpMode = true,
+            widthSizeClass = WindowWidthSizeClass.Compact,
+            selectedInterceptorType = InterceptorType.APPLICATION,
+            onInterceptorTypeChange = {
+                // DO Nothing
+            },
+            onInterceptorTypeLabelClick = {
+                // DO Nothing
+            },
+            onDoHttp = {
+                // DO Nothing
+            },
+            onDoGraphQL = {
+                // DO Nothing
+            },
+            onDoFlutterHttp = {
+                // DO Nothing
+            },
+            onLaunchChucker = {
+                // DO Nothing
+            },
+            onExportToLogFile = {
+                // DO Nothing
+            },
+            onExportToHarFile = {
+                // DO Nothing
+            },
+            isChuckerInOpMode = true,
         )
     }
 }
 
 @Preview(
-        name = "Tablet - Light",
-        device = Devices.NEXUS_10,
-        showSystemUi = true,
-        showBackground = true,
-        uiMode = Configuration.UI_MODE_TYPE_NORMAL,
+    name = "Tablet - Light",
+    device = Devices.NEXUS_10,
+    showSystemUi = true,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_TYPE_NORMAL,
 )
 @Preview(
-        name = "Tablet - Dark",
-        device = Devices.NEXUS_10,
-        showSystemUi = true,
-        showBackground = true,
-        uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Tablet - Dark",
+    device = Devices.NEXUS_10,
+    showSystemUi = true,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun ChuckerSampleMainScreenTabletPreview() {
     ChuckerTheme {
         ChuckerSampleMainScreen(
-                widthSizeClass = WindowWidthSizeClass.Expanded,
-                selectedInterceptorType = InterceptorType.APPLICATION,
-                onInterceptorTypeChange = {
-                    // DO Nothing
-                },
-                onInterceptorTypeLabelClick = {
-                    // DO Nothing
-                },
-                onDoHttp = {
-                    // DO Nothing
-                },
-                onDoGraphQL = {
-                    // DO Nothing
-                },
-                onDoFlutterHttp = {
-                    // DO Nothing
-                },
-                onLaunchChucker = {
-                    // DO Nothing
-                },
-                onExportToLogFile = {
-                    // DO Nothing
-                },
-                onExportToHarFile = {
-                    // DO Nothing
-                },
-                isChuckerInOpMode = true,
+            widthSizeClass = WindowWidthSizeClass.Expanded,
+            selectedInterceptorType = InterceptorType.APPLICATION,
+            onInterceptorTypeChange = {
+                // DO Nothing
+            },
+            onInterceptorTypeLabelClick = {
+                // DO Nothing
+            },
+            onDoHttp = {
+                // DO Nothing
+            },
+            onDoGraphQL = {
+                // DO Nothing
+            },
+            onDoFlutterHttp = {
+                // DO Nothing
+            },
+            onLaunchChucker = {
+                // DO Nothing
+            },
+            onExportToLogFile = {
+                // DO Nothing
+            },
+            onExportToHarFile = {
+                // DO Nothing
+            },
+            isChuckerInOpMode = true,
         )
     }
 }

@@ -3,14 +3,17 @@ package com.chuckerteam.chucker.sample.util
 import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import okhttp3.*
+import okhttp3.Headers
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Protocol
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.Response
+import okhttp3.ResponseBody
 import okio.Buffer
 import okio.BufferedSource
-import okio.ByteString
 
 /**
  * Data class representing HTTP log payload from Flutter
@@ -27,7 +30,7 @@ data class HttpLogPayload(
     val requestTime: Long? = null,
     val responseTime: Long? = null,
     val headerContentType: String? = null,
-    val contentType: String? = null
+    val contentType: String? = null,
 )
 
 /**
@@ -35,9 +38,8 @@ data class HttpLogPayload(
  */
 class ReusableResponseBody(
     private val content: String,
-    private val mediaType: MediaType?
+    private val mediaType: MediaType?,
 ) : ResponseBody() {
-
     private val contentBytes = content.toByteArray(Charsets.UTF_8)
 
     override fun contentType(): MediaType? = mediaType
@@ -54,36 +56,46 @@ class ReusableResponseBody(
 /**
  * Improved Flutter HTTP Logger that properly logs HTTP calls to Chucker
  */
-class FlutterHttpLogger(private val context: Context) {
-
-    private val chuckerInterceptor = ChuckerInterceptor.Builder(context)
-        .alwaysReadResponseBody(true)
-        .build()
+class FlutterHttpLogger(
+    private val context: Context,
+) {
+    private val chuckerInterceptor =
+        ChuckerInterceptor
+            .Builder(context)
+            .alwaysReadResponseBody(true)
+            .build()
 
     fun forwardHttpLogToHost(payload: HttpLogPayload) {
         try {
             Log.d("FlutterHttpLog", "Processing HTTP log: ${payload.method} ${payload.url}")
 
             // Create request headers
-            val requestHeaders = Headers.Builder().apply {
-                payload.requestHeaders?.forEach { (key, value) ->
-                    add(key, value?.toString() ?: "")
-                }
-            }.build()
+            val requestHeaders =
+                Headers
+                    .Builder()
+                    .apply {
+                        payload.requestHeaders?.forEach { (key, value) ->
+                            add(key, value?.toString() ?: "")
+                        }
+                    }.build()
 
             // Create request body
-            val requestMediaType = payload.headerContentType?.toMediaTypeOrNull()
-                ?: "application/json; charset=utf-8".toMediaType()
+            val requestMediaType =
+                payload.headerContentType?.toMediaTypeOrNull()
+                    ?: "application/json; charset=utf-8".toMediaType()
 
-            val requestBody = payload.requestBody?.let { body ->
-                Log.d("FlutterHttpLog", "Request body: $body")
-                body.toRequestBody(requestMediaType)
-            }
+            val requestBody =
+                payload.requestBody?.let { body ->
+                    Log.d("FlutterHttpLog", "Request body: $body")
+                    body.toRequestBody(requestMediaType)
+                }
 
             // Create request
-            val requestBuilder = Request.Builder()
-                .url(payload.url)
-                .headers(requestHeaders)
+            val requestBuilder =
+                Request
+                    .Builder()
+                    .url(payload.url)
+                    .headers(requestHeaders)
 
             when {
                 requestBody != null -> requestBuilder.method(payload.method, requestBody)
@@ -99,15 +111,19 @@ class FlutterHttpLogger(private val context: Context) {
             val request = requestBuilder.build()
 
             // Create response headers
-            val responseHeaders = Headers.Builder().apply {
-                payload.responseHeaders?.forEach { (key, value) ->
-                    add(key, value?.toString() ?: "")
-                }
-            }.build()
+            val responseHeaders =
+                Headers
+                    .Builder()
+                    .apply {
+                        payload.responseHeaders?.forEach { (key, value) ->
+                            add(key, value?.toString() ?: "")
+                        }
+                    }.build()
 
             // Create response body with custom reusable implementation
-            val responseMediaType = payload.contentType?.toMediaTypeOrNull()
-                ?: "application/json; charset=utf-8".toMediaType()
+            val responseMediaType =
+                payload.contentType?.toMediaTypeOrNull()
+                    ?: "application/json; charset=utf-8".toMediaType()
 
             val responseBodyContent = payload.responseBody ?: ""
             Log.d("FlutterHttpLog", "Response body: $responseBodyContent")
@@ -120,23 +136,24 @@ class FlutterHttpLogger(private val context: Context) {
             val actualRequestTime = payload.requestTime ?: System.currentTimeMillis()
             val actualResponseTime = payload.responseTime ?: System.currentTimeMillis()
 
-            val response = Response.Builder()
-                .request(request)
-                .protocol(Protocol.HTTP_1_1)
-                .code(payload.statusCode ?: 200)
-                .message(payload.error ?: "OK")
-                .sentRequestAtMillis(actualRequestTime)
-                .receivedResponseAtMillis(actualResponseTime)
-                .headers(responseHeaders)
-                .body(responseBody)
-                .build()
+            val response =
+                Response
+                    .Builder()
+                    .request(request)
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(payload.statusCode ?: 200)
+                    .message(payload.error ?: "OK")
+                    .sentRequestAtMillis(actualRequestTime)
+                    .receivedResponseAtMillis(actualResponseTime)
+                    .headers(responseHeaders)
+                    .body(responseBody)
+                    .build()
 
             // Use DummyChain to process through ChuckerInterceptor
             val dummyChain = DummyChain(request, response, null)
             chuckerInterceptor.intercept(dummyChain)
 
             Log.d("FlutterHttpLog", "Successfully logged HTTP transaction to Chucker")
-
         } catch (e: Exception) {
             Log.e("FlutterHttpLog", "Error while processing HTTP log for Chucker: ${e.message}", e)
         }
