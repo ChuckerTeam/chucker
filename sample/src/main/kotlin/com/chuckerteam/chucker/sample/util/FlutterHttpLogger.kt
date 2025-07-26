@@ -151,7 +151,12 @@ class FlutterHttpLogger(
 
             // Use DummyChain to process through ChuckerInterceptor
             val dummyChain = DummyChain(request, response, null)
-            chuckerInterceptor.intercept(dummyChain)
+            val processedResponse = chuckerInterceptor.intercept(dummyChain)
+
+            // Consume the response body to trigger Chucker's data capture
+            processedResponse.body.use { body ->
+                body.string()
+            }
 
             Log.d("FlutterHttpLog", "Successfully logged HTTP transaction to Chucker")
         } catch (e: Exception) {
