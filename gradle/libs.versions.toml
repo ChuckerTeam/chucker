@@ -51,7 +51,7 @@ mockk = "1.14.5"
 robolectric = "4.15.1"
 truth = "1.4.4"
 androidxTestRunner = "1.6.2"
-androidxTestRules = "1.6.1"
+androidxTestRules = "1.7.0"
 androidxEspresso = "3.6.1"
 
 # Publishing
