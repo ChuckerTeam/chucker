@@ -52,7 +52,7 @@ robolectric = "4.15.1"
 truth = "1.4.4"
 androidxTestRunner = "1.7.0"
 androidxTestRules = "1.7.0"
-androidxEspresso = "3.6.1"
+androidxEspresso = "3.7.0"
 
 # Publishing
 nexusPublishPlugin = "2.0.0"
