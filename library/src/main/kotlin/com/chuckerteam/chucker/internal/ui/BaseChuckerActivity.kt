@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
+import kotlin.math.max
 
 internal abstract class BaseChuckerActivity : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ internal abstract class BaseChuckerActivity : AppCompatActivity() {
 
     override fun setContentView(view: View?) {
         super.setContentView(view)
-        view?.let { setWindowInsets(it) }
+        view?.let { if (Build.VERSION.SDK_INT >= 35) setWindowInsets(it) }
     }
 
     override fun onResume() {
@@ -47,19 +48,25 @@ internal abstract class BaseChuckerActivity : AppCompatActivity() {
      * This handles system bars, display cutout, and IME insets.
      */
     private fun setWindowInsets(view: View) {
-        if (Build.VERSION.SDK_INT >= 35) {
-            ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-                val bars = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or
-                            WindowInsetsCompat.Type.displayCutout() or
-                            WindowInsetsCompat.Type.ime()
-                )
-                v.updatePadding(bars.left, bars.top, bars.right, bars.bottom)
-                WindowInsetsCompat.CONSUMED
-            }
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            insetsController.isAppearanceLightStatusBars = true
-            insetsController.isAppearanceLightNavigationBars = true
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            // Prevent flicker between nav bar and keyboard
+            v.updatePadding(
+                left = systemBars.left,
+                top = systemBars.top,
+                right = systemBars.right,
+                bottom = max(systemBars.bottom, ime.bottom)
+            )
+
+            // Pass through for children to handle too
+            insets
         }
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = true
+        insetsController.isAppearanceLightNavigationBars = true
     }
 }
