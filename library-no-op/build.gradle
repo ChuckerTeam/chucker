@@ -21,8 +21,8 @@ android {
 
     android {
         compileOptions {
-            sourceCompatibility 1.8
-            targetCompatibility 1.8
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
         }
     }
 
@@ -34,6 +34,10 @@ android {
         // Don't fail build if some dependencies outdated
         disable 'GradleDependency'
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
