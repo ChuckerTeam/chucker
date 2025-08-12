@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    namespace "com.chuckerteam.chucker"
+
     compileSdkVersion rootProject.compileSdkVersion
 
     compileOptions {
@@ -19,7 +21,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -47,16 +49,12 @@ android {
 
     android {
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_17
-            targetCompatibility JavaVersion.VERSION_17
+            sourceCompatibility 1.8
+            targetCompatibility 1.8
         }
     }
 
     resourcePrefix 'chucker_'
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 dependencies {
