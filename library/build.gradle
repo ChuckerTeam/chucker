@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    namespace "com.chuckerteam.chucker"
+
     compileSdkVersion rootProject.compileSdkVersion
 
     compileOptions {

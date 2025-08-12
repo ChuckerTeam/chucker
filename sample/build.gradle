@@ -7,6 +7,8 @@ wire {
 }
 
 android {
+    namespace "com.chuckerteam.chucker.sample"
+
     compileSdkVersion rootProject.compileSdkVersion
 
     defaultConfig {

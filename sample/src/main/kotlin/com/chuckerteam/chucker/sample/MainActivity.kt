@@ -5,6 +5,7 @@ import android.os.StrictMode
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.sample.databinding.ActivityMainSampleBinding
 
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
 
         with(mainBinding) {
             setContentView(root)
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            insetsController.isAppearanceLightStatusBars = true
+            insetsController.isAppearanceLightNavigationBars = true
             doHttp.setOnClickListener {
                 for (task in httpTasks) {
                     task.run()
