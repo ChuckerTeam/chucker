@@ -5,6 +5,10 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Fixed
+
+-   Fixed share of `curl` when URL contains spaces [#1464]
+
 ## Version 4.2.0 _(2025-07-12)_
 
 ### Added
