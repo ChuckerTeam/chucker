@@ -140,9 +140,10 @@ internal class TransactionCurlCommandSharableTest {
 
     @Test
     fun `create cURL command with space in URL`() {
-        val transaction = TestTransactionFactory.createTransaction("GET").apply {
-            url = "http://localhost/get Users"
-        }
+        val transaction =
+            TestTransactionFactory
+                .createTransaction("GET")
+                .apply { url = "http://localhost/get Users" }
         val sharableTransaction = TransactionCurlCommandSharable(transaction)
 
         val sharedContent = sharableTransaction.toSharableUtf8Content(context)
