@@ -137,4 +137,17 @@ internal class TransactionCurlCommandSharableTest {
             assertThat(sharedContent).isEqualTo(expected)
         }
     }
+
+    @Test
+    fun `create cURL command with space in URL`() {
+        val transaction =
+            TestTransactionFactory
+                .createTransaction("GET")
+                .apply { url = "http://localhost/get Users" }
+        val sharableTransaction = TransactionCurlCommandSharable(transaction)
+
+        val sharedContent = sharableTransaction.toSharableUtf8Content(context)
+
+        assertThat(sharedContent).isEqualTo("curl -X GET http://localhost/get%20Users")
+    }
 }
