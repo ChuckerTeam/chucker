@@ -27,7 +27,7 @@ paletteKtx = "1.0.0"
 gson = "2.13.1"
 okhttp = "5.1.0"
 retrofit = "3.0.0"
-wire = "5.3.11"
+wire = "5.4.0"
 
 # Debug and Quality Control
 binaryCompatibilityValidator = "0.18.1"
