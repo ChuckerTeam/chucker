@@ -12,7 +12,7 @@ kotlinStdlib = "2.2.20"
 ksp = "2.2.10-2.0.2"
 
 # Google Libraries
-activity = "1.10.1"
+activity = "1.11.0"
 appCompat = "1.7.1"
 constraintLayout = "2.2.1"
 lifecycleLivedataKtx = "2.9.3"
