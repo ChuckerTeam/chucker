@@ -24,7 +24,7 @@ lifecycle = "2.9.3"
 paletteKtx = "1.0.0"
 
 # Networking
-gson = "2.13.1"
+gson = "2.13.2"
 okhttp = "5.1.0"
 retrofit = "3.0.0"
 wire = "5.4.0"
