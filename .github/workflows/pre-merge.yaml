@@ -31,7 +31,7 @@ jobs:
         java-version: '17'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Run all the tests
       run: ./gradlew test
@@ -50,7 +50,7 @@ jobs:
         java-version: '17'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Run detekt
       run: ./gradlew detekt
@@ -69,7 +69,7 @@ jobs:
           java-version: '17'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Run lint
         run: ./gradlew lint
@@ -88,7 +88,7 @@ jobs:
         java-version: '17'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
  
     - name: Run ktlint
       run: ./gradlew ktlintCheck
@@ -107,7 +107,7 @@ jobs:
           java-version: '17'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Run apiCheck
         run: ./gradlew apiCheck
@@ -126,7 +126,7 @@ jobs:
         java-version: '17'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
           
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
