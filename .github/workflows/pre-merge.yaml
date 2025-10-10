@@ -22,7 +22,7 @@ jobs:
         access_token: ${{ github.token }}
 
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -79,7 +79,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -117,7 +117,7 @@ jobs:
 
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Java
       uses: actions/setup-java@v4
