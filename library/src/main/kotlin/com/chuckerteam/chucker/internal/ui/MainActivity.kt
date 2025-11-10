@@ -125,7 +125,17 @@ internal class MainActivity :
         viewModel.transactions.observe(
             this,
         ) { transactionTuples ->
-            transactionsAdapter.submitList(transactionTuples)
+            val newListTransaction = transactionTuples.distinctBy { transactionItem ->
+                listOf(
+                    transactionItem.method,
+                    transactionItem.getFormattedPath(encode = false),
+                    transactionItem.requestDate,
+                    transactionItem.requestPayloadSize,
+                    transactionItem.responsePayloadSize,
+                    transactionItem.responseCode
+                )
+            }
+            transactionsAdapter.submitList(newListTransaction)
             mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
         }
 
