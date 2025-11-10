@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import android.util.LongSparseArray
 import com.chuckerteam.chucker.internal.data.entity.HttpHeader
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
@@ -23,6 +24,7 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.math.ln
 import kotlin.math.pow
+import androidx.core.util.size
 
 internal object FormatUtils {
     private const val SI_MULTIPLE = 1000
@@ -113,5 +115,23 @@ internal object FormatUtils {
         } catch (ignore: UnsupportedEncodingException) {
             form
         }
+    }
+
+    inline fun <T> LongSparseArray<T>.distinctBySparse(selector: (T) -> Any): LongSparseArray<T> {
+        val seen = HashSet<Any>()
+        val result = LongSparseArray<T>()
+
+        for(i in 0 until size) {
+            val value = valueAt(i)
+            val key = keyAt(i)
+
+            val identifier = selector(value)
+
+            if(seen.add(identifier)){
+                result.put(key, value)
+            }
+        }
+
+        return result
     }
 }

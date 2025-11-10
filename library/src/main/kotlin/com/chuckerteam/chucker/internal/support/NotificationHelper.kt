@@ -13,6 +13,7 @@ import androidx.core.util.size
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FormatUtils.distinctBySparse
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 
 internal class NotificationHelper(
@@ -99,8 +100,18 @@ internal class NotificationHelper(
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
-                for (i in transactionBuffer.size - 1 downTo 0) {
-                    val bufferedTransaction = transactionBuffer.valueAt(i)
+                val newTransactionBuffer = transactionBuffer.distinctBySparse { transactionItem ->
+                    listOf(
+                        transactionItem.method,
+                        transactionItem.getFormattedPath(encode = false),
+                        transactionItem.requestDate,
+                        transactionItem.requestPayloadSize,
+                        transactionItem.responsePayloadSize,
+                        transactionItem.responseCode
+                    )
+                }
+                for (i in newTransactionBuffer.size - 1 downTo 0) {
+                    val bufferedTransaction = newTransactionBuffer.valueAt(i)
                     if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
                             builder.setContentText(bufferedTransaction.notificationText)
