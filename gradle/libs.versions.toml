@@ -32,7 +32,7 @@ wire = "5.4.0"
 # Debug and Quality Control
 binaryCompatibilityValidator = "0.18.1"
 detekt = "1.23.8"
-ktLintGradle = "13.1.0"
+ktLintGradle = "14.0.1"
 leakcanary = "2.14"
 
 # Apollo
