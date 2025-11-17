@@ -19,7 +19,7 @@ lifecycleLivedataKtx = "2.9.4"
 loggingInterceptor = "5.3.1"
 materialComponents = "1.13.0"
 fragment = "1.8.9"
-room = "2.7.2"
+room = "2.8.3"
 lifecycle = "2.9.4"
 paletteKtx = "1.0.0"
 
