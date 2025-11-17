@@ -36,7 +36,7 @@ ktLintGradle = "14.0.1"
 leakcanary = "2.14"
 
 # Apollo
-apollo = "3.8.6"
+apollo = "4.1.0"
 
 # Compose
 composeBom = "2025.11.00"
@@ -95,7 +95,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 # Apollo
-apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 
 # Jetpack Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
@@ -128,7 +128,7 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junitGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLintGradle" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
