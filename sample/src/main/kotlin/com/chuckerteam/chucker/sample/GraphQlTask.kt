@@ -1,9 +1,9 @@
 package com.chuckerteam.chucker.sample
 
 import android.util.Log
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.network.okHttpClient
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
