@@ -72,8 +72,7 @@ apollo {
         packageName.set("com.chuckerteam.chucker.sample")
         schemaFile.set(file("src/main/graphql/com/chuckerteam/chucker/sample/schema.json.graphql"))
         srcDir("src/main/graphql")
-        excludes.add("**/schema.json.graphql")
-        excludes.add("**/schema.json")
+        excludes.set(listOf("**/schema.json.graphql", "**/schema.json"))
     }
 }
 
