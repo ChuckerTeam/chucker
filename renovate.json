@@ -1,6 +1,19 @@
 {
-  "extends": [
-    "config:base",
-    ":automergeMinor"
-  ]
+    "extends": [
+        "config:base",
+        ":automergeMinor"
+    ],
+    "packageRules": [
+        {
+            "description": "Exclude Gradle dependencies that can't be updated due to minSdkVersion limits",
+            "matchManagers": [
+                "gradle"
+            ],
+            "ignoreDeps": [
+                "androidx.room:room-runtime",
+                "androidx.room:room-compiler",
+                "androidx.room:room-ktx"
+            ]
+        }
+    ]
 }
