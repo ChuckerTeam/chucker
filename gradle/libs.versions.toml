@@ -36,7 +36,7 @@ ktLintGradle = "14.0.1"
 leakcanary = "2.14"
 
 # Apollo
-apollo = "4.1.0"
+apollo = "4.3.3"
 
 # Compose
 composeBom = "2025.11.00"
