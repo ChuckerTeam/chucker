@@ -39,7 +39,7 @@ leakcanary = "2.14"
 apollo = "4.3.3"
 
 # Compose
-composeBom = "2025.11.00"
+composeBom = "2025.11.01"
 lifecycleViewmodelCompose = "2.9.4"
 
 # Testing
