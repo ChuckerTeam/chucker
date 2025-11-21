@@ -20,7 +20,7 @@ loggingInterceptor = "5.3.2"
 materialComponents = "1.13.0"
 fragment = "1.8.9"
 room = "2.7.2"
-lifecycle = "2.9.4"
+lifecycle = "2.10.0"
 paletteKtx = "1.0.0"
 
 # Networking
