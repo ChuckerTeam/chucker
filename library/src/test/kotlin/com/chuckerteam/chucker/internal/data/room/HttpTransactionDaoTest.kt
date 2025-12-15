@@ -307,9 +307,11 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionOne)
             insertTransaction(transactionTwo)
 
-            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponse%").observeForever { result ->
-                assertTuples(listOf(transactionOne), result)
-            }
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponse%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
         }
 
     @Test
@@ -319,7 +321,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("test").withResponseData().apply {
                     requestDate = 200L
                     setRequestHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("Authorization", "Bearer searchTermInHeader")
                             .build(),
                     )
@@ -328,7 +331,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("other").withResponseData().apply {
                     requestDate = 100L
                     setRequestHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("Authorization", "Bearer differentToken")
                             .build(),
                     )
@@ -337,9 +341,11 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionOne)
             insertTransaction(transactionTwo)
 
-            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInHeader%").observeForever { result ->
-                assertTuples(listOf(transactionOne), result)
-            }
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInHeader%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
         }
 
     @Test
@@ -349,7 +355,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("test").withResponseData().apply {
                     requestDate = 200L
                     setResponseHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("X-Custom-Header", "searchTermInResponseHeader")
                             .build(),
                     )
@@ -358,7 +365,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("other").withResponseData().apply {
                     requestDate = 100L
                     setResponseHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("X-Custom-Header", "differentValue")
                             .build(),
                     )
@@ -367,9 +375,11 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionOne)
             insertTransaction(transactionTwo)
 
-            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponseHeader%").observeForever { result ->
-                assertTuples(listOf(transactionOne), result)
-            }
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponseHeader%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
         }
 
     @Test
@@ -379,7 +389,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("test").withResponseData().apply {
                     requestDate = 200L
                     setRequestHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("X-Special-Header", "value")
                             .build(),
                     )
@@ -388,7 +399,8 @@ internal class HttpTransactionDaoTest {
                 createRequest("other").withResponseData().apply {
                     requestDate = 100L
                     setRequestHeaders(
-                        okhttp3.Headers.Builder()
+                        okhttp3.Headers
+                            .Builder()
                             .add("X-Different-Header", "value")
                             .build(),
                     )
