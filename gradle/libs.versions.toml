@@ -9,7 +9,7 @@ junitVersion = "1.3.0"
 kotlin = "2.3.0"
 coroutines = "1.10.2"
 kotlinStdlib = "2.3.0"
-ksp = "2.3.3"
+ksp = "2.3.4"
 
 # Google Libraries
 activity = "1.11.0"
