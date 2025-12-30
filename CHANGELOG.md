@@ -5,6 +5,8 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+-   Added support for Arabic language
+
 ### Fixed
 
 -   Fixed share of `curl` when URL contains spaces [#1464]
