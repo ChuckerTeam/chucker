@@ -43,7 +43,7 @@ composeBom = "2025.11.01"
 lifecycleViewmodelCompose = "2.10.0"
 
 # Testing
-junitGradlePlugin = "1.14.0.0"
+junitGradlePlugin = "2.0.0"
 junit = "6.0.2"
 junitPlatformLauncher = "6.0.2"
 junit4 = "4.13.2"
