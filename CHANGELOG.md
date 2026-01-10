@@ -5,10 +5,25 @@ Please add your entries according to this format.
 
 ## Unreleased
 
+### Added
+
+### Fixed
+
+## Version 4.3.0 _(2026-01-10)_
+
 ### Fixed
 
 -   Fixed share of `curl` when URL contains spaces [#1464]
+-   Remove unused wake lock permission (#1498)
+   
+### Dependency Updates
 
+-   Target and Compile SDK to 36
+-   OkHTTP to 5.3.0
+-   Kotlin to 2.3.0
+-   AGP to 8.13.1
+-   Material to 1.13.0
+  
 ## Version 4.2.0 _(2025-07-12)_
 
 ### Added
