@@ -45,6 +45,11 @@ internal class ResponseProcessor(
                 requestDate = response.sentRequestAtMillis
             }
 
+            /**
+             * For requests made via cronet okhttp bridge sentRequestAtMillis &
+             * receivedResponseAtMillis params are not available
+             * https://github.com/google/cronet-transport-for-okhttp (Common incompatibilities)
+             */
             responseDate =
                 if (response.receivedResponseAtMillis > 0) {
                     response.receivedResponseAtMillis

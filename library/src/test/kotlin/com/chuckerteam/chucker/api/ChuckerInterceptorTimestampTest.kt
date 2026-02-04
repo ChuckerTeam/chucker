@@ -1,6 +1,7 @@
 package com.chuckerteam.chucker.api
 
 import com.chuckerteam.chucker.util.ChuckerInterceptorDelegate
+import com.chuckerteam.chucker.util.NoLoggerRule
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -10,6 +11,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
@@ -17,6 +19,7 @@ import java.io.File
  * Tests for timestamp fallback logic when Response.sentRequestAtMillis
  * and Response.receivedResponseAtMillis are zero (e.g., with Cronet/QUIC).
  */
+@ExtendWith(NoLoggerRule::class)
 internal class ChuckerInterceptorTimestampTest {
     @get:Rule
     val server = MockWebServer()
