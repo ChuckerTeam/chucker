@@ -9,7 +9,7 @@ junitVersion = "1.3.0"
 kotlin = "2.3.0"
 coroutines = "1.10.2"
 kotlinStdlib = "2.3.0"
-ksp = "2.3.4"
+ksp = "2.3.5"
 
 # Google Libraries
 activity = "1.11.0"
@@ -38,7 +38,7 @@ ktLintGradle = "14.0.1"
 leakcanary = "2.14"
 
 # Apollo
-apollo = "4.3.3"
+apollo = "4.4.1"
 
 # Compose
 composeBom = "2025.11.01"
@@ -49,7 +49,7 @@ junitGradlePlugin = "2.0.1"
 junit = "6.0.2"
 junitPlatformLauncher = "6.0.2"
 junit4 = "4.13.2"
-mockk = "1.14.7"
+mockk = "1.14.9"
 robolectric = "4.16.1"
 truth = "1.4.5"
 androidxTestRunner = "1.7.0"
@@ -58,7 +58,7 @@ androidxEspresso = "3.7.0"
 
 # Publishing
 nexusPublishPlugin = "2.0.0"
-uiTestJunit4 = "1.10.1"
+uiTestJunit4 = "1.10.2"
 
 [libraries]
 # Google Libraries
