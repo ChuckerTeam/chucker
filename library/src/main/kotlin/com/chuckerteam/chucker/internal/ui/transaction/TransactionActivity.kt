@@ -97,21 +97,27 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
-            R.id.share_text ->
+            R.id.share_text -> {
                 shareTransactionAsText { transaction ->
                     val encodeUrls = viewModel.encodeUrl.value!!
                     TransactionDetailsSharable(transaction, encodeUrls)
                 }
-            R.id.share_curl ->
+            }
+
+            R.id.share_curl -> {
                 shareTransactionAsText { transaction ->
                     TransactionCurlCommandSharable(transaction)
                 }
-            R.id.share_file ->
+            }
+
+            R.id.share_file -> {
                 shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
                     val encodeUrls = viewModel.encodeUrl.value!!
                     TransactionDetailsSharable(transaction, encodeUrls)
                 }
-            R.id.share_har ->
+            }
+
+            R.id.share_har -> {
                 shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
                     TransactionDetailsHarSharable(
                         HarUtils.harStringFromTransactions(
@@ -121,7 +127,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
                         ),
                     )
                 }
-            else -> super.onOptionsItemSelected(item)
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
 
     private fun shareTransactionAsText(block: (HttpTransaction) -> Sharable): Boolean {
