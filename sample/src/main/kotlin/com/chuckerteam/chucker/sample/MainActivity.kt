@@ -89,7 +89,6 @@ class MainActivity : ComponentActivity() {
                 .detectDiskReads()
                 .detectDiskWrites()
                 .penaltyLog()
-                .penaltyDeath()
                 .build(),
         )
     }
