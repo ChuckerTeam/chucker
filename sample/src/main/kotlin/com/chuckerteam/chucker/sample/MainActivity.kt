@@ -34,7 +34,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private val httpTasks by lazy {
-        listOf(HttpBinHttpTask(client), DummyImageHttpTask(client), PostmanEchoHttpTask(client))
+        listOf(
+            HttpBinHttpTask(client),
+            DummyImageHttpTask(client),
+            PostmanEchoHttpTask(client),
+            CronetHttpTask(applicationContext, client),
+        )
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
