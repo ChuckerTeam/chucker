@@ -38,6 +38,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "protocol") var protocol: String?,
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "url") var url: String?,
+    @ColumnInfo(name = "hostIp") var hostIp: String?,
     @ColumnInfo(name = "host") var host: String?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
@@ -70,6 +71,7 @@ internal class HttpTransaction(
         protocol = null,
         method = null,
         url = null,
+        hostIp = null,
         host = null,
         path = null,
         scheme = null,
@@ -305,6 +307,7 @@ internal class HttpTransaction(
             (protocol == other.protocol) &&
             (method == other.method) &&
             (url == other.url) &&
+            (hostIp == other.hostIp) &&
             (host == other.host) &&
             (path == other.path) &&
             (scheme == other.scheme) &&

@@ -61,6 +61,7 @@ internal class HttpTransactionDaoTest {
                 assertThat(stringValue("responseHeaders")).isEqualTo(data.responseHeaders)
                 assertThat(stringValue("method")).isEqualTo(data.method)
                 assertThat(stringValue("url")).isEqualTo(data.url)
+                assertThat(stringValue("hostIp")).isEqualTo(data.hostIp)
                 assertThat(stringValue("host")).isEqualTo(data.host)
                 assertThat(stringValue("path")).isEqualTo(data.path)
                 assertThat(stringValue("scheme")).isEqualTo(data.scheme)
