@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.13.2"
+androidGradlePlugin = "9.0.0"
 converterGson = "3.0.0"
 core = "1.7.0"
 coreTesting = "2.2.0"
@@ -27,7 +27,7 @@ paletteKtx = "1.0.0"
 gson = "2.13.2"
 okhttp = "5.3.2"
 retrofit = "3.0.0"
-wire = "5.5.0"
+wire = "6.0.0-alpha02"
 cronetOkhttp = "0.1.0"
 playServicesCronet = "18.1.0"
 
