@@ -40,8 +40,23 @@ internal class ResponseProcessor(
             responseHeadersSize = response.headers.byteCount()
             setResponseHeaders(response.headers.redact(headersToRedact))
 
-            requestDate = response.sentRequestAtMillis
-            responseDate = response.receivedResponseAtMillis
+            // Fallback to requestDate from RequestProcessor if sentRequestAtMillis is invalid
+            if (response.sentRequestAtMillis > 0) {
+                requestDate = response.sentRequestAtMillis
+            }
+
+            /**
+             * For requests made via cronet okhttp bridge sentRequestAtMillis &
+             * receivedResponseAtMillis params are not available
+             * https://github.com/google/cronet-transport-for-okhttp (Common incompatibilities)
+             */
+            responseDate =
+                if (response.receivedResponseAtMillis > 0) {
+                    response.receivedResponseAtMillis
+                } else {
+                    System.currentTimeMillis()
+                }
+
             protocol = response.protocol.toString()
             responseCode = response.code
             responseMessage = response.message
@@ -53,7 +68,14 @@ internal class ResponseProcessor(
 
             responseContentType = response.contentType
 
-            tookMs = (response.receivedResponseAtMillis - response.sentRequestAtMillis)
+            tookMs =
+                if (response.sentRequestAtMillis > 0 && response.receivedResponseAtMillis > 0) {
+                    response.receivedResponseAtMillis - response.sentRequestAtMillis
+                } else if (requestDate != null && responseDate != null) {
+                    responseDate!! - requestDate!!
+                } else {
+                    null
+                }
         }
     }
 

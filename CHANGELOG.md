@@ -9,6 +9,8 @@ Please add your entries according to this format.
 
 ### Fixed
 
+-   Fixed request time, response time, and duration showing default 1970 epoch time when using Cronet with QUIC protocol [#1559]
+
 ## Version 4.3.0 _(2026-01-10)_
 
 ### Fixed
