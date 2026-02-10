@@ -96,6 +96,10 @@ dependencies {
 
     implementation(libs.apollo.runtime)
 
+    implementation(libs.cronet.okhttp)
+    implementation(libs.play.services.cronet)
+    implementation(libs.kotlinx.coroutines.play.services)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
