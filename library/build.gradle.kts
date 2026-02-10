@@ -12,7 +12,7 @@ android {
     defaultConfig {
         minSdk = rootProject.extra["minSdkVersion"] as Int
         consumerProguardFiles("proguard-rules.pro")
-        resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,6 +28,16 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = false
+        resValues = true
+    }
+
+    buildTypes {
+        release {
+            resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+        }
+        debug {
+            resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+        }
     }
 
     testOptions {
