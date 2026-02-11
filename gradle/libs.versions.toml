@@ -58,7 +58,7 @@ androidxEspresso = "3.7.0"
 
 # Publishing
 nexusPublishPlugin = "2.0.0"
-uiTestJunit4 = "1.10.2"
+uiTestJunit4 = "1.10.3"
 
 [libraries]
 # Google Libraries
