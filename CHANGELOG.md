@@ -9,7 +9,17 @@ Please add your entries according to this format.
 
 ### Fixed
 
+## Version 4.3.1 _(2026-02-28)_
+
+### Fixed
+
 -   Fixed request time, response time, and duration showing default 1970 epoch time when using Cronet with QUIC protocol [#1559]
+
+### Dependency Updates
+
+-   AGP to 9.0.1
+-   Kotlin to 2.3.10
+-   Gradle to 9.3.1
 
 ## Version 4.3.0 _(2026-01-10)_
 
