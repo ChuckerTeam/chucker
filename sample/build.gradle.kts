@@ -15,7 +15,7 @@ android {
     namespace = "com.chuckerteam.chucker.sample"
 
     defaultConfig {
-        minSdk = rootProject.extra["minSdkVersion"] as Int
+        minSdk = 23
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
         applicationId = "com.chuckerteam.chucker.sample"
         versionName = rootProject.extra["VERSION_NAME"] as String
