@@ -32,12 +32,12 @@ android {
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -52,12 +52,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 
     lint {
@@ -71,8 +71,9 @@ apollo {
     service("rickandmortyapi") {
         packageName.set("com.chuckerteam.chucker.sample")
         schemaFile.set(file("src/main/graphql/com/chuckerteam/chucker/sample/schema.json.graphql"))
-        srcDir("src/main/graphql")
+        srcDir(file("src/main/graphql"))
         excludes.set(listOf("**/schema.json.graphql", "**/schema.json"))
+        generateKotlinModels.set(true)
     }
 }
 

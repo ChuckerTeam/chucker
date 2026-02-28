@@ -13,22 +13,32 @@ android {
     defaultConfig {
         minSdk = rootProject.extra["minSdkVersion"] as Int
         consumerProguardFiles("proguard-rules.pro")
-        resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 
     buildFeatures {
         viewBinding = true
         buildConfig = false
+        resValues = true
+    }
+
+    buildTypes {
+        release {
+            resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+        }
+        debug {
+            resValue("string", "chucker_version", rootProject.extra["VERSION_NAME"] as String)
+        }
     }
 
     testOptions {
