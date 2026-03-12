@@ -34,7 +34,7 @@ playServicesCronet = "18.1.1"
 # Debug and Quality Control
 binaryCompatibilityValidator = "0.18.1"
 detekt = "1.23.8"
-ktLintGradle = "14.1.0"
+ktLintGradle = "14.2.0"
 leakcanary = "2.14"
 
 # Apollo
