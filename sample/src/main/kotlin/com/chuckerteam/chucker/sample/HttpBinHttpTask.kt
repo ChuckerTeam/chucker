@@ -4,6 +4,7 @@ import com.chuckerteam.chucker.sample.HttpBinHttpTask.Api.Data
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
 import okio.BufferedSink
 import retrofit2.Call
@@ -19,9 +20,11 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -88,6 +91,8 @@ class HttpBinHttpTask(
             redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(noOpCallback)
             postForm("Value 1", "Value with symbols &$%").enqueue(noOpCallback)
             postRawRequestBody(oneShotRequestBody()).enqueue(noOpCallback)
+            val body = "This is a body".toRequestBody("text/plain".toMediaType())
+            multipart("Value 1", body).enqueue(noOpCallback)
             anything().enqueue(noOpCallback)
         }
 
@@ -242,6 +247,13 @@ class HttpBinHttpTask(
         @POST("/post")
         fun postRawRequestBody(
             @Body body: RequestBody,
+        ): Call<Any?>
+
+        @Multipart
+        @POST("/post")
+        fun multipart(
+            @Part("key1") value1: String,
+            @Part("key2") value2: RequestBody,
         ): Call<Any?>
 
         @GET("/anything")
