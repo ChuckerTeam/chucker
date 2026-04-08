@@ -13,6 +13,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
+import com.chuckerteam.chucker.internal.support.HttpHeaderSerializer
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.google.gson.reflect.TypeToken
@@ -161,7 +162,7 @@ internal class HttpTransaction(
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
-        requestHeaders = JsonConverter.instance.toJson(headers)
+        requestHeaders = HttpHeaderSerializer.toJson(headers)
     }
 
     fun setGraphQlOperationName(headers: Headers) {
@@ -194,7 +195,7 @@ internal class HttpTransaction(
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {
-        responseHeaders = JsonConverter.instance.toJson(headers)
+        responseHeaders = HttpHeaderSerializer.toJson(headers)
     }
 
     fun getResponseHeadersString(withMarkup: Boolean): String =
