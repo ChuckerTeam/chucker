@@ -48,6 +48,27 @@ internal class NotificationHelper(
         )
     }
 
+    private val clearAction by lazy {
+        val clearTransactionsBroadcastIntent =
+            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
+
+        val clearActionIntent =
+            PendingIntent.getBroadcast(
+                context,
+                INTENT_REQUEST_CODE,
+                clearTransactionsBroadcastIntent,
+                immutableFlag(),
+            )
+
+        val clearTitle = context.getString(R.string.chucker_clear)
+
+        NotificationCompat.Action(
+            R.drawable.chucker_ic_delete_white,
+            clearTitle,
+            clearActionIntent,
+        )
+    }
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val transactionsChannel =
@@ -95,7 +116,7 @@ internal class NotificationHelper(
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .setAutoCancel(true)
-                    .addAction(createClearAction())
+                    .addAction(clearAction)
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
@@ -118,24 +139,6 @@ internal class NotificationHelper(
             }
             notificationManager.notify(TRANSACTION_NOTIFICATION_ID, builder.build())
         }
-    }
-
-    private fun createClearAction(): NotificationCompat.Action {
-        val clearTitle = context.getString(R.string.chucker_clear)
-        val clearTransactionsBroadcastIntent =
-            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
-        val pendingBroadcastIntent =
-            PendingIntent.getBroadcast(
-                context,
-                INTENT_REQUEST_CODE,
-                clearTransactionsBroadcastIntent,
-                PendingIntent.FLAG_ONE_SHOT or immutableFlag(),
-            )
-        return NotificationCompat.Action(
-            R.drawable.chucker_ic_delete_white,
-            clearTitle,
-            pendingBroadcastIntent,
-        )
     }
 
     fun dismissNotifications() {
