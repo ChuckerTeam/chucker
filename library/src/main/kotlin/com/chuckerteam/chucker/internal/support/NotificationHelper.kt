@@ -49,22 +49,17 @@ internal class NotificationHelper(
     }
 
     private val clearAction by lazy {
-        val clearTransactionsBroadcastIntent =
-            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
-
         val clearActionIntent =
             PendingIntent.getBroadcast(
                 context,
                 INTENT_REQUEST_CODE,
-                clearTransactionsBroadcastIntent,
+                Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java),
                 immutableFlag(),
             )
 
-        val clearTitle = context.getString(R.string.chucker_clear)
-
         NotificationCompat.Action(
             R.drawable.chucker_ic_delete_white,
-            clearTitle,
+            context.getString(R.string.chucker_clear),
             clearActionIntent,
         )
     }
