@@ -69,6 +69,15 @@ internal class TransactionActivity : BaseChuckerActivity() {
         }
     }
 
+    override fun onDestroy() {
+        // Detach TabLayout so its TabViews (which hold a ContextThemeWrapper
+        // pointing at this Activity) don't outlive us via delayed MessageQueue
+        // callbacks. Nullifying the adapter releases fragment references.
+        transactionBinding.tabLayout.setupWithViewPager(null)
+        transactionBinding.viewPager.adapter = null
+        super.onDestroy()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chucker_transaction, menu)
         setUpUrlEncoding(menu)
