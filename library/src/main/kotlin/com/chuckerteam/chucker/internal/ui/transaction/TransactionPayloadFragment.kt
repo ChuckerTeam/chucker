@@ -184,20 +184,22 @@ internal class TransactionPayloadFragment :
 
     private fun copyRawPayload(transaction: HttpTransaction) {
         when (payloadType) {
-            PayloadType.REQUEST -> transaction.requestBody?.let { payload ->
-                copyToClipboard(
-                    payload,
-                    getString(R.string.chucker_request),
-                    getString(R.string.chucker_request_copied_raw),
-                )
-            }
-            PayloadType.RESPONSE -> transaction.responseBody?.let { payload ->
-                copyToClipboard(
-                    payload,
-                    getString(R.string.chucker_response),
-                    getString(R.string.chucker_response_copied_raw),
-                )
-            }
+            PayloadType.REQUEST ->
+                transaction.requestBody?.let { payload ->
+                    copyToClipboard(
+                        payload,
+                        getString(R.string.chucker_request),
+                        getString(R.string.chucker_request_copied_raw),
+                    )
+                }
+            PayloadType.RESPONSE ->
+                transaction.responseBody?.let { payload ->
+                    copyToClipboard(
+                        payload,
+                        getString(R.string.chucker_response),
+                        getString(R.string.chucker_response_copied_raw),
+                    )
+                }
         }
     }
 
