@@ -16,9 +16,9 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -204,27 +204,25 @@ internal class TransactionPayloadFragment :
     }
 
     private fun copyFormattedPayload(transaction: HttpTransaction) {
-        when (payloadType) {
-            PayloadType.REQUEST -> {
-                val formatted = transaction.getFormattedRequestBody()
-                if (formatted.isNotEmpty()) {
-                    copyToClipboard(
-                        formatted,
-                        getString(R.string.chucker_request),
-                        getString(R.string.chucker_request_copied_formatted),
-                    )
+        lifecycleScope.launch {
+            val formatted =
+                withContext(Dispatchers.Default) {
+                    when (payloadType) {
+                        PayloadType.REQUEST -> transaction.getFormattedRequestBody()
+                        PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
+                    }
                 }
-            }
-            PayloadType.RESPONSE -> {
-                val formatted = transaction.getFormattedResponseBody()
-                if (formatted.isNotEmpty()) {
-                    copyToClipboard(
-                        formatted,
-                        getString(R.string.chucker_response),
-                        getString(R.string.chucker_response_copied_formatted),
-                    )
+            if (formatted.isEmpty()) return@launch
+            val (label, toast) =
+                when (payloadType) {
+                    PayloadType.REQUEST ->
+                        getString(R.string.chucker_request) to
+                            getString(R.string.chucker_request_copied_formatted)
+                    PayloadType.RESPONSE ->
+                        getString(R.string.chucker_response) to
+                            getString(R.string.chucker_response_copied_formatted)
                 }
-            }
+            copyToClipboard(formatted, label, toast)
         }
     }
 
