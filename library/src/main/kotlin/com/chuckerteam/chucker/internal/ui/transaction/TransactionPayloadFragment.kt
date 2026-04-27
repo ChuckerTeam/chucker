@@ -205,22 +205,25 @@ internal class TransactionPayloadFragment :
 
     private fun copyFormattedPayload(transaction: HttpTransaction) {
         lifecycleScope.launch {
-            val formatted =
-                withContext(Dispatchers.Default) {
-                    when (payloadType) {
-                        PayloadType.REQUEST -> transaction.getFormattedRequestBody()
-                        PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
-                    }
+            val formatted = withContext(Dispatchers.Default) {
+                when (payloadType) {
+                    PayloadType.REQUEST -> transaction.getFormattedRequestBody()
+                    PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
                 }
+            }
+
             if (formatted.isEmpty()) return@launch
+
             val (label, toast) =
                 when (payloadType) {
-                    PayloadType.REQUEST ->
+                    PayloadType.REQUEST -> {
                         getString(R.string.chucker_request) to
                             getString(R.string.chucker_request_copied_formatted)
-                    PayloadType.RESPONSE ->
+                    }
+                    PayloadType.RESPONSE -> {
                         getString(R.string.chucker_response) to
                             getString(R.string.chucker_response_copied_formatted)
+                    }
                 }
             copyToClipboard(formatted, label, toast)
         }
