@@ -73,6 +73,10 @@
     <string name="chucker_scroll_buttons_for_search">Кнопки для прокрутки результатов поиска</string>
     <string name="chucker_search_results_title">Результаты поиска:</string>
     <string name="chucker_copy_response">Копировать ответ</string>
-    <string name="chucker_response_copied">Ответ скопирован</string>
-    <string name="chucker_request_copied">Запрос скопирован</string>
+    <string name="chucker_copy_raw">Копировать как есть</string>
+    <string name="chucker_copy_formatted">Копировать с форматированием</string>
+    <string name="chucker_request_copied_raw">Запрос скопирован без форматирования</string>
+    <string name="chucker_request_copied_formatted">Запрос скопирован с форматированием</string>
+    <string name="chucker_response_copied_raw">Ответ скопирован без форматирования</string>
+    <string name="chucker_response_copied_formatted">Ответ скопирован с форматированием</string>
 </resources>

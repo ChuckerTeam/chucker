@@ -73,6 +73,10 @@
     <string name="chucker_scroll_buttons_for_search">Botones para desplazarse en los resultados de la búsqueda</string>
     <string name="chucker_search_results_title">Resultados de la búsqueda:</string>
     <string name="chucker_copy_response">Copiar Respuesta</string>
-    <string name="chucker_response_copied">Respuesta Copiadad</string>
-    <string name="chucker_request_copied">Solicitud Copiadad</string>
+    <string name="chucker_copy_raw">Copiar sin formato</string>
+    <string name="chucker_copy_formatted">Copiar con formato</string>
+    <string name="chucker_request_copied_raw">Solicitud sin formato copiada</string>
+    <string name="chucker_request_copied_formatted">Solicitud con formato copiada</string>
+    <string name="chucker_response_copied_raw">Respuesta sin formato copiada</string>
+    <string name="chucker_response_copied_formatted">Respuesta con formato copiada</string>
 </resources>

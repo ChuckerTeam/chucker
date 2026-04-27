@@ -16,6 +16,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -87,7 +88,7 @@ internal class TransactionPayloadFragment :
         }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter(::copyResponse)
+    private val payloadAdapter = TransactionBodyAdapter(::copyDefault, ::showCopyMenu)
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -156,26 +157,69 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private fun copyResponse() {
-        val transaction = viewModel.transaction.value
+    private fun copyDefault() {
+        val transaction = viewModel.transaction.value ?: return
+        copyRawPayload(transaction)
+    }
 
-        when (payloadType.name) {
-            PayloadType.REQUEST.name -> {
-                transaction?.requestBody?.let { request ->
+    private fun showCopyMenu(anchor: View) {
+        val transaction = viewModel.transaction.value ?: return
+        val popup = PopupMenu(anchor.context, anchor)
+        popup.menuInflater.inflate(R.menu.chucker_copy_payload, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.copy_raw -> {
+                    copyRawPayload(transaction)
+                    true
+                }
+                R.id.copy_formatted -> {
+                    copyFormattedPayload(transaction)
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun copyRawPayload(transaction: HttpTransaction) {
+        when (payloadType) {
+            PayloadType.REQUEST -> transaction.requestBody?.let { payload ->
+                copyToClipboard(
+                    payload,
+                    getString(R.string.chucker_request),
+                    getString(R.string.chucker_request_copied_raw),
+                )
+            }
+            PayloadType.RESPONSE -> transaction.responseBody?.let { payload ->
+                copyToClipboard(
+                    payload,
+                    getString(R.string.chucker_response),
+                    getString(R.string.chucker_response_copied_raw),
+                )
+            }
+        }
+    }
+
+    private fun copyFormattedPayload(transaction: HttpTransaction) {
+        when (payloadType) {
+            PayloadType.REQUEST -> {
+                val formatted = transaction.getFormattedRequestBody()
+                if (formatted.isNotEmpty()) {
                     copyToClipboard(
-                        request,
+                        formatted,
                         getString(R.string.chucker_request),
-                        getString(R.string.chucker_request_copied),
+                        getString(R.string.chucker_request_copied_formatted),
                     )
                 }
             }
-
-            PayloadType.RESPONSE.name -> {
-                transaction?.responseBody?.let { response ->
+            PayloadType.RESPONSE -> {
+                val formatted = transaction.getFormattedResponseBody()
+                if (formatted.isNotEmpty()) {
                     copyToClipboard(
-                        response,
+                        formatted,
                         getString(R.string.chucker_response),
-                        getString(R.string.chucker_response_copied),
+                        getString(R.string.chucker_response_copied_formatted),
                     )
                 }
             }
