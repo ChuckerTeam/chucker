@@ -7,6 +7,8 @@ Please add your entries according to this format.
 
 ### Added
 
+-   Long-press the payload copy button to choose between copying the raw body or the formatted body [#1613]
+
 ### Fixed
 
 ## Version 4.3.1 _(2026-02-28)_

@@ -27,6 +27,7 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  */
 internal class TransactionBodyAdapter(
     private val onCopyBodyListener: () -> Unit,
+    private val onCopyMenuListener: (anchor: View) -> Unit,
 ) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
     private val items = arrayListOf<TransactionPayloadItem>()
 
@@ -64,7 +65,11 @@ internal class TransactionBodyAdapter(
             TYPE_COPY -> {
                 val copyItemBinding =
                     ChuckerTransactionItemCopyBinding.inflate(inflater, parent, false)
-                TransactionPayloadViewHolder.CopyViewHolder(copyItemBinding, onCopyBodyListener)
+                TransactionPayloadViewHolder.CopyViewHolder(
+                    copyItemBinding,
+                    onCopyBodyListener,
+                    onCopyMenuListener,
+                )
             }
 
             else -> {
@@ -206,12 +211,17 @@ internal sealed class TransactionPayloadViewHolder(
     internal class CopyViewHolder(
         private val copyBinding: ChuckerTransactionItemCopyBinding,
         private val onCopyBodyListener: () -> Unit,
+        private val onCopyMenuListener: (anchor: View) -> Unit,
     ) : TransactionPayloadViewHolder(copyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.CopyItem) {
                 copyBinding.responseCopy.visibility = View.VISIBLE
                 copyBinding.responseCopy.setOnClickListener {
                     onCopyBodyListener.invoke()
+                }
+                copyBinding.responseCopy.setOnLongClickListener { anchor ->
+                    onCopyMenuListener.invoke(anchor)
+                    true
                 }
             }
         }

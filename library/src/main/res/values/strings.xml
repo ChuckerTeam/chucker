@@ -74,6 +74,10 @@
     <string name="chucker_scroll_buttons_for_search">Buttons to scroll the search items</string>
     <string name="chucker_search_results_title">Search Results:</string>
     <string name="chucker_copy_response">Copy Response</string>
-    <string name="chucker_response_copied">Response Copied</string>
-    <string name="chucker_request_copied">Request Copied</string>
+    <string name="chucker_copy_raw">Copy raw</string>
+    <string name="chucker_copy_formatted">Copy formatted</string>
+    <string name="chucker_request_copied_raw">Raw request copied</string>
+    <string name="chucker_request_copied_formatted">Formatted request copied</string>
+    <string name="chucker_response_copied_raw">Raw response copied</string>
+    <string name="chucker_response_copied_formatted">Formatted response copied</string>
 </resources>
