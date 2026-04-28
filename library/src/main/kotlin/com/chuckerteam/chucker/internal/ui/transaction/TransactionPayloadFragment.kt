@@ -205,12 +205,13 @@ internal class TransactionPayloadFragment :
 
     private fun copyFormattedPayload(transaction: HttpTransaction) {
         lifecycleScope.launch {
-            val formatted = withContext(Dispatchers.Default) {
-                when (payloadType) {
-                    PayloadType.REQUEST -> transaction.getFormattedRequestBody()
-                    PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
+            val formatted =
+                withContext(Dispatchers.Default) {
+                    when (payloadType) {
+                        PayloadType.REQUEST -> transaction.getFormattedRequestBody()
+                        PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
+                    }
                 }
-            }
 
             if (formatted.isEmpty()) return@launch
 
