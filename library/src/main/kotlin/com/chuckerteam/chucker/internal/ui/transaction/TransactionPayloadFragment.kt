@@ -185,17 +185,17 @@ internal class TransactionPayloadFragment :
     private fun copyRawPayload(transaction: HttpTransaction) {
         when (payloadType) {
             PayloadType.REQUEST ->
-                transaction.requestBody?.let { payload ->
+                transaction.requestBody?.let { request ->
                     copyToClipboard(
-                        payload,
+                        request,
                         getString(R.string.chucker_request),
                         getString(R.string.chucker_request_copied),
                     )
                 }
             PayloadType.RESPONSE ->
-                transaction.responseBody?.let { payload ->
+                transaction.responseBody?.let { response ->
                     copyToClipboard(
-                        payload,
+                        response,
                         getString(R.string.chucker_response),
                         getString(R.string.chucker_response_copied),
                     )
