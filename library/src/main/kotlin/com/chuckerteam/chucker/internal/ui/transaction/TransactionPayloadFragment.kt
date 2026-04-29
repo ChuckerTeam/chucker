@@ -88,7 +88,7 @@ internal class TransactionPayloadFragment :
         }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter(::copyDefault, ::showCopyMenu)
+    private val payloadAdapter = TransactionBodyAdapter(::copyRawPayWrapper, ::showCopyMenu)
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -157,7 +157,7 @@ internal class TransactionPayloadFragment :
         }
     }
 
-    private fun copyDefault() {
+    private fun copyRawPayWrapper() {
         val transaction = viewModel.transaction.value ?: return
         copyRawPayload(transaction)
     }
@@ -189,7 +189,7 @@ internal class TransactionPayloadFragment :
                     copyToClipboard(
                         payload,
                         getString(R.string.chucker_request),
-                        getString(R.string.chucker_request_copied_raw),
+                        getString(R.string.chucker_request_copied),
                     )
                 }
             PayloadType.RESPONSE ->
@@ -197,7 +197,7 @@ internal class TransactionPayloadFragment :
                     copyToClipboard(
                         payload,
                         getString(R.string.chucker_response),
-                        getString(R.string.chucker_response_copied_raw),
+                        getString(R.string.chucker_response_copied),
                     )
                 }
         }
