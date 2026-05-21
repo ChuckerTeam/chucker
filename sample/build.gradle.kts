@@ -1,9 +1,12 @@
+import com.google.protobuf.gradle.id
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.wire)
     alias(libs.plugins.apollo)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.protobuf)
 }
 
 wire {
@@ -65,6 +68,34 @@ android {
         disable.addAll(listOf("AcceptsUserCertificates", "GradleDependency"))
         warningsAsErrors = true
     }
+
+    sourceSets {
+        named("main") {
+            java {
+                srcDir("build/generated/source/proto/main/grpc")
+                srcDir("build/generated/source/proto/main/java")
+            }
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = libs.protoc.get().toString()
+    }
+    plugins {
+        id("grpc") {
+            artifact = libs.protoc.gen.grpc.java.get().toString()
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                id("java")
+                id("grpc")
+            }
+        }
+    }
 }
 
 apollo {
@@ -110,6 +141,12 @@ dependencies {
     implementation(libs.androidx.material3.window.size)
 
     debugImplementation(libs.leakcanary.android)
+
+    // gRPC for demo purposes
+    implementation(libs.grpc.okhttp)
+    implementation(libs.grpc.stub)
+    implementation(libs.grpc.netty.shaded)
+    implementation(libs.protobuf.java)
 }
 
 apply(from = rootProject.file("gradle/kotlin-static-analysis.gradle"))

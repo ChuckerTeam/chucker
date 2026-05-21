@@ -42,6 +42,8 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val grpcTask by lazy { GrpcTask(this) }
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +64,9 @@ class MainActivity : ComponentActivity() {
                         for (task in httpTasks) {
                             task.run()
                         }
+                    },
+                    onDoGrpc = {
+                        grpcTask.execute()
                     },
                     onDoGraphQL = {
                         GraphQlTask(client).run()
@@ -97,6 +102,11 @@ class MainActivity : ComponentActivity() {
                 .penaltyDeath()
                 .build(),
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        grpcTask.cancel()
     }
 
     private fun launchChuckerDirectly() {

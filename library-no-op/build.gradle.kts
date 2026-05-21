@@ -52,6 +52,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
     api(libs.okhttp)
+    compileOnly(libs.grpc.api)
     implementation(libs.jetbrains.kotlin.stdlib)
 }
 

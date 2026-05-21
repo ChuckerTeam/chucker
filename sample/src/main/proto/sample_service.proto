@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.chuckerteam.chucker.sample;
+
+option java_package = "com.chuckerteam.chucker.sample.grpc";
+option java_multiple_files = true;
+
+service SampleGreeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc SayHelloServerStream (HelloRequest) returns (stream HelloReply);
+  rpc SayHelloClientStream (stream HelloRequest) returns (HelloReply);
+  rpc SayHelloBidiStream (stream HelloRequest) returns (stream HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}

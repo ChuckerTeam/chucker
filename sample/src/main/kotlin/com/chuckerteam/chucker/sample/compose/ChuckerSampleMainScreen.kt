@@ -46,6 +46,7 @@ import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
  * @param onInterceptorTypeChange Callback when a new interceptor type is selected by the user.
  * @param onInterceptorTypeLabelClick Callback when the interceptor type label is clicked.
  * @param onDoHttp Called to perform a sample HTTP request.
+ * @param onDoGrpc Called to perform a sample gRPC request.
  * @param onDoGraphQL Called to perform a sample GraphQL request.
  * @param onLaunchChucker Called to open the Chucker transaction list UI.
  * @param onExportToLogFile Called to export network logs to a plaintext file.
@@ -60,6 +61,7 @@ internal fun ChuckerSampleMainScreen(
     onInterceptorTypeChange: (InterceptorType) -> Unit,
     onInterceptorTypeLabelClick: () -> Unit,
     onDoHttp: () -> Unit,
+    onDoGrpc: () -> Unit,
     onDoGraphQL: () -> Unit,
     onLaunchChucker: () -> Unit,
     onExportToLogFile: () -> Unit,
@@ -110,6 +112,7 @@ internal fun ChuckerSampleMainScreen(
                             onInterceptorTypeChange = onInterceptorTypeChange,
                             onInterceptorTypeLabelClick = onInterceptorTypeLabelClick,
                             onDoHttp = onDoHttp,
+                            onDoGrpc = onDoGrpc,
                             onDoGraphQL = onDoGraphQL,
                             onLaunchChucker = onLaunchChucker,
                             onExportToLogFile = onExportToLogFile,
@@ -158,6 +161,7 @@ internal fun ChuckerSampleMainScreen(
                         onInterceptorTypeChange = onInterceptorTypeChange,
                         onInterceptorTypeLabelClick = onInterceptorTypeLabelClick,
                         onDoHttp = onDoHttp,
+                        onDoGrpc = onDoGrpc,
                         onDoGraphQL = onDoGraphQL,
                         onLaunchChucker = onLaunchChucker,
                         onExportToLogFile = onExportToLogFile,
@@ -215,6 +219,9 @@ private fun ChuckerSampleMainScreenPreview() {
             onDoHttp = {
                 // DO Nothing
             },
+            onDoGrpc = {
+                // DO Nothing
+            },
             onDoGraphQL = {
                 // DO Nothing
             },
@@ -259,6 +266,9 @@ private fun ChuckerSampleMainScreenTabletPreview() {
                 // DO Nothing
             },
             onDoHttp = {
+                // DO Nothing
+            },
+            onDoGrpc = {
                 // DO Nothing
             },
             onDoGraphQL = {

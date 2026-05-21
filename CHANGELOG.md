@@ -8,6 +8,7 @@ Please add your entries according to this format.
 ### Added
 
 -   Long-press the payload copy button to choose between copying the raw body or the formatted body [#1613]
+-   `ChuckerGrpcInterceptor` — a gRPC `ClientInterceptor` that captures all four gRPC call types (unary, server-streaming, client-streaming, bidirectional) and displays them alongside HTTP traffic in Chucker. Streaming responses update live as messages arrive. Add it to your channel via `OkHttpChannelBuilder.intercept(ChuckerGrpcInterceptor(collector, context))`. Swap `library-no-op`'s no-op variant for release builds.
 
 ### Fixed
 

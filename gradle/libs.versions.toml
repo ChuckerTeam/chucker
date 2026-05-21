@@ -60,6 +60,11 @@ androidxEspresso = "3.7.0"
 nexusPublishPlugin = "2.0.0"
 uiTestJunit4 = "1.11.1"
 
+# gRPC
+grpc = "1.73.0"
+protobuf = "4.31.1"
+protobufGradlePlugin = "0.9.4"
+
 [libraries]
 # Google Libraries
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
@@ -127,6 +132,15 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
 
+# gRPC
+grpc-api = { group = "io.grpc", name = "grpc-api", version.ref = "grpc" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-netty-shaded = { group = "io.grpc", name = "grpc-netty-shaded", version.ref = "grpc" }
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobuf" }
+protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
+protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpc" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
@@ -140,4 +154,5 @@ kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-co
 wire = { id = "com.squareup.wire", version.ref = "wire" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublishPlugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobufGradlePlugin" }
 
