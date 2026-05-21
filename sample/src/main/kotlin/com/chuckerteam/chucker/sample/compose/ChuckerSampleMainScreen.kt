@@ -53,6 +53,7 @@ import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
  * @param onExportToHarFile Called to export network logs to a HAR (HTTP Archive) file.
  * @param isChuckerInOpMode If true, displays the Chucker-specific operation buttons.
  */
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ChuckerSampleMainScreen(

@@ -12,10 +12,12 @@ import kotlinx.coroutines.asExecutor
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-internal class SampleGrpcServer(private val port: Int) {
-
+internal class SampleGrpcServer(
+    private val port: Int,
+) {
     private val server: Server by lazy {
-        NettyServerBuilder.forPort(port)
+        NettyServerBuilder
+            .forPort(port)
             .addService(GreeterService())
             .executor(Dispatchers.IO.asExecutor())
             .build()
@@ -32,7 +34,7 @@ internal class SampleGrpcServer(private val port: Int) {
 
     fun stop() {
         try {
-            server.shutdown().awaitTermination(5, TimeUnit.SECONDS)
+            server.shutdown().awaitTermination(SHUTDOWN_TIMEOUT_SEC, TimeUnit.SECONDS)
             Log.i(TAG, "Server stopped")
         } catch (e: InterruptedException) {
             Log.w(TAG, "Shutdown interrupted, forcing stop", e)
@@ -42,25 +44,28 @@ internal class SampleGrpcServer(private val port: Int) {
     }
 
     private class GreeterService : SampleGreeterGrpc.SampleGreeterImplBase() {
-
-        override fun sayHello(req: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
+        override fun sayHello(
+            req: HelloRequest,
+            responseObserver: StreamObserver<HelloReply>,
+        ) {
             responseObserver.onNext(HelloReply.newBuilder().setMessage("Hello ${req.name} (Unary)").build())
             responseObserver.onCompleted()
         }
 
-        override fun sayHelloServerStream(req: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
-            repeat(3) { i ->
+        override fun sayHelloServerStream(
+            req: HelloRequest,
+            responseObserver: StreamObserver<HelloReply>,
+        ) {
+            repeat(SERVER_STREAM_REPLIES) { i ->
                 responseObserver.onNext(
                     HelloReply.newBuilder().setMessage("Hello ${req.name}, part ${i + 1} (Server Stream)").build(),
                 )
-                Thread.sleep(300)
+                Thread.sleep(STREAM_REPLY_DELAY_MS)
             }
             responseObserver.onCompleted()
         }
 
-        override fun sayHelloClientStream(
-            responseObserver: StreamObserver<HelloReply>,
-        ): StreamObserver<HelloRequest> {
+        override fun sayHelloClientStream(responseObserver: StreamObserver<HelloReply>): StreamObserver<HelloRequest> {
             val names = StringBuilder()
             return object : StreamObserver<HelloRequest> {
                 override fun onNext(value: HelloRequest) {
@@ -69,7 +74,11 @@ internal class SampleGrpcServer(private val port: Int) {
                 }
 
                 override fun onError(t: Throwable) {
-                    responseObserver.onError(io.grpc.Status.fromThrowable(t).asRuntimeException())
+                    responseObserver.onError(
+                        io.grpc.Status
+                            .fromThrowable(t)
+                            .asRuntimeException(),
+                    )
                 }
 
                 override fun onCompleted() {
@@ -79,9 +88,7 @@ internal class SampleGrpcServer(private val port: Int) {
             }
         }
 
-        override fun sayHelloBidiStream(
-            responseObserver: StreamObserver<HelloReply>,
-        ): StreamObserver<HelloRequest> =
+        override fun sayHelloBidiStream(responseObserver: StreamObserver<HelloReply>): StreamObserver<HelloRequest> =
             object : StreamObserver<HelloRequest> {
                 override fun onNext(value: HelloRequest) {
                     responseObserver.onNext(
@@ -90,7 +97,11 @@ internal class SampleGrpcServer(private val port: Int) {
                 }
 
                 override fun onError(t: Throwable) {
-                    responseObserver.onError(io.grpc.Status.fromThrowable(t).asRuntimeException())
+                    responseObserver.onError(
+                        io.grpc.Status
+                            .fromThrowable(t)
+                            .asRuntimeException(),
+                    )
                 }
 
                 override fun onCompleted() {
@@ -101,5 +112,8 @@ internal class SampleGrpcServer(private val port: Int) {
 
     private companion object {
         const val TAG = "SampleGrpcServer"
+        const val SHUTDOWN_TIMEOUT_SEC = 5L
+        const val SERVER_STREAM_REPLIES = 3
+        const val STREAM_REPLY_DELAY_MS = 300L
     }
 }

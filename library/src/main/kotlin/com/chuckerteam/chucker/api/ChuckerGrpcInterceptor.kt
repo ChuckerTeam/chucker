@@ -44,7 +44,6 @@ public class ChuckerGrpcInterceptor private constructor(
     private val maxContentLength: Long,
     private val headersToRedact: Set<String>,
 ) : ClientInterceptor {
-
     public constructor(
         collector: ChuckerCollector,
         @Suppress("UNUSED_PARAMETER") context: Context,
@@ -65,7 +64,7 @@ public class ChuckerGrpcInterceptor private constructor(
         val authority = next.authority() ?: "unknown"
         transaction.host = authority.substringBefore(":")
         transaction.path = "/${method.fullMethodName}"
-        transaction.scheme = if (authority.substringAfterLast(':').toIntOrNull() == 443) "https" else "http"
+        transaction.scheme = if (authority.substringAfterLast(':').toIntOrNull() == HTTPS_PORT) "https" else "http"
         transaction.url = "${transaction.scheme}://$authority${transaction.path}"
 
         // Guards to ensure onRequestSent is called exactly once before any onResponseReceived.
@@ -95,7 +94,10 @@ public class ChuckerGrpcInterceptor private constructor(
         return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(
             next.newCall(method, callOptions),
         ) {
-            override fun start(responseListener: Listener<RespT>, headers: Metadata) {
+            override fun start(
+                responseListener: Listener<RespT>,
+                headers: Metadata,
+            ) {
                 transaction.setRequestHeaders(headers.toHttpHeaders(headersToRedact))
                 transaction.requestContentType = "application/grpc"
 
@@ -126,12 +128,16 @@ public class ChuckerGrpcInterceptor private constructor(
                             super.onMessage(message)
                         }
 
-                        override fun onClose(status: Status, trailers: Metadata) {
+                        override fun onClose(
+                            status: Status,
+                            trailers: Metadata,
+                        ) {
                             transaction.responseCode = status.code.value()
-                            transaction.responseMessage = buildString {
-                                append(status.code.name)
-                                status.description?.let { append(" ($it)") }
-                            }
+                            transaction.responseMessage =
+                                buildString {
+                                    append(status.code.name)
+                                    status.description?.let { append(" ($it)") }
+                                }
                             status.cause?.let { transaction.error = it.toString() }
                             transaction.appendResponseTrailers(trailers.toHttpHeaders(headersToRedact))
                             transaction.tookMs =
@@ -202,6 +208,12 @@ public class ChuckerGrpcInterceptor private constructor(
             )
     }
 
-    private fun String.truncatedTo(actualSize: Long, max: Long): String =
-        if (actualSize > max) take(max.toInt()) + "\n\n--- (truncated)" else this
+    private fun String.truncatedTo(
+        actualSize: Long,
+        max: Long,
+    ): String = if (actualSize > max) take(max.toInt()) + "\n\n--- (truncated)" else this
+
+    private companion object {
+        const val HTTPS_PORT = 443
+    }
 }

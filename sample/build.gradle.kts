@@ -66,7 +66,19 @@ android {
         disable.addAll(listOf("AcceptsUserCertificates", "GradleDependency"))
         warningsAsErrors = true
     }
+}
 
+// Wire owns src/main/proto (pokemon.proto). Redirect protobuf-plugin to src/main/grpc so the two
+// tools never process the same files, avoiding duplicate-class errors (Wire→Kotlin, protoc→Java).
+configure<com.android.build.gradle.AppExtension> {
+    sourceSets.getByName("main") {
+        @Suppress("UNCHECKED_CAST")
+        val proto =
+            (this as org.gradle.api.plugins.ExtensionAware)
+                .extensions
+                .getByName("proto") as org.gradle.api.file.SourceDirectorySet
+        proto.setSrcDirs(listOf(file("src/main/grpc")))
+    }
 }
 
 protobuf {
@@ -80,6 +92,9 @@ protobuf {
     }
     generateProtoTasks {
         all().forEach { task ->
+            task.builtins {
+                create("java")
+            }
             task.plugins {
                 create("grpc")
             }
@@ -95,6 +110,12 @@ apollo {
         excludes.set(listOf("**/schema.json.graphql", "**/schema.json"))
         generateKotlinModels.set(true)
     }
+}
+
+// protobuf-java (full) is a superset of protobuf-javalite. play-services-cronet pulls in an older
+// javalite that conflicts with our javalite classes bundled inside protobuf-java. Exclude it.
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-javalite")
 }
 
 dependencies {
@@ -132,8 +153,10 @@ dependencies {
     debugImplementation(libs.leakcanary.android)
 
     // gRPC for demo purposes
+    compileOnly(libs.javax.annotation.api)
     implementation(libs.grpc.okhttp)
     implementation(libs.grpc.stub)
+    implementation(libs.grpc.protobuf)
     implementation(libs.grpc.netty.shaded)
     implementation(libs.protobuf.java)
 }

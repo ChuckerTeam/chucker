@@ -9,7 +9,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class SampleApplication : Application() {
-
     private val serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val grpcServer by lazy { SampleGrpcServer(GRPC_PORT) }
 

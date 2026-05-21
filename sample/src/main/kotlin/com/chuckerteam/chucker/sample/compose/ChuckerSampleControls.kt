@@ -45,6 +45,7 @@ import com.chuckerteam.chucker.sample.compose.theme.ChuckerTheme
  * @param onExportToHarFile exports HAR to file.
  * @param isChuckerInOpMode controls visibility of Chucker-specific operations.
  */
+@Suppress("LongParameterList")
 @Composable
 internal fun ChuckerSampleControls(
     selectedInterceptorType: InterceptorType,

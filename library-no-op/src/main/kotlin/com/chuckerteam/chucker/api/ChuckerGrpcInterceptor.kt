@@ -18,7 +18,6 @@ public class ChuckerGrpcInterceptor private constructor(
     @Suppress("UNUSED_PARAMETER") private val maxContentLength: Long,
     @Suppress("UNUSED_PARAMETER") private val headersToRedact: Set<String>,
 ) : ClientInterceptor {
-
     public constructor(
         collector: ChuckerCollector,
         @Suppress("UNUSED_PARAMETER") context: Context,
