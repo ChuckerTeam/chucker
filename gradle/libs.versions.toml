@@ -42,7 +42,7 @@ apollo = "5.0.0"
 
 # Compose
 composeBom = "2026.06.00"
-lifecycleViewmodelCompose = "2.10.0"
+lifecycleViewmodelCompose = "2.11.0"
 
 # Testing
 junitGradlePlugin = "2.0.1"
