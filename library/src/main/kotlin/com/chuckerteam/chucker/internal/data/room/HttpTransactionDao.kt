@@ -22,13 +22,18 @@ internal interface HttpTransactionDao {
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, " +
             "requestPayloadSize, responsePayloadSize, error, graphQLDetected, graphQlOperationName FROM " +
-            "transactions WHERE responseCode LIKE :codeQuery AND (path LIKE :pathQuery OR " +
-            "graphQlOperationName LIKE :graphQlQuery) ORDER BY requestDate DESC",
+            "transactions WHERE responseCode LIKE :codeQuery AND (" +
+            "path LIKE :searchQuery OR " +
+            "graphQlOperationName LIKE :searchQuery OR " +
+            "requestBody LIKE :searchQuery OR " +
+            "responseBody LIKE :searchQuery OR " +
+            "requestHeaders LIKE :searchQuery OR " +
+            "responseHeaders LIKE :searchQuery" +
+            ") ORDER BY requestDate DESC",
     )
     fun getFilteredTuples(
         codeQuery: String,
-        pathQuery: String,
-        graphQlQuery: String = "",
+        searchQuery: String,
     ): LiveData<List<HttpTransactionTuple>>
 
     @Insert
