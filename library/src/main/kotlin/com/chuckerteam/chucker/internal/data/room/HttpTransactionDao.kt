@@ -14,21 +14,25 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 internal interface HttpTransactionDao {
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, " +
-            "requestPayloadSize, responsePayloadSize, error, graphQLDetected, graphQlOperationName FROM " +
+            "requestPayloadSize, responsePayloadSize, error, graphQLDetected, " +
+            "graphQlOperationName, requestContentType FROM " +
             "transactions ORDER BY requestDate DESC",
     )
     fun getSortedTuples(): LiveData<List<HttpTransactionTuple>>
 
     @Query(
         "SELECT id, requestDate, tookMs, protocol, method, host, path, scheme, responseCode, " +
-            "requestPayloadSize, responsePayloadSize, error, graphQLDetected, graphQlOperationName FROM " +
+            "requestPayloadSize, responsePayloadSize, error, graphQLDetected, " +
+            "graphQlOperationName, requestContentType FROM " +
             "transactions WHERE responseCode LIKE :codeQuery AND (path LIKE :pathQuery OR " +
-            "graphQlOperationName LIKE :graphQlQuery) ORDER BY requestDate DESC",
+            "graphQlOperationName LIKE :graphQlQuery OR " +
+            "requestContentType LIKE :contentTypeQuery) ORDER BY requestDate DESC",
     )
     fun getFilteredTuples(
         codeQuery: String,
         pathQuery: String,
         graphQlQuery: String = "",
+        contentTypeQuery: String = "",
     ): LiveData<List<HttpTransactionTuple>>
 
     @Insert
