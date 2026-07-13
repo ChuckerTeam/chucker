@@ -29,6 +29,7 @@ internal object HarTestUtils {
             protocol = "HTTP",
             method = method,
             url = "http://localhost:80/getUsers",
+            hostIp = "192.168.1.1",
             host = "localhost",
             path = "/getUsers",
             scheme = "",
