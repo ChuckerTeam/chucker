@@ -11,6 +11,8 @@ Please add your entries according to this format.
 
 ### Fixed
 
+-   Fixed the published AAR being compiled with Java 21 bytecode (class file version 65), which broke compilation on JDK 17. The library now targets Java 17 again, as in 4.3.0 [#1660]
+
 ## Version 4.3.1 _(2026-02-28)_
 
 ### Fixed
