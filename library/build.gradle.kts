@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -17,9 +18,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Build/test with the JDK 21 toolchain (required by Robolectric for the
+    // target Android SDK), but emit Java 17 bytecode so the published library
+    // stays consumable by JDK 17 projects (see #1660).
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlin {
@@ -68,6 +72,7 @@ android {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
         freeCompilerArgs.addAll(
             "-module-name",
             "com.github.ChuckerTeam.Chucker.library",
