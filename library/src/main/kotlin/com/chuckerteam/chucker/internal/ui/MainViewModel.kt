@@ -34,7 +34,7 @@ internal class MainViewModel : ViewModel() {
             with(RepositoryProvider.transaction()) {
                 when {
                     searchQuery.isNullOrBlank() -> getSortedTransactionTuples()
-                    searchQuery.isDigitsOnly() -> getFilteredTransactionTuples(searchQuery, "")
+                    searchQuery.isDigitsOnly() -> getFilteredTransactionTuples(searchQuery, searchQuery)
                     else -> getFilteredTransactionTuples("", searchQuery)
                 }
             }

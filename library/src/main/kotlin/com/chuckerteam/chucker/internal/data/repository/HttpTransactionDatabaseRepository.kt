@@ -15,15 +15,11 @@ internal class HttpTransactionDatabaseRepository(
         code: String,
         path: String,
     ): LiveData<List<HttpTransactionTuple>> {
-        val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
+        val codeQuery = if (code.isNotEmpty()) "$code%" else "%"
+        val searchQuery = if (path.isNotEmpty()) "%$path%" else "%"
         return transactionDao.getFilteredTuples(
-            "$code%",
-            pathQuery = pathQuery,
-            /*
-             * Refer <a href='https://github.com/ChuckerTeam/chucker/issues/847">Issue #847</a> for
-             * more context
-             */
-            graphQlQuery = pathQuery,
+            codeQuery = codeQuery,
+            searchQuery = searchQuery,
         )
     }
 
