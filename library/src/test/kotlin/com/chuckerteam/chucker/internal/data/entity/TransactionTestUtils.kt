@@ -68,6 +68,7 @@ internal fun assertTuple(
     assertThat(actual?.requestPayloadSize).isEqualTo(expected.requestPayloadSize)
     assertThat(actual?.responsePayloadSize).isEqualTo(expected.responsePayloadSize)
     assertThat(actual?.error).isEqualTo(expected.error)
+    assertThat(actual?.requestContentType).isEqualTo(expected.requestContentType)
 }
 
 internal fun assertTransaction(
