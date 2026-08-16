@@ -13,7 +13,7 @@ ksp = "2.3.11"
 
 # Google Libraries
 activity = "1.13.0"
-appCompat = "1.7.1"
+appCompat = "1.8.0"
 constraintLayout = "2.2.2"
 lifecycleLivedataKtx = "2.10.0"
 loggingInterceptor = "5.4.0"
