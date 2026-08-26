@@ -200,7 +200,7 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionTwo)
             insertTransaction(transactionThree)
 
-            testObject.getFilteredTuples(codeQuery = "418", pathQuery = "%abc%").observeForever { result ->
+            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%abc%").observeForever { result ->
                 assertTuples(listOf(transactionOne, transactionTwo), result)
             }
         }
@@ -234,7 +234,7 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionFour)
 
             testObject
-                .getFilteredTuples(codeQuery = "%", pathQuery = "%get%", graphQlQuery = "%get%")
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%get%")
                 .observeForever { result ->
                     assertTuples(listOf(transactionFour), result)
                 }
@@ -263,8 +263,154 @@ internal class HttpTransactionDaoTest {
             insertTransaction(transactionTwo)
             insertTransaction(transactionThree)
 
-            testObject.getFilteredTuples(codeQuery = "4%", pathQuery = "%").observeForever { result ->
+            testObject.getFilteredTuples(codeQuery = "4%", searchQuery = "%").observeForever { result ->
                 assertTuples(listOf(transactionThree, transactionOne), result)
+            }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by request body`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("test").withResponseData().apply {
+                    requestDate = 200L
+                    requestBody = "searchTermInBody"
+                }
+            val transactionTwo =
+                createRequest("other").withResponseData().apply {
+                    requestDate = 100L
+                    requestBody = "differentContent"
+                }
+
+            insertTransaction(transactionOne)
+            insertTransaction(transactionTwo)
+
+            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInBody%").observeForever { result ->
+                assertTuples(listOf(transactionOne), result)
+            }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by response body`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("test").withResponseData().apply {
+                    requestDate = 200L
+                    responseBody = "searchTermInResponse"
+                }
+            val transactionTwo =
+                createRequest("other").withResponseData().apply {
+                    requestDate = 100L
+                    responseBody = "differentContent"
+                }
+
+            insertTransaction(transactionOne)
+            insertTransaction(transactionTwo)
+
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponse%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by request headers`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("test").withResponseData().apply {
+                    requestDate = 200L
+                    setRequestHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("Authorization", "Bearer searchTermInHeader")
+                            .build(),
+                    )
+                }
+            val transactionTwo =
+                createRequest("other").withResponseData().apply {
+                    requestDate = 100L
+                    setRequestHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("Authorization", "Bearer differentToken")
+                            .build(),
+                    )
+                }
+
+            insertTransaction(transactionOne)
+            insertTransaction(transactionTwo)
+
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInHeader%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by response headers`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("test").withResponseData().apply {
+                    requestDate = 200L
+                    setResponseHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("X-Custom-Header", "searchTermInResponseHeader")
+                            .build(),
+                    )
+                }
+            val transactionTwo =
+                createRequest("other").withResponseData().apply {
+                    requestDate = 100L
+                    setResponseHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("X-Custom-Header", "differentValue")
+                            .build(),
+                    )
+                }
+
+            insertTransaction(transactionOne)
+            insertTransaction(transactionTwo)
+
+            testObject
+                .getFilteredTuples(codeQuery = "%", searchQuery = "%searchTermInResponseHeader%")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionOne), result)
+                }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by header name`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("test").withResponseData().apply {
+                    requestDate = 200L
+                    setRequestHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("X-Special-Header", "value")
+                            .build(),
+                    )
+                }
+            val transactionTwo =
+                createRequest("other").withResponseData().apply {
+                    requestDate = 100L
+                    setRequestHeaders(
+                        okhttp3.Headers
+                            .Builder()
+                            .add("X-Different-Header", "value")
+                            .build(),
+                    )
+                }
+
+            insertTransaction(transactionOne)
+            insertTransaction(transactionTwo)
+
+            testObject.getFilteredTuples(codeQuery = "%", searchQuery = "%X-Special-Header%").observeForever { result ->
+                assertTuples(listOf(transactionOne), result)
             }
         }
 
