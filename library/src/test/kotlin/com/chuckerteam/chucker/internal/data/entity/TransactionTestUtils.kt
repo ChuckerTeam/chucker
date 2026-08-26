@@ -23,6 +23,7 @@ internal fun HttpTransaction.withResponseData(): HttpTransaction =
         responseCode = 418 // I'm a teapot
         responseDate = 321L
         tookMs = 21L
+        hostIp = "192.168.1.1"
         responseTlsVersion = randomString()
         responseCipherSuite = randomString()
         responsePayloadSize = 0L
