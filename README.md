@@ -117,8 +117,6 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
-        // Prefer addNetworkInterceptor if you want to see the request/response
-        // exactly as it goes over the wire (headers from other interceptors, etc.).
         .addNetworkInterceptor(chuckerInterceptor)
         .build()
 ```
