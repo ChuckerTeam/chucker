@@ -9,6 +9,10 @@ Please add your entries according to this format.
 
 -   Long-press the payload copy button to choose between copying the raw body or the formatted body [#1613]
 
+### Changed
+
+-   README now recommends `addNetworkInterceptor` and clarifies the trade-off vs. `addInterceptor` so headers added by other network interceptors show up in the Chucker UI [#759]
+
 ### Fixed
 
 -   Fixed the published AAR being compiled with Java 21 bytecode (class file version 65), which broke compilation on JDK 17. The library now targets Java 17 again, as in 4.3.0 [#1660]
