@@ -8,6 +8,7 @@ object ChuckerTestTags {
     const val CONTROLS_EXPORT_LOG_BUTTON = "controls_export_log_button"
     const val CONTROLS_EXPORT_HAR_BUTTON = "controls_export_har_button"
     const val CONTROLS_DO_HTTP_BUTTON = "controls_do_http_button"
+    const val CONTROLS_DO_GRPC_BUTTON = "controls_do_grpc_button"
     const val CONTROLS_DO_GRAPHQL_BUTTON = "controls_do_graphql_button"
     const val LABELED_RADIO_BUTTON_ROW = "labeled_radio_button_row"
     const val LABELED_RADIO_BUTTON_LABEL_TEXT = "labeled_radio_button_label_text"
