@@ -78,5 +78,5 @@
     <string name="chucker_copy_raw">Қазіргідей көшіру</string>
     <string name="chucker_copy_formatted">Форматтау арқылы көшіру</string>
     <string name="chucker_request_copied_formatted">Сұраныс форматтаумен көшірілді</string>
-    <string name="chucker_response_copied_formatted">Жауап форматталған түрде көшірілді</string>=
+    <string name="chucker_response_copied_formatted">Жауап форматталған түрде көшірілді</string>
 </resources>
