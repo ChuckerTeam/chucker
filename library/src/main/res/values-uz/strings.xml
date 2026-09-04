@@ -32,17 +32,17 @@
     <string name="chucker_share_as_file">Faylga eksport qilish</string>
     <string name="chucker_share_as_har">HAR fayliga eksport qilish</string>
     <string name="chucker_save_as_text">Matn sifatida saqlash</string>
-    <string name="chucker_save_as_har"> .har fayli sifatida saqlash</string>
+    <string name="chucker_save_as_har">.har fayli sifatida saqlash</string>
     <string name="chucker_save_body">Tanani fayl sifatida saqlash</string>
     <string name="chucker_save_empty_text">Saqlash uchun ma’lumot yo‘q</string>
     <string name="chucker_save_failed_to_open_document">Fayl ochilmadi</string>
     <string name="chucker_file_saved">Fayl muvaffaqiyatli saqlandi!</string>
     <string name="chucker_file_not_saved">Faylni saqlab bo‘lmadi</string>
     <string name="chucker_file_not_saved_body_is_empty">Saqlash uchun ma’lumot yo‘q, tana bo‘sh</string>
-    <string name="chucker_body_empty"> (tana bo‘sh) </string>
-    <string name="chucker_body_omitted"> (ikkilik yoki kodlangan tana tushirib qoldirilgan) </string>
+    <string name="chucker_body_empty">(tana bo‘sh)</string>
+    <string name="chucker_body_omitted">(ikkilik yoki kodlangan tana tushirib qoldirilgan)</string>
     <string name="chucker_search">Qidiruv</string>
-    <string name="chucker_clear_http_confirmation">Очистить всю историю запросов?</string>
+    <string name="chucker_clear_http_confirmation">Barcha tarmoq so‘rovlari tarixini tozalashni xohlaysizmi?</string>
     <string name="chucker_body_content_truncated">\n\n--- Kontent kesildi ---</string>
     <string name="chucker_network_tutorial">Bu varaq ChuckerInterceptor yordamida yozilgan so‘rovlarni ko‘rsatadi. Imtiyozlarni olish uchun OkHttp mijozingizga interseptor qo‘shing.</string>
     <string name="chucker_network_notification_category">Chucker tarmoq bildirishnomalari</string>
@@ -57,7 +57,7 @@
     <string name="chucker_save_har_http_confirmation">Barcha tarmoq so‘rovlari .har fayli sifatida saqlansinmi?</string>
     <string name="chucker_export_text_selected_http_confirmation">Tanlangan tarmoq so‘rovlarini matnli faylga eksport qilmoqchimisiz?</string>
     <string name="chucker_export_har_selected_http_confirmation">Tanlangan tarmoq so‘rovlarini .har fayliga eksport qilmoqchimisiz?</string>
-    <string name="chucker_export_separator">====================</string>
+    <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Eksportni boshlash */</string>
     <string name="chucker_export_postfix">/* Eksport tugadi */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">GitHub’da sozlash ko‘rsatmalari</a></string>

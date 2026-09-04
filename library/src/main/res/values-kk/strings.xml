@@ -32,18 +32,18 @@
     <string name="chucker_share_as_file">Файлға экспорттау</string>
     <string name="chucker_share_as_har">HAR файлына экспорттау</string>
     <string name="chucker_save_as_text">Мәтін ретінде сақтау</string>
-    <string name="chucker_save_as_har"> .har файлы ретінде сақтау</string>
+    <string name="chucker_save_as_har">.har файлы ретінде сақтау</string>
     <string name="chucker_save_body">Дене файлы ретінде сақтау</string>
     <string name="chucker_save_empty_text">Сақтау үшін деректер жоқ</string>
     <string name="chucker_save_failed_to_open_document">Файлды ашу мүмкін емес</string>
     <string name="chucker_file_saved">Файл сәтті сақталды!</string>
     <string name="chucker_file_not_saved">Файлды сақтау мүмкін емес</string>
     <string name="chucker_file_not_saved_body_is_empty">Сақтау үшін деректер жоқ, дене бос</string>
-    <string name="chucker_body_empty"> (бос дене) </string>
-    <string name="chucker_body_omitted"> (екілік немесе кодталған дене жіберілген) </string>
+    <string name="chucker_body_empty">(бос дене)</string>
+    <string name="chucker_body_omitted">(екілік немесе кодталған дене жіберілген)</string>
     <string name="chucker_search">Іздеу</string>
     <string name="chucker_body_content_truncated">\n\n--- Контент кесілді ---</string>
-    <string name="chucker_network_tutorial">Бұл бет ChuckerInterceptor арқылы жазылған сұраныстарды көрсетеді. Артықшылықтарды алу үшін интерцепторды OKHttp клиентіңізге қосыңыз.</string>
+    <string name="chucker_network_tutorial">Бұл бет ChuckerInterceptor арқылы жазылған сұраныстарды көрсетеді. Артықшылықтарды алу үшін интерцепторды OkHttp клиентіңізге қосыңыз.</string>
     <string name="chucker_network_notification_category">Chucker желілік хабарламалары</string>
     <string name="chucker_share_transaction_title">Сұраныс мәліметтерін бөлісу</string>
     <string name="chucker_share_all_transactions_title">Барлық сұраныстарды бөлісу</string>
@@ -57,7 +57,7 @@
     <string name="chucker_save_har_http_confirmation">Барлық желілік сұраныстар .har файлы ретінде сақталсын ба?</string>
     <string name="chucker_export_text_selected_http_confirmation">Сіз таңдаған желілік сұраныстарды мәтіндік файлға экспорттайсыз ба?</string>
     <string name="chucker_export_har_selected_http_confirmation">Сіз таңдаған желілік сұраныстарды .har файлына экспорттайсыз ба?</string>
-    <string name="chucker_export_separator">====================</string>
+    <string name="chucker_export_separator">==================</string>
     <string name="chucker_export_prefix">/* Экспортты бастау */</string>
     <string name="chucker_export_postfix">/* Экспорт аяқталды */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">GitHub-та баптау нұсқаулары</a></string>
