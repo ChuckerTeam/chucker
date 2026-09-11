@@ -170,9 +170,11 @@ internal class HttpTransactionDatabaseRepositoryTest {
             testObject.insertTransaction(transactionTwo)
             testObject.insertTransaction(transactionThree)
 
-            testObject.getFilteredTransactionTuples(code = "", path = "def").observeForever { result ->
-                assertTuples(listOf(transactionThree, transactionTwo), result)
-            }
+            testObject
+                .getFilteredTransactionTuples(code = "", path = "def")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionThree, transactionTwo), result)
+                }
         }
 
     @Test
@@ -198,9 +200,11 @@ internal class HttpTransactionDatabaseRepositoryTest {
             testObject.insertTransaction(transactionTwo)
             testObject.insertTransaction(transactionThree)
 
-            testObject.getFilteredTransactionTuples(code = "4", path = "").observeForever { result ->
-                assertTuples(listOf(transactionThree, transactionOne), result)
-            }
+            testObject
+                .getFilteredTransactionTuples(code = "4", path = "")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionThree, transactionOne), result)
+                }
         }
 
     @Test
@@ -231,9 +235,11 @@ internal class HttpTransactionDatabaseRepositoryTest {
             testObject.insertTransaction(transactionTwo)
             testObject.insertTransaction(transactionThree)
             testObject.insertTransaction(transactionFour)
-            testObject.getFilteredTransactionTuples(code = "", path = "GetDe").observeForever { result ->
-                assertTuples(listOf(transactionFour), result)
-            }
+            testObject
+                .getFilteredTransactionTuples(code = "", path = "GetDe")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionFour), result)
+                }
         }
 
     @Test
@@ -265,8 +271,46 @@ internal class HttpTransactionDatabaseRepositoryTest {
             testObject.insertTransaction(transactionThree)
             testObject.insertTransaction(transactionFour)
             testObject.getFilteredTransactionTuples(code = "", path = "").observeForever { result ->
-                assertTuples(listOf(transactionFour, transactionThree, transactionOne, transactionTwo), result)
+                assertTuples(
+                    listOf(
+                        transactionFour,
+                        transactionThree,
+                        transactionOne,
+                        transactionTwo,
+                    ),
+                    result,
+                )
             }
+        }
+
+    @Test
+    fun `transaction tuples are filtered by requestContentType`() =
+        runBlocking {
+            val transactionOne =
+                createRequest("abc").withResponseData().apply {
+                    requestDate = 200L
+                    requestContentType = "application/json"
+                }
+            val transactionTwo =
+                createRequest("abcdef").withResponseData().apply {
+                    requestDate = 100L
+                    requestContentType = "multipart/form-data"
+                }
+            val transactionThree =
+                createRequest("def").withResponseData().apply {
+                    requestDate = 300L
+                    requestContentType = "text/plain"
+                }
+
+            testObject.insertTransaction(transactionOne)
+            testObject.insertTransaction(transactionTwo)
+            testObject.insertTransaction(transactionThree)
+
+            testObject
+                .getFilteredTransactionTuples(code = "", path = "multipart")
+                .observeForever { result ->
+                    assertTuples(listOf(transactionTwo), result)
+                }
         }
 
     @Test
