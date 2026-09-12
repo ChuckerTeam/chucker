@@ -58,8 +58,8 @@
     <string name="chucker_export_text_selected_http_confirmation">¿Desea exportar las transacciones de red seleccionadas como archivo de texto?</string>
     <string name="chucker_export_har_selected_http_confirmation">¿Desea exportar las transacciones de red seleccionadas como archivo .har?</string>
     <string name="chucker_export_separator">==================</string>
-    <string name="chucker_export_prefix">/* Exportación Iniciada */</string>
-    <string name="chucker_export_postfix">/*  Exportación Finalizada  */</string>
+    <string name="chucker_export_prefix">/* Export Start */</string>
+    <string name="chucker_export_postfix">/*  Export End  */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Revisa las instrucciones de configuración en GitHub</a></string>
     <string name="chucker_setup">Configuración</string>
     <string name="chucker_binary_data">datos binarios</string>
