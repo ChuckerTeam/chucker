@@ -58,8 +58,8 @@
     <string name="chucker_export_text_selected_http_confirmation">선택한 네트워크 트랜잭션을 텍스트 파일로 내보내시겠습니까?</string>
     <string name="chucker_export_har_selected_http_confirmation">선택한 네트워크 트랜잭션을 .har 파일로 내보내시겠습니까?</string>
     <string name="chucker_export_separator">==================</string>
-    <string name="chucker_export_prefix">/* 내보내기 시작 */</string>
-    <string name="chucker_export_postfix">/*  내보내기 종료  */</string>
+    <string name="chucker_export_prefix">/* Export Start */</string>
+    <string name="chucker_export_postfix">/*  Export End  */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">GitHub에서 설정 방법 확인하기</a></string>
     <string name="chucker_setup">설정</string>
     <string name="chucker_binary_data">바이너리 데이터</string>

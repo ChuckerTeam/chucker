@@ -58,8 +58,8 @@
     <string name="chucker_export_text_selected_http_confirmation">Вы хотите экспортировать выбранные сетевые запросы в текстовый файл?</string>
     <string name="chucker_export_har_selected_http_confirmation">Вы хотите экспортировать выбранные сетевые запросы в файл .har?</string>
     <string name="chucker_export_separator">==================</string>
-    <string name="chucker_export_prefix">/* Начало экспорта */</string>
-    <string name="chucker_export_postfix">/* Конец экспорта */</string>
+    <string name="chucker_export_prefix">/* Export Start */</string>
+    <string name="chucker_export_postfix">/*  Export End  */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">Инструкции по настройке на GitHub</a></string>
     <string name="chucker_setup">Настройка</string>
     <string name="chucker_binary_data">двоичные данные</string>

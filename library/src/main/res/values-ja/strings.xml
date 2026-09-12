@@ -58,8 +58,8 @@
     <string name="chucker_export_text_selected_http_confirmation">選択したネットワークトランザクションをテキストファイルとしてエクスポートしますか？</string>
     <string name="chucker_export_har_selected_http_confirmation">選択したネットワークトランザクションを.harファイルとしてエクスポートしますか？</string>
     <string name="chucker_export_separator">==================</string>
-    <string name="chucker_export_prefix">/* エクスポート開始 */</string>
-    <string name="chucker_export_postfix">/*  エクスポート終了  */</string>
+    <string name="chucker_export_prefix">/* Export Start */</string>
+    <string name="chucker_export_postfix">/*  Export End  */</string>
     <string name="chucker_check_readme"><a href="https://github.com/ChuckerTeam/chucker/blob/develop/README.md#configure-">GitHubでセットアップ手順を確認</a></string>
     <string name="chucker_setup">セットアップ</string>
     <string name="chucker_binary_data">バイナリデータ</string>
