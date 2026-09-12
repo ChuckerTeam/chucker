@@ -13,6 +13,7 @@ internal class TransactionDetailsSharable(
     override fun toSharableContent(context: Context): Source =
         Buffer().apply {
             writeUtf8("${context.getString(R.string.chucker_url)}: ${transaction.getFormattedUrl(encodeUrls)}\n")
+            writeUtf8("${context.getString(R.string.chucker_host_ip)}: ${transaction.hostIp}\n")
             writeUtf8("${context.getString(R.string.chucker_method)}: ${transaction.method}\n")
             writeUtf8("${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n")
             writeUtf8("${context.getString(R.string.chucker_status)}: ${transaction.status}\n")
