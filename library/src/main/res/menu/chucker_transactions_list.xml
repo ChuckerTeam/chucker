@@ -13,13 +13,23 @@
         android:title="@string/chucker_export"
         app:showAsAction="ifRoom">
         <menu>
-            <group>
+            <group
+                android:id="@+id/share_group">
                 <item
                     android:id="@+id/share_text"
                     android:title="@string/chucker_share_as_text" />
                 <item
                     android:id="@+id/share_har"
                     android:title="@string/chucker_share_as_har" />
+            </group>
+            <group
+                android:id="@+id/save_group">
+                <item
+                    android:id="@+id/save_text"
+                    android:title="@string/chucker_save_as_text" />
+                <item
+                    android:id="@+id/save_har"
+                    android:title="@string/chucker_save_as_har" />
             </group>
         </menu>
     </item>

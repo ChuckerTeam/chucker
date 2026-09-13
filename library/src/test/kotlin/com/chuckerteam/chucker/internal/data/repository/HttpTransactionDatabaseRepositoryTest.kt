@@ -44,7 +44,8 @@ internal class HttpTransactionDatabaseRepositoryTest {
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
         db =
-            Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
+            Room
+                .inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
                 .allowMainThreadQueries()
                 .build()
         testObject = HttpTransactionDatabaseRepository(db)

@@ -17,9 +17,7 @@ public class ChuckerInterceptor private constructor(
      */
     public constructor(context: Context) : this(Builder(context))
 
-    public fun redactHeaders(vararg names: String): ChuckerInterceptor {
-        return this
-    }
+    public fun redactHeaders(vararg names: String): ChuckerInterceptor = this
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -30,7 +28,9 @@ public class ChuckerInterceptor private constructor(
     /**
      * No-op implementation.
      */
-    public class Builder(private val context: Context) {
+    public class Builder(
+        private val context: Context,
+    ) {
         public fun collector(collector: ChuckerCollector): Builder = this
 
         public fun maxContentLength(length: Long): Builder = this
@@ -46,6 +46,12 @@ public class ChuckerInterceptor private constructor(
         public fun createShortcut(enable: Boolean): Builder = this
 
         public fun skipPaths(vararg paths: String): Builder = this
+
+        public fun skipPaths(paths: Regex): Builder = this
+
+        public fun skipDomains(vararg domains: String): Builder = this
+
+        public fun skipDomains(domains: Regex): Builder = this
 
         public fun build(): ChuckerInterceptor = ChuckerInterceptor(this)
     }

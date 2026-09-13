@@ -40,8 +40,23 @@ internal class ResponseProcessor(
             responseHeadersSize = response.headers.byteCount()
             setResponseHeaders(response.headers.redact(headersToRedact))
 
-            requestDate = response.sentRequestAtMillis
-            responseDate = response.receivedResponseAtMillis
+            // Fallback to requestDate from RequestProcessor if sentRequestAtMillis is invalid
+            if (response.sentRequestAtMillis > 0) {
+                requestDate = response.sentRequestAtMillis
+            }
+
+            /**
+             * For requests made via cronet okhttp bridge sentRequestAtMillis &
+             * receivedResponseAtMillis params are not available
+             * https://github.com/google/cronet-transport-for-okhttp (Common incompatibilities)
+             */
+            responseDate =
+                if (response.receivedResponseAtMillis > 0) {
+                    response.receivedResponseAtMillis
+                } else {
+                    System.currentTimeMillis()
+                }
+
             protocol = response.protocol.toString()
             hostIp = response.body?.source()?.getHostIp()
             responseCode = response.code
@@ -54,7 +69,14 @@ internal class ResponseProcessor(
 
             responseContentType = response.contentType
 
-            tookMs = (response.receivedResponseAtMillis - response.sentRequestAtMillis)
+            tookMs =
+                if (response.sentRequestAtMillis > 0 && response.receivedResponseAtMillis > 0) {
+                    response.receivedResponseAtMillis - response.sentRequestAtMillis
+                } else if (requestDate != null && responseDate != null) {
+                    responseDate!! - requestDate!!
+                } else {
+                    null
+                }
         }
     }
 
@@ -80,7 +102,8 @@ internal class ResponseProcessor(
         var upstream: Source = TeeSource(responseBody.source(), sideStream)
         if (alwaysReadResponseBody) upstream = DepletingSource(upstream)
 
-        return response.newBuilder()
+        return response
+            .newBuilder()
             .body(upstream.buffer().asResponseBody(contentType, contentLength))
             .build()
     }
@@ -119,7 +142,8 @@ internal class ResponseProcessor(
     private fun decodePayload(
         response: Response,
         body: ByteString,
-    ) = bodyDecoders.asSequence()
+    ) = bodyDecoders
+        .asSequence()
         .mapNotNull { decoder ->
             try {
                 decoder.decodeResponse(response, body)

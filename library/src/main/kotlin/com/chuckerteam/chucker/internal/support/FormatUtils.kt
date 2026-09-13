@@ -31,15 +31,14 @@ internal object FormatUtils {
     fun formatHeaders(
         httpHeaders: List<HttpHeader>?,
         withMarkup: Boolean,
-    ): String {
-        return httpHeaders?.joinToString(separator = "") { header ->
+    ): String =
+        httpHeaders?.joinToString(separator = "") { header ->
             if (withMarkup) {
                 "<b> ${header.name}: </b>${header.value} <br />"
             } else {
                 "${header.name}: ${header.value}\n"
             }
         } ?: ""
-    }
 
     fun formatByteCount(
         bytes: Long,
@@ -57,17 +56,16 @@ internal object FormatUtils {
         return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 
-    fun formatJson(json: String): String {
-        return try {
+    fun formatJson(json: String): String =
+        try {
             val je = JsonParser.parseString(json)
             JsonConverter.instance.toJson(je)
         } catch (e: JsonParseException) {
             json
         }
-    }
 
-    fun formatXml(xml: String): String {
-        return try {
+    fun formatXml(xml: String): String =
+        try {
             val documentFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
             // This flag is required for security reasons
             documentFactory.isExpandEntityReferences = false
@@ -80,13 +78,16 @@ internal object FormatUtils {
             val writer = StringWriter()
             val result = StreamResult(writer)
 
-            TransformerFactory.newInstance().apply {
-                setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
-            }.newTransformer().apply {
-                setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-                setOutputProperty(OutputKeys.INDENT, "yes")
-                transform(domSource, result)
-            }
+            TransformerFactory
+                .newInstance()
+                .apply {
+                    setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
+                }.newTransformer()
+                .apply {
+                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                    setOutputProperty(OutputKeys.INDENT, "yes")
+                    transform(domSource, result)
+                }
             writer.toString()
         } catch (ignore: SAXParseException) {
             xml
@@ -95,7 +96,6 @@ internal object FormatUtils {
         } catch (ignore: TransformerException) {
             xml
         }
-    }
 
     fun formatUrlEncodedForm(form: String): String {
         return try {

@@ -26,16 +26,23 @@ fun createOkHttpClient(
 
     @Suppress("MagicNumber")
     val chuckerInterceptor =
-        ChuckerInterceptor.Builder(context)
+        ChuckerInterceptor
+            .Builder(context)
             .collector(collector)
             .maxContentLength(250_000L)
             .redactHeaders(emptySet())
             .skipPaths("anything")
+            // Filter Images
+//            .skipPaths(".*(jpg|jpeg|png|gif|webp|svg|bmp|ico)$".toRegex())
+            // Filter domains
+//            .skipDomains("httpbin.org", "postman-echo.com")
+//            .skipDomains(".*akamai.com".toRegex())
             .alwaysReadResponseBody(false)
             .addBodyDecoder(PokemonProtoBodyDecoder())
             .build()
 
-    return OkHttpClient.Builder()
+    return OkHttpClient
+        .Builder()
         // Add a ChuckerInterceptor instance to your OkHttp client as an application or a network interceptor.
         // Learn more about interceptor types here – https://square.github.io/okhttp/interceptors.
         // "activeForType" is needed only in this sample to control it from the UI.

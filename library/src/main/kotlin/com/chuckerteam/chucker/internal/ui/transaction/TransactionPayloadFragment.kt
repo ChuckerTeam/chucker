@@ -4,9 +4,10 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -30,19 +32,23 @@ import androidx.lifecycle.withResumed
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.support.FileSaver
 import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.calculateLuminance
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.support.spannableChunked
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileOutputStream
+import okio.Source
+import okio.source
 import java.io.IOException
 import kotlin.math.abs
 
 internal class TransactionPayloadFragment :
-    Fragment(), SearchView.OnQueryTextListener {
+    Fragment(),
+    SearchView.OnQueryTextListener {
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
 
     private val payloadType: PayloadType by lazy(LazyThreadSafetyMode.NONE) {
@@ -55,7 +61,14 @@ internal class TransactionPayloadFragment :
             val applicationContext = requireContext().applicationContext
             if (uri != null && transaction != null) {
                 lifecycleScope.launch {
-                    val result = saveToFile(payloadType, uri, transaction)
+                    val source =
+                        runCatching {
+                            prepareDataToSave(payloadType, transaction)
+                        }.getOrElse {
+                            Logger.error("Failed to save transaction to a file", it)
+                            return@launch
+                        }
+                    val result = FileSaver.saveFile(source, uri, applicationContext.contentResolver)
                     val toastMessageId =
                         if (result) {
                             R.string.chucker_file_saved
@@ -65,16 +78,17 @@ internal class TransactionPayloadFragment :
                     Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(
-                    applicationContext,
-                    R.string.chucker_save_failed_to_open_document,
-                    Toast.LENGTH_SHORT,
-                ).show()
+                Toast
+                    .makeText(
+                        applicationContext,
+                        R.string.chucker_save_failed_to_open_document,
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter()
+    private val payloadAdapter = TransactionBodyAdapter(::copyRawPayWrapper, ::showCopyMenu)
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED
@@ -141,6 +155,93 @@ internal class TransactionPayloadFragment :
         payloadBinding.searchNavButtonUp.setOnClickListener {
             onSearchScrollerButtonClick(false)
         }
+    }
+
+    private fun copyRawPayWrapper() {
+        val transaction = viewModel.transaction.value ?: return
+        copyRawPayload(transaction)
+    }
+
+    private fun showCopyMenu(anchor: View) {
+        val transaction = viewModel.transaction.value ?: return
+        val popup = PopupMenu(anchor.context, anchor)
+        popup.menuInflater.inflate(R.menu.chucker_copy_payload, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.copy_raw -> {
+                    copyRawPayload(transaction)
+                    true
+                }
+                R.id.copy_formatted -> {
+                    copyFormattedPayload(transaction)
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun copyRawPayload(transaction: HttpTransaction) {
+        when (payloadType) {
+            PayloadType.REQUEST ->
+                transaction.requestBody?.let { request ->
+                    copyToClipboard(
+                        request,
+                        getString(R.string.chucker_request),
+                        getString(R.string.chucker_request_copied),
+                    )
+                }
+            PayloadType.RESPONSE ->
+                transaction.responseBody?.let { response ->
+                    copyToClipboard(
+                        response,
+                        getString(R.string.chucker_response),
+                        getString(R.string.chucker_response_copied),
+                    )
+                }
+        }
+    }
+
+    private fun copyFormattedPayload(transaction: HttpTransaction) {
+        lifecycleScope.launch {
+            val formatted =
+                withContext(Dispatchers.Default) {
+                    when (payloadType) {
+                        PayloadType.REQUEST -> transaction.getFormattedRequestBody()
+                        PayloadType.RESPONSE -> transaction.getFormattedResponseBody()
+                    }
+                }
+
+            if (formatted.isEmpty()) return@launch
+
+            val (label, toast) =
+                when (payloadType) {
+                    PayloadType.REQUEST -> {
+                        getString(R.string.chucker_request) to
+                            getString(R.string.chucker_request_copied_formatted)
+                    }
+                    PayloadType.RESPONSE -> {
+                        getString(R.string.chucker_response) to
+                            getString(R.string.chucker_response_copied_formatted)
+                    }
+                }
+            copyToClipboard(formatted, label, toast)
+        }
+    }
+
+    private fun copyToClipboard(
+        payload: String,
+        payloadType: String,
+        toastSuccessMessage: String,
+    ) {
+        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(payloadType, payload)
+        clipboard.setPrimaryClip(clip)
+
+        Toast
+            .makeText(activity, toastSuccessMessage, Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun onSearchScrollerButtonClick(goNext: Boolean) {
@@ -232,6 +333,7 @@ internal class TransactionPayloadFragment :
             PayloadType.REQUEST -> {
                 (false == transaction?.isRequestBodyEncoded) && (0L != (transaction.requestPayloadSize))
             }
+
             PayloadType.RESPONSE -> {
                 (false == transaction?.isResponseBodyEncoded) && (0L != (transaction.responsePayloadSize))
             }
@@ -246,11 +348,12 @@ internal class TransactionPayloadFragment :
     private fun createFileToSaveBody() {
         val transaction = viewModel.transaction.value
         if (transaction != null && isBodyEmpty(payloadType, transaction)) {
-            Toast.makeText(
-                activity,
-                R.string.chucker_file_not_saved_body_is_empty,
-                Toast.LENGTH_SHORT,
-            ).show()
+            Toast
+                .makeText(
+                    activity,
+                    R.string.chucker_file_not_saved_body_is_empty,
+                    Toast.LENGTH_SHORT,
+                ).show()
         } else {
             saveToFile.launch("$DEFAULT_FILE_PREFIX${System.currentTimeMillis()}")
         }
@@ -398,7 +501,10 @@ internal class TransactionPayloadFragment :
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
                 }
 
-                else ->
+                else -> {
+                    // adding copy item
+                    result.add(TransactionPayloadItem.CopyItem(getString(R.string.chucker_copy_response)))
+
                     bodyString.lines().forEach {
                         result.add(
                             TransactionPayloadItem.BodyLineItem(
@@ -410,40 +516,27 @@ internal class TransactionPayloadFragment :
                             ),
                         )
                     }
+                }
             }
             return@withContext result
         }
     }
 
-    private suspend fun saveToFile(
+    private fun prepareDataToSave(
         type: PayloadType,
-        uri: Uri,
         transaction: HttpTransaction,
-    ): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {
-                    FileOutputStream(it.fileDescriptor).use { fos ->
-                        when (type) {
-                            PayloadType.REQUEST -> {
-                                transaction.requestBody?.byteInputStream()?.copyTo(fos)
-                                    ?: throw IOException(TRANSACTION_EXCEPTION)
-                            }
-
-                            PayloadType.RESPONSE -> {
-                                transaction.responseBody?.byteInputStream()?.copyTo(fos)
-                                    ?: throw IOException(TRANSACTION_EXCEPTION)
-                            }
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                Logger.error("Failed to save transaction to a file", e)
-                return@withContext false
+    ): Source =
+        when (type) {
+            PayloadType.REQUEST -> {
+                transaction.requestBody?.byteInputStream()?.source()
+                    ?: throw IOException(TRANSACTION_EXCEPTION)
             }
-            return@withContext true
+
+            PayloadType.RESPONSE -> {
+                transaction.responseBody?.byteInputStream()?.source()
+                    ?: throw IOException(TRANSACTION_EXCEPTION)
+            }
         }
-    }
 
     private fun isBodyEmpty(
         type: PayloadType,
@@ -461,6 +554,7 @@ internal class TransactionPayloadFragment :
         private const val DELAY_FOR_SEARCH_SCROLL: Long = 600L
 
         private const val NUMBER_OF_IGNORED_SYMBOLS = 1
+        private const val LINE_LENGTH_THRESHOLD = 500
 
         const val DEFAULT_FILE_PREFIX = "chucker-export-"
 
@@ -478,7 +572,17 @@ internal class TransactionPayloadFragment :
         val result = mutableListOf<CharSequence>()
         var lineIndex = 0
         for (index in linesList.indices) {
-            result.add(subSequence(lineIndex, lineIndex + linesList[index].length))
+            val line = subSequence(lineIndex, lineIndex + linesList[index].length)
+            if (line.length > LINE_LENGTH_THRESHOLD) {
+                if (line is SpannableStringBuilder) {
+                    result.addAll(line.spannableChunked(LINE_LENGTH_THRESHOLD))
+                } else {
+                    result.addAll(line.chunked(LINE_LENGTH_THRESHOLD))
+                }
+            } else {
+                result.add(line)
+            }
+
             lineIndex += linesList[index].length + 1
         }
         if (result.isEmpty()) {

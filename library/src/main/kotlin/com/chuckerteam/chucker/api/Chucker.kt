@@ -37,10 +37,9 @@ public object Chucker {
      * @return An Intent for the main Chucker Activity that can be started with [Context.startActivity].
      */
     @JvmStatic
-    public fun getLaunchIntent(context: Context): Intent {
-        return Intent(context, MainActivity::class.java)
+    public fun getLaunchIntent(context: Context): Intent =
+        Intent(context, MainActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
 
     /**
      * Create a shortcut to launch Chucker UI.
@@ -57,7 +56,8 @@ public object Chucker {
         }
 
         val shortcut =
-            ShortcutInfo.Builder(context, SHORTCUT_ID)
+            ShortcutInfo
+                .Builder(context, SHORTCUT_ID)
                 .setShortLabel(context.getString(R.string.chucker_shortcut_label))
                 .setLongLabel(context.getString(R.string.chucker_shortcut_label))
                 .setIcon(Icon.createWithResource(context, R.mipmap.chucker_ic_launcher))

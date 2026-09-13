@@ -7,7 +7,9 @@ import okio.blackholeSink
 import okio.buffer
 import java.io.IOException
 
-internal class DepletingSource(delegate: Source) : ForwardingSource(delegate) {
+internal class DepletingSource(
+    delegate: Source,
+) : ForwardingSource(delegate) {
     private var shouldDeplete = true
 
     override fun read(

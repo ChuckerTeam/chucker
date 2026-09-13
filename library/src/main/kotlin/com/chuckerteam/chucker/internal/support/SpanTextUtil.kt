@@ -7,7 +7,9 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
 import com.chuckerteam.chucker.R
 
-public class SpanTextUtil(context: Context) {
+public class SpanTextUtil(
+    context: Context,
+) {
     private val jsonKeyColor: Int
     private val jsonValueColor: Int
     private val jsonDigitsAndNullValueColor: Int
@@ -31,7 +33,9 @@ public class SpanTextUtil(context: Context) {
         jsonBooleanColor = ContextCompat.getColor(context, R.color.chucker_json_boolean_color)
     }
 
-    private enum class TokenType(val delimiters: Set<String>) {
+    private enum class TokenType(
+        val delimiters: Set<String>,
+    ) {
         STRING(setOf("\"")),
         ARRAY(setOf("[", "]")),
         OBJECT(setOf("{", "}")),
@@ -198,5 +202,7 @@ public class SpanTextUtil(context: Context) {
         return endIndex
     }
 
-    public class ChuckerForegroundColorSpan(color: Int) : ForegroundColorSpan(color)
+    public class ChuckerForegroundColorSpan(
+        color: Int,
+    ) : ForegroundColorSpan(color)
 }

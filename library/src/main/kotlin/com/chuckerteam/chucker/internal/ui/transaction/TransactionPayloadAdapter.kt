@@ -11,6 +11,7 @@ import androidx.core.text.getSpans
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemBodyLineBinding
+import com.chuckerteam.chucker.databinding.ChuckerTransactionItemCopyBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemHeadersBinding
 import com.chuckerteam.chucker.databinding.ChuckerTransactionItemImageBinding
 import com.chuckerteam.chucker.internal.support.ChessboardDrawable
@@ -24,7 +25,10 @@ import com.chuckerteam.chucker.internal.support.indicesOf
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter(
+    private val onCopyBodyListener: () -> Unit,
+    private val onCopyMenuListener: (anchor: View) -> Unit,
+) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
     private val items = arrayListOf<TransactionPayloadItem>()
 
     fun setItems(bodyItems: List<TransactionPayloadItem>) {
@@ -58,6 +62,16 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                 TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
             }
 
+            TYPE_COPY -> {
+                val copyItemBinding =
+                    ChuckerTransactionItemCopyBinding.inflate(inflater, parent, false)
+                TransactionPayloadViewHolder.CopyViewHolder(
+                    copyItemBinding,
+                    onCopyBodyListener,
+                    onCopyMenuListener,
+                )
+            }
+
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
                 TransactionPayloadViewHolder.ImageViewHolder(imageItemBinding)
@@ -67,13 +81,13 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when (items[position]) {
+    override fun getItemViewType(position: Int): Int =
+        when (items[position]) {
             is TransactionPayloadItem.HeaderItem -> TYPE_HEADERS
             is TransactionPayloadItem.BodyLineItem -> TYPE_BODY_LINE
             is TransactionPayloadItem.ImageItem -> TYPE_IMAGE
+            is TransactionPayloadItem.CopyItem -> TYPE_COPY
         }
-    }
 
     internal fun highlightQueryWithColors(
         newText: String,
@@ -81,16 +95,17 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         foregroundColor: Int,
     ): List<SearchItemBodyLine> {
         val listOfSearchItems = arrayListOf<SearchItemBodyLine>()
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items
             .withIndex()
             .forEach { (index, item) ->
+                if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val listOfOccurrences = item.line.indicesOf(newText)
                 if (listOfOccurrences.isNotEmpty()) {
                     // storing the occurrences and their positions
                     listOfOccurrences.forEach {
                         listOfSearchItems.add(
                             SearchItemBodyLine(
-                                indexBodyLine = index + 1,
+                                indexBodyLine = index,
                                 indexStartOfQuerySubString = it,
                             ),
                         )
@@ -105,12 +120,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
                             backgroundColor,
                             foregroundColor,
                         )
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index)
                 } else {
                     // Let's clear the spans if we haven't found the query string.
                     val removedSpansCount = item.line.clearHighlightSpans()
                     if (removedSpansCount > 0) {
-                        notifyItemChanged(index + 1)
+                        notifyItemChanged(index)
                     }
                 }
             }
@@ -138,12 +153,13 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     }
 
     internal fun resetHighlight() {
-        items.filterIsInstance<TransactionPayloadItem.BodyLineItem>()
+        items
             .withIndex()
             .forEach { (index, item) ->
+                if (item !is TransactionPayloadItem.BodyLineItem) return@forEach
                 val removedSpansCount = item.line.clearHighlightSpans()
                 if (removedSpansCount > 0) {
-                    notifyItemChanged(index + 1)
+                    notifyItemChanged(index)
                 }
             }
     }
@@ -152,6 +168,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
         private const val TYPE_HEADERS = 1
         private const val TYPE_BODY_LINE = 2
         private const val TYPE_IMAGE = 3
+        private const val TYPE_COPY = 4
     }
 
     /**
@@ -161,11 +178,12 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     private fun SpannableStringBuilder.clearHighlightSpans(): Int {
         var removedSpansCount = 0
         val spanList = getSpans<Any>(0, length)
-        for (span in spanList)
+        for (span in spanList) {
             if (span !is SpanTextUtil.ChuckerForegroundColorSpan) {
                 removeSpan(span)
                 removedSpansCount++
             }
+        }
         return removedSpansCount
     }
 
@@ -175,7 +193,9 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
     )
 }
 
-internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+internal sealed class TransactionPayloadViewHolder(
+    view: View,
+) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: TransactionPayloadItem)
 
     internal class HeaderViewHolder(
@@ -184,6 +204,25 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.HeaderItem) {
                 headerBinding.responseHeaders.text = item.headers
+            }
+        }
+    }
+
+    internal class CopyViewHolder(
+        private val copyBinding: ChuckerTransactionItemCopyBinding,
+        private val onCopyBodyListener: () -> Unit,
+        private val onCopyMenuListener: (anchor: View) -> Unit,
+    ) : TransactionPayloadViewHolder(copyBinding.root) {
+        override fun bind(item: TransactionPayloadItem) {
+            if (item is TransactionPayloadItem.CopyItem) {
+                copyBinding.responseCopy.visibility = View.VISIBLE
+                copyBinding.responseCopy.setOnClickListener {
+                    onCopyBodyListener.invoke()
+                }
+                copyBinding.responseCopy.setOnLongClickListener { anchor ->
+                    onCopyMenuListener.invoke(anchor)
+                    true
+                }
             }
         }
     }
@@ -235,9 +274,20 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
 }
 
 internal sealed class TransactionPayloadItem {
-    internal class HeaderItem(val headers: Spanned) : TransactionPayloadItem()
+    internal class HeaderItem(
+        val headers: Spanned,
+    ) : TransactionPayloadItem()
 
-    internal class BodyLineItem(var line: SpannableStringBuilder) : TransactionPayloadItem()
+    internal class CopyItem(
+        val copy: String,
+    ) : TransactionPayloadItem()
 
-    internal class ImageItem(val image: Bitmap, val luminance: Double?) : TransactionPayloadItem()
+    internal class BodyLineItem(
+        var line: SpannableStringBuilder,
+    ) : TransactionPayloadItem()
+
+    internal class ImageItem(
+        val image: Bitmap,
+        val luminance: Double?,
+    ) : TransactionPayloadItem()
 }

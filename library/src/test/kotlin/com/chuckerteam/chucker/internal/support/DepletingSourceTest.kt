@@ -82,7 +82,9 @@ internal class DepletingSourceTest {
         assertThat(delegate.snapshot().utf8()).isEqualTo("And goodnight!")
     }
 
-    private class ThrowOnFirstReadSource(content: String) : Source {
+    private class ThrowOnFirstReadSource(
+        content: String,
+    ) : Source {
         private val source = Buffer().writeUtf8(content)
         val content: String get() = source.snapshot().utf8()
         private var shouldThrow = true

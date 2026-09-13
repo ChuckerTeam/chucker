@@ -77,7 +77,9 @@ internal class ReportingSinkTest {
         }
     }
 
-    private class TestSource(contentLength: Int = 1_000) : Source {
+    private class TestSource(
+        contentLength: Int = 1_000,
+    ) : Source {
         val content: ByteString = ByteString.of(*Random.nextBytes(contentLength))
         private val buffer = Buffer().write(content)
 

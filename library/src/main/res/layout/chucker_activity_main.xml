@@ -10,8 +10,9 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:fitsSystemWindows="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +21,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:popupTheme="@style/Chucker.Theme" />
+            android:paddingBottom="4dp"
+            app:popupTheme="@style/Chucker.BaseTheme"
+            app:subtitleTextAppearance="?attr/textAppearanceSubtitle2" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

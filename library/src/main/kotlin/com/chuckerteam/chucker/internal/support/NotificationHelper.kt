@@ -9,13 +9,15 @@ import android.os.Build
 import android.util.LongSparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.size
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
-import java.util.HashSet
 
-internal class NotificationHelper(val context: Context) {
+internal class NotificationHelper(
+    val context: Context,
+) {
     companion object {
         private const val TRANSACTIONS_CHANNEL_ID = "chucker_transactions"
 
@@ -46,6 +48,22 @@ internal class NotificationHelper(val context: Context) {
         )
     }
 
+    private val clearAction by lazy {
+        val clearActionIntent =
+            PendingIntent.getBroadcast(
+                context,
+                INTENT_REQUEST_CODE,
+                Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java),
+                immutableFlag(),
+            )
+
+        NotificationCompat.Action(
+            R.drawable.chucker_ic_delete_white,
+            context.getString(R.string.chucker_clear),
+            clearActionIntent,
+        )
+    }
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val transactionsChannel =
@@ -68,36 +86,36 @@ internal class NotificationHelper(val context: Context) {
         synchronized(transactionBuffer) {
             transactionIdsSet.add(transaction.id)
             transactionBuffer.put(transaction.id, transaction)
-            if (transactionBuffer.size() > BUFFER_SIZE) {
+            if (transactionBuffer.size > BUFFER_SIZE) {
                 transactionBuffer.removeAt(0)
             }
         }
     }
 
-    private fun canShowNotifications(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    private fun canShowNotifications(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationManager.areNotificationsEnabled()
         } else {
             true
         }
-    }
 
     fun show(transaction: HttpTransaction) {
         addToBuffer(transaction)
         if (!BaseChuckerActivity.isInForeground && canShowNotifications()) {
             val builder =
-                NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
+                NotificationCompat
+                    .Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
                     .setSmallIcon(R.drawable.chucker_ic_transaction_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))
                     .setAutoCancel(true)
-                    .addAction(createClearAction())
+                    .addAction(clearAction)
             val inboxStyle = NotificationCompat.InboxStyle()
             synchronized(transactionBuffer) {
                 var count = 0
-                for (i in transactionBuffer.size() - 1 downTo 0) {
+                for (i in transactionBuffer.size - 1 downTo 0) {
                     val bufferedTransaction = transactionBuffer.valueAt(i)
                     if ((bufferedTransaction != null) && count < BUFFER_SIZE) {
                         if (count == 0) {
@@ -116,24 +134,6 @@ internal class NotificationHelper(val context: Context) {
             }
             notificationManager.notify(TRANSACTION_NOTIFICATION_ID, builder.build())
         }
-    }
-
-    private fun createClearAction(): NotificationCompat.Action {
-        val clearTitle = context.getString(R.string.chucker_clear)
-        val clearTransactionsBroadcastIntent =
-            Intent(context, ClearDatabaseJobIntentServiceReceiver::class.java)
-        val pendingBroadcastIntent =
-            PendingIntent.getBroadcast(
-                context,
-                INTENT_REQUEST_CODE,
-                clearTransactionsBroadcastIntent,
-                PendingIntent.FLAG_ONE_SHOT or immutableFlag(),
-            )
-        return NotificationCompat.Action(
-            R.drawable.chucker_ic_delete_white,
-            clearTitle,
-            pendingBroadcastIntent,
-        )
     }
 
     fun dismissNotifications() {

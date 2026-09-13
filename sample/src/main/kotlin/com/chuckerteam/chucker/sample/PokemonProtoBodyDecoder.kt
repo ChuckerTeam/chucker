@@ -8,13 +8,12 @@ internal class PokemonProtoBodyDecoder : BodyDecoder {
     override fun decodeRequest(
         request: Request,
         body: ByteString,
-    ): String? {
-        return if (request.url.host.contains("postman", ignoreCase = true)) {
+    ): String? =
+        if (request.url.host.contains("postman", ignoreCase = true)) {
             Pokemon.ADAPTER.decode(body).toString()
         } else {
             null
         }
-    }
 
     override fun decodeResponse(
         response: okhttp3.Response,

@@ -13,6 +13,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
+import com.chuckerteam.chucker.internal.support.HttpHeaderSerializer
 import com.chuckerteam.chucker.internal.support.JsonConverter
 import com.chuckerteam.chucker.internal.support.SpanTextUtil
 import com.google.gson.reflect.TypeToken
@@ -163,44 +164,47 @@ internal class HttpTransaction(
     }
 
     fun setRequestHeaders(headers: List<HttpHeader>) {
-        requestHeaders = JsonConverter.instance.toJson(headers)
+        requestHeaders = HttpHeaderSerializer.toJson(headers)
     }
 
     fun setGraphQlOperationName(headers: Headers) {
         graphQlOperationName =
             toHttpHeaderList(headers)
-                .find { it.name.lowercase().contains("operation-name") }?.value
+                .find { it.name.lowercase().contains("operation-name") }
+                ?.value
     }
 
-    fun getParsedRequestHeaders(): List<HttpHeader>? {
-        return JsonConverter.instance.fromJson<List<HttpHeader>>(
+    fun getParsedRequestHeaders(): List<HttpHeader>? =
+        JsonConverter.instance.fromJson<List<HttpHeader>>(
             requestHeaders,
             TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
-    }
 
-    fun getParsedResponseHeaders(): List<HttpHeader>? {
-        return JsonConverter.instance.fromJson<List<HttpHeader>>(
+    fun getParsedResponseHeaders(): List<HttpHeader>? =
+        JsonConverter.instance.fromJson<List<HttpHeader>>(
             responseHeaders,
             TypeToken.getParameterized(List::class.java, HttpHeader::class.java).type,
         )
-    }
 
-    fun getRequestHeadersString(withMarkup: Boolean): String {
-        return FormatUtils.formatHeaders(getParsedRequestHeaders(), withMarkup)
-    }
+    fun getRequestHeadersString(withMarkup: Boolean): String =
+        FormatUtils.formatHeaders(
+            httpHeaders = getParsedRequestHeaders(),
+            withMarkup = withMarkup,
+        )
 
     fun setResponseHeaders(headers: Headers) {
         setResponseHeaders(toHttpHeaderList(headers))
     }
 
     fun setResponseHeaders(headers: List<HttpHeader>) {
-        responseHeaders = JsonConverter.instance.toJson(headers)
+        responseHeaders = HttpHeaderSerializer.toJson(headers)
     }
 
-    fun getResponseHeadersString(withMarkup: Boolean): String {
-        return FormatUtils.formatHeaders(getParsedResponseHeaders(), withMarkup)
-    }
+    fun getResponseHeadersString(withMarkup: Boolean): String =
+        FormatUtils.formatHeaders(
+            httpHeaders = getParsedResponseHeaders(),
+            withMarkup = withMarkup,
+        )
 
     private fun toHttpHeaderList(headers: Headers): List<HttpHeader> {
         val httpHeaders = ArrayList<HttpHeader>()
@@ -213,8 +217,8 @@ internal class HttpTransaction(
     private fun formatBody(
         body: String,
         contentType: String?,
-    ): String {
-        return when {
+    ): String =
+        when {
             contentType.isNullOrBlank() -> body
             contentType.contains("json", ignoreCase = true) -> FormatUtils.formatJson(body)
             contentType.contains("xml", ignoreCase = true) -> FormatUtils.formatXml(body)
@@ -222,7 +226,6 @@ internal class HttpTransaction(
                 FormatUtils.formatUrlEncodedForm(body)
             else -> body
         }
-    }
 
     /**
      * This method creates [android.text.SpannableString] from body
@@ -236,8 +239,8 @@ internal class HttpTransaction(
         body: CharSequence,
         contentType: String?,
         context: Context?,
-    ): CharSequence {
-        return when {
+    ): CharSequence =
+        when {
             // TODO Implement Other Content Types
             contentType.isNullOrBlank() -> body
             contentType.contains("json", ignoreCase = true) && context != null -> {
@@ -245,30 +248,21 @@ internal class HttpTransaction(
             }
             else -> formatBody(body.toString(), contentType)
         }
-    }
 
-    private fun formatBytes(bytes: Long): String {
-        return FormatUtils.formatByteCount(bytes, true)
-    }
+    private fun formatBytes(bytes: Long): String = FormatUtils.formatByteCount(bytes, true)
 
-    fun getFormattedRequestBody(): String {
-        return requestBody?.let { formatBody(it, requestContentType) } ?: ""
-    }
+    fun getFormattedRequestBody(): String = requestBody?.let { formatBody(it, requestContentType) } ?: ""
 
-    fun getSpannedRequestBody(context: Context?): CharSequence {
-        return requestBody?.let { spanBody(it, requestContentType, context) }
+    fun getSpannedRequestBody(context: Context?): CharSequence =
+        requestBody?.let { spanBody(it, requestContentType, context) }
             ?: SpannableStringBuilder.valueOf("")
-    }
 
-    fun getFormattedResponseBody(): String {
-        return responseBody?.let { formatBody(it, responseContentType) } ?: ""
-    }
+    fun getFormattedResponseBody(): String = responseBody?.let { formatBody(it, responseContentType) } ?: ""
 
-    fun getSpannedResponseBody(context: Context?): CharSequence {
-        return responseBody?.let {
+    fun getSpannedResponseBody(context: Context?): CharSequence =
+        responseBody?.let {
             spanBody(it, responseContentType, context)
         } ?: SpannableStringBuilder.valueOf("")
-    }
 
     fun populateUrl(httpUrl: HttpUrl): HttpTransaction {
         val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
@@ -289,21 +283,16 @@ internal class HttpTransaction(
         return FormattedUrl.fromHttpUrl(httpUrl, encode).pathWithQuery
     }
 
-    fun getRequestTotalSize(): Long {
-        return (requestHeadersSize ?: 0) + (requestPayloadSize ?: 0)
-    }
+    fun getRequestTotalSize(): Long = (requestHeadersSize ?: 0) + (requestPayloadSize ?: 0)
 
-    fun getResponseTotalSize(): Long {
-        return (responseHeadersSize ?: 0) + getHarResponseBodySize()
-    }
+    fun getResponseTotalSize(): Long = (responseHeadersSize ?: 0) + getHarResponseBodySize()
 
-    fun getHarResponseBodySize(): Long {
-        return if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+    fun getHarResponseBodySize(): Long =
+        if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
             0
         } else {
             responsePayloadSize ?: 0
         }
-    }
 
     // Not relying on 'equals' because comparison be long due to request and response sizes
     // and it would be unwise to do this every time 'equals' is called.

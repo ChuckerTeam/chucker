@@ -13,7 +13,8 @@ class DummyImageHttpTask(
 
     private fun getImage(colorHex: String) {
         val request =
-            Request.Builder()
+            Request
+                .Builder()
                 .url("https://dummyimage.com/200x200/$colorHex/$colorHex.png")
                 .get()
                 .build()

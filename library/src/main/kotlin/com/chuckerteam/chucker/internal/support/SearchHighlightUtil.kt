@@ -6,6 +6,7 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 
 /**
  * Highlight parts of the String when it matches the search.
@@ -17,24 +18,34 @@ internal fun SpannableStringBuilder.highlightWithDefinedColors(
     startIndices: List<Int>,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return applyColoredSpannable(this, startIndices, search.length, backgroundColor, foregroundColor)
-}
+): SpannableStringBuilder = applyColoredSpannable(this, startIndices, search.length, backgroundColor, foregroundColor)
 
 internal fun CharSequence.indicesOf(input: String): List<Int> =
-    Pattern.compile(input, Pattern.CASE_INSENSITIVE).toRegex()
-        .findAll(this)
-        .map { it.range.first }
-        .toCollection(mutableListOf())
+    try {
+        Pattern
+            .quote(input)
+            .toRegex(RegexOption.IGNORE_CASE)
+            .findAll(this)
+            .map { it.range.first }
+            .toList()
+    } catch (e: PatternSyntaxException) {
+        Logger.warn("Unable to compile pattern for input: $input", e)
+        emptyList()
+    }
 
 internal fun SpannableStringBuilder.highlightWithDefinedColorsSubstring(
     search: String,
     startIndex: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return applyColoredSpannableSubstring(this, startIndex, search.length, backgroundColor, foregroundColor)
-}
+): SpannableStringBuilder =
+    applyColoredSpannableSubstring(
+        text = this,
+        subStringStartPosition = startIndex,
+        subStringLength = search.length,
+        backgroundColor = backgroundColor,
+        foregroundColor = foregroundColor,
+    )
 
 private fun applyColoredSpannableSubstring(
     text: SpannableStringBuilder,
@@ -42,8 +53,8 @@ private fun applyColoredSpannableSubstring(
     subStringLength: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return text.apply {
+): SpannableStringBuilder =
+    text.apply {
         setSpan(
             UnderlineSpan(),
             subStringStartPosition,
@@ -63,7 +74,6 @@ private fun applyColoredSpannableSubstring(
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
-}
 
 private fun applyColoredSpannable(
     text: SpannableStringBuilder,
@@ -71,10 +81,9 @@ private fun applyColoredSpannable(
     length: Int,
     backgroundColor: Int,
     foregroundColor: Int,
-): SpannableStringBuilder {
-    return text.apply {
+): SpannableStringBuilder =
+    text.apply {
         indexes.forEach {
             applyColoredSpannableSubstring(text, it, length, backgroundColor, foregroundColor)
         }
     }
-}

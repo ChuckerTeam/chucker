@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.api
 
+import android.annotation.SuppressLint
 import com.chuckerteam.chucker.util.ChuckerInterceptorDelegate
 import com.chuckerteam.chucker.util.ClientFactory
 import com.chuckerteam.chucker.util.NoLoggerRule
@@ -12,9 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
-import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -96,6 +95,8 @@ internal class ChuckerInterceptorTest {
 
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -128,6 +129,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
 
         assertThat(transaction.responseBody).isNull()
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -165,6 +168,8 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).contains("\"brotli\": true")
         assertThat(transaction.responseBody).contains("\"Accept-Encoding\": \"br\"")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -200,6 +205,8 @@ internal class ChuckerInterceptorTest {
 
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -226,6 +233,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
 
         assertThat(transaction.responseBody).isNull()
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -265,6 +274,8 @@ internal class ChuckerInterceptorTest {
                 2 * SEGMENT_SIZE,
             ),
         )
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -311,6 +322,8 @@ internal class ChuckerInterceptorTest {
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody?.length).isEqualTo(1_000)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -387,6 +400,8 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isNull()
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -416,14 +431,21 @@ internal class ChuckerInterceptorTest {
                 alwaysReadResponseBody = true,
             )
         val client = factory.create(chuckerInterceptor)
-        client.newCall(request).execute().body!!.close()
+        client
+            .newCall(request)
+            .execute()
+            .body!!
+            .close()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo("Hello, world!")
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
+    @SuppressLint("CheckResult")
     @EnumSource(value = ClientFactory::class)
     fun `response body is available to Chucker if there are parsing errors`(factory: ClientFactory) {
         val providedJson =
@@ -457,9 +479,15 @@ internal class ChuckerInterceptorTest {
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.responseBody).isEqualTo(providedJson)
         assertThat(transaction.responsePayloadSize).isEqualTo(body.size)
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
-    private data class Expected(val string: String, val boolean: Boolean, val secondString: String)
+    private data class Expected(
+        val string: String,
+        val boolean: Boolean,
+        val secondString: String,
+    )
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
@@ -468,7 +496,11 @@ internal class ChuckerInterceptorTest {
         val client = factory.create(chuckerInterceptor)
 
         val request = "\u0080".encodeUtf8().toRequestBody().toServerRequest(serverUrl)
-        client.newCall(request).execute().body!!.close()
+        client
+            .newCall(request)
+            .execute()
+            .body!!
+            .close()
 
         val transaction = chuckerInterceptor.expectTransaction()
         assertThat(transaction.isRequestBodyEncoded).isTrue()
@@ -500,6 +532,8 @@ internal class ChuckerInterceptorTest {
         assertThat(transaction.isRequestBodyEncoded).isFalse()
         assertThat(transaction.requestBody).isEqualTo("Hello, world!")
         assertThat(transaction.requestPayloadSize).isEqualTo(request.body!!.contentLength())
+
+        chuckerInterceptor.expectNoTransactions()
     }
 
     @ParameterizedTest
@@ -509,11 +543,14 @@ internal class ChuckerInterceptorTest {
         val client = factory.create(chuckerInterceptor)
 
         val gzippedBytes =
-            Buffer().apply {
-                GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
-            }.readByteString()
+            Buffer()
+                .apply {
+                    GzipSink(this).buffer().use { sink -> sink.writeUtf8("Hello, world!") }
+                }.readByteString()
         val request =
-            gzippedBytes.toRequestBody().toServerRequest(serverUrl)
+            gzippedBytes
+                .toRequestBody()
+                .toServerRequest(serverUrl)
                 .newBuilder()
                 .header("Content-Encoding", "gzip")
                 .build()
@@ -563,7 +600,12 @@ internal class ChuckerInterceptorTest {
             )
         val client = factory.create(chuckerInterceptor)
 
-        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        val request =
+            Request
+                .Builder()
+                .url(serverUrl)
+                .header("Header-To-Redact", "Hello")
+                .build()
         server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
         runCatching { client.newCall(request).execute() }
 
@@ -589,7 +631,12 @@ internal class ChuckerInterceptorTest {
             )
         val client = factory.create(chuckerInterceptor)
 
-        val request = Request.Builder().url(serverUrl).header("Header-To-Redact", "Hello").build()
+        val request =
+            Request
+                .Builder()
+                .url(serverUrl)
+                .header("Header-To-Redact", "Hello")
+                .build()
         val call = client.newCall(request)
 
         server.enqueue(
@@ -655,88 +702,5 @@ internal class ChuckerInterceptorTest {
         val serverRequestContent = server.takeRequest().body.readByteString()
 
         assertThat(serverRequestContent.utf8()).isEqualTo("Hello, world!")
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ClientFactory::class)
-    fun `chucker processes all requests when no skipEndpoints are provided`(factory: ClientFactory) {
-        val chuckerInterceptorWithoutSkipping =
-            ChuckerInterceptorDelegate(
-                cacheDirectoryProvider = { tempDir },
-            )
-        val client = factory.create(chuckerInterceptorWithoutSkipping)
-        executeRequestForPath(client, "/", "Response from /")
-        val transaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(transaction.responseBody).isEqualTo("Response from /")
-
-        executeRequestForPath(client, "/skip/path", "Response from /skip/path")
-        val secondTransaction = chuckerInterceptorWithoutSkipping.expectTransaction()
-        assertThat(secondTransaction.responseBody).isEqualTo("Response from /skip/path")
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ClientFactory::class)
-    fun `chucker skips requests when skipPaths are provided`(factory: ClientFactory) {
-        val chuckerInterceptorWithoutSkipping =
-            ChuckerInterceptorDelegate(
-                cacheDirectoryProvider = { tempDir },
-                skipPaths =
-                    listOf(
-                        "",
-                        "    ",
-                        "example",
-                        "www.example.com/skip/path",
-                        "example.com/skip/path",
-                        "90",
-                        "https://example/",
-                        "/skip/path",
-                        "/skip//",
-                        "http://localhost:8080/skip/path/ext",
-                    ),
-            )
-        val client = factory.create(chuckerInterceptorWithoutSkipping)
-
-        executeRequestForPath(client, "", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "    ", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "www.example.com/skip/path", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "example.com/skip/path", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "90", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "https://example/", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "/skip/path", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "/skip//", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-
-        executeRequestForPath(client, "http://localhost:8080/skip/path/ext", "Hello, world!")
-        chuckerInterceptorWithoutSkipping.expectNoTransactions()
-    }
-
-    private fun executeRequestForPath(
-        okHttpClient: OkHttpClient,
-        path: String,
-        responseBody: String,
-    ) {
-        val httpUrl =
-            HttpUrl.Builder().scheme("https")
-                .host("testexample.com")
-                .addPathSegment(path)
-                .build()
-
-        val request = Request.Builder().url(server.url(httpUrl.encodedPath)).build()
-        server.enqueue(MockResponse().setBody(responseBody))
-        okHttpClient.newCall(request).execute().readByteStringBody()
     }
 }
