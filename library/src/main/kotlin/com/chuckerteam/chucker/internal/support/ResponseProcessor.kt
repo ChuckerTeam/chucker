@@ -58,7 +58,6 @@ internal class ResponseProcessor(
                 }
 
             protocol = response.protocol.toString()
-            hostIp = response.body?.source()?.getHostIp()
             responseCode = response.code
             responseMessage = response.message
 
