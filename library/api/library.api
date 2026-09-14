@@ -21,6 +21,12 @@ public final class com/chuckerteam/chucker/api/ChuckerCollector {
 	public static synthetic fun writeTransactions$default (Lcom/chuckerteam/chucker/api/ChuckerCollector;Landroid/content/Context;Ljava/lang/Long;Lcom/chuckerteam/chucker/api/ExportFormat;ILjava/lang/Object;)Landroid/net/Uri;
 }
 
+public final class com/chuckerteam/chucker/api/ChuckerGrpcInterceptor : io/grpc/ClientInterceptor {
+	public fun <init> (Lcom/chuckerteam/chucker/api/ChuckerCollector;Landroid/content/Context;JLjava/util/Set;)V
+	public synthetic fun <init> (Lcom/chuckerteam/chucker/api/ChuckerCollector;Landroid/content/Context;JLjava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun interceptCall (Lio/grpc/MethodDescriptor;Lio/grpc/CallOptions;Lio/grpc/Channel;)Lio/grpc/ClientCall;
+}
+
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Interceptor {
 	public fun <init> (Landroid/content/Context;)V
 	public synthetic fun <init> (Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V

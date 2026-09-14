@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.wire)
     alias(libs.plugins.apollo)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.protobuf)
 }
 
 wire {
@@ -67,6 +68,40 @@ android {
     }
 }
 
+// Wire owns src/main/proto (pokemon.proto). Redirect protobuf-plugin to src/main/grpc so the two
+// tools never process the same files, avoiding duplicate-class errors (Wire→Kotlin, protoc→Java).
+configure<com.android.build.gradle.AppExtension> {
+    sourceSets.getByName("main") {
+        @Suppress("UNCHECKED_CAST")
+        val proto =
+            (this as org.gradle.api.plugins.ExtensionAware)
+                .extensions
+                .getByName("proto") as org.gradle.api.file.SourceDirectorySet
+        proto.setSrcDirs(listOf(file("src/main/grpc")))
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+    }
+    plugins {
+        create("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
+        }
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java")
+            }
+            task.plugins {
+                create("grpc")
+            }
+        }
+    }
+}
+
 apollo {
     service("rickandmortyapi") {
         packageName.set("com.chuckerteam.chucker.sample")
@@ -75,6 +110,12 @@ apollo {
         excludes.set(listOf("**/schema.json.graphql", "**/schema.json"))
         generateKotlinModels.set(true)
     }
+}
+
+// protobuf-java (full) is a superset of protobuf-javalite. play-services-cronet pulls in an older
+// javalite that conflicts with our javalite classes bundled inside protobuf-java. Exclude it.
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-javalite")
 }
 
 dependencies {
@@ -110,6 +151,14 @@ dependencies {
     implementation(libs.androidx.material3.window.size)
 
     debugImplementation(libs.leakcanary.android)
+
+    // gRPC for demo purposes
+    compileOnly(libs.javax.annotation.api)
+    implementation(libs.grpc.okhttp)
+    implementation(libs.grpc.stub)
+    implementation(libs.grpc.protobuf)
+    implementation(libs.grpc.netty.shaded)
+    implementation(libs.protobuf.java)
 }
 
 apply(from = rootProject.file("gradle/kotlin-static-analysis.gradle"))
