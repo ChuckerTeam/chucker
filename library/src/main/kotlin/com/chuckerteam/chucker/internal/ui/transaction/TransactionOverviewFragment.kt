@@ -64,6 +64,7 @@ internal class TransactionOverviewFragment : Fragment() {
     ) {
         with(overviewBinding) {
             url.text = transaction?.getFormattedUrl(encodeUrl)
+            hostIp.text = transaction?.hostIp
             method.text = transaction?.method
             protocol.text = transaction?.protocol
             status.text = transaction?.status.toString()

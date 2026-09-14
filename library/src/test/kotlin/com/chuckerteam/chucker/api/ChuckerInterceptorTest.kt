@@ -50,6 +50,23 @@ internal class ChuckerInterceptorTest {
 
     @ParameterizedTest
     @EnumSource(value = ClientFactory::class)
+    fun `connected peer IP is available to network interceptors only`(factory: ClientFactory) {
+        server.enqueue(MockResponse())
+        val request = Request.Builder().url(serverUrl).build()
+
+        val client = factory.create(chuckerInterceptor)
+        client.newCall(request).execute().readByteStringBody()
+        val transaction = chuckerInterceptor.expectTransaction()
+
+        when (factory) {
+            ClientFactory.APPLICATION -> assertThat(transaction.hostIp).isNull()
+            ClientFactory.NETWORK ->
+                assertThat(transaction.hostIp).isEqualTo(server.delegate.socketAddress.address.hostAddress)
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ClientFactory::class)
     fun `image response body is available to Chucker`(factory: ClientFactory) {
         val image = getResourceFile("sample_image.png")
         server.enqueue(MockResponse().addHeader("Content-Type: image/jpeg").setBody(image))

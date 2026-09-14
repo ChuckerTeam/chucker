@@ -96,6 +96,13 @@ public class ChuckerInterceptor private constructor(
                 throw e
             }
         return if (shouldProcessTheRequest) {
+            transaction.hostIp =
+                chain
+                    .connection()
+                    ?.route()
+                    ?.socketAddress
+                    ?.address
+                    ?.hostAddress
             responseProcessor.process(response, transaction)
         } else {
             response
