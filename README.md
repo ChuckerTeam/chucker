@@ -58,7 +58,7 @@ val client = OkHttpClient.Builder()
 
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
 
-> **Tip:** Use `addNetworkInterceptor(chuckerInterceptor)` instead of `addInterceptor(chuckerInterceptor)` if you want Chucker to display everything OkHttp sends on the wire, including headers added by other network interceptors (e.g. `Content-Length`, `Accept-Encoding`, cookies from `CookieJar`). Application interceptors only observe the request as your app builds it. See OkHttp's [Interceptors](https://square.github.io/okhttp/features/interceptors/) docs for the full comparison.
+> **Tip:** Use `addNetworkInterceptor(chuckerInterceptor)` instead of `addInterceptor(chuckerInterceptor)` if you want Chucker to display the connected peer IP and everything OkHttp sends on the wire, including headers added by other network interceptors (e.g. `Content-Length`, `Accept-Encoding`, cookies from `CookieJar`). The connected peer may be a proxy, VPN, CDN edge, or load balancer rather than the origin server. Application interceptors do not have access to the connection and only observe the request as your app builds it. Cached responses do not pass through network interceptors. See OkHttp's [Interceptors](https://square.github.io/okhttp/features/interceptors/) docs for the full comparison.
 
 Historically, Chucker was distributed through JitPack.
 You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/ChuckerTeam/chucker.svg)](https://jitpack.io/#ChuckerTeam/chucker).
