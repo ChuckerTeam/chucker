@@ -8,6 +8,7 @@
     <string name="chucker_request">درخواست</string>
     <string name="chucker_response">جواب</string>
     <string name="chucker_url">URL</string>
+    <string name="chucker_host_ip">ہوسٹ IP</string>
     <string name="chucker_method">طریقہ</string>
     <string name="chucker_protocol">پروٹوکول</string>
     <string name="chucker_status">حالت</string>

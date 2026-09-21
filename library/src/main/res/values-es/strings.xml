@@ -8,6 +8,7 @@
     <string name="chucker_request">Solicitud</string>
     <string name="chucker_response">Respuesta</string>
     <string name="chucker_url">URL</string>
+    <string name="chucker_host_ip">Host IP</string>
     <string name="chucker_method">Método</string>
     <string name="chucker_protocol">Protocolo</string>
     <string name="chucker_status">Estatus</string>
