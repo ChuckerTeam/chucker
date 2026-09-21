@@ -378,6 +378,7 @@ internal class ChuckerInterceptorSkipRequestTest {
                 every { code } returns 204 // No Content
                 every { body } returns ResponseBody.EMPTY
             }
+        every { connection() } returns null
     }
 
     private fun executeRequestForPath(

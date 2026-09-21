@@ -13,6 +13,7 @@ internal object TestTransactionFactory {
             protocol = "HTTP",
             method = method,
             url = "http://localhost:80/getUsers",
+            hostIp = "192.168.1.1",
             host = "localhost",
             path = "/getUsers",
             scheme = "",
@@ -41,6 +42,7 @@ internal object TestTransactionFactory {
     val expectedGetHttpTransaction =
         """
         URL: http://localhost/getUsers
+        Host IP: 192.168.1.1
         Method: GET
         Protocol: HTTP
         Status: Complete
@@ -69,6 +71,7 @@ internal object TestTransactionFactory {
     val expectedHttpPostTransaction =
         """
         URL: http://localhost/getUsers
+        Host IP: 192.168.1.1
         Method: POST
         Protocol: HTTP
         Status: Complete
