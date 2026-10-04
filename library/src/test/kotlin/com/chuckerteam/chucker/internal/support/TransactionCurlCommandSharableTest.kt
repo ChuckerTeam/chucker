@@ -98,6 +98,46 @@ internal class TransactionCurlCommandSharableTest {
     }
 
     @Test
+    fun `create cURL command with backslash and single quote in request body`() {
+        requestMethods.filter { it in listOf("POST", "PUT") }.forEach { method ->
+            val requestBody = """{"title":"It's a café","meta":"{\"k\":\"v\"}"}"""
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    this.requestBody = requestBody
+                }
+            val shareableTransaction = TransactionCurlCommandSharable(transaction)
+            val expectedCurlCommand =
+                """
+                curl -X $method --data $'{"title":"It\'s a café","meta":"{\\"k\\":\\"v\\"}"}' http://localhost/getUsers
+                """.trimIndent()
+
+            val sharedContent = shareableTransaction.toSharableUtf8Content(context)
+
+            assertThat(sharedContent).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
+    fun `create cURL command with shell special characters in header value`() {
+        val headers = listOf(HttpHeader("X-Note", """It's "café" ${'$'}HOME `id` C:\tmp"""))
+        val convertedHeaders = JsonConverter.instance.toJson(headers)
+
+        requestMethods.forEach { method ->
+            val transaction =
+                TestTransactionFactory.createTransaction(method).apply {
+                    requestHeaders = convertedHeaders
+                }
+            val sharableTransaction = TransactionCurlCommandSharable(transaction)
+            val expectedCurlCommand =
+                """curl -X $method -H "X-Note: It's \"café\" \${'$'}HOME \`id\` C:\\tmp" http://localhost/getUsers"""
+
+            val sharedContent = sharableTransaction.toSharableUtf8Content(context)
+
+            assertThat(sharedContent).isEqualTo(expectedCurlCommand)
+        }
+    }
+
+    @Test
     fun `create cURL command with gzip header`() {
         val headers = listOf(HttpHeader("Accept-Encoding", "gzip"))
         val convertedHeader = JsonConverter.instance.toJson(headers)
