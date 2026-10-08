@@ -449,6 +449,9 @@ internal class TransactionPayloadFragment :
         transaction: HttpTransaction,
         formatRequestBody: Boolean,
     ): MutableList<TransactionPayloadItem> {
+        val bodyOmittedText = getString(R.string.chucker_body_omitted)
+        val bodyEmptyText = getString(R.string.chucker_body_empty)
+        val copyResponseText = getString(R.string.chucker_copy_response)
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
 
@@ -492,18 +495,16 @@ internal class TransactionPayloadFragment :
 
             when {
                 isBodyEncoded -> {
-                    val text = requireContext().getString(R.string.chucker_body_omitted)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(bodyOmittedText)))
                 }
 
                 bodyString.isBlank() -> {
-                    val text = requireContext().getString(R.string.chucker_body_empty)
-                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(text)))
+                    result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(bodyEmptyText)))
                 }
 
                 else -> {
                     // adding copy item
-                    result.add(TransactionPayloadItem.CopyItem(getString(R.string.chucker_copy_response)))
+                    result.add(TransactionPayloadItem.CopyItem(copyResponseText))
 
                     bodyString.lines().forEach {
                         result.add(
