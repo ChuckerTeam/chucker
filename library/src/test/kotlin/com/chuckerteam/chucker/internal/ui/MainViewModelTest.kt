@@ -32,6 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import java.text.DateFormat
 
 @ExperimentalCoroutinesApi
 internal class MainViewModelTest {
@@ -88,7 +89,7 @@ internal class MainViewModelTest {
             transactionLiveData.value = expectedTuples
 
             assertEquals(
-                expectedTuples.map { it.toTransactionUi() },
+                listOf(expectedUi(id = 1L)),
                 viewModel.transactions.first { it.isNotEmpty() },
             )
             verify { transactionRepository.getSortedTransactionTuples() }
@@ -112,7 +113,7 @@ internal class MainViewModelTest {
             transactionLiveData.value = expectedTuples
 
             assertEquals(
-                expectedTuples.map { it.toTransactionUi() },
+                listOf(expectedUi(id = 2L)),
                 viewModel.transactions.first { it.isNotEmpty() },
             )
             verify { transactionRepository.getFilteredTransactionTuples(searchQuery, "") }
@@ -136,7 +137,7 @@ internal class MainViewModelTest {
             transactionLiveData.value = expectedTuples
 
             assertEquals(
-                expectedTuples.map { it.toTransactionUi() },
+                listOf(expectedUi(id = 3L)),
                 viewModel.transactions.first { it.isNotEmpty() },
             )
             verify { transactionRepository.getFilteredTransactionTuples("", searchQuery) }
@@ -251,5 +252,20 @@ internal class MainViewModelTest {
             error = null,
             graphQlDetected = false,
             graphQlOperationName = null,
+        )
+
+    private fun expectedUi(id: Long) =
+        TransactionUi(
+            id = id,
+            requestDate = DateFormat.getTimeInstance().format(1L),
+            host = "example.org",
+            path = "GET /$id",
+            isSsl = true,
+            responseCode = 200,
+            status = HttpTransaction.Status.Complete,
+            duration = "12 ms",
+            totalSize = "7 B",
+            graphQlOperationName = null,
+            isGraphQl = false,
         )
 }
