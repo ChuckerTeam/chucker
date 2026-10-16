@@ -24,6 +24,7 @@ internal class HttpTransactionDatabaseRepository(
              * more context
              */
             graphQlQuery = pathQuery,
+            contentTypeQuery = pathQuery,
         )
     }
 
