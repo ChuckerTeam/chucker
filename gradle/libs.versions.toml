@@ -21,7 +21,7 @@ materialComponents = "1.14.0"
 fragment = "1.9.1"
 room = "2.7.2"
 lifecycle = "2.10.0"
-paletteKtx = "1.0.0"
+paletteKtx = "1.1.0"
 
 # Networking
 gson = "2.14.0"
