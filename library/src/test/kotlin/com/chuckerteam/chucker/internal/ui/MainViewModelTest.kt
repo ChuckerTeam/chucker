@@ -3,7 +3,6 @@ package com.chuckerteam.chucker.internal.ui
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.repository.HttpTransactionRepository
@@ -23,6 +22,7 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -32,6 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import java.text.DateFormat
 
 @ExperimentalCoroutinesApi
 internal class MainViewModelTest {
@@ -43,9 +44,6 @@ internal class MainViewModelTest {
     @MockK
     private lateinit var transactionRepository: HttpTransactionRepository
 
-    @MockK
-    private lateinit var transactionObserver: Observer<List<HttpTransactionTuple>>
-
     private lateinit var viewModel: MainViewModel
 
     private val emptyTransactionList = MutableLiveData<List<HttpTransactionTuple>>()
@@ -55,8 +53,6 @@ internal class MainViewModelTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(testDispatcher)
         mockkStatic(TextUtils::class)
-
-        every { transactionObserver.onChanged(any()) } just runs
 
         every { transactionRepository.getSortedTransactionTuples() } returns emptyTransactionList
         every {
@@ -73,37 +69,37 @@ internal class MainViewModelTest {
         every { NotificationHelper.clearBuffer() } just runs
 
         viewModel = MainViewModel()
-        viewModel.isItemSelected.observeForever {}
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
         unmockkAll()
-        viewModel.isItemSelected.removeObserver {}
     }
 
     @Test
     fun `when search query is empty, getSortedTransactionTuples is called`() =
         runTest {
-            val expectedTuples = listOf(mockk<HttpTransactionTuple>(relaxed = true))
+            val expectedTuples = listOf(tuple(id = 1L))
             val transactionLiveData = MutableLiveData<List<HttpTransactionTuple>>()
             every { transactionRepository.getSortedTransactionTuples() } returns transactionLiveData
             every { TextUtils.isDigitsOnly(any()) } returns false
 
-            viewModel.transactions.observeForever(transactionObserver)
             viewModel.updateItemsFilter("")
             transactionLiveData.value = expectedTuples
 
+            assertEquals(
+                listOf(expectedUi(id = 1L)),
+                viewModel.transactions.first { it.isNotEmpty() },
+            )
             verify { transactionRepository.getSortedTransactionTuples() }
-            verify { transactionObserver.onChanged(expectedTuples) }
         }
 
     @Test
     fun `when search query contains only digits, getFilteredTransactionTuples is called with correct parameters`() =
         runTest {
             val searchQuery = "123"
-            val expectedTuples = listOf(mockk<HttpTransactionTuple>(relaxed = true))
+            val expectedTuples = listOf(tuple(id = 2L))
             val transactionLiveData = MutableLiveData<List<HttpTransactionTuple>>()
             every {
                 transactionRepository.getFilteredTransactionTuples(
@@ -113,19 +109,21 @@ internal class MainViewModelTest {
             } returns transactionLiveData
             every { TextUtils.isDigitsOnly(searchQuery) } returns true
 
-            viewModel.transactions.observeForever(transactionObserver)
             viewModel.updateItemsFilter(searchQuery)
             transactionLiveData.value = expectedTuples
 
+            assertEquals(
+                listOf(expectedUi(id = 2L)),
+                viewModel.transactions.first { it.isNotEmpty() },
+            )
             verify { transactionRepository.getFilteredTransactionTuples(searchQuery, "") }
-            verify { transactionObserver.onChanged(expectedTuples) }
         }
 
     @Test
     fun `when search query contains text, getFilteredTransactionTuples is called with correct parameters`() =
         runTest {
             val searchQuery = "test"
-            val expectedTuples = listOf(mockk<HttpTransactionTuple>(relaxed = true))
+            val expectedTuples = listOf(tuple(id = 3L))
             val transactionLiveData = MutableLiveData<List<HttpTransactionTuple>>()
             every {
                 transactionRepository.getFilteredTransactionTuples(
@@ -135,12 +133,14 @@ internal class MainViewModelTest {
             } returns transactionLiveData
             every { TextUtils.isDigitsOnly(searchQuery) } returns false
 
-            viewModel.transactions.observeForever(transactionObserver)
             viewModel.updateItemsFilter(searchQuery)
             transactionLiveData.value = expectedTuples
 
+            assertEquals(
+                listOf(expectedUi(id = 3L)),
+                viewModel.transactions.first { it.isNotEmpty() },
+            )
             verify { transactionRepository.getFilteredTransactionTuples("", searchQuery) }
-            verify { transactionObserver.onChanged(expectedTuples) }
         }
 
     @Test
@@ -235,4 +235,37 @@ internal class MainViewModelTest {
         assertEquals(emptyList<Long>(), viewModel.getSelectedIds())
         assertEquals(false, viewModel.isItemSelected.value)
     }
+
+    private fun tuple(id: Long) =
+        HttpTransactionTuple(
+            id = id,
+            requestDate = 1L,
+            tookMs = 12L,
+            protocol = "HTTP/1.1",
+            method = "GET",
+            host = "example.org",
+            path = "/$id",
+            scheme = "https",
+            responseCode = 200,
+            requestPayloadSize = 3L,
+            responsePayloadSize = 4L,
+            error = null,
+            graphQlDetected = false,
+            graphQlOperationName = null,
+        )
+
+    private fun expectedUi(id: Long) =
+        TransactionUi(
+            id = id,
+            requestDate = DateFormat.getTimeInstance().format(1L),
+            host = "example.org",
+            path = "GET /$id",
+            isSsl = true,
+            responseCode = 200,
+            status = HttpTransaction.Status.Complete,
+            duration = "12 ms",
+            totalSize = "7 B",
+            graphQlOperationName = null,
+            isGraphQl = false,
+        )
 }

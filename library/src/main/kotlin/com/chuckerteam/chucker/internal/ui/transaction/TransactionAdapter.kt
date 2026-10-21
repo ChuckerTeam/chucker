@@ -15,13 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.support.TransactionDiffCallback
-import java.text.DateFormat
+import com.chuckerteam.chucker.internal.ui.TransactionUi
 import javax.net.ssl.HttpsURLConnection
 
 /**
- * Adapter for displaying a list of [HttpTransactionTuple] items in a RecyclerView.
+ * Adapter for displaying a list of [TransactionUi] items in a RecyclerView.
  * Supports single-tap and long-tap interaction for click and multi-select operations.
  *
  * @param context The application context for resource access.
@@ -32,7 +31,7 @@ internal class TransactionAdapter internal constructor(
     context: Context,
     private val onTransactionClick: (Long) -> Unit,
     private val onTransactionLongClick: (Long) -> Unit,
-) : ListAdapter<HttpTransactionTuple, TransactionAdapter.TransactionViewHolder>(
+) : ListAdapter<TransactionUi, TransactionAdapter.TransactionViewHolder>(
         TransactionDiffCallback,
     ) {
     private var isSelectionMode = false
@@ -97,7 +96,7 @@ internal class TransactionAdapter internal constructor(
         val previouslySelectedIds = selectedTransactionIds.toSet()
         selectedTransactionIds.clear()
 
-        previouslySelectedIds.forEachIndexed { index, id ->
+        previouslySelectedIds.forEachIndexed { _, id ->
             val position = currentList.indexOfFirst { it.id == id }
             if (position != -1) notifyItemChanged(position)
         }
@@ -145,23 +144,23 @@ internal class TransactionAdapter internal constructor(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(transaction: HttpTransactionTuple) {
+        fun bind(transaction: TransactionUi) {
             transactionId = transaction.id
 
             updateSelectionState(transaction.id)
 
             itemBinding.apply {
-                displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected)
-                path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
+                displayGraphQlFields(transaction.graphQlOperationName, transaction.isGraphQl)
+                path.text = transaction.path
                 host.text = transaction.host
-                timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
+                timeStart.text = transaction.requestDate
 
                 setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
 
                 if (transaction.status == HttpTransaction.Status.Complete) {
                     code.text = transaction.responseCode.toString()
-                    duration.text = transaction.durationString
-                    size.text = transaction.totalSizeString
+                    duration.text = transaction.duration
+                    size.text = transaction.totalSize
                 } else {
                     code.text = ""
                     duration.text = ""
@@ -191,7 +190,7 @@ internal class TransactionAdapter internal constructor(
             } else {
                 selectedTransactionIds.add(id)
             }
-            notifyItemChanged(adapterPosition)
+            notifyItemChanged(bindingAdapterPosition)
         }
 
         /**
@@ -220,15 +219,15 @@ internal class TransactionAdapter internal constructor(
             )
         }
 
-        private fun setStatusColor(transaction: HttpTransactionTuple) {
+        private fun setStatusColor(transaction: TransactionUi) {
             val color: Int =
                 when {
                     (transaction.status === HttpTransaction.Status.Failed) -> colorError
                     (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
                     (transaction.responseCode == null) -> colorDefault
-                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
-                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
-                    (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
+                    (transaction.responseCode >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
+                    (transaction.responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
+                    (transaction.responseCode >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
                     else -> colorDefault
                 }
             itemBinding.code.setTextColor(color)
