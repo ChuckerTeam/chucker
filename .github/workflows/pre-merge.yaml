@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Setup Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: 'zulu'
         java-version: '21'
@@ -44,7 +44,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Setup Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: 'zulu'
         java-version: '21'
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version: '21'
@@ -82,7 +82,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Setup Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: 'zulu'
         java-version: '21'
@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version: '21'
@@ -120,7 +120,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Setup Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: 'zulu'
         java-version: '21'
