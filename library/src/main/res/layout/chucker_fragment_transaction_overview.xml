@@ -416,6 +416,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/chucker_doub_grid"
       android:text="@string/chucker_map_remote_setup"
+      android:textAlignment="center"
       android:textAllCaps="false"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
