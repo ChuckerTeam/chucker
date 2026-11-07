@@ -9,6 +9,7 @@ Please add your entries according to this format.
 
 -   Long-press the payload copy button to choose between copying the raw body or the formatted body [#1613]
 -   Display the connected peer IP in transaction details when Chucker is used as a network interceptor [#1180]
+-   Map Remote: send future calls of an endpoint to another URL from the Chucker UI, without changing code or rebuilding
 
 ### Fixed
 
