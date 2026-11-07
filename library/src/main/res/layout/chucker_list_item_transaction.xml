@@ -79,6 +79,20 @@
         app:layout_goneMarginStart="0dp"
         tools:text="example.com" />
 
+    <TextView
+        android:id="@+id/mapRemoteTarget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/chucker_status_300"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/path"
+        app:layout_constraintTop_toBottomOf="@+id/host"
+        tools:text="→ https://mock.example.com/path"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/ssl"
         android:layout_width="@dimen/chucker_doub_grid"
@@ -95,7 +109,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/duration"
         app:layout_constraintStart_toStartOf="@+id/path"
-        app:layout_constraintTop_toBottomOf="@+id/host"
+        app:layout_constraintTop_toBottomOf="@+id/mapRemoteTarget"
         tools:text="18:29:07 PM" />
 
     <TextView

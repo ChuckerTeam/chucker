@@ -81,4 +81,6 @@
     <string name="chucker_copy_formatted">Copy Formatted</string>
     <string name="chucker_request_copied_formatted">Formatted Request Copied</string>
     <string name="chucker_response_copied_formatted">Formatted Response Copied</string>
+    <string name="chucker_mapped_to" translatable="false">Mapped to</string>
+    <string name="chucker_map_remote_ignored" translatable="false">Not applied: Map Remote requires addInterceptor</string>
 </resources>

@@ -13,6 +13,7 @@ internal class TransactionDetailsSharable(
     override fun toSharableContent(context: Context): Source =
         Buffer().apply {
             writeUtf8("${context.getString(R.string.chucker_url)}: ${transaction.getFormattedUrl(encodeUrls)}\n")
+            writeMappedTo(context)
             writeUtf8("${context.getString(R.string.chucker_host_ip)}: ${transaction.hostIp}\n")
             writeUtf8("${context.getString(R.string.chucker_method)}: ${transaction.method}\n")
             writeUtf8("${context.getString(R.string.chucker_protocol)}: ${transaction.protocol}\n")
@@ -71,4 +72,9 @@ internal class TransactionDetailsSharable(
                 },
             )
         }
+
+    private fun Buffer.writeMappedTo(context: Context) {
+        val mappedTo = transaction.getMappedToText(context) ?: return
+        writeUtf8("${context.getString(R.string.chucker_mapped_to)}: $mappedTo\n")
+    }
 }

@@ -11,6 +11,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.HttpHeaderSerializer
@@ -160,6 +161,13 @@ internal class HttpTransaction(
                 BitmapFactory.decodeByteArray(it, 0, it.size)
             }
         }
+
+    /**
+     * Where this call was mapped to, or why a matching Map Remote rule wasn't applied.
+     * Null if no rule matched this call.
+     */
+    fun getMappedToText(context: Context): String? =
+        mappedUrl ?: context.getString(R.string.chucker_map_remote_ignored).takeIf { isMapRemoteIgnored }
 
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))

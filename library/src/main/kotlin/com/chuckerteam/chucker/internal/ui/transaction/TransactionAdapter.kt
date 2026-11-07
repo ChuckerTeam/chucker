@@ -154,6 +154,8 @@ internal class TransactionAdapter internal constructor(
                 displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected)
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
+                mapRemoteTarget.isVisible = transaction.mappedUrl != null
+                mapRemoteTarget.text = "→ ${transaction.mappedUrl}"
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
                 setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())

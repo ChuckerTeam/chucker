@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -64,6 +65,9 @@ internal class TransactionOverviewFragment : Fragment() {
     ) {
         with(overviewBinding) {
             url.text = transaction?.getFormattedUrl(encodeUrl)
+            val mappedToText = transaction?.getMappedToText(requireContext())
+            mapRemoteGroup.isVisible = mappedToText != null
+            mappedUrl.text = mappedToText
             hostIp.text = transaction?.hostIp
             method.text = transaction?.method
             protocol.text = transaction?.protocol
