@@ -33,6 +33,16 @@
             android:padding="@dimen/chucker_doub_grid">
 
             <TextView
+                android:id="@+id/networkInterceptorNotice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/chucker_doub_grid"
+                android:text="@string/chucker_map_remote_network_interceptor"
+                android:textColor="?attr/colorError"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
                 android:id="@+id/method"
                 style="@style/Chucker.TextAppearance.ListItem"
                 android:layout_width="match_parent"

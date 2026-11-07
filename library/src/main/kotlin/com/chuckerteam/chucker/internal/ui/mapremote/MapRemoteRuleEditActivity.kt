@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMapRemoteRuleEditBinding
 import com.chuckerteam.chucker.internal.data.entity.MapRemoteRule
@@ -41,6 +42,10 @@ internal class MapRemoteRuleEditActivity : BaseChuckerActivity() {
             binding.requestUrlInput.setText(requestUrl)
         }
         binding.save.setOnClickListener { save() }
+        // A network interceptor can't change the host of a call, so a rule made here wouldn't be applied.
+        val isNetworkInterceptor = intent.getBooleanExtra(EXTRA_NETWORK_INTERCEPTOR, false)
+        binding.networkInterceptorNotice.isVisible = isNetworkInterceptor
+        binding.save.isEnabled = !isNetworkInterceptor
 
         viewModel.getRule(requestUrl, requestMethod).observe(this) { rule ->
             onRuleLoaded(rule, restoreInput = savedInstanceState == null)
@@ -118,22 +123,26 @@ internal class MapRemoteRuleEditActivity : BaseChuckerActivity() {
     companion object {
         private const val EXTRA_REQUEST_URL = "request_url"
         private const val EXTRA_REQUEST_METHOD = "request_method"
+        private const val EXTRA_NETWORK_INTERCEPTOR = "network_interceptor"
 
         fun start(
             context: Context,
             requestUrl: String,
             requestMethod: String,
+            isNetworkInterceptor: Boolean = false,
         ) {
-            context.startActivity(createIntent(context, requestUrl, requestMethod))
+            context.startActivity(createIntent(context, requestUrl, requestMethod, isNetworkInterceptor))
         }
 
         fun createIntent(
             context: Context,
             requestUrl: String,
             requestMethod: String,
+            isNetworkInterceptor: Boolean = false,
         ): Intent =
             Intent(context, MapRemoteRuleEditActivity::class.java)
                 .putExtra(EXTRA_REQUEST_URL, requestUrl)
                 .putExtra(EXTRA_REQUEST_METHOD, requestMethod)
+                .putExtra(EXTRA_NETWORK_INTERCEPTOR, isNetworkInterceptor)
     }
 }

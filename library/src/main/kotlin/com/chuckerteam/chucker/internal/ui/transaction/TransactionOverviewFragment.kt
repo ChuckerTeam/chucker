@@ -64,7 +64,12 @@ internal class TransactionOverviewFragment : Fragment() {
             // `url` is decoded, which can't be turned back into the URL of the call, e.g. with %2F in its path.
             val requestUrl = transaction.encodedUrl ?: return@setOnClickListener
             val method = transaction.method ?: return@setOnClickListener
-            MapRemoteRuleEditActivity.start(requireContext(), requestUrl, method)
+            MapRemoteRuleEditActivity.start(
+                requireContext(),
+                requestUrl,
+                method,
+                isNetworkInterceptor = transaction.isNetworkInterceptor,
+            )
         }
     }
 

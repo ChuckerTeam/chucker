@@ -83,6 +83,7 @@
     <string name="chucker_response_copied_formatted">Formatted Response Copied</string>
     <string name="chucker_mapped_to" translatable="false">Mapped to</string>
     <string name="chucker_map_remote_ignored" translatable="false">Not applied: Map Remote requires addInterceptor</string>
+    <string name="chucker_map_remote_network_interceptor" translatable="false">This call was recorded by a network interceptor. Add ChuckerInterceptor with addInterceptor to use Map Remote.</string>
     <string name="chucker_map_remote_rules" translatable="false">Map Remote rules</string>
     <string name="chucker_map_remote_rules_empty" translatable="false">No Map Remote rules yet. Open a request and tap \"Map to another URL\" to add one.</string>
     <string name="chucker_map_remote_setup" translatable="false">Map to another URL</string>

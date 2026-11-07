@@ -2,6 +2,7 @@ package com.chuckerteam.chucker.internal.ui.mapremote
 
 import android.app.Application
 import android.os.Looper
+import android.view.View
 import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
@@ -49,9 +50,10 @@ internal class MapRemoteRuleEditActivityTest {
     @After
     fun tearDown() = unmockkAll()
 
-    private fun launch(): MapRemoteRuleEditActivity {
+    private fun launch(isNetworkInterceptor: Boolean = false): MapRemoteRuleEditActivity {
         val application = ApplicationProvider.getApplicationContext<Application>()
-        val intent = MapRemoteRuleEditActivity.createIntent(application, "$REQUEST_URL?page=1", "POST")
+        val intent =
+            MapRemoteRuleEditActivity.createIntent(application, "$REQUEST_URL?page=1", "POST", isNetworkInterceptor)
         return Robolectric
             .buildActivity(MapRemoteRuleEditActivity::class.java, intent)
             .setup()
@@ -81,6 +83,22 @@ internal class MapRemoteRuleEditActivityTest {
 
         assertThat(activity.layout(R.id.requestUrlLayout).input()).isEqualTo(REQUEST_URL)
         assertThat(activity.layout(R.id.requestUrlLayout).isEnabled).isTrue()
+    }
+
+    @Test
+    fun `call of an application interceptor can be mapped`() {
+        val activity = launch()
+
+        assertThat(activity.findViewById<View>(R.id.networkInterceptorNotice).visibility).isEqualTo(View.GONE)
+        assertThat(activity.findViewById<Button>(R.id.save).isEnabled).isTrue()
+    }
+
+    @Test
+    fun `call of a network interceptor shows a notice and cannot be saved`() {
+        val activity = launch(isNetworkInterceptor = true)
+
+        assertThat(activity.findViewById<View>(R.id.networkInterceptorNotice).visibility).isEqualTo(View.VISIBLE)
+        assertThat(activity.findViewById<Button>(R.id.save).isEnabled).isFalse()
     }
 
     @Test

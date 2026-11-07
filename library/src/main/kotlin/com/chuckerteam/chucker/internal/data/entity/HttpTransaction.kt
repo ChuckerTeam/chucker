@@ -67,6 +67,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "mappedUrl") var mappedUrl: String? = null,
     @ColumnInfo(name = "isMapRemoteIgnored") var isMapRemoteIgnored: Boolean = false,
     @ColumnInfo(name = "encodedUrl") var encodedUrl: String? = null,
+    @ColumnInfo(name = "isNetworkInterceptor") var isNetworkInterceptor: Boolean = false,
 ) {
     @Ignore
     constructor() : this(
@@ -346,6 +347,7 @@ internal class HttpTransaction(
             (graphQlDetected == other.graphQlDetected) &&
             (mappedUrl == other.mappedUrl) &&
             (isMapRemoteIgnored == other.isMapRemoteIgnored) &&
-            (encodedUrl == other.encodedUrl)
+            (encodedUrl == other.encodedUrl) &&
+            (isNetworkInterceptor == other.isNetworkInterceptor)
     }
 }

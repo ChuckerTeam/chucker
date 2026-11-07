@@ -69,6 +69,16 @@ internal class TransactionOverviewMapRemoteTest {
     }
 
     @Test
+    fun `rule screen is told when the call was recorded by a network interceptor`() {
+        val activity = launchWith(createRequest().apply { isNetworkInterceptor = true })
+
+        activity.findViewById<View>(R.id.setupMapRemote).performClick()
+
+        val intent = shadowOf(activity).nextStartedActivity
+        assertThat(intent.getBooleanExtra("network_interceptor", false)).isTrue()
+    }
+
+    @Test
     fun `row is hidden when no rule matched`() {
         val activity = launchWith(createRequest())
 

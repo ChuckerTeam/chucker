@@ -95,6 +95,7 @@ public class ChuckerInterceptor private constructor(
 
         val mapRemoteTarget = if (shouldProcessTheRequest) resolveMapRemoteTarget(chain, transaction) else null
         if (shouldProcessTheRequest) {
+            transaction.isNetworkInterceptor = chain.connection() != null
             requestProcessor.process(request, transaction)
         }
         val response =

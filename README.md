@@ -166,7 +166,7 @@ Rules are kept across app restarts and when clearing the recorded requests. Mana
 
 A few things to keep in mind:
 
-- It requires `ChuckerInterceptor` to be added with `addInterceptor`. OkHttp doesn't allow a network interceptor to change the host of a call, so with `addNetworkInterceptor` rules are not applied, and the **Overview** tab of the matching requests tells so.
+- It requires `ChuckerInterceptor` to be added with `addInterceptor`. OkHttp doesn't allow a network interceptor to change the host of a call, so with `addNetworkInterceptor` rules can't be saved from a recorded request, and existing ones are not applied. The **Overview** tab of the matching requests tells so.
 - Add `ChuckerInterceptor` after interceptors that add headers you need on the mapped call. All headers and the body of the call are sent to the new URL, **including credentials like `Authorization`**, so only map to hosts you trust. The only exception is the `Host` header, which is set for the new URL.
 - Query parameters of the call are forwarded, unless the new URL has its own.
 - Calls excluded with `skipPaths` or `skipDomains` are not mapped, since Chucker ignores them entirely.

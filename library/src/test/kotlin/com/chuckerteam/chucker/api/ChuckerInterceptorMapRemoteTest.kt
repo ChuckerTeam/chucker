@@ -102,6 +102,7 @@ internal class ChuckerInterceptorMapRemoteTest {
         assertThat(transaction.url).isEqualTo(originalUrl.toString())
         assertThat(transaction.mappedUrl).isEqualTo(targetUrl.toString())
         assertThat(transaction.isMapRemoteIgnored).isFalse()
+        assertThat(transaction.isNetworkInterceptor).isFalse()
         assertThat(transaction.responseBody).isEqualTo("mocked")
     }
 
@@ -156,6 +157,7 @@ internal class ChuckerInterceptorMapRemoteTest {
         val transaction = chucker.expectTransaction()
         assertThat(transaction.mappedUrl).isNull()
         assertThat(transaction.isMapRemoteIgnored).isTrue()
+        assertThat(transaction.isNetworkInterceptor).isTrue()
     }
 
     @Test
