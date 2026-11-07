@@ -63,6 +63,8 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "mappedUrl") var mappedUrl: String? = null,
+    @ColumnInfo(name = "isMapRemoteIgnored") var isMapRemoteIgnored: Boolean = false,
 ) {
     @Ignore
     constructor() : this(
@@ -150,7 +152,7 @@ internal class HttpTransaction(
         }
 
     val isSsl: Boolean
-        get() = scheme.equals("https", ignoreCase = true)
+        get() = (mappedUrl?.substringBefore(':') ?: scheme).equals("https", ignoreCase = true)
 
     val responseImageBitmap: Bitmap?
         get() {
@@ -331,6 +333,8 @@ internal class HttpTransaction(
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
             (graphQlOperationName == other.graphQlOperationName) &&
-            (graphQlDetected == other.graphQlDetected)
+            (graphQlDetected == other.graphQlDetected) &&
+            (mappedUrl == other.mappedUrl) &&
+            (isMapRemoteIgnored == other.isMapRemoteIgnored)
     }
 }

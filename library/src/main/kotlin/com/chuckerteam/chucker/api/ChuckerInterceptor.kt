@@ -3,13 +3,18 @@ package com.chuckerteam.chucker.api
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.toMapRemoteRuleUrl
+import com.chuckerteam.chucker.internal.data.repository.MapRemoteTargetResolver
+import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
+import com.chuckerteam.chucker.internal.support.Logger
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
 import com.chuckerteam.chucker.internal.support.addNonBlankPathSegments
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
@@ -61,6 +66,10 @@ public class ChuckerInterceptor private constructor(
     private val skipDomains = builder.skipDomains.toSet()
     private val skipDomainRegex = builder.skipDomainRegex.toSet()
 
+    private val mapRemoteTargetResolver =
+        builder.mapRemoteTargetResolver
+            ?: MapRemoteTargetResolver { url, method -> RepositoryProvider.mapRemoteRule().findTarget(url, method) }
+
     init {
         if (builder.createShortcut) {
             Chucker.createShortcut(builder.context)
@@ -84,12 +93,13 @@ public class ChuckerInterceptor private constructor(
             shouldSkipPath || skipDomains.contains(host) || skipDomainRegex.any { it.matches(host) }
         val shouldProcessTheRequest = !(shouldSkipPath || shouldSkipDomain)
 
+        val mapRemoteTarget = if (shouldProcessTheRequest) resolveMapRemoteTarget(chain, transaction) else null
         if (shouldProcessTheRequest) {
             requestProcessor.process(request, transaction)
         }
         val response =
             try {
-                chain.proceed(request)
+                chain.proceed(if (mapRemoteTarget != null) request.mappedTo(mapRemoteTarget) else request)
             } catch (e: IOException) {
                 transaction.error = e.toString()
                 collector.onResponseReceived(transaction)
@@ -108,6 +118,32 @@ public class ChuckerInterceptor private constructor(
             response
         }
     }
+
+    private fun resolveMapRemoteTarget(
+        chain: Interceptor.Chain,
+        transaction: HttpTransaction,
+    ): HttpUrl? {
+        val request = chain.request()
+        val target = mapRemoteTargetResolver.findTarget(request.url, request.method) ?: return null
+        // A network interceptor already holds a connection, and OkHttp fails the call if the host changes.
+        if (chain.connection() != null) {
+            Logger.warn(
+                "Ignoring Map Remote rule for ${request.url.toMapRemoteRuleUrl()}: " +
+                    "it needs an application interceptor",
+            )
+            transaction.isMapRemoteIgnored = true
+            return null
+        }
+        transaction.mappedUrl = target.toString()
+        return target
+    }
+
+    /** A `Host` header set by the app names the original server, so OkHttp has to set the one of the target. */
+    private fun Request.mappedTo(target: HttpUrl): Request =
+        newBuilder()
+            .url(target)
+            .removeHeader("Host")
+            .build()
 
     /**
      * Assembles a new [ChuckerInterceptor].
@@ -129,6 +165,7 @@ public class ChuckerInterceptor private constructor(
         internal val skipPathsRegex = mutableSetOf<Regex>()
         internal val skipDomains = mutableSetOf<String>()
         internal val skipDomainRegex = mutableSetOf<Regex>()
+        internal var mapRemoteTargetResolver: MapRemoteTargetResolver? = null
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -204,6 +241,15 @@ public class ChuckerInterceptor private constructor(
         internal fun cacheDirectorProvider(provider: CacheDirectoryProvider): Builder =
             apply {
                 this.cacheDirectoryProvider = provider
+            }
+
+        /**
+         * Sets where calls are mapped to, instead of the rules saved from the Chucker UI.
+         */
+        @VisibleForTesting
+        internal fun mapRemoteTargetResolver(resolver: MapRemoteTargetResolver): Builder =
+            apply {
+                this.mapRemoteTargetResolver = resolver
             }
 
         /**

@@ -15,6 +15,12 @@ internal class HttpTransactionTupleTest {
     }
 
     @Test
+    fun `SSL follows the scheme of the mapped target`() {
+        assertThat(createTuple(scheme = "https").copy(mappedUrl = "http://mock.example.com/").isSsl).isFalse()
+        assertThat(createTuple(scheme = "http").copy(mappedUrl = "https://mock.example.com/").isSsl).isTrue()
+    }
+
+    @Test
     fun `transaction has complete status`() {
         assertThat(
             createTuple(
