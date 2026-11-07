@@ -14,6 +14,7 @@ import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionOverviewBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.combineLatest
+import com.chuckerteam.chucker.internal.ui.mapremote.MapRemoteRuleEditActivity
 
 internal class TransactionOverviewFragment : Fragment() {
     private val viewModel: TransactionViewModel by activityViewModels { TransactionViewModelFactory() }
@@ -57,6 +58,14 @@ internal class TransactionOverviewFragment : Fragment() {
             viewLifecycleOwner,
             Observer { (transaction, encodeUrl) -> populateUI(transaction, encodeUrl) },
         )
+
+        overviewBinding.setupMapRemote.setOnClickListener {
+            val transaction = viewModel.transaction.value ?: return@setOnClickListener
+            // `url` is decoded, which can't be turned back into the URL of the call, e.g. with %2F in its path.
+            val requestUrl = transaction.encodedUrl ?: return@setOnClickListener
+            val method = transaction.method ?: return@setOnClickListener
+            MapRemoteRuleEditActivity.start(requireContext(), requestUrl, method)
+        }
     }
 
     private fun populateUI(

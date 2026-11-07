@@ -40,6 +40,7 @@ import com.chuckerteam.chucker.internal.support.shareAsFile
 import com.chuckerteam.chucker.internal.support.showDialog
 import com.chuckerteam.chucker.internal.ui.MainActivity.ExportType.HAR
 import com.chuckerteam.chucker.internal.ui.MainActivity.ExportType.TEXT
+import com.chuckerteam.chucker.internal.ui.mapremote.MapRemoteRulesActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionActivity
 import com.chuckerteam.chucker.internal.ui.transaction.TransactionAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -264,6 +265,11 @@ internal class MainActivity :
 
             R.id.save_har -> {
                 showSaveDialog(HAR)
+                true
+            }
+
+            R.id.map_remote_rules -> {
+                MapRemoteRulesActivity.start(this)
                 true
             }
 

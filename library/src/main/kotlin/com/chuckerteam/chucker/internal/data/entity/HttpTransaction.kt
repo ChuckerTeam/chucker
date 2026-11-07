@@ -66,6 +66,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
     @ColumnInfo(name = "mappedUrl") var mappedUrl: String? = null,
     @ColumnInfo(name = "isMapRemoteIgnored") var isMapRemoteIgnored: Boolean = false,
+    @ColumnInfo(name = "encodedUrl") var encodedUrl: String? = null,
 ) {
     @Ignore
     constructor() : this(
@@ -277,6 +278,7 @@ internal class HttpTransaction(
     fun populateUrl(httpUrl: HttpUrl): HttpTransaction {
         val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
         url = formattedUrl.url
+        encodedUrl = httpUrl.toString()
         host = formattedUrl.host
         path = formattedUrl.pathWithQuery
         scheme = formattedUrl.scheme
@@ -343,6 +345,7 @@ internal class HttpTransaction(
             (graphQlOperationName == other.graphQlOperationName) &&
             (graphQlDetected == other.graphQlDetected) &&
             (mappedUrl == other.mappedUrl) &&
-            (isMapRemoteIgnored == other.isMapRemoteIgnored)
+            (isMapRemoteIgnored == other.isMapRemoteIgnored) &&
+            (encodedUrl == other.encodedUrl)
     }
 }

@@ -19,6 +19,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkAll
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -54,6 +55,18 @@ internal class TransactionOverviewMapRemoteTest {
     }
 
     private fun TransactionActivity.mappedRow() = findViewById<TextView>(R.id.mappedUrl)
+
+    @Test
+    fun `rule is set up with the encoded url of the call`() {
+        val transaction =
+            createRequest().apply { populateUrl("https://example.com/users/a%2Fb?page=1".toHttpUrl()) }
+        val activity = launchWith(transaction)
+
+        activity.findViewById<View>(R.id.setupMapRemote).performClick()
+
+        val intent = shadowOf(activity).nextStartedActivity
+        assertThat(intent.getStringExtra("request_url")).isEqualTo("https://example.com/users/a%2Fb?page=1")
+    }
 
     @Test
     fun `row is hidden when no rule matched`() {

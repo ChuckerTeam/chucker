@@ -83,4 +83,17 @@
     <string name="chucker_response_copied_formatted">Formatted Response Copied</string>
     <string name="chucker_mapped_to" translatable="false">Mapped to</string>
     <string name="chucker_map_remote_ignored" translatable="false">Not applied: Map Remote requires addInterceptor</string>
+    <string name="chucker_map_remote_rules" translatable="false">Map Remote rules</string>
+    <string name="chucker_map_remote_rules_empty" translatable="false">No Map Remote rules yet. Open a request and tap \"Map to another URL\" to add one.</string>
+    <string name="chucker_map_remote_setup" translatable="false">Map to another URL</string>
+    <string name="chucker_map_remote_edit_title" translatable="false">Map Remote</string>
+    <string name="chucker_map_remote_request_url" translatable="false">Request URL</string>
+    <string name="chucker_map_remote_target_url" translatable="false">Map to</string>
+    <string name="chucker_map_remote_invalid_url" translatable="false">Enter a valid http:// or https:// URL</string>
+    <string name="chucker_map_remote_already_exists" translatable="false">This method and URL already have a rule. Edit it from Map Remote rules.</string>
+    <string name="chucker_map_remote_failed" translatable="false">Couldn\'t access Map Remote rules</string>
+    <string name="chucker_map_remote_note" translatable="false">Changes apply to future calls of this method and URL, whatever their query parameters. They are forwarded to the new URL too, unless it has its own.</string>
+    <string name="chucker_map_remote_saved" translatable="false">Map Remote rule saved</string>
+    <string name="chucker_map_remote_deleted" translatable="false">Map Remote rule deleted</string>
+    <string name="chucker_map_remote_delete" translatable="false">Delete rule</string>
 </resources>

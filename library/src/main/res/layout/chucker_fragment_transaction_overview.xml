@@ -409,5 +409,17 @@
       app:layout_constraintTop_toBottomOf="@id/barrierResponseSize"
       tools:text="201 KB" />
 
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/setupMapRemote"
+      style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_doub_grid"
+      android:text="@string/chucker_map_remote_setup"
+      android:textAllCaps="false"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/totalSize" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
