@@ -108,7 +108,7 @@ internal class MainViewModelTest {
             every {
                 transactionRepository.getFilteredTransactionTuples(
                     searchQuery,
-                    "",
+                    searchQuery,
                 )
             } returns transactionLiveData
             every { TextUtils.isDigitsOnly(searchQuery) } returns true
@@ -117,7 +117,7 @@ internal class MainViewModelTest {
             viewModel.updateItemsFilter(searchQuery)
             transactionLiveData.value = expectedTuples
 
-            verify { transactionRepository.getFilteredTransactionTuples(searchQuery, "") }
+            verify { transactionRepository.getFilteredTransactionTuples(searchQuery, searchQuery) }
             verify { transactionObserver.onChanged(expectedTuples) }
         }
 
