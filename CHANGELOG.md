@@ -7,13 +7,32 @@ Please add your entries according to this format.
 
 ### Added
 
+### Fixed
+
+## Version 4.4.0 _(2026-11-13)_
+
+### Added
+
 -   Long-press the payload copy button to choose between copying the raw body or the formatted body [#1613]
 -   Display the connected peer IP in transaction details when Chucker is used as a network interceptor [#1180]
+-   Added Arabic, Hindi, Japanese, Kazakh, Korean, Urdu, and Uzbek translations [#1623] [#1680] [#1681] [#1682] [#1690]
 
 ### Fixed
 
 -   Fixed the published AAR being compiled with Java 21 bytecode (class file version 65), which broke compilation on JDK 17. The library now targets Java 17 again, as in 4.3.0 [#1660]
 -   Fixed "Share as cURL" producing a broken command when the request body contains a backslash or a single quote, or a header value contains a backslash, `$` or a backtick [#1698]
+-   Fixed a Gson `NullPointerException` when serializing request headers on cold start [#1603]
+-   Fixed a memory leak in the transaction screen caused by TabLayout callbacks [#1604]
+
+### Dependency Updates
+
+-   Android Gradle Plugin to 9.4.1
+-   Kotlin to 2.4.21
+-   Gradle to 9.8.2
+-   OkHttp to 5.4.0
+-   Apollo to 5.2.0
+-   Wire to 7.1.0
+-   Material to 1.14.0
 
 ## Version 4.3.1 _(2026-02-28)_
 
@@ -625,6 +644,7 @@ Initial release.
 [#394]: https://github.com/ChuckerTeam/chucker/issues/394
 [#410]: https://github.com/ChuckerTeam/chucker/issues/410
 [#422]: https://github.com/ChuckerTeam/chucker/issues/422
+[#462]: https://github.com/ChuckerTeam/chucker/pull/462
 [#465]: https://github.com/ChuckerTeam/chucker/issues/465
 [#472]: https://github.com/ChuckerTeam/chucker/issues/472
 [#480]: https://github.com/ChuckerTeam/chucker/issues/480
@@ -657,6 +677,7 @@ Initial release.
 [#1076]: https://github.com/ChuckerTeam/chucker/pull/1076
 [#1165]: https://github.com/ChuckerTeam/chucker/pull/1165
 [#1166]: https://github.com/ChuckerTeam/chucker/pull/1166
+[#1180]: https://github.com/ChuckerTeam/chucker/pull/1180
 [#1183]: https://github.com/ChuckerTeam/chucker/pull/1183
 [#1211]: https://github.com/ChuckerTeam/chucker/pull/1211
 [#1214]: https://github.com/ChuckerTeam/chucker/pull/1214
@@ -670,8 +691,19 @@ Initial release.
 [#1351]: https://github.com/ChuckerTeam/chucker/pull/1351
 [#1347]: https://github.com/ChuckerTeam/chucker/pull/1347
 [#1355]: https://github.com/ChuckerTeam/chucker/pull/1355
-[#1347]: https://github.com/ChuckerTeam/chucker/pull/1347
 [#1335]: https://github.com/ChuckerTeam/chucker/pull/1335
 [#1342]: https://github.com/ChuckerTeam/chucker/pull/1342
 [#1357]: https://github.com/ChuckerTeam/chucker/pull/1357
 [#1411]: https://github.com/ChuckerTeam/chucker/pull/1411
+[#1464]: https://github.com/ChuckerTeam/chucker/issues/1464
+[#1559]: https://github.com/ChuckerTeam/chucker/issues/1559
+[#1603]: https://github.com/ChuckerTeam/chucker/pull/1603
+[#1604]: https://github.com/ChuckerTeam/chucker/pull/1604
+[#1613]: https://github.com/ChuckerTeam/chucker/pull/1613
+[#1623]: https://github.com/ChuckerTeam/chucker/pull/1623
+[#1660]: https://github.com/ChuckerTeam/chucker/issues/1660
+[#1680]: https://github.com/ChuckerTeam/chucker/pull/1680
+[#1681]: https://github.com/ChuckerTeam/chucker/pull/1681
+[#1682]: https://github.com/ChuckerTeam/chucker/pull/1682
+[#1690]: https://github.com/ChuckerTeam/chucker/pull/1690
+[#1698]: https://github.com/ChuckerTeam/chucker/issues/1698
