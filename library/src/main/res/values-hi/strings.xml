@@ -79,4 +79,5 @@
     <string name="chucker_copy_formatted">फ़ॉर्मैट किया हुआ कॉपी करें</string>
     <string name="chucker_request_copied_formatted">फ़ॉर्मैट किया हुआ अनुरोध कॉपी हो गया</string>
     <string name="chucker_response_copied_formatted">फ़ॉर्मैट की हुई प्रतिक्रिया कॉपी हो गई</string>
+    <string name="chucker_host_ip">होस्ट IP</string>
 </resources>
