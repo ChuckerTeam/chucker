@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction">
+    <!-- Not ifRoom: the overflow button would take the place of one of these on most phones. -->
     <item
         android:id="@+id/search"
         android:icon="@drawable/chucker_ic_search_white"
         android:title="@string/chucker_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="collapseActionView|ifRoom" />
+        app:showAsAction="collapseActionView|always" />
     <item
         android:id="@+id/export"
         android:icon="@drawable/chucker_ic_share_white"
         android:title="@string/chucker_export"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <group
                 android:id="@+id/share_group">
@@ -37,5 +40,9 @@
         android:id="@+id/clear"
         android:icon="@drawable/chucker_ic_delete_white"
         android:title="@string/chucker_clear"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/map_remote_rules"
+        android:title="@string/chucker_map_remote_rules"
+        app:showAsAction="never" />
 </menu>

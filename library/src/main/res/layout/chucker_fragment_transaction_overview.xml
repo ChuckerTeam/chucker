@@ -38,6 +38,36 @@
       app:layout_constraintTop_toTopOf="parent"
       tools:text="https://example.com/path/to/resource?here=might_be_really_long" />
 
+    <androidx.constraintlayout.widget.Group
+      android:id="@+id/mapRemoteGroup"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:constraint_referenced_ids="mappedUrlLabel,mappedUrl"
+      tools:visibility="visible" />
+
+    <TextView
+      android:id="@+id/mappedUrlLabel"
+      style="@style/Chucker.TextAppearance.Label"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      android:text="@string/chucker_mapped_to"
+      app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/url" />
+
+    <TextView
+      android:id="@+id/mappedUrl"
+      style="@style/Chucker.TextAppearance.Value"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/overviewGuideline"
+      app:layout_constraintTop_toBottomOf="@id/url"
+      tools:text="https://mock.example.com/path/to/resource" />
+
       <TextView
           style="@style/Chucker.TextAppearance.Label"
           android:layout_width="0dp"
@@ -46,7 +76,7 @@
           android:text="@string/chucker_host_ip"
           app:layout_constraintEnd_toStartOf="@id/overviewGuideline"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/url" />
+          app:layout_constraintTop_toBottomOf="@id/mappedUrl" />
 
       <TextView
           android:id="@+id/host_ip"
@@ -56,7 +86,7 @@
           android:gravity="start"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="@id/overviewGuideline"
-          app:layout_constraintTop_toBottomOf="@+id/url"
+          app:layout_constraintTop_toBottomOf="@+id/mappedUrl"
           tools:text="192.168.1.1" />
 
     <TextView
@@ -378,6 +408,19 @@
       app:layout_constraintStart_toStartOf="@id/overviewGuideline"
       app:layout_constraintTop_toBottomOf="@id/barrierResponseSize"
       tools:text="201 KB" />
+
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/setupMapRemote"
+      style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/chucker_doub_grid"
+      android:text="@string/chucker_map_remote_setup"
+      android:textAlignment="center"
+      android:textAllCaps="false"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/totalSize" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

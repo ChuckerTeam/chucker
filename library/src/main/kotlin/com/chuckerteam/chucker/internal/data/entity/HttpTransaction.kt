@@ -11,6 +11,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.HttpHeaderSerializer
@@ -63,6 +64,10 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "mappedUrl") var mappedUrl: String? = null,
+    @ColumnInfo(name = "isMapRemoteIgnored") var isMapRemoteIgnored: Boolean = false,
+    @ColumnInfo(name = "encodedUrl") var encodedUrl: String? = null,
+    @ColumnInfo(name = "isNetworkInterceptor") var isNetworkInterceptor: Boolean = false,
 ) {
     @Ignore
     constructor() : this(
@@ -150,7 +155,7 @@ internal class HttpTransaction(
         }
 
     val isSsl: Boolean
-        get() = scheme.equals("https", ignoreCase = true)
+        get() = (mappedUrl?.substringBefore(':') ?: scheme).equals("https", ignoreCase = true)
 
     val responseImageBitmap: Bitmap?
         get() {
@@ -158,6 +163,13 @@ internal class HttpTransaction(
                 BitmapFactory.decodeByteArray(it, 0, it.size)
             }
         }
+
+    /**
+     * Where this call was mapped to, or why a matching Map Remote rule wasn't applied.
+     * Null if no rule matched this call.
+     */
+    fun getMappedToText(context: Context): String? =
+        mappedUrl ?: context.getString(R.string.chucker_map_remote_ignored).takeIf { isMapRemoteIgnored }
 
     fun setRequestHeaders(headers: Headers) {
         setRequestHeaders(toHttpHeaderList(headers))
@@ -267,6 +279,7 @@ internal class HttpTransaction(
     fun populateUrl(httpUrl: HttpUrl): HttpTransaction {
         val formattedUrl = FormattedUrl.fromHttpUrl(httpUrl, encoded = false)
         url = formattedUrl.url
+        encodedUrl = httpUrl.toString()
         host = formattedUrl.host
         path = formattedUrl.pathWithQuery
         scheme = formattedUrl.scheme
@@ -331,6 +344,10 @@ internal class HttpTransaction(
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
             (graphQlOperationName == other.graphQlOperationName) &&
-            (graphQlDetected == other.graphQlDetected)
+            (graphQlDetected == other.graphQlDetected) &&
+            (mappedUrl == other.mappedUrl) &&
+            (isMapRemoteIgnored == other.isMapRemoteIgnored) &&
+            (encodedUrl == other.encodedUrl) &&
+            (isNetworkInterceptor == other.isNetworkInterceptor)
     }
 }

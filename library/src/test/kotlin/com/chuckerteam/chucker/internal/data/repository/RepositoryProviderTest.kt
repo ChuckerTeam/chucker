@@ -47,6 +47,19 @@ internal class RepositoryProviderTest {
     }
 
     @Test
+    fun `fails with uninitialized Map Remote rule repository`() {
+        assertThrows<IllegalStateException> {
+            RepositoryProvider.mapRemoteRule()
+        }
+    }
+
+    @Test
+    fun `Map Remote rule repository is cached`() {
+        RepositoryProvider.initialize(context)
+        assertThat(RepositoryProvider.mapRemoteRule()).isSameInstanceAs(RepositoryProvider.mapRemoteRule())
+    }
+
+    @Test
     fun `transaction repository is cached`() {
         RepositoryProvider.initialize(context)
         val one = RepositoryProvider.transaction()
