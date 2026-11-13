@@ -1,58 +1,63 @@
 package com.chuckerteam.chucker.internal.ui
 
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 internal class MainViewModel : ViewModel() {
     /**
      * Holds the current search filter used to filter transactions.
      */
-    private val currentFilter = MutableLiveData("")
+    private val currentFilter = MutableStateFlow("")
 
     /**
      * Holds the list of selected transaction IDs.
      */
-    private val mutableSelectedItemIds = MutableLiveData<List<Long>>(emptyList())
+    private val mutableSelectedItemIds = MutableStateFlow<List<Long>>(emptyList())
 
     /**
      * Indicates whether any transaction is currently selected.
      */
-    private val mutableIsItemSelected = MutableLiveData(false)
+    private val mutableIsItemSelected = MutableStateFlow(false)
 
-    internal val transactions: LiveData<List<HttpTransactionTuple>> =
-        currentFilter.switchMap { searchQuery ->
-            with(RepositoryProvider.transaction()) {
-                when {
-                    searchQuery.isNullOrBlank() -> getSortedTransactionTuples()
-                    searchQuery.isDigitsOnly() -> getFilteredTransactionTuples(searchQuery, "")
-                    else -> getFilteredTransactionTuples("", searchQuery)
+    internal val transactions =
+        currentFilter
+            .flatMapLatest { searchQuery ->
+                with(RepositoryProvider.transaction()) {
+                    when {
+                        searchQuery.isBlank() -> getSortedTransactionTuples()
+                        searchQuery.isDigitsOnly() -> getFilteredTransactionTuples(searchQuery, "")
+                        else -> getFilteredTransactionTuples("", searchQuery)
+                    }.asFlow()
                 }
-            }
-        }
+            }.map { tuples -> tuples.map(HttpTransactionTuple::toTransactionUi) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
-     * LiveData indicating whether any items are currently selected.
-     * Observers are notified only when the value changes.
+     * State indicating whether any items are currently selected.
      */
-    internal val isItemSelected: LiveData<Boolean> = mutableIsItemSelected.distinctUntilChanged()
+    internal val isItemSelected = mutableIsItemSelected.asStateFlow()
 
     /**
      * Returns either all transactions or only the selected ones,
      * depending on whether items are selected.
      */
     suspend fun getTransactions(): List<HttpTransaction> {
-        val ids = mutableSelectedItemIds.value.orEmpty()
-        return if (mutableIsItemSelected.value == true && ids.isNotEmpty()) {
+        val ids = mutableSelectedItemIds.value
+        return if (mutableIsItemSelected.value && ids.isNotEmpty()) {
             RepositoryProvider.transaction().getSelectedTransactions(ids)
         } else {
             RepositoryProvider.transaction().getAllTransactions()
@@ -70,7 +75,7 @@ internal class MainViewModel : ViewModel() {
      * @param itemId The transaction ID to toggle.
      */
     internal fun toggleSelection(itemId: Long) {
-        val current = mutableSelectedItemIds.value.orEmpty().toMutableList()
+        val current = mutableSelectedItemIds.value.toMutableList()
         if (current.contains(itemId)) {
             current.remove(itemId)
         } else {
@@ -90,7 +95,7 @@ internal class MainViewModel : ViewModel() {
      * @param itemId The transaction ID to start selection with.
      */
     internal fun startSelection(itemId: Long) {
-        if (mutableIsItemSelected.value == true) {
+        if (mutableIsItemSelected.value) {
             toggleSelection(itemId)
         } else {
             mutableSelectedItemIds.value = listOf(itemId)
@@ -112,7 +117,7 @@ internal class MainViewModel : ViewModel() {
      *
      * @return A list of selected transaction IDs, or an empty list if none are selected.
      */
-    internal fun getSelectedIds(): List<Long> = mutableSelectedItemIds.value.orEmpty()
+    internal fun getSelectedIds(): List<Long> = mutableSelectedItemIds.value
 
     /**
      * Restores a previously saved selection state by setting the provided list of transaction IDs.
@@ -134,8 +139,8 @@ internal class MainViewModel : ViewModel() {
      */
     internal fun clearTransactions() =
         viewModelScope.launch {
-            val ids = mutableSelectedItemIds.value.orEmpty()
-            if (mutableIsItemSelected.value == true && ids.isNotEmpty()) {
+            val ids = mutableSelectedItemIds.value
+            if (mutableIsItemSelected.value && ids.isNotEmpty()) {
                 RepositoryProvider.transaction().deleteSelectedTransactions(ids)
             } else {
                 RepositoryProvider.transaction().deleteAllTransactions()

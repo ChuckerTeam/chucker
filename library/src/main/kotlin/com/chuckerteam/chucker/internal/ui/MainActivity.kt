@@ -23,7 +23,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
@@ -122,19 +124,25 @@ internal class MainActivity :
             }
         }
 
-        viewModel.transactions.observe(
-            this,
-        ) { transactionTuples ->
-            transactionsAdapter.submitList(transactionTuples)
-            mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.transactions.collect { transactions ->
+                    transactionsAdapter.submitList(transactions)
+                    mainBinding.tutorialGroup.isVisible = transactions.isEmpty()
+                }
+            }
         }
 
         if (Chucker.showNotifications && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             handleNotificationsPermission()
         }
 
-        viewModel.isItemSelected.observe(this) { isSelected ->
-            transactionsAdapter.setSelectionMode(isSelected)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isItemSelected.collect { isSelected ->
+                    transactionsAdapter.setSelectionMode(isSelected)
+                }
+            }
         }
     }
 
@@ -287,7 +295,8 @@ internal class MainActivity :
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        val selectedIds = savedInstanceState.getLongArray(KEY_SELECTED_TRANSACTION_IDS)?.toList().orEmpty()
+        val selectedIds =
+            savedInstanceState.getLongArray(KEY_SELECTED_TRANSACTION_IDS)?.toList().orEmpty()
         viewModel.restoreSelection(selectedIds)
         transactionsAdapter.setSelectedTransactionIds(selectedIds)
     }
